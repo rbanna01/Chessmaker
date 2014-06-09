@@ -38,7 +38,7 @@ namespace ChessMaker.Filters
                         }
                     }
 
-                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "ID", "Name", autoCreateTables: true);
                 }
                 catch (Exception ex)
                 {

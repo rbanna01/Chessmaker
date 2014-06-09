@@ -1,0 +1,27 @@
+﻿@model IList<ChessMaker.Models.User>
+
+@{
+    ViewBag.Title = "User";
+}
+
+<hgroup class="title">
+    <h1>All Users</h1>
+    <h2>Probably not a good idea when there's more than a handful</h2>
+</hgroup>
+
+<section class="contact">
+    <table>
+        <tr><th>ID</th><th>Name</th></tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(user.ID.ToString(), "View", new { id=user.ID })
+            </td>
+            <td>
+                @Html.DisplayFor(u => user.Name)
+            </td>
+        </tr>
+    }
+    </table>
+</section>

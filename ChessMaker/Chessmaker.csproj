@@ -44,6 +44,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -183,11 +185,48 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\Game.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GameModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GameModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GameModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GameModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GameModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GamePlayer.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GameStatus.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Move.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Variant.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VariantVersion.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +286,23 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <EntityDeploy Include="Models\GameModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>GameModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\GameModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GameModel.edmx</DependentUpon>
+      <LastGenOutput>GameModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\GameModel.edmx.diagram">
+      <DependentUpon>GameModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\GameModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GameModel.edmx</DependentUpon>
+      <LastGenOutput>GameModel.cs</LastGenOutput>
+    </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -301,12 +357,17 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

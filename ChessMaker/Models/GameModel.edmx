@@ -1,0 +1,570 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ChessMakerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="ChessMakerModelStoreContainer">
+          <EntitySet Name="GamePlayers" EntityType="ChessMakerModel.Store.GamePlayers" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Games" EntityType="ChessMakerModel.Store.Games" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="GameStatuses" EntityType="ChessMakerModel.Store.GameStatuses" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Moves" EntityType="ChessMakerModel.Store.Moves" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Users" EntityType="ChessMakerModel.Store.Users" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Variants" EntityType="ChessMakerModel.Store.Variants" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="VariantVersions" EntityType="ChessMakerModel.Store.VariantVersions" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_GamePlayers_Games" Association="ChessMakerModel.Store.FK_GamePlayers_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GamePlayers_Users" Association="ChessMakerModel.Store.FK_GamePlayers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_GameStatuses" Association="ChessMakerModel.Store.FK_Games_GameStatuses">
+            <End Role="GameStatuses" EntitySet="GameStatuses" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_Users" Association="ChessMakerModel.Store.FK_Games_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_VariantVersions" Association="ChessMakerModel.Store.FK_Games_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_GamePlayers" Association="ChessMakerModel.Store.FK_Moves_GamePlayers">
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_Games" Association="ChessMakerModel.Store.FK_Moves_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_Users" Association="ChessMakerModel.Store.FK_Variants_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_VariantVersions" Association="ChessMakerModel.Store.FK_Variants_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="GamePlayers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="HasAccepted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="VariantVersionID" Type="int" Nullable="false" />
+          <Property Name="StatusID" Type="tinyint" Nullable="false" />
+          <Property Name="NextUserID" Type="int" />
+          <Property Name="NextMoveNumber" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameStatuses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="IsClosed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Moves">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="int" Nullable="false" />
+          <Property Name="GamePlayerID" Type="int" Nullable="false" />
+          <Property Name="Number" Type="int" Nullable="false" />
+          <Property Name="Notation" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Data" Type="xml" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Variants">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="CreatedByID" Type="int" Nullable="false" />
+          <Property Name="PublicVersionID" Type="int" />
+          <Property Name="PlayerCount" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VariantVersions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="VariantID" Type="int" Nullable="false" />
+          <Property Name="Number" Type="smallint" Nullable="false" />
+          <Property Name="LastModified" Type="datetime" Nullable="false" />
+          <Property Name="Definition" Type="xml" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GamePlayers_Games">
+          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="1" />
+          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GamePlayers_Users">
+          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="0..1" />
+          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_GameStatuses">
+          <End Role="GameStatuses" Type="ChessMakerModel.Store.GameStatuses" Multiplicity="1" />
+          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameStatuses">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="StatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_Users">
+          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="0..1" />
+          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="NextUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_VariantVersions">
+          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="1" />
+          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VariantVersions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="VariantVersionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moves_GamePlayers">
+          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="1" />
+          <End Role="Moves" Type="ChessMakerModel.Store.Moves" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GamePlayers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Moves">
+              <PropertyRef Name="GamePlayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moves_Games">
+          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="1" />
+          <End Role="Moves" Type="ChessMakerModel.Store.Moves" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Moves">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Variants_Users">
+          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="1" />
+          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Variants">
+              <PropertyRef Name="CreatedByID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Variants_VariantVersions">
+          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="0..1" />
+          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VariantVersions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Variants">
+              <PropertyRef Name="PublicVersionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ChessMakerModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="GamePlayers" EntityType="ChessMakerModel.GamePlayer" />
+          <EntitySet Name="Games" EntityType="ChessMakerModel.Game" />
+          <EntitySet Name="GameStatuses" EntityType="ChessMakerModel.GameStatus" />
+          <EntitySet Name="Moves" EntityType="ChessMakerModel.Move" />
+          <EntitySet Name="Users" EntityType="ChessMakerModel.User" />
+          <EntitySet Name="Variants" EntityType="ChessMakerModel.Variant" />
+          <EntitySet Name="VariantVersions" EntityType="ChessMakerModel.VariantVersion" />
+          <AssociationSet Name="FK_GamePlayers_Games" Association="ChessMakerModel.FK_GamePlayers_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GamePlayers_Users" Association="ChessMakerModel.FK_GamePlayers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_GamePlayers" Association="ChessMakerModel.FK_Moves_GamePlayers">
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_GameStatuses" Association="ChessMakerModel.FK_Games_GameStatuses">
+            <End Role="GameStatuses" EntitySet="GameStatuses" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_Users" Association="ChessMakerModel.FK_Games_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_VariantVersions" Association="ChessMakerModel.FK_Games_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_Games" Association="ChessMakerModel.FK_Moves_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_Users" Association="ChessMakerModel.FK_Variants_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_VariantVersions" Association="ChessMakerModel.FK_Variants_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="GamePlayer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="HasAccepted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Game" Relationship="ChessMakerModel.FK_GamePlayers_Games" FromRole="GamePlayers" ToRole="Games" />
+          <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_GamePlayers_Users" FromRole="GamePlayers" ToRole="Users" />
+          <NavigationProperty Name="Moves" Relationship="ChessMakerModel.FK_Moves_GamePlayers" FromRole="GamePlayers" ToRole="Moves" />
+        </EntityType>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="VariantVersionID" Type="Int32" Nullable="false" />
+          <Property Name="StatusID" Type="Byte" Nullable="false" />
+          <Property Name="NextUserID" Type="Int32" />
+          <Property Name="NextMoveNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="GamePlayers" Relationship="ChessMakerModel.FK_GamePlayers_Games" FromRole="Games" ToRole="GamePlayers" />
+          <NavigationProperty Name="GameStatus" Relationship="ChessMakerModel.FK_Games_GameStatuses" FromRole="Games" ToRole="GameStatuses" />
+          <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_Games_Users" FromRole="Games" ToRole="Users" />
+          <NavigationProperty Name="VariantVersion" Relationship="ChessMakerModel.FK_Games_VariantVersions" FromRole="Games" ToRole="VariantVersions" />
+          <NavigationProperty Name="Moves" Relationship="ChessMakerModel.FK_Moves_Games" FromRole="Games" ToRole="Moves" />
+        </EntityType>
+        <EntityType Name="GameStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="IsClosed" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="ChessMakerModel.FK_Games_GameStatuses" FromRole="GameStatuses" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="Move">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="Int32" Nullable="false" />
+          <Property Name="GamePlayerID" Type="Int32" Nullable="false" />
+          <Property Name="Number" Type="Int32" Nullable="false" />
+          <Property Name="Notation" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="GamePlayer" Relationship="ChessMakerModel.FK_Moves_GamePlayers" FromRole="Moves" ToRole="GamePlayers" />
+          <NavigationProperty Name="Game" Relationship="ChessMakerModel.FK_Moves_Games" FromRole="Moves" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="GamePlayers" Relationship="ChessMakerModel.FK_GamePlayers_Users" FromRole="Users" ToRole="GamePlayers" />
+          <NavigationProperty Name="Games" Relationship="ChessMakerModel.FK_Games_Users" FromRole="Users" ToRole="Games" />
+          <NavigationProperty Name="Variants" Relationship="ChessMakerModel.FK_Variants_Users" FromRole="Users" ToRole="Variants" />
+        </EntityType>
+        <EntityType Name="Variant">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedByID" Type="Int32" Nullable="false" />
+          <Property Name="PublicVersionID" Type="Int32" />
+          <Property Name="PlayerCount" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_Variants_Users" FromRole="Variants" ToRole="Users" />
+          <NavigationProperty Name="VariantVersion" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="Variants" ToRole="VariantVersions" />
+        </EntityType>
+        <EntityType Name="VariantVersion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="VariantID" Type="Int32" Nullable="false" />
+          <Property Name="Number" Type="Int16" Nullable="false" />
+          <Property Name="LastModified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Definition" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Games" Relationship="ChessMakerModel.FK_Games_VariantVersions" FromRole="VariantVersions" ToRole="Games" />
+          <NavigationProperty Name="Variants" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="VariantVersions" ToRole="Variants" />
+        </EntityType>
+        <Association Name="FK_GamePlayers_Games">
+          <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="1" />
+          <End Role="GamePlayers" Type="ChessMakerModel.GamePlayer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GamePlayers_Users">
+          <End Role="Users" Type="ChessMakerModel.User" Multiplicity="0..1" />
+          <End Role="GamePlayers" Type="ChessMakerModel.GamePlayer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moves_GamePlayers">
+          <End Role="GamePlayers" Type="ChessMakerModel.GamePlayer" Multiplicity="1" />
+          <End Role="Moves" Type="ChessMakerModel.Move" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GamePlayers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Moves">
+              <PropertyRef Name="GamePlayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_GameStatuses">
+          <End Role="GameStatuses" Type="ChessMakerModel.GameStatus" Multiplicity="1" />
+          <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameStatuses">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="StatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_Users">
+          <End Role="Users" Type="ChessMakerModel.User" Multiplicity="0..1" />
+          <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="NextUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_VariantVersions">
+          <End Role="VariantVersions" Type="ChessMakerModel.VariantVersion" Multiplicity="1" />
+          <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VariantVersions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="VariantVersionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moves_Games">
+          <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="1" />
+          <End Role="Moves" Type="ChessMakerModel.Move" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Moves">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Variants_Users">
+          <End Role="Users" Type="ChessMakerModel.User" Multiplicity="1" />
+          <End Role="Variants" Type="ChessMakerModel.Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Variants">
+              <PropertyRef Name="CreatedByID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Variants_VariantVersions">
+          <End Role="VariantVersions" Type="ChessMakerModel.VariantVersion" Multiplicity="0..1" />
+          <End Role="Variants" Type="ChessMakerModel.Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VariantVersions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Variants">
+              <PropertyRef Name="PublicVersionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ChessMakerModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="GamePlayers">
+            <EntityTypeMapping TypeName="ChessMakerModel.GamePlayer">
+              <MappingFragment StoreEntitySet="GamePlayers">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="HasAccepted" ColumnName="HasAccepted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="ChessMakerModel.Game">
+              <MappingFragment StoreEntitySet="Games">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="VariantVersionID" ColumnName="VariantVersionID" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="NextUserID" ColumnName="NextUserID" />
+                <ScalarProperty Name="NextMoveNumber" ColumnName="NextMoveNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameStatuses">
+            <EntityTypeMapping TypeName="ChessMakerModel.GameStatus">
+              <MappingFragment StoreEntitySet="GameStatuses">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IsClosed" ColumnName="IsClosed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Moves">
+            <EntityTypeMapping TypeName="ChessMakerModel.Move">
+              <MappingFragment StoreEntitySet="Moves">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="GamePlayerID" ColumnName="GamePlayerID" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="Notation" ColumnName="Notation" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ChessMakerModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Variants">
+            <EntityTypeMapping TypeName="ChessMakerModel.Variant">
+              <MappingFragment StoreEntitySet="Variants">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="PublicVersionID" ColumnName="PublicVersionID" />
+                <ScalarProperty Name="PlayerCount" ColumnName="PlayerCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VariantVersions">
+            <EntityTypeMapping TypeName="ChessMakerModel.VariantVersion">
+              <MappingFragment StoreEntitySet="VariantVersions">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="VariantID" ColumnName="VariantID" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="LastModified" ColumnName="LastModified" />
+                <ScalarProperty Name="Definition" ColumnName="Definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
