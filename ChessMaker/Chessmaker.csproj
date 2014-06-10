@@ -184,6 +184,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -359,6 +360,13 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\View.cshtml" />
+    <Content Include="Views\Game\PlayOnline.cshtml" />
+    <Content Include="Views\Game\PlayOffline.cshtml" />
+    <Content Include="Views\Game\PlayAI.cshtml" />
+    <Content Include="Views\Game\SetupOffline.cshtml" />
+    <Content Include="Views\Game\SetupAI.cshtml" />
+    <Content Include="Views\Game\SetupOnline.cshtml" />
+    <Content Include="Views\Game\FindOnline.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -21,6 +21,7 @@
         <AssociationConnector Association="ChessMakerModel.FK_Moves_Games" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_Variants_Users" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_Variants_VariantVersions" ManuallyRouted="false" />
+        <AssociationConnector Association="ChessMakerModel.FK_VariantVersions_Variants" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

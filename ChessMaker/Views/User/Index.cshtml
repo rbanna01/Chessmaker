@@ -11,12 +11,15 @@
 
 <section class="contact">
     <table>
-        <tr><th>ID</th><th>Name</th></tr>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
     @foreach (var user in Model)
     {
         <tr>
             <td>
-                @Html.ActionLink(user.ID.ToString(), "View", new { id=user.ID })
+                @Html.ActionLink(user.ID.ToString(), "Index", new { id=user.ID })
             </td>
             <td>
                 @Html.DisplayFor(u => user.Name)

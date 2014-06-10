@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ChessMakerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ChessMakerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityContainer Name="ChessMakerModelStoreContainer">
           <EntitySet Name="GamePlayers" EntityType="ChessMakerModel.Store.GamePlayers" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Games" EntityType="ChessMakerModel.Store.Games" store:Type="Tables" Schema="dbo" />
@@ -48,6 +48,10 @@
           <AssociationSet Name="FK_Variants_VariantVersions" Association="ChessMakerModel.Store.FK_Variants_VariantVersions">
             <End Role="VariantVersions" EntitySet="VariantVersions" />
             <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VariantVersions_Variants" Association="ChessMakerModel.Store.FK_VariantVersions_Variants">
+            <End Role="Variants" EntitySet="Variants" />
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="GamePlayers">
@@ -224,8 +228,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
-    </edmx:StorageModels>
+        <Association Name="FK_VariantVersions_Variants">
+          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="1" />
+          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Variants">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VariantVersions">
+              <PropertyRef Name="VariantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ChessMakerModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -273,6 +288,10 @@
             <End Role="VariantVersions" EntitySet="VariantVersions" />
             <End Role="Variants" EntitySet="Variants" />
           </AssociationSet>
+          <AssociationSet Name="FK_VariantVersions_Variants" Association="ChessMakerModel.FK_VariantVersions_Variants">
+            <End Role="Variant" EntitySet="Variants" />
+            <End Role="VariantVersion" EntitySet="VariantVersions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="GamePlayer">
           <Key>
@@ -297,7 +316,7 @@
           <Property Name="NextUserID" Type="Int32" />
           <Property Name="NextMoveNumber" Type="Int32" Nullable="false" />
           <NavigationProperty Name="GamePlayers" Relationship="ChessMakerModel.FK_GamePlayers_Games" FromRole="Games" ToRole="GamePlayers" />
-          <NavigationProperty Name="GameStatus" Relationship="ChessMakerModel.FK_Games_GameStatuses" FromRole="Games" ToRole="GameStatuses" />
+          <NavigationProperty Name="Status" Relationship="ChessMakerModel.FK_Games_GameStatuses" FromRole="Games" ToRole="GameStatuses" />
           <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_Games_Users" FromRole="Games" ToRole="Users" />
           <NavigationProperty Name="VariantVersion" Relationship="ChessMakerModel.FK_Games_VariantVersions" FromRole="Games" ToRole="VariantVersions" />
           <NavigationProperty Name="Moves" Relationship="ChessMakerModel.FK_Moves_Games" FromRole="Games" ToRole="Moves" />
@@ -344,7 +363,8 @@
           <Property Name="PublicVersionID" Type="Int32" />
           <Property Name="PlayerCount" Type="Byte" Nullable="false" />
           <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_Variants_Users" FromRole="Variants" ToRole="Users" />
-          <NavigationProperty Name="VariantVersion" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="Variants" ToRole="VariantVersions" />
+          <NavigationProperty Name="PublicVersion" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="Variants" ToRole="VariantVersions" />
+          <NavigationProperty Name="VariantVersions" Relationship="ChessMakerModel.FK_VariantVersions_Variants" FromRole="Variant" ToRole="VariantVersion" />
         </EntityType>
         <EntityType Name="VariantVersion">
           <Key>
@@ -356,7 +376,7 @@
           <Property Name="LastModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Definition" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Games" Relationship="ChessMakerModel.FK_Games_VariantVersions" FromRole="VariantVersions" ToRole="Games" />
-          <NavigationProperty Name="Variants" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="VariantVersions" ToRole="Variants" />
+          <NavigationProperty Name="Variant" Relationship="ChessMakerModel.FK_VariantVersions_Variants" FromRole="VariantVersion" ToRole="Variant" />
         </EntityType>
         <Association Name="FK_GamePlayers_Games">
           <End Role="Games" Type="ChessMakerModel.Game" Multiplicity="1" />
@@ -463,6 +483,18 @@
             </Principal>
             <Dependent Role="Variants">
               <PropertyRef Name="PublicVersionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VariantVersions_Variants">
+          <End Type="ChessMakerModel.Variant" Role="Variant" Multiplicity="1" />
+          <End Type="ChessMakerModel.VariantVersion" Role="VariantVersion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Variant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VariantVersion">
+              <PropertyRef Name="VariantID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

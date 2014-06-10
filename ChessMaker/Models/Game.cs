@@ -27,7 +27,7 @@ namespace ChessMaker.Models
         public int NextMoveNumber { get; set; }
     
         public virtual ICollection<GamePlayer> GamePlayers { get; set; }
-        public virtual GameStatus GameStatus { get; set; }
+        public virtual GameStatus Status { get; set; }
         public virtual User User { get; set; }
         public virtual VariantVersion VariantVersion { get; set; }
         public virtual ICollection<Move> Moves { get; set; }

@@ -17,7 +17,6 @@ namespace ChessMaker.Models
         public VariantVersion()
         {
             this.Games = new HashSet<Game>();
-            this.Variants = new HashSet<Variant>();
         }
     
         public int ID { get; set; }
@@ -27,6 +26,6 @@ namespace ChessMaker.Models
         public string Definition { get; set; }
     
         public virtual ICollection<Game> Games { get; set; }
-        public virtual ICollection<Variant> Variants { get; set; }
+        public virtual Variant Variant { get; set; }
     }
 }

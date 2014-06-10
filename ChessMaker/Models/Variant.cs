@@ -14,6 +14,11 @@ namespace ChessMaker.Models
     
     public partial class Variant
     {
+        public Variant()
+        {
+            this.VariantVersions = new HashSet<VariantVersion>();
+        }
+    
         public int ID { get; set; }
         public string Name { get; set; }
         public int CreatedByID { get; set; }
@@ -21,6 +26,7 @@ namespace ChessMaker.Models
         public byte PlayerCount { get; set; }
     
         public virtual User User { get; set; }
-        public virtual VariantVersion VariantVersion { get; set; }
+        public virtual VariantVersion PublicVersion { get; set; }
+        public virtual ICollection<VariantVersion> VariantVersions { get; set; }
     }
 }
