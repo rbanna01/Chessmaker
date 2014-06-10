@@ -1,0 +1,38 @@
+﻿@model ChessMaker.Models.GameSetupModel
+
+@{
+    ViewBag.Title = @Model.Heading;
+    var variantOptions = new SelectList(Model.Variants, "VersionID", "Name");
+}
+
+<h2>@Model.Heading</h2>
+
+
+@using (Html.BeginForm(@Model.SubmitAction, "Game")) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <legend>Game setup form</legend>
+        <ol>
+            <li>
+                @Html.Label("variantSelect", "Variant")
+                @Html.DropDownList("variantSelect", variantOptions)
+            </li>
+
+@if (Model.SelectAI)
+{
+            <li>
+                Select AI opponent here.
+            </li>
+}
+@if (Model.PromptPlayerSelection)
+{
+            <li>
+                You will be able to invite opponents from the next screen.
+            </li>
+}
+        </ol>
+        <input type="submit" value="@Model.ConfirmText" />
+    </fieldset>
+}

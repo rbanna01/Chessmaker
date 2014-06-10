@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using WebMatrix.WebData;
 
 namespace ChessMaker.Controllers
 {
@@ -13,18 +15,32 @@ namespace ChessMaker.Controllers
 
         public ActionResult Host()
         {
-            return View("SetupOnline", GetVariants(true));
+            var model = new GameSetupModel();
+            model.Variants = ListVariants(true);
+            model.PromptPlayerSelection = true;
+            model.ConfirmText = "Create game";
+            model.Heading = "Host private game";
+            model.SubmitAction = "CreateOnline";
+            return View("SetupGame", model);
         }
 
         public ActionResult Find()
         {
-            return View("FindOnline", GetVariants(false));
+            return View("FindGame", ListVariants(false));
         }
 
+        [AllowAnonymous]
         public ActionResult Offline(int? id)
         {
             if (id == null)
-                return View("SetupOffline", GetVariants(true));
+            {
+                var model = new GameSetupModel();
+                model.Variants = ListVariants(true);
+                model.ConfirmText = "Play offline";
+                model.Heading = "Setup offline game";
+                model.SubmitAction = "CreateOffline";
+                return View("SetupGame", model);
+            }
 
             var variant = entities.Variants.Find(id);
             if (variant == null)
@@ -33,54 +49,108 @@ namespace ChessMaker.Controllers
             return View("PlayOffline", variant.PublicVersion);
         }
 
+        [AllowAnonymous]
         public ActionResult AI(int? id)
         {
             if (id == null)
-                return View("SetupAI", GetVariants(true));
+            {
+                var model = new GameSetupModel();
+                model.Variants = ListVariants(true);
+                model.SelectAI = true;
+                model.ConfirmText = "Play AI";
+                model.Heading = "Setup game vs AI";
+                model.SubmitAction = "CreateAI";
+                return View("SetupGame", model);
+            }
 
-            var variant = entities.Variants.Find(id);
-            if (variant == null)
+            var version = entities.VariantVersions.Find(id);
+            if (version == null)
                 return HttpNotFound();
 
-            return View("PlayAI", variant.PublicVersion);
+            return View("PlayAI", version);
         }
 
+        [HttpPost]
+        public ActionResult CreateOnline(int variantSelect)
+        {
+            var version = entities.VariantVersions.Find(variantSelect);
+            if (version == null)
+                return HttpNotFound();
+
+            Game game = new Game();
+            game.VariantVersion = version;
+            game.Status = entities.GameStatuses.First(s => s.Name == "Private setup");
+            entities.Games.Add(game);
+            
+            return RedirectToAction("Index", new { id = game.ID});
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult CreateOffline(int variantSelect)
+        {
+            return RedirectToAction("Offline", new { id = variantSelect });
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult CreateAI(int variantSelect)
+        {
+            return RedirectToAction("AI", new { id = variantSelect });
+        }
+
+        [AllowAnonymous]
         public ActionResult Index(int id)
         {
             var game = entities.Games.Find(id);
             if (game == null)
                 return HttpNotFound();
 
+            if (game.Status.Name == "Private setup")
+                return View("Lobby", game);
+
             return View("PlayOnline", game);
         }
 
-        private IEnumerable<Tuple<string, int>> GetVariants(bool includePrivate)
+        private List<VariantSelectionModel> ListVariants(bool includePrivateVariants)
         {
-            var variants = entities.Variants
+            var variantList = new List<VariantSelectionModel>();
+
+            var publicVariants = entities.Variants
                 .Where(v => v.PublicVersion != null)
                 .OrderBy(v => v.Name);
 
-            var publicVariants = variants.ToList().Select(v => new Tuple<string, int>(v.Name, v.PublicVersionID.Value));
+            foreach (var variant in publicVariants)
+                variantList.Add(new VariantSelectionModel()
+                {
+                    Name = variant.Name,
+                    VersionID = variant.PublicVersionID.Value,
+                    //Author = variant.CreatedBy,
+                    //NumPlayers = variant.PlayerCount,
+                });
 
-            if (!includePrivate)
-                return publicVariants;
+            if (!includePrivateVariants)
+                return variantList;
 
-            int currentUserID = 1;
-            
-            var variants2 = entities.VariantVersions
-                .Where(v => v.Variant.CreatedByID == currentUserID)
+            var privateVariants = entities.VariantVersions
+                .Where(v => v.Variant.CreatedBy.Name == User.Identity.Name)
                 .OrderBy(v => v.VariantID)
                 .ThenBy(v => v.ID);
 
-            var myVariants = variants2.ToList()
-                .Select(v => new Tuple<string, int>(
-                    string.Format("{0} @ {1}{2}",
-                        v.Variant.Name,
-                        v.LastModified.ToString("d"),
-                        v.Variant.PublicVersionID.HasValue && v.Variant.PublicVersionID == v.ID ? " (public)" : string.Empty
-                    ), v.ID));
+            foreach (var version in privateVariants)
+                variantList.Add(new VariantSelectionModel()
+                {
+                    Name = string.Format("{0} @ {1}{2}",
+                        version.Variant.Name,
+                        version.LastModified.ToString("d"),
+                        version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
+                    ),
+                    VersionID = version.ID,
+                    //Author = variant.CreatedBy,
+                    //NumPlayers = variant.PlayerCount,
+                });
 
-            return publicVariants.Union(myVariants);
+            return variantList;
         }
     }
 }

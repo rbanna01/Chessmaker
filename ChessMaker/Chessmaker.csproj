@@ -192,6 +192,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\GameSetupModels.cs" />
     <Compile Include="Models\Game.cs">
       <DependentUpon>Entities.tt</DependentUpon>
     </Compile>
@@ -351,8 +352,6 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
@@ -363,11 +362,8 @@
     <Content Include="Views\Game\PlayOnline.cshtml" />
     <Content Include="Views\Game\PlayOffline.cshtml" />
     <Content Include="Views\Game\PlayAI.cshtml" />
-    <Content Include="Views\Game\SetupOffline.cshtml" />
-    <Content Include="Views\Game\SetupAI.cshtml" />
-    <Content Include="Views\Game\SetupOnline.cshtml" />
-    <Content Include="Views\Game\FindOnline.cshtml" />
-    <Content Include="Views\Game\_VariantSelectorPartial.cshtml" />
+    <Content Include="Views\Game\SetupGame.cshtml" />
+    <Content Include="Views\Game\FindGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
