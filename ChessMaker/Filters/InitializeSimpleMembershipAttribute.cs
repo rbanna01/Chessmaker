@@ -25,11 +25,9 @@ namespace ChessMaker.Filters
         {
             public SimpleMembershipInitializer()
             {
-                Database.SetInitializer<UsersContext>(null);
-
                 try
                 {
-                    using (var context = new UsersContext())
+                    using (var context = new Entities())
                     {
                         if (!context.Database.Exists())
                         {

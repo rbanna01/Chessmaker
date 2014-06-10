@@ -263,7 +263,7 @@ namespace ChessMaker.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (UsersContext db = new UsersContext())
+                using (var db = new Entities())
                 {
                     User user = db.Users.FirstOrDefault(u => u.Name.ToLower() == model.UserName.ToLower());
                     // Check if user already exists
