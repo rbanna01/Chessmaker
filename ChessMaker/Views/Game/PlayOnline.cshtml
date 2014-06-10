@@ -1,7 +1,7 @@
 ﻿@model ChessMaker.Models.Game
 
 @{
-    ViewBag.Title = "Play Online";
+    ViewBag.Title = "Game: " + Model.VariantVersion.Variant.Name;
 }
 
-<h2>Game: @Html.DisplayFor(Model.VariantVersion.Variant.Name)</h2>
+<h2>@ViewBag.Title</h2>

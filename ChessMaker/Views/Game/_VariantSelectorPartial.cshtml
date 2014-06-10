@@ -1,0 +1,7 @@
+﻿@model IEnumerable<Tuple<string, int>>
+@{
+    var items = new SelectList(Model, "Item2", "Item1");
+}
+
+@Html.Label("variantSelect", "Variant");
+@Html.DropDownList("variantSelect", items)

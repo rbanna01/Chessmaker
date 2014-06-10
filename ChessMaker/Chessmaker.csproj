@@ -367,6 +367,7 @@
     <Content Include="Views\Game\SetupAI.cshtml" />
     <Content Include="Views\Game\SetupOnline.cshtml" />
     <Content Include="Views\Game\FindOnline.cshtml" />
+    <Content Include="Views\Game\_VariantSelectorPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

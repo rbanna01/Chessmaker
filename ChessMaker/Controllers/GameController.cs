@@ -13,18 +13,18 @@ namespace ChessMaker.Controllers
 
         public ActionResult Host()
         {
-            return View("SetupOnline", GetPublicVariants());
+            return View("SetupOnline", GetVariants(true));
         }
 
         public ActionResult Find()
         {
-            return View("FindOnline", GetPublicVariants());
+            return View("FindOnline", GetVariants(false));
         }
 
         public ActionResult Offline(int? id)
         {
             if (id == null)
-                return View("SetupOffline", GetPublicVariants());
+                return View("SetupOffline", GetVariants(true));
 
             var variant = entities.Variants.Find(id);
             if (variant == null)
@@ -36,7 +36,7 @@ namespace ChessMaker.Controllers
         public ActionResult AI(int? id)
         {
             if (id == null)
-                return View("SetupAI", GetPublicVariants());
+                return View("SetupAI", GetVariants(true));
 
             var variant = entities.Variants.Find(id);
             if (variant == null)
@@ -54,9 +54,33 @@ namespace ChessMaker.Controllers
             return View("PlayOnline", game);
         }
 
-        private IEnumerable<Variant> GetPublicVariants()
+        private IEnumerable<Tuple<string, int>> GetVariants(bool includePrivate)
         {
-            return entities.Variants.Where(v => v.PublicVersion != null).OrderBy(v => v.Name);
+            var variants = entities.Variants
+                .Where(v => v.PublicVersion != null)
+                .OrderBy(v => v.Name);
+
+            var publicVariants = variants.ToList().Select(v => new Tuple<string, int>(v.Name, v.PublicVersionID.Value));
+
+            if (!includePrivate)
+                return publicVariants;
+
+            int currentUserID = 1;
+            
+            var variants2 = entities.VariantVersions
+                .Where(v => v.Variant.CreatedByID == currentUserID)
+                .OrderBy(v => v.VariantID)
+                .ThenBy(v => v.ID);
+
+            var myVariants = variants2.ToList()
+                .Select(v => new Tuple<string, int>(
+                    string.Format("{0} @ {1}{2}",
+                        v.Variant.Name,
+                        v.LastModified.ToString("d"),
+                        v.Variant.PublicVersionID.HasValue && v.Variant.PublicVersionID == v.ID ? " (public)" : string.Empty
+                    ), v.ID));
+
+            return publicVariants.Union(myVariants);
         }
     }
 }
