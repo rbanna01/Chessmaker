@@ -362,9 +362,9 @@
           <Property Name="CreatedByID" Type="Int32" Nullable="false" />
           <Property Name="PublicVersionID" Type="Int32" />
           <Property Name="PlayerCount" Type="Byte" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="ChessMakerModel.FK_Variants_Users" FromRole="Variants" ToRole="Users" />
+          <NavigationProperty Name="CreatedBy" Relationship="ChessMakerModel.FK_Variants_Users" FromRole="Variants" ToRole="Users" />
           <NavigationProperty Name="PublicVersion" Relationship="ChessMakerModel.FK_Variants_VariantVersions" FromRole="Variants" ToRole="VariantVersions" />
-          <NavigationProperty Name="VariantVersions" Relationship="ChessMakerModel.FK_VariantVersions_Variants" FromRole="Variant" ToRole="VariantVersion" />
+          <NavigationProperty Name="AllVersions" Relationship="ChessMakerModel.FK_VariantVersions_Variants" FromRole="Variant" ToRole="VariantVersion" />
         </EntityType>
         <EntityType Name="VariantVersion">
           <Key>
