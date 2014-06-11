@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+@{
+    var loginNeeded = User.Identity.IsAuthenticated ? null : new { @class = "disabled", title = "You can't do this without logging in first" };
+}
+
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -21,8 +25,8 @@
                     <nav>
                         <ul id="menu">
                             <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("Find game", "Find", "Game")</li>
-                            <li>@Html.ActionLink("Host game", "Host", "Game")</li>
+                            <li>@Html.ActionLink("Find game", "Find", "Game", null, loginNeeded)</li>
+                            <li>@Html.ActionLink("Host game", "Host", "Game", null, loginNeeded)</li>
                             <li>@Html.ActionLink("Local game", "Offline", "Game")</li>
                             <li>@Html.ActionLink("Play AI", "AI", "Game")</li>
                             <li>@Html.ActionLink("Users", "", "User")</li>

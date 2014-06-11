@@ -1,4 +1,4 @@
-﻿html {
+html {
     background-color: #e2e2e2;
     margin: 0;
     padding: 0;
@@ -202,6 +202,14 @@ ul#menu {
         ul#menu li a:hover {
             color: #333;
             text-decoration: none;
+        }
+
+        ul#menu li a.disabled {
+            color: #c33;
+        }
+
+        ul#menu li a.disabled:hover {
+            color: #c33;
         }
 
 
