@@ -20,10 +20,11 @@
                 @Html.DropDownList("variantSelect", variantOptions)
             </li>
 
-@if (Model.SelectAI)
+@if (Model.Difficulties != null)
 {
             <li>
-                Select AI opponent here.
+                @Html.Label("aiSelect", "Difficulty")
+                @Html.DropDownList("aiSelect", new SelectList(Model.Difficulties, "ID", "Name"))
             </li>
 }
 @if (Model.PromptPlayerSelection)

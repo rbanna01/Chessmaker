@@ -12,7 +12,8 @@ namespace ChessMaker.Controllers
     public class GameController : Controller
     {
         Entities entities = new Entities();
-
+        
+        [Authorize]
         public ActionResult Host()
         {
             var model = new GameSetupModel();
@@ -24,6 +25,7 @@ namespace ChessMaker.Controllers
             return View("SetupGame", model);
         }
 
+        [Authorize]
         public ActionResult Find()
         {
             return View("FindGame", ListVariants(false));
@@ -50,13 +52,13 @@ namespace ChessMaker.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult AI(int? id)
+        public ActionResult AI(int? id, int? difficulty)
         {
             if (id == null)
             {
                 var model = new GameSetupModel();
                 model.Variants = ListVariants(true);
-                model.SelectAI = true;
+                model.Difficulties = ListAiDifficulties();
                 model.ConfirmText = "Play AI";
                 model.Heading = "Setup game vs AI";
                 model.SubmitAction = "CreateAI";
@@ -70,6 +72,7 @@ namespace ChessMaker.Controllers
             return View("PlayAI", version);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult CreateOnline(int variantSelect)
         {
@@ -94,9 +97,9 @@ namespace ChessMaker.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult CreateAI(int variantSelect)
+        public ActionResult CreateAI(int variantSelect, int aiSelect)
         {
-            return RedirectToAction("AI", new { id = variantSelect });
+            return RedirectToAction("AI", new { id = variantSelect, difficulty = aiSelect });
         }
 
         [AllowAnonymous]
@@ -115,6 +118,9 @@ namespace ChessMaker.Controllers
         private List<VariantSelectionModel> ListVariants(bool includePrivateVariants)
         {
             var variantList = new List<VariantSelectionModel>();
+
+            variantList.Add(new VariantSelectionModel() { Name = "Fake variant 1", VersionID = 1 });
+            variantList.Add(new VariantSelectionModel() { Name = "Fake variant 2", VersionID = 2 });
 
             var publicVariants = entities.Variants
                 .Where(v => v.PublicVersion != null)
@@ -151,6 +157,13 @@ namespace ChessMaker.Controllers
                 });
 
             return variantList;
+        }
+
+        private List<AIDifficultyModel> ListAiDifficulties()
+        {
+            var list = new List<AIDifficultyModel>();
+            list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random" });
+            return list;
         }
     }
 }

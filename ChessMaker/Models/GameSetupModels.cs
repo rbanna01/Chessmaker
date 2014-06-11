@@ -10,7 +10,7 @@ namespace ChessMaker.Models
     public class GameSetupModel
     {
         public List<VariantSelectionModel> Variants { get; set; }
-        public bool SelectAI { get; set; }
+        public List<AIDifficultyModel> Difficulties { get; set; }
         public bool PromptPlayerSelection { get; set; }
         public string Heading { get; set; }
         public string ConfirmText { get; set; }
@@ -27,5 +27,11 @@ namespace ChessMaker.Models
 
         //[Display(Name = "Players")]
         //public int NumPlayers { get; set; }
+    }
+
+    public class AIDifficultyModel
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
     }
 }
