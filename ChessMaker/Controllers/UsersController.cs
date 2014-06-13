@@ -13,21 +13,29 @@ namespace ChessMaker.Controllers
     {
         Entities entities = new Entities();
 
-        public ActionResult Index(int? id)
+        public ActionResult Index(string id)
+        {
+            return View(entities.Users.ToList());
+        }
+
+        public new ActionResult Profile(string id)
         {
             if (id == null)
-                return View(entities.Users.ToList());
-            
-            var selectedUser = entities.Users.Find(id);
+                return HttpNotFound();
+
+            var selectedUser = entities.Users.FirstOrDefault(u => u.Name == id);
             if (selectedUser == null)
                 return HttpNotFound();
 
-            return View("View", selectedUser);
+            return View(selectedUser);
         }
 
-        public ActionResult Variants(int id)
+        public ActionResult Variants(string id)
         {
-            var selectedUser = entities.Users.Find(id);
+            if (id == null)
+                return HttpNotFound();
+
+            var selectedUser = entities.Users.FirstOrDefault(u => u.Name == id);
             if (selectedUser == null)
                 return HttpNotFound();
 

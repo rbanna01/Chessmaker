@@ -361,7 +361,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Users\Index.cshtml" />
-    <Content Include="Views\Users\View.cshtml" />
+    <Content Include="Views\Users\Profile.cshtml" />
     <Content Include="Views\Game\PlayOnline.cshtml" />
     <Content Include="Views\Game\PlayOffline.cshtml" />
     <Content Include="Views\Game\PlayAI.cshtml" />

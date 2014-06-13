@@ -19,10 +19,10 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(user.ID.ToString(), "Index", new { id=user.ID })
+                @Html.DisplayFor(u => user.ID)
             </td>
             <td>
-                @Html.DisplayFor(u => user.Name)
+                @Html.ActionLink(user.Name, "Profile", new { id=user.Name })
             </td>
         </tr>
     }
