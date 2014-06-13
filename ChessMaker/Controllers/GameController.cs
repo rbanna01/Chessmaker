@@ -1,4 +1,5 @@
 ﻿using ChessMaker.Models;
+using ChessMaker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace ChessMaker.Controllers
         public ActionResult Host()
         {
             var model = new GameSetupModel();
-            model.Variants = ListVariants(true);
+            model.Variants = VariantService.ListVariants(User.Identity.Name, true);
             model.PromptPlayerSelection = true;
             model.ConfirmText = "Create game";
             model.Heading = "Host private game";
@@ -28,7 +29,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         public ActionResult Find()
         {
-            return View("FindGame", ListVariants(false));
+            return View("FindGame", VariantService.ListVariants(User.Identity.Name, false));
         }
 
         [AllowAnonymous]
@@ -37,7 +38,7 @@ namespace ChessMaker.Controllers
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = ListVariants(true);
+                model.Variants = VariantService.ListVariants(User.Identity.Name, true);
                 model.ConfirmText = "Play offline";
                 model.Heading = "Setup offline game";
                 model.SubmitAction = "CreateOffline";
@@ -57,8 +58,8 @@ namespace ChessMaker.Controllers
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = ListVariants(true);
-                model.Difficulties = ListAiDifficulties();
+                model.Variants = VariantService.ListVariants(User.Identity.Name, true);
+                model.Difficulties = VariantService.ListAiDifficulties();
                 model.ConfirmText = "Play AI";
                 model.Heading = "Setup game vs AI";
                 model.SubmitAction = "CreateAI";
@@ -113,46 +114,6 @@ namespace ChessMaker.Controllers
                 return View("Lobby", game);
 
             return View("PlayOnline", game);
-        }
-
-        private List<VariantSelectionModel> ListVariants(bool includePrivateVariants)
-        {
-            var variantList = new List<VariantSelectionModel>();
-
-            var publicVariants = entities.Variants
-                .Where(v => v.PublicVersion != null)
-                .OrderBy(v => v.Name)
-                .Select(v => v.PublicVersion);
-
-            foreach (var variant in publicVariants)
-                variantList.Add(new VariantSelectionModel(variant));
-
-            if (!includePrivateVariants)
-                return variantList;
-
-            var privateVariants = entities.VariantVersions
-                .Where(v => v.Variant.CreatedBy.Name == User.Identity.Name)
-                .OrderBy(v => v.VariantID)
-                .ThenBy(v => v.ID);
-
-            foreach (var version in privateVariants)
-            {
-                string customName = string.Format("{0} @ {1}{2}",
-                    version.Variant.Name,
-                    version.LastModified.ToString("d"),
-                    version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
-                );
-                variantList.Add(new VariantSelectionModel(version, customName));
-            }
-
-            return variantList;
-        }
-
-        private List<AIDifficultyModel> ListAiDifficulties()
-        {
-            var list = new List<AIDifficultyModel>();
-            list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random" });
-            return list;
         }
     }
 }
