@@ -1,0 +1,34 @@
+﻿@model ChessMaker.Models.UserVariantsModel
+
+@{
+    ViewBag.Title = "Variants";
+}
+
+<hgroup class="title">
+    <h1>Variants: @Model.UserName</h1>
+    <h2>Variants what they have made</h2>
+</hgroup>
+
+<article>
+@if (Model.IsCurrentUser)
+{
+    <p>To add a new variant, @Html.ActionLink("click here", "New", "Variants").</p>
+}
+    <table>
+    @foreach (var variant in Model.Variants)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(v => variant.Name)
+            </td>
+        </tr>
+    }
+    </table>
+</article>
+
+<aside>
+    <h3>Aside Title</h3>
+    <p>
+        Use this area to provide additional information.
+    </p>
+</aside>

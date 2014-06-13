@@ -19,6 +19,20 @@ namespace ChessMaker.Models
 
     public class VariantSelectionModel
     {
+        public VariantSelectionModel(VariantVersion version)
+        {
+            Name = version.Variant.Name;
+            VersionID = version.ID;
+        }
+
+        public VariantSelectionModel(VariantVersion version, string customName)
+            : this(version)
+        {
+            Name = customName;
+        }
+
+        public VariantSelectionModel() { }
+
         public string Name { get; set; }
         public int VersionID { get; set; }
 

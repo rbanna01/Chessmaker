@@ -119,21 +119,13 @@ namespace ChessMaker.Controllers
         {
             var variantList = new List<VariantSelectionModel>();
 
-            variantList.Add(new VariantSelectionModel() { Name = "Fake variant 1", VersionID = 1 });
-            variantList.Add(new VariantSelectionModel() { Name = "Fake variant 2", VersionID = 2 });
-
             var publicVariants = entities.Variants
                 .Where(v => v.PublicVersion != null)
-                .OrderBy(v => v.Name);
+                .OrderBy(v => v.Name)
+                .Select(v => v.PublicVersion);
 
             foreach (var variant in publicVariants)
-                variantList.Add(new VariantSelectionModel()
-                {
-                    Name = variant.Name,
-                    VersionID = variant.PublicVersionID.Value,
-                    //Author = variant.CreatedBy,
-                    //NumPlayers = variant.PlayerCount,
-                });
+                variantList.Add(new VariantSelectionModel(variant));
 
             if (!includePrivateVariants)
                 return variantList;
@@ -144,17 +136,14 @@ namespace ChessMaker.Controllers
                 .ThenBy(v => v.ID);
 
             foreach (var version in privateVariants)
-                variantList.Add(new VariantSelectionModel()
-                {
-                    Name = string.Format("{0} @ {1}{2}",
-                        version.Variant.Name,
-                        version.LastModified.ToString("d"),
-                        version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
-                    ),
-                    VersionID = version.ID,
-                    //Author = variant.CreatedBy,
-                    //NumPlayers = variant.PlayerCount,
-                });
+            {
+                string customName = string.Format("{0} @ {1}{2}",
+                    version.Variant.Name,
+                    version.LastModified.ToString("d"),
+                    version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
+                );
+                variantList.Add(new VariantSelectionModel(version, customName));
+            }
 
             return variantList;
         }
