@@ -1,7 +1,3 @@
-@{
-    var loginNeeded = User.Identity.IsAuthenticated ? null : new { @class = "disabled", title = "You can't do this without logging in first" };
-}
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,29 +9,8 @@
         @Scripts.Render("~/bundles/modernizr")
     </head>
     <body>
-        <header>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>
-                </div>
-                <div class="float-right">
-                    <section id="login">
-                        @Html.Partial("_LoginPartial")
-                    </section>
-                    <nav>
-                        <ul id="menu">
-                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("Find game", "Find", "Game", null, loginNeeded)</li>
-                            <li>@Html.ActionLink("Host game", "Host", "Game", null, loginNeeded)</li>
-                            <li>@Html.ActionLink("Local game", "Offline", "Game")</li>
-                            <li>@Html.ActionLink("Play AI", "AI", "Game")</li>
-                            <li>@Html.ActionLink("Variants", "", "Variants")</li>
-                            <li>@Html.ActionLink("Users", "", "Users")</li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
+        @Html.Partial("_MenuPartial")
+
         <div id="body">
             @RenderSection("featured", required: false)
             <section class="content-wrapper main-content clear-fix">

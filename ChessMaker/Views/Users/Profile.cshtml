@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "User";
+    var isCurrentUser = User.Identity.Name == Model.Name;
 }
 
 <hgroup class="title">
@@ -14,10 +15,12 @@
         To view variants created by this user, @Html.ActionLink("click here", "Variants", new { id = Model.Name }).
     </p>
 
+@if (isCurrentUser)
+{
     <p>
-        Use this area to provide additional information.
+        To change your password, @Html.ActionLink("click here", "Manage", "Account", null, null).
     </p>
-
+}
     <p>
         Use this area to provide additional information.
     </p>

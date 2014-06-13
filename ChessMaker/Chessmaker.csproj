@@ -357,7 +357,6 @@
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Users\Index.cshtml" />
@@ -369,6 +368,7 @@
     <Content Include="Views\Game\FindGame.cshtml" />
     <Content Include="Views\Variants\Index.cshtml" />
     <Content Include="Views\Users\Variants.cshtml" />
+    <Content Include="Views\Shared\_MenuPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
