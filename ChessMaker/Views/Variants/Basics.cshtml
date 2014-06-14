@@ -1,0 +1,31 @@
+﻿@model ChessMaker.Models.VariantBasicsModel
+
+@{
+    ViewBag.Title = "Basic Information";
+    var isNew = ViewContext.RouteData.Values["action"] == "New";
+    var submitAction = isNew ? "New" : "SaveBasics";
+    var submitText = isNew ? "Create" : "Update";
+    
+}
+
+<h2>Basic Information</h2>
+
+@using (Html.BeginForm(@submitAction, "Variants", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <legend>Basic information form</legend>
+        <ol>
+            <li>
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+
+                @Html.LabelFor(m => m.NumPlayers)
+                @Html.TextBoxFor(m => m.NumPlayers)
+            </li>
+        </ol>
+        <input type="submit" value="@submitText" />
+    </fieldset>
+}

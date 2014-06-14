@@ -32,8 +32,9 @@ namespace ChessMaker.Services
 
                 foreach (var version in privateVariants)
                 {
-                    string customName = string.Format("{0} @ {1}{2}",
+                    string customName = string.Format("{0} v{1} @ {2}{3}",
                         version.Variant.Name,
+                        version.Number,
                         version.LastModified.ToString("d"),
                         version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
                     );
@@ -49,23 +50,40 @@ namespace ChessMaker.Services
 
             using (Entities entities = new Entities())
             {
+                entities.Users.Attach(user);
                 if (isLoggedInUser)
                 {// for current user, use the most up-to-date version of each of their variants, and don't require the variant to be public
-                    var variants = user.Variants.Where(v => v.CreatedBy == user);
-                    foreach (var variant in variants)
+                    foreach (var variant in user.Variants)
                     {
-                        var version = entities.VariantVersions.Where(v => v.VariantID == variant.ID).OrderByDescending(v => v.LastModified).Single();
-                        versionList.Add(new VariantSelectionModel(version));
+                        var version = entities.VariantVersions.Where(v => v.VariantID == variant.ID).OrderByDescending(v => v.LastModified).SingleOrDefault();
+                        if (version != null)
+                            versionList.Add(new VariantSelectionModel(version));
                     }
                 }
                 else
                 {// if not current user, only look at public variants, and use the public version only
-                    var variantVersions = user.Variants.Where(v => v.CreatedBy == user && v.PublicVersionID.HasValue).Select(v => v.PublicVersion);
+                    var variantVersions = user.Variants.Where(v => v.PublicVersionID.HasValue).Select(v => v.PublicVersion);
                     foreach (var version in variantVersions)
                         versionList.Add(new VariantSelectionModel(version));
                 }
             }
             return versionList;
+        }
+
+        public static Variant CreateNewVariant(User user, VariantBasicsModel basics)
+        {
+            Variant v = new Variant();
+            v.CreatedByID = user.ID;
+            v.Name = basics.Name;
+            v.PlayerCount = (byte)basics.NumPlayers;
+
+            using (Entities entities = new Entities())
+            {
+                entities.Variants.Add(v);
+                entities.SaveChanges();
+            }
+
+            return v;
         }
 
         public static List<AIDifficultyModel> ListAiDifficulties()

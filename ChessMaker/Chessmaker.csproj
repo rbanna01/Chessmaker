@@ -193,6 +193,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\DesignerModels.cs" />
     <Compile Include="Models\GameSetupModels.cs" />
     <Compile Include="Models\Game.cs">
       <DependentUpon>Entities.tt</DependentUpon>
@@ -232,6 +233,7 @@
     </Compile>
     <Compile Include="Models\UserModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\VariantService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +371,7 @@
     <Content Include="Views\Variants\Index.cshtml" />
     <Content Include="Views\Users\Variants.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
+    <Content Include="Views\Variants\Basics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

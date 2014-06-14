@@ -11,11 +11,9 @@ namespace ChessMaker.Controllers
 {
     public class UsersController : Controller
     {
-        Entities entities = new Entities();
-
         public ActionResult Index(string id)
         {
-            return View(entities.Users.ToList());
+            return View(UserService.ListAll());
         }
 
         public new ActionResult Profile(string id)
@@ -23,7 +21,7 @@ namespace ChessMaker.Controllers
             if (id == null)
                 return HttpNotFound();
 
-            var selectedUser = entities.Users.FirstOrDefault(u => u.Name == id);
+            var selectedUser = UserService.GetByName(id);
             if (selectedUser == null)
                 return HttpNotFound();
 
@@ -35,7 +33,7 @@ namespace ChessMaker.Controllers
             if (id == null)
                 return HttpNotFound();
 
-            var selectedUser = entities.Users.FirstOrDefault(u => u.Name == id);
+            var selectedUser = UserService.GetByName(id);
             if (selectedUser == null)
                 return HttpNotFound();
 

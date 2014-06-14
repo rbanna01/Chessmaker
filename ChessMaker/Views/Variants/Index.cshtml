@@ -1,7 +1,32 @@
-﻿@{
+﻿@model IEnumerable<ChessMaker.Models.Variant>
+
+@{
     ViewBag.Title = "Index";
 }
 
 <h2>Variants</h2>
 
-This page to list popular variants or something. Also a link to the My Variants page, and a link to create a new one.
+This page ought to list popular variants or something.
+@if(Request.IsAuthenticated)
+{
+    @:Also a link to the @Html.ActionLink("My Variants", "Variants", "Users", new { id = User.Identity.Name }, null) page, and a link to @Html.ActionLink("create a new one", "New", "Variants").
+}
+else
+{
+    @:To create variants of your own, you will first need to @Html.ActionLink("log in", "Login", "Account").
+}
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+@foreach (var variant in Model)
+{
+    <tr>
+        <td>
+            @Html.Display(variant.Name)
+        </td>
+    </tr>
+}
+</table>
