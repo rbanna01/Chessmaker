@@ -9,11 +9,12 @@ using System.Web.Mvc;
 
 namespace ChessMaker.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         public ActionResult Index(string id)
         {
-            return View(UserService.ListAll());
+            UserService users = GetService<UserService>();
+            return View(users.ListAll());
         }
 
         public new ActionResult Profile(string id)
@@ -21,7 +22,8 @@ namespace ChessMaker.Controllers
             if (id == null)
                 return HttpNotFound();
 
-            var selectedUser = UserService.GetByName(id);
+            UserService users = GetService<UserService>();
+            var selectedUser = users.GetByName(id);
             if (selectedUser == null)
                 return HttpNotFound();
 
@@ -33,13 +35,16 @@ namespace ChessMaker.Controllers
             if (id == null)
                 return HttpNotFound();
 
-            var selectedUser = UserService.GetByName(id);
+            UserService users = GetService<UserService>();
+            var selectedUser = users.GetByName(id);
             if (selectedUser == null)
                 return HttpNotFound();
 
+            VariantService variants = GetService<VariantService>();
+
             var model = new UserVariantsModel() { UserName = selectedUser.Name };
             model.IsCurrentUser = Request.IsAuthenticated && selectedUser.Name == User.Identity.Name;
-            model.Variants = VariantService.ListUserVariants(selectedUser, model.IsCurrentUser);
+            model.Variants = variants.ListUserVariants(selectedUser, model.IsCurrentUser);
 
             return View(model);
         }

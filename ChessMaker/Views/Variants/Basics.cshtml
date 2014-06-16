@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Basic Information";
-    var isNew = ViewContext.RouteData.Values["action"] == "New";
+    var isNew = ViewContext.RouteData.Values["action"].ToString() == "New";
     var submitAction = isNew ? "New" : "SaveBasics";
     var submitText = isNew ? "Create" : "Update";
     
@@ -14,7 +14,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
-
+    
     <fieldset>
         <legend>Basic information form</legend>
         <ol>

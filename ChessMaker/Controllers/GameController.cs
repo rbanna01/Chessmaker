@@ -10,15 +10,15 @@ using WebMatrix.WebData;
 
 namespace ChessMaker.Controllers
 {
-    public class GameController : Controller
+    public class GameController : ControllerBase
     {
-        Entities entities = new Entities();
-        
         [Authorize]
         public ActionResult Host()
         {
+            VariantService service = GetService<VariantService>();
+
             var model = new GameSetupModel();
-            model.Variants = VariantService.ListVariants(User.Identity.Name, true);
+            model.Variants = service.ListVariants(User.Identity.Name, true);
             model.PromptPlayerSelection = true;
             model.ConfirmText = "Create game";
             model.Heading = "Host private game";
@@ -29,44 +29,61 @@ namespace ChessMaker.Controllers
         [Authorize]
         public ActionResult Find()
         {
-            return View("FindGame", VariantService.ListVariants(User.Identity.Name, false));
+            VariantService service = GetService<VariantService>();
+            return View("FindGame", service.ListVariants(User.Identity.Name, false));
         }
 
         [AllowAnonymous]
-        public ActionResult Offline(int? id)
+        public ActionResult Offline(int? id, int? version)
         {
+            VariantService service = GetService<VariantService>();
+
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = VariantService.ListVariants(User.Identity.Name, true);
+                model.Variants = service.ListVariants(User.Identity.Name, true);
                 model.ConfirmText = "Play offline";
                 model.Heading = "Setup offline game";
                 model.SubmitAction = "CreateOffline";
                 return View("SetupGame", model);
             }
 
-            var variant = entities.Variants.Find(id);
-            if (variant == null)
+            var variant = Entities().Variants.Find(id);
+            
+            if ( variant == null)
                 return HttpNotFound();
 
-            return View("PlayOffline", variant.PublicVersion);
+            VariantVersion versionToPlay;
+            if (version.HasValue && variant.CreatedBy.Name == User.Identity.Name)
+            {
+                versionToPlay = service.GetVersionNumber(variant, version.Value);
+            }
+            else
+                versionToPlay = variant.PublicVersion;
+
+            if (versionToPlay == null)
+                return HttpNotFound();
+
+            return View("PlayOffline", versionToPlay);
         }
 
         [AllowAnonymous]
         public ActionResult AI(int? id, int? difficulty)
         {
+            VariantService service = GetService<VariantService>();
+
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = VariantService.ListVariants(User.Identity.Name, true);
-                model.Difficulties = VariantService.ListAiDifficulties();
+                model.Variants = service.ListVariants(User.Identity.Name, true);
+                model.Difficulties = service.ListAiDifficulties();
                 model.ConfirmText = "Play AI";
                 model.Heading = "Setup game vs AI";
                 model.SubmitAction = "CreateAI";
                 return View("SetupGame", model);
             }
 
-            var version = entities.VariantVersions.Find(id);
+            var version = Entities().VariantVersions.Find(id);
             if (version == null)
                 return HttpNotFound();
 
@@ -77,14 +94,14 @@ namespace ChessMaker.Controllers
         [HttpPost]
         public ActionResult CreateOnline(int variantSelect)
         {
-            var version = entities.VariantVersions.Find(variantSelect);
+            var version = Entities().VariantVersions.Find(variantSelect);
             if (version == null)
                 return HttpNotFound();
 
             Game game = new Game();
             game.VariantVersion = version;
-            game.Status = entities.GameStatuses.First(s => s.Name == "Private setup");
-            entities.Games.Add(game);
+            game.Status = Entities().GameStatuses.First(s => s.Name == "Private setup");
+            Entities().Games.Add(game);
             
             return RedirectToAction("Index", new { id = game.ID});
         }
@@ -106,7 +123,7 @@ namespace ChessMaker.Controllers
         [AllowAnonymous]
         public ActionResult Index(int id)
         {
-            var game = entities.Games.Find(id);
+            var game = Entities().Games.Find(id);
             if (game == null)
                 return HttpNotFound();
 

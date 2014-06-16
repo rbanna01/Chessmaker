@@ -24,5 +24,16 @@ namespace ChessMaker
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AuthConfig.RegisterAuth();
         }
+
+        protected void Application_EndRequest()
+        {
+            foreach (var item in HttpContext.Current.Items.Values)
+            {
+                var disposable = item as IDisposable;
+
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+        }
     }
 }

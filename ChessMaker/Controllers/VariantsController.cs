@@ -8,13 +8,11 @@ using System.Web.Mvc;
 
 namespace ChessMaker.Controllers
 {
-    public class VariantsController : Controller
+    public class VariantsController : ControllerBase
     {
-        Entities entities = new Entities();
-
         public ActionResult Index()
         {
-            var variants = entities.Variants.Where(v => v.PublicVersionID.HasValue).ToList();
+            var variants = Entities().Variants.Where(v => v.PublicVersionID.HasValue).ToList();
             return View(variants);
         }
         
@@ -29,19 +27,21 @@ namespace ChessMaker.Controllers
         [HttpPost]
         public ActionResult New([Bind(Include = "Name,NumPlayers")] VariantBasicsModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var user = UserService.GetByName(User.Identity.Name);
-                var variant = VariantService.CreateNewVariant(user, model);
-                return RedirectToAction("Basics", new { variant.ID });
-            }
-            return RedirectToAction("New");
+            if (!ModelState.IsValid)
+                return RedirectToAction("New");
+
+            UserService users = GetService<UserService>();
+            VariantService variants = GetService<VariantService>();
+
+            var user = users.GetByName(User.Identity.Name);
+            var variant = variants.CreateNewVariant(user, model);
+            return RedirectToAction("Basics", new { variant.ID });
         }
 
         [Authorize]
         public ActionResult Basics(int id)
         {
-            var variant = entities.Variants.Find(id);
+            var variant = Entities().Variants.Find(id);
             if (variant == null)
                 return HttpNotFound();
 

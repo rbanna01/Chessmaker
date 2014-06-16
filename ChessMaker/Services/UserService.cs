@@ -6,22 +6,16 @@ using System.Web;
 
 namespace ChessMaker.Services
 {
-    public class UserService
+    public class UserService : ServiceBase
     {
-        public static User GetByName(string name)
+        public User GetByName(string name)
         {
-            using (Entities entities = new Entities())
-            {
-                return entities.Users.FirstOrDefault(u => u.Name == name);
-            }
+            return Entities.Users.FirstOrDefault(u => u.Name == name);
         }
 
-        internal static List<User> ListAll()
+        public List<User> ListAll()
         {
-            using (Entities entities = new Entities())
-            {
-                return entities.Users.ToList();
-            }
+            return Entities.Users.ToList();
         }
     }
 }
