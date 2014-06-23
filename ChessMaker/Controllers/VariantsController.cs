@@ -37,12 +37,27 @@ namespace ChessMaker.Controllers
 
             var user = users.GetByName(User.Identity.Name);
             var variant = variants.CreateNewVariant(user, model);
-            return RedirectToAction("Overview", new { variant.ID });
+            return RedirectToAction("Shape", new { variant.ID });
+        }
+
+        [Authorize]
+        public ActionResult Overview(int id)
+        {
+            var variant = Entities().Variants.Find(id);
+            if (variant == null)
+                return HttpNotFound();
+            
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            var model = new VariantOverviewModel(variant);
+            return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Update(int id, [Bind(Include = "Name,NumPlayers")] VariantOverviewModel model)
+        public ActionResult Overview(int id, [Bind(Include = "Name,NumPlayers")] VariantOverviewModel model)
         {
             var variant = Entities().Variants.Find(id);
             if (variant == null)
@@ -50,12 +65,9 @@ namespace ChessMaker.Controllers
 
             if (!ModelState.IsValid)
                 return RedirectToAction("Overview", new { id = id });
-            
-            UserService users = GetService<UserService>();
-            var user = users.GetByName(User.Identity.Name);
 
-            // check if this user is allowed to edit this variant
-            if (variant.CreatedByID != user.ID)
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
             // update the record
@@ -66,14 +78,58 @@ namespace ChessMaker.Controllers
         }
 
         [Authorize]
-        public ActionResult Overview(int id)
+        public ActionResult MakePublic(int id, int versionID)
         {
             var variant = Entities().Variants.Find(id);
             if (variant == null)
                 return HttpNotFound();
 
-            var model = new VariantOverviewModel(variant);
-            return View(model);
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            bool versionExists = variant.AllVersions.Where(v => v.ID == versionID).Count() > 0;
+            if (versionExists)
+            {
+                variant.PublicVersionID = versionID;
+                Entities().SaveChanges();
+            }
+
+            return RedirectToAction("Overview", new { id });
+        }
+
+        [Authorize]
+        public ActionResult MakePrivate(int id, int versionID)
+        {
+            var variant = Entities().Variants.Find(id);
+            if (variant == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            if (variant.PublicVersionID.HasValue && variant.PublicVersionID == versionID)
+            {
+                variant.PublicVersionID = null;
+                Entities().SaveChanges();
+            }
+
+            return RedirectToAction("Overview", new { id });
+        }
+
+        [Authorize]
+        public ActionResult Shape(int id)
+        {
+            var variant = Entities().Variants.Find(id);
+            if (variant == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            return View();
         }
     }
 }

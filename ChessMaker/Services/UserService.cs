@@ -17,5 +17,11 @@ namespace ChessMaker.Services
         {
             return Entities.Users.ToList();
         }
+
+        public bool IsAllowedToEdit(Variant variant, string userName)
+        {
+            var user = GetByName(userName);
+            return user != null && variant.CreatedByID == user.ID;
+        }
     }
 }

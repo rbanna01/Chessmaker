@@ -5,7 +5,7 @@
     var isNew = ViewContext.RouteData.Values["action"].ToString() == "New";
     var submitText = isNew ? "Create" : "Update";
     var submitRoute = isNew ? null : new { id = ViewData.Model.VariantID.Value };
-    var submitAction = isNew ? "New" : "Update";
+    var submitAction = isNew ? "New" : "Overview";
 
     var numPlayerAttributes = isNew ? null : new { @disabled = "disabled" };
 }
@@ -30,4 +30,26 @@
         </ol>
         <input type="submit" value="@submitText" />
     </fieldset>
+}
+
+@if (!isNew)
+{
+    @:<table>
+        <tr>
+            <th>Version</th>
+            <th>Public</th>
+        </tr>
+
+    foreach (var version in Model.Versions)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(version.Name, "Shape", new { id = Model.VariantID, versionID = version.VersionID })
+            </td>
+            <td>
+                @Html.ActionLink(version.IsPublic ? "Yes" : "No", version.IsPublic ? "MakePrivate" : "MakePublic", new { id = Model.VariantID, versionID = version.VersionID }, new { title = version.IsPublic ? "Stop this version from being public" : "Make this version public" })
+            </td>
+        </tr>
+    }
+    @:</table>
 }

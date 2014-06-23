@@ -1,0 +1,19 @@
+﻿@model ChessMaker.Models.VariantOverviewModel
+
+@{
+    ViewBag.Title = "Board Shape";
+}
+
+<h2>Board Shape</h2>
+
+@using (Html.BeginForm("Links", "Variants", "Shape", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    
+    <fieldset>
+        <legend>Board shape form</legend>
+        
+        <input type="submit" value="Continue" />
+    </fieldset>
+}

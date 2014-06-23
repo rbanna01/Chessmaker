@@ -384,6 +384,7 @@
     <Content Include="Views\Users\Variants.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Variants\Overview.cshtml" />
+    <Content Include="Views\Variants\Shape.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

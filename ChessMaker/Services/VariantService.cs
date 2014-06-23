@@ -31,10 +31,9 @@ namespace ChessMaker.Services
 
             foreach (var version in privateVariants)
             {
-                string customName = string.Format("{0} v{1} @ {2}{3}",
+                string customName = string.Format("{0} {1}{2}",
                     version.Variant.Name,
-                    version.Number,
-                    version.LastModified.ToString("d"),
+                    DescribeVersion(version),
                     version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
                 );
                 variantList.Add(new VariantSelectionModel(version, customName));
@@ -96,6 +95,11 @@ namespace ChessMaker.Services
         public VariantVersion GetVersionNumber(Variant variant, int versionID)
         {
             return variant.AllVersions.SingleOrDefault(v => v.Number == versionID);
+        }
+
+        public static string DescribeVersion(VariantVersion version)
+        {
+            return string.Format("v{0} @ {1}", version.Number, version.LastModified.ToString("d"));
         }
     }
 }
