@@ -383,7 +383,7 @@
     <Content Include="Views\Variants\Index.cshtml" />
     <Content Include="Views\Users\Variants.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
-    <Content Include="Views\Variants\Basics.cshtml" />
+    <Content Include="Views\Variants\Overview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

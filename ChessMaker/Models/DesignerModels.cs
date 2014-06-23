@@ -6,18 +6,21 @@ using System.Web;
 
 namespace ChessMaker.Models
 {
-    public class VariantBasicsModel
+    public class VariantOverviewModel
     {
-        public VariantBasicsModel(Variant v)
+        public VariantOverviewModel(Variant v)
         {
+            VariantID = v.ID;
             Name = v.Name;
             NumPlayers = v.PlayerCount;
         }
 
-        public VariantBasicsModel()
+        public VariantOverviewModel()
         {
             NumPlayers = 2;
         }
+
+        public int? VariantID { get; set; }
 
         [Required]
         public string Name { get; set; }

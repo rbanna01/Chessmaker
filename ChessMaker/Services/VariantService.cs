@@ -66,7 +66,7 @@ namespace ChessMaker.Services
             return versionList;
         }
 
-        public Variant CreateNewVariant(User user, VariantBasicsModel basics)
+        public Variant CreateNewVariant(User user, VariantOverviewModel basics)
         {
             var variant = new Variant();
             variant.CreatedByID = user.ID;

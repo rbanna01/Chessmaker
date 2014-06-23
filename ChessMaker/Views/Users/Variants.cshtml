@@ -19,7 +19,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(v => variant.Name)
+                @Html.ActionLink(variant.Name, "Overview", "Variants", new { id = variant.VersionID }, null)
             </td>
         </tr>
     }
