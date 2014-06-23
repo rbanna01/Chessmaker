@@ -26,7 +26,8 @@ namespace ChessMaker.Services
             var privateVariants = Entities.VariantVersions
                 .Where(v => v.Variant.CreatedBy.Name == currentUser)
                 .OrderBy(v => v.VariantID)
-                .ThenBy(v => v.ID);
+                .ThenBy(v => v.ID)
+                .ToList();
 
             foreach (var version in privateVariants)
             {
