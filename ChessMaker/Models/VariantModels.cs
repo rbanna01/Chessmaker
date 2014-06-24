@@ -7,9 +7,9 @@ using System.Web;
 
 namespace ChessMaker.Models
 {
-    public class VariantOverviewModel
+    public class VariantEditModel
     {
-        public VariantOverviewModel(Variant v)
+        public VariantEditModel(Variant v)
         {
             VariantID = v.ID;
             Name = v.Name;
@@ -21,7 +21,7 @@ namespace ChessMaker.Models
                 Versions.Add(new VersionSelectionModel(version, version.ID == v.PublicVersionID));
         }
 
-        public VariantOverviewModel()
+        public VariantEditModel()
         {
             NumPlayers = 2;
         }

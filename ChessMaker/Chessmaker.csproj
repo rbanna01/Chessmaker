@@ -384,7 +384,7 @@
     <Content Include="Views\Variants\Index.cshtml" />
     <Content Include="Views\Users\Variants.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
-    <Content Include="Views\Variants\Overview.cshtml" />
+    <Content Include="Views\Variants\Edit.cshtml" />
     <Content Include="Views\Designer\Shape.cshtml" />
   </ItemGroup>
   <ItemGroup>

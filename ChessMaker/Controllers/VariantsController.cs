@@ -22,13 +22,13 @@ namespace ChessMaker.Controllers
         [Authorize]
         public ActionResult New()
         {
-            var model = new VariantOverviewModel();
-            return View("Overview", model);
+            var model = new VariantEditModel();
+            return View("Edit", model);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult New([Bind(Include = "Name,NumPlayers")] VariantOverviewModel model)
+        public ActionResult New([Bind(Include = "Name,NumPlayers")] VariantEditModel model)
         {
             if (!ModelState.IsValid)
                 return RedirectToAction("New");
@@ -42,7 +42,7 @@ namespace ChessMaker.Controllers
         }
 
         [Authorize]
-        public ActionResult Overview(int id)
+        public ActionResult Edit(int id)
         {
             var variant = Entities().Variants.Find(id);
             if (variant == null)
@@ -52,20 +52,20 @@ namespace ChessMaker.Controllers
             if (!users.IsAllowedToEdit(variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            var model = new VariantOverviewModel(variant);
+            var model = new VariantEditModel(variant);
             return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Overview(int id, [Bind(Include = "Name,NumPlayers")] VariantOverviewModel model)
+        public ActionResult Edit(int id, [Bind(Include = "Name,NumPlayers")] VariantEditModel model)
         {
             var variant = Entities().Variants.Find(id);
             if (variant == null)
                 return HttpNotFound();
 
             if (!ModelState.IsValid)
-                return RedirectToAction("Overview", new { id = id });
+                return RedirectToAction("Edit", new { id = id });
 
             UserService users = GetService<UserService>();
             if (!users.IsAllowedToEdit(variant, User.Identity.Name))
@@ -75,7 +75,7 @@ namespace ChessMaker.Controllers
             variant.Name = model.Name;
             Entities().SaveChanges();
 
-            return RedirectToAction("Overview", new { id });
+            return RedirectToAction("Edit", new { id });
         }
 
         [Authorize]
@@ -96,7 +96,7 @@ namespace ChessMaker.Controllers
                 Entities().SaveChanges();
             }
 
-            return RedirectToAction("Overview", new { id });
+            return RedirectToAction("Edit", new { id });
         }
 
         [Authorize]
@@ -116,7 +116,7 @@ namespace ChessMaker.Controllers
                 Entities().SaveChanges();
             }
 
-            return RedirectToAction("Overview", new { id });
+            return RedirectToAction("Edit", new { id });
         }
     }
 }
