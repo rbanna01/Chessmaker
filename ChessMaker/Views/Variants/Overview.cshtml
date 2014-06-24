@@ -44,7 +44,7 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(version.Name, "Shape", new { id = Model.VariantID, versionID = version.VersionID })
+                @Html.ActionLink(version.Name, "Shape", "Designer", new { id = Model.VariantID, versionID = version.VersionID }, null)
             </td>
             <td>
                 @Html.ActionLink(version.IsPublic ? "Yes" : "No", version.IsPublic ? "MakePrivate" : "MakePublic", new { id = Model.VariantID, versionID = version.VersionID }, new { title = version.IsPublic ? "Stop this version from being public" : "Make this version public" })

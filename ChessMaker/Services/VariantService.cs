@@ -8,7 +8,7 @@ namespace ChessMaker.Services
 {
     public class VariantService : ServiceBase
     {
-        public List<VariantSelectionModel> ListVariants(string currentUser, bool includePrivateVariants)
+        public List<VariantSelectionModel> ListPlayableVersions(string currentUser, bool includePrivateVariants)
         {
             var variantList = new List<VariantSelectionModel>();
 
@@ -38,6 +38,21 @@ namespace ChessMaker.Services
                 );
                 variantList.Add(new VariantSelectionModel(version, customName));
             }
+
+            return variantList;
+        }
+
+        public List<VariantListModel> ListVariants(string currentUser)
+        {
+            var variantList = new List<VariantListModel>();
+
+            var variants = Entities.Variants
+                .Where(v => v.PublicVersion != null || v.CreatedBy.Name == currentUser)
+                .OrderBy(v => v.Name)
+                .ToList();
+
+            foreach (var variant in variants)
+                variantList.Add(new VariantListModel(variant));
 
             return variantList;
         }

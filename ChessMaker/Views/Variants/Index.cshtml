@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ChessMaker.Models.Variant>
+﻿@model IEnumerable<ChessMaker.Models.VariantListModel>
 
 @{
     ViewBag.Title = "Index";
@@ -18,14 +18,17 @@ else
 
 <table>
     <tr>
-        <th>ID</th>
         <th>Name</th>
+        <th></th>
     </tr>
 @foreach (var variant in Model)
 {
     <tr>
         <td>
-            @Html.Display(variant.Name)
+            @variant.Name
+        </td>
+        <td>
+            @(variant.IsPublic ? "Public" : "Private")
         </td>
     </tr>
 }

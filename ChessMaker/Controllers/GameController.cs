@@ -18,7 +18,7 @@ namespace ChessMaker.Controllers
             VariantService service = GetService<VariantService>();
 
             var model = new GameSetupModel();
-            model.Variants = service.ListVariants(User.Identity.Name, true);
+            model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
             model.PromptPlayerSelection = true;
             model.ConfirmText = "Create game";
             model.Heading = "Host private game";
@@ -30,7 +30,7 @@ namespace ChessMaker.Controllers
         public ActionResult Find()
         {
             VariantService service = GetService<VariantService>();
-            return View("FindGame", service.ListVariants(User.Identity.Name, false));
+            return View("FindGame", service.ListPlayableVersions(User.Identity.Name, false));
         }
 
         [AllowAnonymous]
@@ -41,7 +41,7 @@ namespace ChessMaker.Controllers
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = service.ListVariants(User.Identity.Name, true);
+                model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
                 model.ConfirmText = "Play offline";
                 model.Heading = "Setup offline game";
                 model.SubmitAction = "CreateOffline";
@@ -75,7 +75,7 @@ namespace ChessMaker.Controllers
             if (id == null)
             {
                 var model = new GameSetupModel();
-                model.Variants = service.ListVariants(User.Identity.Name, true);
+                model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
                 model.Difficulties = service.ListAiDifficulties();
                 model.ConfirmText = "Play AI";
                 model.Heading = "Setup game vs AI";

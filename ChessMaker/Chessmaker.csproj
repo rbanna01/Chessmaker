@@ -187,6 +187,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\DesignerController.cs" />
     <Compile Include="Controllers\GameController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,7 +205,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\DesignerModels.cs" />
+    <Compile Include="Models\VariantModels.cs" />
     <Compile Include="Models\GameSetupModels.cs" />
     <Compile Include="Models\Game.cs">
       <DependentUpon>Entities.tt</DependentUpon>
@@ -384,7 +385,7 @@
     <Content Include="Views\Users\Variants.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Variants\Overview.cshtml" />
-    <Content Include="Views\Variants\Shape.cshtml" />
+    <Content Include="Views\Designer\Shape.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

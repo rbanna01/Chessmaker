@@ -52,4 +52,18 @@ namespace ChessMaker.Models
         public int VersionID { get; set; }
         public bool IsPublic { get; set; }
     }
+
+    public class VariantListModel
+    {
+        public VariantListModel(Variant variant)
+        {
+            Name = variant.Name;
+            ID = variant.ID;
+            IsPublic = variant.PublicVersionID.HasValue;
+        }
+
+        public string Name { get; set; }
+        public int ID { get; set; }
+        public bool IsPublic { get; set; }
+    }
 }

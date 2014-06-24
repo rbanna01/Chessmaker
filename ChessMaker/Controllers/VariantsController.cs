@@ -14,7 +14,8 @@ namespace ChessMaker.Controllers
     {
         public ActionResult Index()
         {
-            var variants = Entities().Variants.Where(v => v.PublicVersionID.HasValue).ToList();
+            VariantService service = GetService<VariantService>();
+            var variants = service.ListVariants(User.Identity.Name);
             return View(variants);
         }
         
@@ -116,20 +117,6 @@ namespace ChessMaker.Controllers
             }
 
             return RedirectToAction("Overview", new { id });
-        }
-
-        [Authorize]
-        public ActionResult Shape(int id)
-        {
-            var variant = Entities().Variants.Find(id);
-            if (variant == null)
-                return HttpNotFound();
-
-            UserService users = GetService<UserService>();
-            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
-                return new HttpUnauthorizedResult();
-
-            return View();
         }
     }
 }
