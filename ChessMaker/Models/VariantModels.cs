@@ -16,9 +16,6 @@ namespace ChessMaker.Models
             NumPlayers = v.PlayerCount;
 
             Versions = new List<VersionSelectionModel>();
-            var versions = v.AllVersions.OrderByDescending(x => x.Number);
-            foreach (var version in versions)
-                Versions.Add(new VersionSelectionModel(version, version.ID == v.PublicVersionID));
         }
 
         public VariantEditModel()
@@ -41,16 +38,18 @@ namespace ChessMaker.Models
 
     public class VersionSelectionModel
     {
-        public VersionSelectionModel(VariantVersion version, bool isPublic)
+        public VersionSelectionModel(VariantVersion version, bool isPublic, bool canDelete)
         {
             Name = VariantService.DescribeVersion(version);
             VersionID = version.ID;
             IsPublic = isPublic;
+            CanDelete = canDelete;
         }
 
         public string Name { get; set; }
         public int VersionID { get; set; }
         public bool IsPublic { get; set; }
+        public bool CanDelete { get; set; }
     }
 
     public class VariantListModel

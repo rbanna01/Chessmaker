@@ -116,5 +116,39 @@ namespace ChessMaker.Services
         {
             return string.Format("v{0} @ {1}", version.Number, version.LastModified.ToString("d"));
         }
+
+        public VariantVersion CreateNewVersion(VariantVersion version)
+        {
+            var newestVersion = version.Variant.AllVersions.OrderByDescending(v => v.Number).FirstOrDefault();
+            int versionNum = newestVersion == null ? 1 : newestVersion.Number + 1;
+
+            var newVersion = Entities.Entry(version).GetDatabaseValues().ToObject() as VariantVersion;
+            newVersion.LastModified = DateTime.Now;
+            newVersion.Number = (short)versionNum;
+            Entities.VariantVersions.Add(newVersion);
+            Entities.SaveChanges();
+
+            return newVersion;
+        }
+
+        public bool CanDelete(VariantVersion version)
+        {
+            // versions can be deleted only if they are associated with no games at all, active or otherwise.
+            // public versions can not be deleted.
+            return !version.Games.Any()
+                && (!version.Variant.PublicVersionID.HasValue || version.Variant.PublicVersionID != version.ID)
+                && version.Variant.AllVersions.Count > 1;
+        }
+
+        public VariantEditModel CreateEditModel(Variant variant)
+        {
+            var model = new VariantEditModel(variant);
+
+            var versions = variant.AllVersions.OrderByDescending(x => x.Number);
+            foreach (var version in versions)
+                model.Versions.Add(new VersionSelectionModel(version, version.ID == variant.PublicVersionID, CanDelete(version)));
+
+            return model;
+        }
     }
 }

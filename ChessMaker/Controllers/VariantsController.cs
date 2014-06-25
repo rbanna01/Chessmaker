@@ -52,7 +52,8 @@ namespace ChessMaker.Controllers
             if (!users.IsAllowedToEdit(variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            var model = new VariantEditModel(variant);
+            VariantService variants = GetService<VariantService>();
+            var model = variants.CreateEditModel(variant);
             return View(model);
         }
 
@@ -75,48 +76,84 @@ namespace ChessMaker.Controllers
             variant.Name = model.Name;
             Entities().SaveChanges();
 
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new { id = id });
         }
 
         [Authorize]
-        public ActionResult MakePublic(int id, int versionID)
+        public ActionResult CopyVersion(int id)
         {
-            var variant = Entities().Variants.Find(id);
-            if (variant == null)
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
                 return HttpNotFound();
 
             UserService users = GetService<UserService>();
-            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            bool versionExists = variant.AllVersions.Where(v => v.ID == versionID).Count() > 0;
-            if (versionExists)
-            {
-                variant.PublicVersionID = versionID;
-                Entities().SaveChanges();
-            }
+            VariantService variants = GetService<VariantService>();
+            var newVersion = variants.CreateNewVersion(version);
 
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Shape", "Designer", new { id = newVersion.ID });
         }
 
         [Authorize]
-        public ActionResult MakePrivate(int id, int versionID)
+        public ActionResult DeleteVersion(int id)
         {
-            var variant = Entities().Variants.Find(id);
-            if (variant == null)
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
                 return HttpNotFound();
 
             UserService users = GetService<UserService>();
-            if (!users.IsAllowedToEdit(variant, User.Identity.Name))
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            if (variant.PublicVersionID.HasValue && variant.PublicVersionID == versionID)
+            int variantID = version.VariantID;
+
+            VariantService variants = GetService<VariantService>();
+            if (!variants.CanDelete(version))
+                return new HttpUnauthorizedResult();
+
+            Entities().VariantVersions.Remove(version);
+            Entities().SaveChanges();
+
+            return RedirectToAction("Edit", new { id = variantID });
+        }
+
+        [Authorize]
+        public ActionResult MakePublic(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            version.Variant.PublicVersionID = id;
+            Entities().SaveChanges();
+
+            return RedirectToAction("Edit", new { id = version.VariantID });
+        }
+
+        [Authorize]
+        public ActionResult MakePrivate(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+            
+            if (version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == id)
             {
-                variant.PublicVersionID = null;
+                version.Variant.PublicVersionID = null;
                 Entities().SaveChanges();
             }
 
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new { id = version.VariantID });
         }
     }
 }

@@ -38,16 +38,23 @@
         <tr>
             <th>Version</th>
             <th>Public</th>
+            <th></th>
         </tr>
 
     foreach (var version in Model.Versions)
     {
         <tr>
             <td>
-                @Html.ActionLink(version.Name, "Shape", "Designer", new { id = Model.VariantID, versionID = version.VersionID }, null)
+                @Html.ActionLink(version.Name, "CopyVersion", new { id = version.VersionID }, new { title = "Click to create & edit a copy of this version" })
             </td>
             <td>
-                @Html.ActionLink(version.IsPublic ? "Yes" : "No", version.IsPublic ? "MakePrivate" : "MakePublic", new { id = Model.VariantID, versionID = version.VersionID }, new { title = version.IsPublic ? "Stop this version from being public" : "Make this version public" })
+                @Html.ActionLink(version.IsPublic ? "Yes" : "No", version.IsPublic ? "MakePrivate" : "MakePublic", new { id = version.VersionID }, new { title = version.IsPublic ? "Stop this version from being public" : "Make this version public" })
+            </td>
+            <td>
+                @if (version.CanDelete)
+                {
+                    @Html.ActionLink("delete", "DeleteVersion", new { id = version.VersionID }, new { title = "Click to permanently delete this version" })
+                }
             </td>
         </tr>
     }
