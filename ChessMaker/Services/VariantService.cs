@@ -65,7 +65,7 @@ namespace ChessMaker.Services
             {// for current user, use the most up-to-date version of each of their variants, and don't require the variant to be public
                 foreach (var variant in user.Variants)
                 {
-                    var version = Entities.VariantVersions.Where(v => v.VariantID == variant.ID).OrderByDescending(v => v.LastModified).SingleOrDefault();
+                    var version = Entities.VariantVersions.Where(v => v.VariantID == variant.ID).OrderByDescending(v => v.LastModified).FirstOrDefault();
                     if (version != null)
                         versionList.Add(new VariantSelectionModel(version));
                 }
