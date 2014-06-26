@@ -1,3 +1,6 @@
+@{
+    bool minimalLayout = @ViewBag.MinimalLayout != null && @ViewBag.MinimalLayout;
+}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -29,7 +32,7 @@
             <section class="content-wrapper main-content clear-fix">
                 @if (!IsSectionDefined("featured"))
                 {
-                    if ((@ViewBag.HideTitle == null || !@ViewBag.HideTitle) && !string.IsNullOrEmpty(@ViewBag.Title))
+                    if (!minimalLayout && !string.IsNullOrEmpty(@ViewBag.Title))
                     {
                         <hgroup class="title">
                             <h1>@ViewBag.Title</h1>
@@ -56,14 +59,16 @@
                 }
             </section>
         </div>
-        <footer>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p>&copy; @DateTime.Now.Year - Chessmaker</p>
+        @if (!minimalLayout)
+        {
+            <footer>
+                <div class="content-wrapper">
+                    <div class="float-left">
+                        <p>&copy; @DateTime.Now.Year - Chessmaker</p>
+                    </div>
                 </div>
-            </div>
-        </footer>
-
+            </footer>
+        }
         @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)
     </body>
