@@ -5,9 +5,6 @@
     var variantOptions = new SelectList(Model.Variants, "VersionID", "Name");
 }
 
-<h2>@Model.Heading</h2>
-
-
 @using (Html.BeginForm(@Model.SubmitAction, "Game")) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()

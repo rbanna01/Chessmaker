@@ -1,19 +1,14 @@
 ﻿@model ChessMaker.Models.User
 
 @{
-    ViewBag.Title = "User";
+    ViewBag.Title = "User: " + Model.Name;
+    ViewBag.Message = "A lovely user";
     var isCurrentUser = User.Identity.Name == Model.Name;
 }
 
-<hgroup class="title">
-    <h1>User: @Model.Name</h1>
-    <h2>A lovely user</h2>
-</hgroup>
-
-<article>
-    <p>
-        To view variants created by this user, @Html.ActionLink("click here", "Variants", new { id = Model.Name }).
-    </p>
+<p>
+    To view variants created by this user, @Html.ActionLink("click here", "Variants", new { id = Model.Name }).
+</p>
 
 @if (isCurrentUser)
 {
@@ -21,12 +16,11 @@
         To change your password, @Html.ActionLink("click here", "Manage", "Account", null, null).
     </p>
 }
-    <p>
-        Use this area to provide additional information.
-    </p>
-</article>
+<p>
+    Use this area to provide additional information.
+</p>
 
-<aside>
+@section aside {
     <h3>Aside Title</h3>
     <p>
         Use this area to provide additional information.
@@ -36,4 +30,4 @@
         <li>@Html.ActionLink("About", "About", "Home")</li>
         <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
     </ul>
-</aside>
+}

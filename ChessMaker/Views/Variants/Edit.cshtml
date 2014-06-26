@@ -1,7 +1,7 @@
 ﻿@model ChessMaker.Models.VariantEditModel
 
 @{
-    ViewBag.Title = "Variant";
+    ViewBag.Title = "Variant: " + Model.Name;
     var isNew = ViewContext.RouteData.Values["action"].ToString() == "New";
     var submitText = isNew ? "Create" : "Update";
     var submitRoute = isNew ? null : new { id = ViewData.Model.VariantID.Value };
@@ -9,8 +9,6 @@
 
     var numPlayerAttributes = isNew ? null : new { @disabled = "disabled" };
 }
-
-<h2>Variant</h2>
 
 @using (Html.BeginForm(@submitAction, "Variants", submitRoute, FormMethod.Post))
 {
