@@ -11,7 +11,7 @@
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
     </head>
-    <body>
+    <body class="@(minimalLayout ? "compact" : "")">
         @Html.Partial("_MenuPartial")
 
         <div id="body">

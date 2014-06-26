@@ -3,6 +3,7 @@
         <div class="float-left">
             <p class="site-title">@Html.ActionLink("Chessmaker", "Index", "Home")</p>
         </div>
+        <div id="menu-toggle">Menu</div>
         <div class="float-right">
             <nav>
                 <ul id="menu">
@@ -27,7 +28,7 @@ else
                     <li>
                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
                         @Html.AntiForgeryToken()
-                        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                        <a href="javascript:document.getElementById('logoutForm').submit()">Log&nbsp;off</a>
                     }
                     </li>
 }
