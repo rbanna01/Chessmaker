@@ -22,6 +22,7 @@ namespace ChessMaker.Models
         public VariantSelectionModel(VariantVersion version)
         {
             Name = version.Variant.Name;
+            VariantID = version.VariantID;
             VersionID = version.ID;
         }
 
@@ -34,6 +35,7 @@ namespace ChessMaker.Models
         public VariantSelectionModel() { }
 
         public string Name { get; set; }
+        public int VariantID { get; set; }
         public int VersionID { get; set; }
 
         //public string Author { get; set; }
