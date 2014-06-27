@@ -1,19 +1,143 @@
-﻿@model ChessMaker.Models.VariantEditModel
+﻿@model ChessMaker.Models.BoardShapeModel
 
 @{
-    ViewBag.Title = "Board Shape";
+    ViewBag.Title = "'" + Model.VariantName + "' board shape";
 }
 
-<h2>Board Shape</h2>
+<div id="board">
+    <svg id="render" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>
+</div>
 
-@using (Html.BeginForm("Links", "Variants", "Shape", FormMethod.Post))
+<div class="toolbox">
+    <h3>Add board elements</h3>
+    <span class="button addItem square">Square</span>
+    <span class="button addItem squares">Squares</span>
+    <span class="button addItem hex">Hex</span>
+    <span class="button addItem hexes">Hexes</span>
+    <span class="button addItem triangle">Triangle</span>
+    <span class="button addItem triangles">Triangles</span>
+    <span class="button addItem line">Line</span>
+    <span class="button addItem circle">Circle</span>
+</div>
+
+<div class="itemProperties">
+    <h3>Edit selected element</h3>
+
+	<div class="arrowKeys">
+		<div class="button" id="moveUp">move up</div>
+		<div class="button" id="moveDown">move down</div>
+		<div class="button" id="moveLeft">move left</div>
+		<div class="button" id="moveRight">move right</div>
+
+		<div class="button" id="moveUpFast">fast up</div>
+		<div class="button" id="moveDownFast">fast down</div>
+		<div class="button" id="moveLeftFast">fast left</div>
+		<div class="button" id="moveRightFast">fast right</div>
+		
+		<div class="button" id="rotateCW">rotate clockwise</div>
+		<div class="button" id="rotateCCW">rotate anticlockwise</div>
+	
+		<div class="button" id="copy">copy selection</div>
+		<div class="button" id="deleteCell">delete selection</div>
+	</div>
+	
+    <div class="color">
+        <input type="radio" id="light" name="color" checked="checked" /><label for="light">Light</label>
+        <input type="radio" id="mid" name="color" /><label for="mid">Mid</label>
+        <input type="radio" id="dark" name="color" /><label for="dark">Dark</label>
+    </div>
+</div>
+
+<div id="addSquares" class="popup" title="Add squares">
+	<label for="sqWidth">Width</label>
+	<input type="text" id="sqWidth" value="8" class="text ui-widget-content" />
+	<label for="sqHeight">Height</label>
+	<input type="text" id="sqHeight" value="8" class="text ui-widget-content ui-corner-all" />
+	<label for="sqPattern">Pattern</label>
+	<select id="sqPattern" class="ui-widget-content">
+		<option value="1">All light</option>
+		<option value="2">All mid</option>
+		<option value="3">All dark</option>
+		<option value="4" selected="selected">Light/dark</option>
+		<option value="5">Light/mid</option>
+		<option value="6">Mid/dark</option>
+	</select>
+</div>
+
+<div id="addHexes" class="popup" title="Add hexes">
+	<label for="hexLength">Length</label>
+	<input type="text" id="hexLength" value="3" class="text ui-widget-content" />
+	<label for="hexPattern">Pattern</label>
+	<select id="hexPattern" class="ui-widget-content">
+		<option value="1">All light</option>
+		<option value="2">All mid</option>
+		<option value="3">All dark</option>
+		<option value="7" selected="selected">Light/mid/dark</option>
+	</select>
+</div>
+
+<div id="addTriangles" class="popup" title="Add triangles">
+	<label for="triLength">Length</label>
+	<input type="text" id="triLength" value="5" class="text ui-widget-content" />
+	<label for="triPattern">Pattern</label>
+	<select id="triPattern" class="ui-widget-content">
+		<option value="1">All light</option>
+		<option value="2">All mid</option>
+		<option value="3">All dark</option>
+		<option value="4" selected="selected">Light/dark</option>
+		<option value="5">Light/mid</option>
+		<option value="6">Mid/dark</option>
+	</select>
+</div>
+
+<div id="addCircle" class="popup" title="Add circle / ring / wedge / arch">
+	<label for="cirRadius">Radius</label>
+	<input type="text" id="cirRadius" value="4" class="text ui-widget-content" />
+	<label for="cirRadiusInner">Inner radius</label>
+	<input type="text" id="cirRadiusInner" value="0" class="text ui-widget-content" />
+	<label for="cirSlicesTot">Slices (total circle)</label>
+	<input type="text" id="cirSlicesTot" value="8" class="text ui-widget-content" />
+	<label for="cirSlicesAct">Slices (actual)</label>
+	<input type="text" id="cirSlicesAct" value="8" class="text ui-widget-content" />
+	<label for="cirPattern">Pattern</label>
+	<select id="cirPattern" class="ui-widget-content">
+		<option value="1">All light</option>
+		<option value="2">All mid</option>
+		<option value="3">All dark</option>
+		<option value="4" selected="selected">Light/dark</option>
+		<option value="5">Light/mid</option>
+		<option value="6">Mid/dark</option>
+	</select>
+</div>
+
+@using (Html.BeginForm("Shape", "Designer", FormMethod.Post, new { id = "shapeForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
-    
-    <fieldset>
-        <legend>Board shape form</legend>
-        
-        <input type="submit" value="Continue" />
-    </fieldset>
+
+    @Html.Hidden("data", Model.SvgData, new { id = "data" });
+
+    <input type="submit" name="next" id="submitShape" value="Shape" />
+    <input type="submit" name="next" id="submitLinks" value="Links" />
+    <input type="submit" name="next" id="submitPieces" value="Pieces" />
+    <input type="submit" name="next" id="submitLayout" value="Layout" />
+    <input type="submit" name="next" id="submitRules" value="Rules" />
+    <input type="submit" name="next" id="submitDone" value="Done" />
+}
+
+@section actions {
+    <button onclick="$('#submitShape').click();" title="board shape" class="current">Shape</button>
+    <button onclick="$('#submitLinks').click();" title="links between cells">Links</button>
+    <button onclick="$('#submitPieces').click();" title="piece definitions">Pieces</button>
+    <button onclick="$('#submitLayout').click();" title="starting piece layout">Layout</button>
+    <button onclick="$('#submitRules').click();" title="game rules">Rules</button>
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Done</button>
+}
+
+@section css {
+    @Styles.Render("~/Content/designer", "~/Content/themes/base/css");
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryui", "~/bundles/designer")
 }

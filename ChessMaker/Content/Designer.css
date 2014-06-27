@@ -1,0 +1,150 @@
+form {
+    display:none;
+}
+
+#board {
+    position: absolute;
+    left: 216px;
+    right: 0px;
+    top: 240px;
+    bottom: 0px;
+}
+
+#render {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navigation {
+    background-color: grey;
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    height:48px;
+}
+
+.toolbox {
+    background-color:darkgray;
+    position:absolute;
+    left:0px;
+    width:200px;
+    top:240px;
+    bottom:250px;
+}
+
+.itemProperties {
+    background-color:slategray;
+    position:absolute;
+    left:0px;
+    width:200px;
+    height:250px;
+    bottom:0px;
+}
+		
+.itemProperties .arrowKeys {
+	position:relative;
+	left:-6px;
+	width:210;
+	height:168px;
+}
+		
+.itemProperties .arrowKeys .button {
+	position:absolute;
+}
+
+#moveUpFast {
+	top:0px; left:84px;
+}
+		
+#moveUp {
+	top:42px; left:84px;
+}
+		
+#moveDown {
+	top:84px; left:84px;
+}
+		
+#moveDownFast {
+	top:126px; left:84px;
+}
+		
+#moveLeftFast {
+	top:63px; left:0px;
+}
+		
+#moveLeft {
+	top:63px; left:42px;
+}
+		
+#moveRight {
+	top:63px; left:126px;
+}
+		
+#moveRightFast {
+	top:63px; left:168px;
+}
+		
+#rotateCCW {
+	top:21px; left:42px;
+}
+		
+#rotateCW {
+	top:21px; left:126px;
+}
+		
+#deleteCell {
+	top:105px; left:42px;
+}
+		
+#copy {
+	top:105px; left:126px;
+}
+		
+.navigation, .toolbox, .itemProperties {
+    padding: 8px;
+}
+
+.toolbox .button.addItem {
+    width:92px;
+    font-size:16px;
+}
+
+.toolbox .button.addItem .ui-button-text, .itemProperties .color .ui-button-text {
+    padding: .4em;
+}
+
+.heading {
+    font-size:22px;
+    text-align:center;
+    padding-top:8px;
+}
+
+.navigation .heading {
+    font-size:28px;
+}
+
+#render .cell.light {
+    fill:white;
+}
+		
+#render .cell.dark {
+    fill:black;
+}
+		
+#render .cell.mid {
+    fill:gray;
+}
+		
+#render .selected {
+	opacity:0.7;
+}
+		
+.popup label, .popup input {
+	display:block;
+}
+		
+.popup input.text {
+	margin-bottom:12px; width:95%; padding: .4em;
+}

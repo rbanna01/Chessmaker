@@ -1,4 +1,4 @@
-@{
+﻿@{
     bool minimalLayout = @ViewBag.MinimalLayout != null && @ViewBag.MinimalLayout;
 }
 <!DOCTYPE html>
@@ -12,6 +12,7 @@
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
+        @RenderSection("css", required: false)
     </head>
     <body>
         <header class="app-bar promote-layer">
