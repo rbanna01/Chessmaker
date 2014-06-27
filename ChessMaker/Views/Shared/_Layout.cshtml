@@ -4,68 +4,64 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="msapplication-tap-highlight" content="no">
         <title>@ViewBag.Title - Chessmaker</title>
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-        <meta name="viewport" content="width=device-width" />
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
     </head>
-    <body class="@(minimalLayout ? "compact" : "")">
-        @Html.Partial("_MenuPartial")
+    <body>
+        <header class="app-bar promote-layer">
+          <button class="menu"><img src="@Url.Content("~/Images/hamburger.png")"></button>
 
-        <div id="body">
-            @if (IsSectionDefined("featured"))
-            {
-                <section class="featured">
-                    <div class="content-wrapper">
-                        <hgroup class="title">
-                            <h1>@ViewBag.Title.</h1>
-                            <h2>@ViewBag.Message</h2>
-                        </hgroup>
-
-                        @RenderSection("featured")
-                    </div>
-                </section>
-            }
-
-            <section class="content-wrapper main-content clear-fix">
-                @if (!IsSectionDefined("featured"))
-                {
-                    if (!minimalLayout && !string.IsNullOrEmpty(@ViewBag.Title))
-                    {
-                        <hgroup class="title">
-                            <h1>@ViewBag.Title</h1>
-                    
-                            @if (!string.IsNullOrEmpty(@ViewBag.Message))
-                            {
-                                <h2>@ViewBag.Message</h2>
-                            }
-                        </hgroup>
-                    }
-                }
-                @if (IsSectionDefined("aside"))
-                {
-                    <article>
-                        @RenderBody()
-                    </article>
-                    <aside>
-                        @RenderSection("aside")
-                    </aside>
-                }
-                else
-                {
-                    @RenderBody()
-                }
-            </section>
+          <h1 class="logo">@Html.ActionLink("Chessmaker", "Index", "Home")</h1>
+      
+          @if (IsSectionDefined("actions")) {
+              <section class="app-bar-actions">
+                  @RenderSection("actions")
+              </section>
+          }
+        </header>
+        
+        <div class="navdrawer promote-layer">
+            @Html.Partial("_MenuPartial")
         </div>
+
+        <section class="main-content">
+            @if (!minimalLayout && !string.IsNullOrEmpty(@ViewBag.Title))
+            {
+                <hgroup class="title">
+                    <h2>@ViewBag.Title</h2>
+                    
+                    @if (!string.IsNullOrEmpty(@ViewBag.Message))
+                    {
+                        <h3>@ViewBag.Message</h3>
+                    }
+                </hgroup>
+            }
+            @if (IsSectionDefined("aside"))
+            {
+                <article>
+                    @RenderBody()
+                </article>
+                <aside>
+                    @RenderSection("aside")
+                </aside>
+            }
+            else
+            {
+                @RenderBody()
+            }
+        </section>
+
         @if (!minimalLayout)
         {
             <footer>
                 <div class="content-wrapper">
-                    <div class="float-left">
-                        <p>&copy; @DateTime.Now.Year - Chessmaker</p>
-                    </div>
+                    <p>&copy; @DateTime.Now.Year - Chessmaker</p>
                 </div>
             </footer>
         }
