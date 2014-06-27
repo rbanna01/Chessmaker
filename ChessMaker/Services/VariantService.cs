@@ -15,7 +15,8 @@ namespace ChessMaker.Services
             var publicVariants = Entities.Variants
                 .Where(v => v.PublicVersion != null)
                 .OrderBy(v => v.Name)
-                .Select(v => v.PublicVersion);
+                .Select(v => v.PublicVersion)
+                .ToList();
 
             foreach (var variant in publicVariants)
                 variantList.Add(new VariantSelectionModel(variant));
