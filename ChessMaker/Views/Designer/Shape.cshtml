@@ -115,7 +115,7 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
-    @Html.Hidden("data", Model.SvgData, new { id = "data" });
+    @Html.Hidden("data", Model.SvgData, new { id = "data" })
 
     <input type="submit" name="next" id="submitShape" value="Shape" />
     <input type="submit" name="next" id="submitLinks" value="Links" />
@@ -135,7 +135,7 @@
 }
 
 @section css {
-    @Styles.Render("~/Content/designer", "~/Content/themes/base/css");
+    @Styles.Render("~/Content/designer", "~/Content/themes/base/css")
 }
 
 @section scripts {

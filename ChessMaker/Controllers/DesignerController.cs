@@ -24,7 +24,8 @@ namespace ChessMaker.Controllers
             if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            var model = new BoardShapeModel(version);
+            DefinitionService definitions = GetService<DefinitionService>();
+            var model = new BoardShapeModel(version, definitions.GetBoardSVG(version));
 
             return View(model);
         }
@@ -42,14 +43,8 @@ namespace ChessMaker.Controllers
             if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            // do something with "data" value (from hidden field) to save the changes
-            // this is of course, bollocks. We don't want to be saving/loading the actual SVG.
-            // this also lacks error handling, validation, etc.
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(data);
-            doc.DocumentElement.RemoveAttribute("style");
-            version.Definition = doc.OuterXml;
-            Entities().SaveChanges();
+            DefinitionService definitions = GetService<DefinitionService>();
+            definitions.SaveBoardData(version, data);
 
             if (next == "Done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });

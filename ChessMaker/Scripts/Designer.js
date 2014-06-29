@@ -433,6 +433,7 @@ function projectAngle(start, angle, dist) {
 }
 
 $('#shapeForm').submit(function () {
+    remClass($('#render path.selected'), 'selected');
     $('#data').val($('#render').prop('outerHTML'));
 });
 
