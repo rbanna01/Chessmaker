@@ -15,22 +15,22 @@
         @RenderSection("css", required: false)
     </head>
     <body>
-        <header class="app-bar promote-layer">
-          <button class="menu"><img src="@Url.Content("~/Images/hamburger.png")"></button>
+        <header class="app-bar">
+            <button class="menu"><img src="@Url.Content("~/Images/hamburger.png")"></button>
+            
+            <h1 class="logo">@Html.ActionLink("Chessmaker", "Index", "Home")</h1>
 
-          <h1 class="logo">@Html.ActionLink("Chessmaker", "Index", "Home")</h1>
-      
-          @if (IsSectionDefined("actions")) {
-              <section class="app-bar-actions">
-                  @RenderSection("actions")
-              </section>
-          }
+            @if (IsSectionDefined("actions")) {
+            <section class="actions">
+                    @RenderSection("actions")
+                </section>
+            }
+    
+            <div class="navdrawer">
+                @Html.Partial("_MenuPartial")
+            </div>
         </header>
         
-        <div class="navdrawer promote-layer">
-            @Html.Partial("_MenuPartial")
-        </div>
-
         <section class="main-content">
             @if (!minimalLayout && !string.IsNullOrEmpty(@ViewBag.Title))
             {

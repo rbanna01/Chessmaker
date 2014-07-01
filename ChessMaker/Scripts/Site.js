@@ -12,8 +12,3 @@ menuBtn.addEventListener('click', function () {
         navdrawer.classList.add('open');
     }
 }, true);
-
-
-$(function () {
-    
-});

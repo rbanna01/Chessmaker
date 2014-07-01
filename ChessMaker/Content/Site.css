@@ -1,108 +1,100 @@
 html, body {
     width: 100%;
-    height: 100%;
     margin: 0;
     padding: 0;
 }
 
 body {
-    position: relative;
     font-family: 'Segoe UI', Verdana, Helvetica, Sans-Serif;
     font-weight: 300;
     background-color: #C9DAF8;
-    box-sizing: border-box;
-    overflow: hidden;
 }
 
 .app-bar {
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    width: 100%;
-    height: 60px;
-    -ms-flex-direction: row;
-    -webkit-flex-direction: row;
-    flex-direction: row;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 48px;
     background-color: #3C78D8;
 }
 
-    .app-bar .logo {
-        -ms-flex: 1;
-        -webkit-flex: 1;
-        flex: 1;
-        line-height: 60px;
-        margin: 0 16px;
+    .app-bar button {
+        width: 48px;
+        height: 48px;
+        background-image: none;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        -webkit-transition: background-color 0.2s ease-out;
+        transition: background-color 0.2s ease-out;
         color: #fefefe;
-        float: none;
-        max-width: none;
-        font-size: 2.3em;
+    }
+
+        .app-bar button.current {
+            color: #999;
+        }
+
+        .app-bar button img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .app-bar button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .app-bar button:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            outline: 0;
+        }
+
+        .app-bar button:active {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .app-bar button.menu {
+            float: left;
+        }
+
+    .app-bar .logo {
+        float: left;
+        line-height: 48px;
+        margin: 0px 8px;
+        padding: 0px;
+        color: #fefefe;
+        font-size: 2em;
+        z-index:999;
     }
 
         .app-bar .logo a {
             text-decoration: none;
             color: inherit;
             font-weight: normal;
+            background-color: transparent;
         }
 
-.app-bar-actions {
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -ms-flex-direction: row;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-}
-
-.app-bar button {
-    width: 60px;
-    height: 60px;
-    background-image: none;
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    -webkit-transition: background-color 0.2s ease-out;
-    transition: background-color 0.2s ease-out;
-    color: #fefefe;
-}
-
-.app-bar button.current  {
-    color: #999;
-}
-
-    .app-bar button img {
-        width: 60px;
-        height: 60px;
+    .app-bar .actions {
+        position: absolute;
+        top: 0px;
+        right: 0px;
     }
-
-    .app-bar button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .app-bar button:focus {
-        background-color: rgba(255, 255, 255, 0.2);
-        outline: 0;
-    }
-
-    .app-bar button:active {
-        background-color: rgba(255, 255, 255, 0.4);
-    }
-
-.promote-layer {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
 
 .navdrawer {
     position: fixed;
+    top:48px;
     width: 250px;
     height: 100%;
     background-color: #3C78D8;
     color: #fefefe;
+    font-size:1.25em;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
     -webkit-transform: translate(-250px,0);
     transform: translate(-250px,0);
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    transition: transform 0.3s ease-out;
 }
 
     .navdrawer.open {
@@ -110,10 +102,6 @@ body {
         transform: translate(0,0);
     }
 
-.app-bar, .navdrawer {
-    -webkit-transition: -webkit-transform 0.3s ease-out;
-    transition: transform 0.3s ease-out;
-}
 
     .navdrawer ul {
         padding: 0;
@@ -123,9 +111,9 @@ body {
 
     .navdrawer ul li a {
         display: block;
-        height: 60px;
+        height: 64px;
         padding: 0 20px;
-        line-height: 60px;
+        line-height: 64px;
         text-decoration: none;
         color: white;
         -webkit-transition: background-color 0.2s ease-out;
@@ -152,55 +140,52 @@ body {
     }
 
 .main-content {
-    margin: 60px 6px 6px 6px;
+    margin: 48px 6px 6px 6px;
 }
 
 @media all and (min-width: 960px) {
-
-    body {
-        padding: 16px;
-    }
-
+   
     .app-bar {
-        display: block;
-        height: 96px;
-        padding: 0 16px;
-        margin-bottom: 16px;
-        box-sizing: border-box;
-        background-color: transparent;
-    }
-
-        .app-bar .logo {
-            float: left;
-            margin: 0;
-            font-size: 72px;
-            line-height: 96px;
-        }
-
-    .app-bar-actions {
-        float: right;
-        margin: 25px 0;
-    }
-
-    .app-bar:after {
-        content: ' ';
-        display: block;
-        height: 0;
-        overflow: hidden;
-        clear: both;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 64px;
     }
 
     button.menu {
         display: none;
     }
 
+    .app-bar button {
+        width: 64px;
+        height: 64px;
+    }
+
+        .app-bar button img {
+            width: 64px;
+            height: 64px;
+        }
+
+    .app-bar .logo {
+            float: left;
+            margin: 0;
+            font-size: 4em;
+            line-height: 64px;
+        }
+
+    .app-bar .actions {
+        top: 64px;
+    }
+
     .navdrawer {
-        position: relative;
-        width: 100%;
+        position: static;
+        width: auto;
         height: auto;
-        margin-top: 96px;
+        background-color: transparent;
+        border-top-style: none;
+        border-width: 0px;
         -webkit-transform: none;
-        tranform: none;
+        transform: none;
         -webkit-transition: none;
         transition: none;
     }
@@ -219,9 +204,18 @@ body {
             }
 
     .main-content {
-        margin-top: 2px;
+        margin-top: 64px;
+        padding: 8px;
     }
 }
+
+
+
+
+
+
+
+
 
 a {
     color: #333;
@@ -242,14 +236,6 @@ a {
 
 header, footer, hgroup, section {
     display: block;
-}
-
-.clear-fix:after {
-    content: ".";
-    clear: both;
-    display: block;
-    height: 0;
-    visibility: hidden;
 }
 
 h1, h2, h3,
