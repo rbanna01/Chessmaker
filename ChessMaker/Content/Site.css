@@ -10,18 +10,99 @@ body {
     background-color: #C9DAF8;
 }
 
+html {    
+    font-size:0.5em;
+}
+
+@media all and (min-width: 300px)
+{
+    html { font-size:0.6em; }
+}
+
+@media all and (min-width: 350px)
+{
+    html { font-size:0.65em; }
+}
+
+@media all and (min-width: 400px)
+{
+    html { font-size:0.7em; }
+}
+
+@media all and (min-width: 450px)
+{
+    html { font-size:0.75em; }
+}
+
+@media all and (min-width: 500px)
+{
+    html { font-size:0.8em; }
+}
+
+@media all and (min-width: 550px)
+{
+    html { font-size:0.85em; }
+}
+
+@media all and (min-width: 600px)
+{
+    html { font-size:0.88em; }
+}
+
+@media all and (min-width: 700px)
+{
+    html { font-size:0.95em; }
+}
+
+@media all and (min-width: 800px)
+{
+    html { font-size:1em; }
+}
+
+/*
+@media all and (min-width: 900px)
+{
+    html { font-size:1.5em; }
+}
+
+@media all and (min-width: 1000px)
+{
+    html { font-size:1.1em; }
+}
+
+@media all and (min-width: 1100px)
+{
+    html { font-size:1.15em; }
+}
+
+@media all and (min-width: 1200px)
+{
+    html { font-size:1.2em; }
+}
+
+@media all and (min-width: 1300px)
+{
+    html { font-size:1.25em; }
+}
+
+@media all and (min-width: 1400px)
+{
+    html { font-size:1.3em; }
+}
+*/
+
 .app-bar {
     position: fixed;
     top: 0px;
     left: 0px;
     width: 100%;
-    height: 48px;
+    height: 3rem;
     background-color: #3C78D8;
 }
 
     .app-bar button {
-        width: 48px;
-        height: 48px;
+        width: 3rem;
+        height: 3rem;
         background-image: none;
         background-color: transparent;
         border: none;
@@ -36,8 +117,8 @@ body {
         }
 
         .app-bar button img {
-            width: 48px;
-            height: 48px;
+            width: 3rem;
+            height: 3rem;
         }
 
         .app-bar button:hover {
@@ -59,11 +140,11 @@ body {
 
     .app-bar .logo {
         float: left;
-        line-height: 48px;
-        margin: 0px 8px;
+        line-height: 3rem;
+        margin: 0px 0.5rem;
         padding: 0px;
         color: #fefefe;
-        font-size: 2em;
+        font-size: 2rem;
         z-index:999;
     }
 
@@ -82,12 +163,11 @@ body {
 
 .navdrawer {
     position: fixed;
-    top:48px;
-    width: 250px;
+    top:3rem;
+    width: 15rem;
     height: 100%;
     background-color: #3C78D8;
     color: #fefefe;
-    font-size:1.25em;
     border-top-style: solid;
     border-width: 1px;
     border-color: white;
@@ -111,9 +191,11 @@ body {
 
     .navdrawer ul li a {
         display: block;
-        height: 64px;
-        padding: 0 20px;
-        line-height: 64px;
+        font-size:1.25rem;
+        height: 4rem;
+        line-height: 4rem;
+        padding: 0 1.25rem;
+        
         text-decoration: none;
         color: white;
         -webkit-transition: background-color 0.2s ease-out;
@@ -149,7 +231,7 @@ body {
         position: absolute;
         top: 0px;
         left: 0px;
-        height: 64px;
+        height: 4rem;
     }
 
     button.menu {
@@ -157,24 +239,25 @@ body {
     }
 
     .app-bar button {
-        width: 64px;
-        height: 64px;
+        width: 4rem;
+        height: 4rem;
     }
 
         .app-bar button img {
-            width: 64px;
-            height: 64px;
+            width: 4rem;
+            height: 4rem;
         }
 
     .app-bar .logo {
             float: left;
             margin: 0;
-            font-size: 4em;
-            line-height: 64px;
+            margin-right:1rem;
+            font-size: 4rem;
+            line-height: 4rem;
         }
 
     .app-bar .actions {
-        top: 64px;
+        top: 4rem;
     }
 
     .navdrawer {
@@ -204,8 +287,8 @@ body {
             }
 
     .main-content {
-        margin-top: 64px;
-        padding: 8px;
+        margin-top: 4rem;
+        padding: 0.5rem;
     }
 }
 
