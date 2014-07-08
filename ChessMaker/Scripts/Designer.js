@@ -201,6 +201,20 @@ function SVG(tag) {
     return document.createElementNS('http://www.w3.org/2000/svg', tag);
 }
 
+function cellClicked(e) {
+    if (!e.shiftKey && !e.ctrlKey) {
+        clearSelection();
+        addClass($(this), 'selected');
+    }
+    else if (hasClass(this, 'selected'))
+        remClass($(this), 'selected');
+    else
+        addClass($(this), 'selected');
+
+    selectedChanged();
+    return false;
+}
+
 function clearSelection() {
     var paths = $('#render path.selected');
     if (paths.length == 0)
@@ -266,19 +280,7 @@ function addElement(pathData, color) {
 			    .attr('class', 'cell ' + color + ' selected')
                 .attr('id', 'cell' + nextElem)
                 .appendTo($('#render'))
-                .click(function (e) {
-                    if (!e.shiftKey && !e.ctrlKey) {
-                        clearSelection();
-                        addClass($(this), 'selected');
-                    }
-                    else if (hasClass(this, 'selected'))
-                        remClass($(this), 'selected');
-                    else
-                        addClass($(this), 'selected');
-
-                    selectedChanged();
-                    return false;
-                });
+                .click(cellClicked);
 
     nextElem++;
 }
@@ -474,8 +476,13 @@ $('#shapeForm').submit(function () {
 
 $(function () {
     var data = $('#data').val();
-    if (data.length > 0)
-        $('#render').prop('outerHTML', data);
+    if (data.length > 0) {
+        $('#render')
+            .prop('outerHTML', data);
+
+        $('#render path.cell')
+            .click(cellClicked);
+    }
 
     $('.popup').dialog({
         //height: 140,
