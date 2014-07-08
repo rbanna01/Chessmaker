@@ -42,10 +42,19 @@
 		<div class="button" id="deleteCell">delete selection</div>
 	</div>
 	
-    <div class="color">
-        <input type="radio" id="light" name="color" checked="checked" /><label for="light">Light</label>
-        <input type="radio" id="mid" name="color" /><label for="mid">Mid</label>
-        <input type="radio" id="dark" name="color" /><label for="dark">Dark</label>
+    <div class="fill color">
+        <div>Fill:</div>
+        <input type="radio" id="fillLight" name="color" value="light" checked="checked" /><label for="fillLight">Light</label>
+        <input type="radio" id="fillMid" name="color" value="mid" /><label for="fillMid">Mid</label>
+        <input type="radio" id="fillDark" name="color" value="dark" /><label for="fillDark">Dark</label>
+    </div>
+    <br />
+    <div class="stroke color">
+        <div>Stroke:</div>
+        <input type="radio" id="strokeNone" name="color" value="" checked="checked" /><label for="strokeNone">None</label>
+        <input type="radio" id="strokeLight" name="color" value="strokeLight" /><label for="strokeLight">Light</label>
+        <input type="radio" id="strokeMid" name="color" value="strokeMid" /><label for="strokeMid">Mid</label>
+        <input type="radio" id="strokeDark" name="color" value="strokeDark" /><label for="strokeDark">Dark</label>
     </div>
 </div>
 
@@ -63,6 +72,13 @@
 		<option value="5">Light/mid</option>
 		<option value="6">Mid/dark</option>
 	</select>
+    <label for="sqStroke">Cell border</label>
+	<select id="sqStroke" class="ui-widget-content">
+		<option value="" selected="selected">None</option>
+		<option value="strokeLight">Light</option>
+		<option value="strokeMid">Mid</option>
+		<option value="strokeDark">Dark</option>
+	</select>
 </div>
 
 <div id="addHexes" class="popup" title="Add hexes">
@@ -74,6 +90,13 @@
 		<option value="2">All mid</option>
 		<option value="3">All dark</option>
 		<option value="7" selected="selected">Light/mid/dark</option>
+	</select>
+    <label for="hexStroke">Cell border</label>
+	<select id="hexStroke" class="ui-widget-content">
+		<option value="" selected="selected">None</option>
+		<option value="strokeLight">Light</option>
+		<option value="strokeMid">Mid</option>
+		<option value="strokeDark">Dark</option>
 	</select>
 </div>
 
@@ -88,6 +111,13 @@
 		<option value="4" selected="selected">Light/dark</option>
 		<option value="5">Light/mid</option>
 		<option value="6">Mid/dark</option>
+	</select>
+    <label for="triStroke">Cell border</label>
+	<select id="triStroke" class="ui-widget-content">
+		<option value="" selected="selected">None</option>
+		<option value="strokeLight">Light</option>
+		<option value="strokeMid">Mid</option>
+		<option value="strokeDark">Dark</option>
 	</select>
 </div>
 
@@ -108,6 +138,13 @@
 		<option value="4" selected="selected">Light/dark</option>
 		<option value="5">Light/mid</option>
 		<option value="6">Mid/dark</option>
+	</select>
+    <label for="cirStroke">Cell border</label>
+	<select id="cirStroke" class="ui-widget-content">
+		<option value="" selected="selected">None</option>
+		<option value="strokeLight">Light</option>
+		<option value="strokeMid">Mid</option>
+		<option value="strokeDark">Dark</option>
 	</select>
 </div>
 

@@ -259,7 +259,7 @@ function selectedChanged() {
     if (noneSelected)
         return;
 
-    // if selected cells of multiple colors, clear the options
+    // if selected cells have multiple colors, clear the options
     var last = null;
     paths.each(function () {
         var color;
@@ -272,7 +272,7 @@ function selectedChanged() {
         else
             return;
         if (color != last && last != null) { // color has changed
-            colorOptions.find('input').prop('checked', false);
+            $('.itemProperties .fill input').prop('checked', false);
             last = null;
             return false;
         }
@@ -281,26 +281,54 @@ function selectedChanged() {
 
     if (last != null) {
         // otherwise, all selected items have same color. Update the color selector to match.
-        $('#' + last).prop('checked', true);
+        $('.itemProperties .fill input[value="' + last + '"]').prop('checked', true);
     }
+
+    last = null;
+    paths.each(function () {
+        var color;
+        if (hasClass(this, 'strokeLight'))
+            color = 'strokeLight';
+        else if (hasClass(this, 'strokeMid'))
+            color = 'strokeMid';
+        else if (hasClass(this, 'strokeDark'))
+            color = 'strokeDark';
+        else
+            return;
+        if (color != last && last != null) { // color has changed
+            $('.itemProperties .stroke input').prop('checked', false);
+            last = null;
+            return false;
+        }
+        last = color;
+    });
+
+    if (last != null) {
+        // otherwise, all selected items have same color. Update the color selector to match.
+        $('.itemProperties .stroke input[value="' + last + '"]').prop('checked', true);
+    }
+
     colorOptions.buttonset('refresh');
 }
 
 function addSingleElement(pathData) {
     clearSelection();
-    var color = $('.itemProperties :radio:checked').attr('id');
+    var fill = $('.fill.itemProperties :radio:checked').attr('value');
+    var stroke = $('.stroke.itemProperties :radio:checked').attr('value');
+    if (stroke != '')
+        stroke = ' ' + stroke;
 
-    addElement(pathData, color);
+    addElement(pathData, fill, stroke);
 
     updateBounds();
     selectedChanged();
 }
 
 var nextElem = 1;
-function addElement(pathData, color) {
+function addElement(pathData, fillColor, strokeColor) {
     var elem = $(SVG('path'))
                 .attr('d', pathData)
-			    .attr('class', 'cell ' + color + ' selected')
+			    .attr('class', 'cell ' + fillColor + strokeColor + ' selected')
                 .attr('id', 'cell' + nextElem)
                 .appendTo($('#render'))
                 .click(cellClicked);
@@ -315,26 +343,26 @@ function submitPopup(popup) {
             var width = parseInt($('#sqWidth').val()), height = parseInt($('#sqHeight').val());
             if (isNaN(width) || isNaN(height) || width < 1 || height < 1 || width > 64 || height > 64)
                 return false;
-            addSquares(width, height, $('#sqPattern').val());
+            addSquares(width, height, $('#sqPattern').val(), $('#sqStroke').val());
             return true;
         case 'addTriangles':
             var length = parseInt($('#triLength').val());
             if (isNaN(length) || length < 1 || length > 64)
                 return false;
-            addTriangles(length, $('#triPattern').val());
+            addTriangles(length, $('#triPattern').val(), $('#triStroke').val());
             return true;
         case 'addHexes':
             var length = parseInt($('#hexLength').val());
             if (isNaN(length) || length < 1 || length > 64)
                 return false;
-            addHexes(length, $('#hexPattern').val());
+            addHexes(length, $('#hexPattern').val(), $('#hexStroke').val());
             return true;
         case 'addCircle':
             var radiusOuter = parseInt($('#cirRadius').val()), radiusInner = parseInt($('#cirRadiusInner').val());
             var slicesTot = parseInt($('#cirSlicesTot').val()), slicesAct = parseInt($('#cirSlicesAct').val());
             if (isNaN(radiusOuter) || isNaN(radiusInner) || isNaN(slicesTot) || isNaN(slicesAct) || radiusOuter < 1 || radiusOuter > 64 || radiusInner > radiusOuter || radiusInner < 0 || slicesTot < 1 || slicesAct < 1 || slicesTot > 64 || slicesAct > slicesTot)
                 return false;
-            addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, $('#cirPattern').val());
+            addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, $('#cirPattern').val(), $('#cirStroke').val());
             return true;
         default:
             return false;
@@ -370,34 +398,40 @@ function resolvePattern(step, pattern) {
     }
 }
 
-function addSquares(width, height, pattern) {
+function addSquares(width, height, pattern, stroke) {
     var squarePath = ' m-20 -20 l40 0 l0 40 l-40 0 Z';
 
     clearSelection();
+
+    if (stroke != '')
+        stroke = ' ' + stroke;
 
     for (var iy = 0; iy < height; iy++) {
         var ystep = width * iy;
         if (width % 2 == 0 && iy % 2 == 1)
             ystep++;
         for (var ix = 0; ix < width; ix++)
-            addElement('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + squarePath, resolvePattern(ix + ystep, pattern));
+            addElement('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + squarePath, resolvePattern(ix + ystep, pattern), stroke);
     }
 
     updateBounds();
     selectedChanged();
 }
 
-function addTriangles(size, pattern) {
+function addTriangles(size, pattern, stroke) {
     var triPath = ' m0 -20 l20 35 l-40 0 Z', triPathInverted = ' m0 20 l20 -35 l-40 0 Z';
 
     clearSelection();
 
+    if (stroke != '')
+        stroke = ' ' + stroke;
+
     for (var iy = 0; iy < size; iy++) {
         var ystep = (iy + 1) * iy;
         for (var ix = 0; ix <= iy; ix++) {
-            addElement('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern));
+            addElement('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
             if (ix != 0)
-                addElement('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern));
+                addElement('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
         }
     }
 
@@ -405,15 +439,18 @@ function addTriangles(size, pattern) {
     selectedChanged();
 }
 
-function addHexes(size, pattern) {
+function addHexes(size, pattern, stroke) {
     var hexPath = ' m0 -40 l35 20 l0 40 l-35 20 l-35 -20 l0 -40 Z';
+
+    if (stroke != '')
+        stroke = ' ' + stroke;
 
     var maxRowSize = size * 2 - 1, iy = 0;
     for (var rowSize = size; rowSize <= maxRowSize; rowSize++) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
         for (var ix = 0; ix < rowSize; ix++)
-            addElement('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern));
+            addElement('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
         iy++;
     }
@@ -421,7 +458,7 @@ function addHexes(size, pattern) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
         for (var ix = 0; ix < rowSize; ix++)
-            addElement('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern));
+            addElement('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
         iy++;
     }
@@ -430,9 +467,13 @@ function addHexes(size, pattern) {
     selectedChanged();
 }
 
-function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern) {
+function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stroke) {
     var start = { x: 60, y: 60 };
     var sliceAngle = Math.PI * 2 / slicesTot;
+
+    if (stroke != '')
+        stroke = ' ' + stroke;
+
     for (var ring = radiusInner + 1; ring <= radiusOuter; ring++) {
         var startAngle = 0;
 
@@ -453,7 +494,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern) {
                 addElement('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
-                            resolvePattern(slice + ring, pattern));
+                            resolvePattern(slice + ring, pattern), stroke);
             }
             else {
                 var innerEnd = projectAngle(start, startAngle, (ring - 1) * 40);
@@ -471,7 +512,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern) {
                             ' a' + ((ring - 1) * 40) + ',' + ((ring - 1) * 40) + ' 0 0,0 ' + innerEnd.x + ',' + innerEnd.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
-                            resolvePattern(slice + ring, pattern));
+                            resolvePattern(slice + ring, pattern), stroke);
             }
 
             startAngle = endAngle;
@@ -672,9 +713,33 @@ $(function () {
         selectedChanged();
     });
 
-    $('.itemProperties .color').buttonset().click(function () {
-        var color = $('.itemProperties :radio:checked').attr('id');
-        $('#render path.selected').attr('class', 'cell ' + color + ' selected');
+    $('.itemProperties .color.fill').buttonset().click(function () {
+        var fill = $('.itemProperties .color.fill :radio:checked').attr('value');
+        var selected = $('#render path.selected');
+
+        if (fill != 'light')
+            remClass(selected, 'light');
+        if (fill != 'mid')
+            remClass(selected, 'mid');
+        if (fill != 'dark')
+            remClass(selected, 'dark');
+
+        addClass(selected, fill);
+    });
+
+    $('.itemProperties .color.stroke').buttonset().click(function () {
+        var stroke = $('.itemProperties .color.stroke :radio:checked').attr('value');
+        var selected = $('#render path.selected');
+
+        if (stroke != 'strokeLight')
+            remClass(selected, 'strokeLight');
+        if (stroke != 'strokeMid')
+            remClass(selected, 'strokeMid');
+        if (stroke != 'strokeDark')
+            remClass(selected, 'strokeDark');
+
+        if (stroke != '')
+            addClass(selected, stroke);
     });
 
     $('#board').click(function (e) {

@@ -22,7 +22,7 @@ form {
     left:0px;
     width:12em;
     top:5.5em;
-    bottom:16em;
+    bottom:22em;
 }
 
 .itemProperties {
@@ -30,9 +30,13 @@ form {
     position:absolute;
     left:0px;
     width:12em;
-    height:16em;
+    height:22em;
     bottom:0px;
 }
+
+    .itemProperties .color {
+        font-size: 0.85em;
+    }
 		
 .itemProperties .arrowKeys {
 	position:relative;
@@ -112,6 +116,7 @@ form {
     padding-top:8px;
 }
 
+/* board theme-specific styling start */
 #render .cell.light {
     fill:white;
 }
@@ -123,7 +128,20 @@ form {
 #render .cell.mid {
     fill:gray;
 }
+
+#render .cell.strokeLight {
+    stroke:white;
+}
 		
+#render .cell.strokeDark {
+    stroke:black;
+}
+		
+#render .cell.strokeMid {
+    stroke:gray;
+}
+/* board theme-specific styling end */
+
 #render .selected {
 	opacity:0.7;
 }
@@ -134,4 +152,8 @@ form {
 		
 .popup input.text {
 	margin-bottom:12px; width:95%; padding: .4em;
+}
+
+#sqPattern, #hexPattern, #triPattern, #cirPattern {
+	margin-bottom:12px;
 }
