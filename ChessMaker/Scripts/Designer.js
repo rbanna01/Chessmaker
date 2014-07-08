@@ -68,7 +68,6 @@ function rotatePath(deg) {
             rotateAbout(seg, cx, cy, rad);
         }
 
-        // begin transform rotation code
         var newAngle = deg;
         var transform = this.getAttribute('transform');
         if (transform != null) {
@@ -92,16 +91,47 @@ function rotatePath(deg) {
         }
 
         this.setAttribute('transform', 'rotate(' + newAngle + ' ' + seg.x + ' ' + seg.y + ')');
-        // end transform rotation code
-
-        /*
-        var numSegments = this.pathSegList.numberOfItems;
-				
-        // move each node on the element's path (except the first), assume they are all relative.
-        for (var i=1; i<numSegments; i++ )
-        rotateAbout(this.pathSegList.getItem(i), 0, 0, rad);
-        */
     });
+}
+
+function applyOwnTransform(node, transform) {
+    var seg = node.pathSegList.getItem(0);
+    var transform = $(node).attr('transform');
+
+    var rotStart = transform.indexOf('rotate(');
+    if (rotStart == -1)
+        return;
+
+    rotStart += 7;
+    var rotEnd = transform.indexOf(')', rotStart);
+    if (rotEnd == -1)
+        return;
+
+    var rotParts = transform.substring(rotStart, rotEnd).split(' ');
+
+    var deg = parseInt(rotParts[0]);
+    var rx = parseFloat(rotParts[1]);
+    var ry = parseFloat(rotParts[2]);
+
+    if (isNaN(deg) || isNaN(rx) || isNaN(ry))
+        return;
+    
+    while (deg > 360)
+        deg -= 360;
+    while (deg < 0)
+        deg += 360;
+
+    var rad = deg * Math.PI / 180;
+
+    // move this element if it should
+    if (seg.x != rx || seg.y != ry)
+        rotateAbout(seg, rx, ry, rad);
+
+    var numSegments = node.pathSegList.numberOfItems;
+            
+    // move each node on the element's path (except the first), assume they are all relative.
+    for (var i=1; i<numSegments; i++ )
+        rotateAbout(node.pathSegList.getItem(i), 0, 0, rad);
 }
 
 function rotateAbout(seg, cx, cy, angle) {
@@ -434,6 +464,11 @@ function projectAngle(start, angle, dist) {
 
 $('#shapeForm').submit(function () {
     remClass($('#render path.selected'), 'selected');
+
+    $('#render path.cell[transform]').each(function () {
+        applyOwnTransform(this);
+    });
+
     $('#data').val($('#render').prop('outerHTML'));
 });
 
