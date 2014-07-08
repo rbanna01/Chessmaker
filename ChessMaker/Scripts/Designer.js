@@ -185,16 +185,39 @@ function updateBounds() {
         height = 120;
     }
 
-    // jquery's .attr sets everything lowercase. Won't work for this.
-    $('#render')[0].setAttribute('viewBox', b.minX + ' ' + b.minY + ' ' + width + ' ' + height);
+    // jquery's .attr sets everything lowercase. Won't work for viewBox.
+    var svg = $('#render')[0];
+    svg.setAttribute('viewBox', b.minX + ' ' + b.minY + ' ' + width + ' ' + height);
+    svg.setAttribute('ratio', width / height);
+    resizeBoard();
+}
+
+function calculateRatio() {
+    var svg = $('#render')[0];
+    var viewBox = svg.getAttribute('viewBox').split(' ');
+    var width = parseFloat(viewBox[2]);
+    var height = parseFloat(viewBox[3]);
+    svg.setAttribute('ratio', width / height);
 }
 
 function resizeBoard() {
     var svg = $('#render');
-    var parent = svg.parent();
-    var size = Math.floor(Math.min(parent.outerWidth(false), parent.outerHeight(false)));
+    var ratio = parseFloat(svg.attr('ratio'));
 
-    svg.css('width', size + "px").css('height', size + "px");
+    var parent = svg.parent();
+    var parentWidth = parent.outerWidth(false);
+    var parentHeight = parent.outerHeight(false);
+
+    var width; var height;
+    if (parentHeight * ratio > parentWidth) {
+        width = parentWidth;
+        height = Math.floor(parentWidth / ratio);
+    }
+    else {
+        width = Math.floor(parentHeight * ratio);
+        height = parentHeight;
+    }
+    svg.css('width', width + "px").css('height', height + "px");
 }
 
 function SVG(tag) {
@@ -469,6 +492,7 @@ $('#shapeForm').submit(function () {
 
     $('#render path.cell[transform]').each(function () {
         applyOwnTransform(this);
+        $(this).removeAttr('transform');
     });
 
     $('#data').val($('#render').prop('outerHTML'));
@@ -697,6 +721,7 @@ $(function () {
         e.preventDefault();
     });
 
+    calculateRatio();
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
 
