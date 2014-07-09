@@ -174,6 +174,14 @@ function updateBounds() {
     b.minX -= 40; b.minY -= 40;
     b.maxX += 40; b.maxY += 40;
 
+    // now account for lines
+    $('#render line').each(function () {
+        b.minX = Math.min(b.minX, this.x1.baseVal.value, this.x2.baseVal.value);
+        b.maxX = Math.max(b.maxX, this.x1.baseVal.value, this.x2.baseVal.value);
+        b.minY = Math.min(b.minY, this.y1.baseVal.value, this.y2.baseVal.value);
+        b.maxY = Math.max(b.maxY, this.y1.baseVal.value, this.y2.baseVal.value);
+    });
+
     var width = b.maxX - b.minX, height = b.maxY - b.minY;
 
     if (width < 120) {
@@ -224,7 +232,7 @@ function SVG(tag) {
     return document.createElementNS('http://www.w3.org/2000/svg', tag);
 }
 
-function cellClicked(e) {
+function elementClicked(e) {
     if (!e.shiftKey && !e.ctrlKey) {
         clearSelection();
         addClass($(this), 'selected');
@@ -249,6 +257,29 @@ function clearSelection() {
 
 function selectedChanged() {
     var paths = $('#render path.selected');
+    var lines = $('#render line.selected');
+
+    /* this should account for whether paths, lines, or both are selected
+
+    if paths:
+    hide the "line end mode" button
+    show the rotate buttons
+    show the fill options
+    show the "none" stroke option
+
+    if lines:
+    show the "line end mode" button
+    hide the rotate buttons
+    hide the fill options
+    hide the "none" stroke option
+    
+    if both:
+    hide the "line end mode" button
+    hide the rotate buttons
+    hide the fill options
+    hide the stroke options
+    */
+
     var noneSelected = paths.length == 0;
 
     $('.itemProperties .button').button('option', 'disabled', noneSelected);
@@ -311,29 +342,45 @@ function selectedChanged() {
     colorOptions.buttonset('refresh');
 }
 
-function addSingleElement(pathData) {
+function addSingleCell(pathData) {
     clearSelection();
     var fill = $('.fill.itemProperties :radio:checked').attr('value');
     var stroke = $('.stroke.itemProperties :radio:checked').attr('value');
     if (stroke != '')
         stroke = ' ' + stroke;
 
-    addElement(pathData, fill, stroke);
+    addCell(pathData, fill, stroke);
 
     updateBounds();
     selectedChanged();
 }
 
 var nextElem = 1;
-function addElement(pathData, fillColor, strokeColor) {
+function addCell(pathData, fillColor, strokeColor) {
     var elem = $(SVG('path'))
                 .attr('d', pathData)
 			    .attr('class', 'cell ' + fillColor + strokeColor + ' selected')
                 .attr('id', 'cell' + nextElem)
                 .appendTo($('#render'))
-                .click(cellClicked);
+                .click(elementClicked);
 
     nextElem++;
+}
+
+function addLine() {
+    clearSelection();
+
+    var elem = $(SVG('line'))
+                .attr('x1', '40')
+                .attr('x2', '80')
+                .attr('y1', '40')
+                .attr('y2', '40')
+			    .attr('class', 'strokeMid')
+                .appendTo($('#render'))
+                .click(elementClicked);
+
+    updateBounds();
+    selectedChanged();
 }
 
 function submitPopup(popup) {
@@ -411,7 +458,7 @@ function addSquares(width, height, pattern, stroke) {
         if (width % 2 == 0 && iy % 2 == 1)
             ystep++;
         for (var ix = 0; ix < width; ix++)
-            addElement('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + squarePath, resolvePattern(ix + ystep, pattern), stroke);
+            addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + squarePath, resolvePattern(ix + ystep, pattern), stroke);
     }
 
     updateBounds();
@@ -429,9 +476,9 @@ function addTriangles(size, pattern, stroke) {
     for (var iy = 0; iy < size; iy++) {
         var ystep = (iy + 1) * iy;
         for (var ix = 0; ix <= iy; ix++) {
-            addElement('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
+            addCell('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
             if (ix != 0)
-                addElement('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
+                addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
         }
     }
 
@@ -450,7 +497,7 @@ function addHexes(size, pattern, stroke) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
         for (var ix = 0; ix < rowSize; ix++)
-            addElement('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+            addCell('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
         iy++;
     }
@@ -458,7 +505,7 @@ function addHexes(size, pattern, stroke) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
         for (var ix = 0; ix < rowSize; ix++)
-            addElement('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+            addCell('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
         iy++;
     }
@@ -491,7 +538,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
                 outerStart.x -= start.x; outerStart.y -= start.y;
                 var midPoint = { x: start.x - centerX, y: start.y - centerY };
 
-                addElement('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
+                addCell('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
                             resolvePattern(slice + ring, pattern), stroke);
@@ -508,7 +555,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
                 innerEnd.x -= innerStart.x; innerEnd.y -= innerStart.y;
                 innerStart.x -= centerX; innerStart.y -= centerY;
 
-                addElement('M' + centerX + ' ' + centerY + ' m' + innerStart.x + ' ' + innerStart.y +
+                addCell('M' + centerX + ' ' + centerY + ' m' + innerStart.x + ' ' + innerStart.y +
                             ' a' + ((ring - 1) * 40) + ',' + ((ring - 1) * 40) + ' 0 0,0 ' + innerEnd.x + ',' + innerEnd.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
@@ -545,12 +592,11 @@ $(function () {
         $('#render')
             .prop('outerHTML', data);
 
-        $('#render path.cell')
-            .click(cellClicked);
+        $('#render path.cell, #render line')
+            .click(elementClicked);
     }
 
     $('.popup').dialog({
-        //height: 140,
         modal: true,
         autoOpen: false,
         buttons: {
@@ -566,13 +612,16 @@ $(function () {
 
     $('.toolbox .button').button();
     $('.toolbox .button.square').click(function () {
-        addSingleElement('M60 60 m-20 -20 l40 0 l0 40 l-40 0 Z');
+        addSingleCell('M60 60 m-20 -20 l40 0 l0 40 l-40 0 Z');
     });
     $('.toolbox .button.triangle').click(function () {
-        addSingleElement('M60 60 m0 -20 l20 35 l-40 0 Z');
+        addSingleCell('M60 60 m0 -20 l20 35 l-40 0 Z');
     });
     $('.toolbox .button.hex').click(function () {
-        addSingleElement('M60 60 m0 -40 l35 20 l0 40 l-35 20 l-35 -20 l0 -40 Z');
+        addSingleCell('M60 60 m0 -40 l35 20 l0 40 l-35 20 l-35 -20 l0 -40 Z');
+    });
+    $('.toolbox .button.line').click(function () {
+        addLine();
     });
     $('.toolbox .button.squares').click(function () {
         $("#addSquares").dialog("open");
@@ -585,7 +634,7 @@ $(function () {
     });
     $('.toolbox .button.circle').click(function () {
         $("#addCircle").dialog("open");
-        // addSingleElement('M60 60 m-20 -0 a20,20 0 0,0 40,0 Z'); // a 75,75 0 0,0 75,75 means rx,ry / ? / largeArc,sweep / dx,dy);
+        // addSingleCell('M60 60 m-20 -0 a20,20 0 0,0 40,0 Z'); // a 75,75 0 0,0 75,75 means rx,ry / ? / largeArc,sweep / dx,dy);
     });
 
     /*
