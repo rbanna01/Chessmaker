@@ -463,7 +463,10 @@ function resolvePattern(step, pattern) {
 }
 
 function addSquares(width, height, pattern, stroke) {
-    var squarePath = ' m-20 -20 l40 0 l0 40 l-40 0 Z';
+    var bottomRight = ' m-20 -20 l40 0 l0 40 l-40 0 Z';
+    var right = ' m-20 -20 l40 0 l0 41 l-40 0 Z';
+    var bottom = ' m-20 -20 l41 0 l0 40 l-41 0 Z';
+    var elsewhere = ' m-20 -20 l41 0 l0 41 l-41 0 Z';
 
     clearSelection();
 
@@ -474,8 +477,13 @@ function addSquares(width, height, pattern, stroke) {
         var ystep = width * iy;
         if (width % 2 == 0 && iy % 2 == 1)
             ystep++;
-        for (var ix = 0; ix < width; ix++)
-            addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + squarePath, resolvePattern(ix + ystep, pattern), stroke);
+        var isBottom = iy == height - 1;
+
+        for (var ix = 0; ix < width; ix++) {
+            var isRight = ix == width - 1;
+            var path = isRight ? (isBottom ? bottomRight : right) : (isBottom ? bottom : elsewhere);
+            addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + path, resolvePattern(ix + ystep, pattern), stroke);
+        }
     }
 
     updateBounds();
