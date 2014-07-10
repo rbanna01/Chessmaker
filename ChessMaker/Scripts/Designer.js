@@ -47,6 +47,20 @@ function movePath(dx, dy) {
         }
         // end transform rotation code
     });
+
+    var lineMode = $('#lineEnds').attr('mode'); // first, last or both
+    var doFirst = lineMode != 'second';
+    var doSecond = lineMode != 'first';
+    $('#render line.selected').each(function () {
+        if (doFirst) {
+            this.x1.baseVal.value += dx;
+            this.y1.baseVal.value += dy;
+        }
+        if (doSecond) {
+            this.x2.baseVal.value += dx;
+            this.y2.baseVal.value += dy;
+        }
+    });
     updateBounds();
 }
 
@@ -247,7 +261,7 @@ function elementClicked(e) {
 }
 
 function clearSelection() {
-    var paths = $('#render path.selected');
+    var paths = $('#render .selected');
     if (paths.length == 0)
         return;
 
@@ -259,28 +273,31 @@ function selectedChanged() {
     var paths = $('#render path.selected');
     var lines = $('#render line.selected');
 
-    /* this should account for whether paths, lines, or both are selected
+    if (lines.length > 0) {
+        if (paths.length > 0) { // both
+            $('#lineEnds, #rotateCW, #rotateCCW').hide();
+            $('.itemProperties .color').hide();
+        }
+        else { // only lines
+            $('#lineEnds').show();
+            $('#rotateCW, #rotateCCW').hide();
 
-    if paths:
-    hide the "line end mode" button
-    show the rotate buttons
-    show the fill options
-    show the "none" stroke option
+            $('.itemProperties .fill.color').hide();
+            $('.itemProperties .stroke.color').show();
 
-    if lines:
-    show the "line end mode" button
-    hide the rotate buttons
-    hide the fill options
-    hide the "none" stroke option
-    
-    if both:
-    hide the "line end mode" button
-    hide the rotate buttons
-    hide the fill options
-    hide the stroke options
-    */
+            $('#strokeNone').buttonset("option", "disabled", true);
+        }
+    }
+    else { // only paths, or nothing
+        $('#lineEnds').hide();
+        $('#rotateCW, #rotateCCW').show();
 
-    var noneSelected = paths.length == 0;
+        $('.itemProperties .color').show();
+
+        $('#strokeNone').buttonset("option", "disabled", false);
+    }
+
+    var noneSelected = paths.length == 0 && lines.length == 0;
 
     $('.itemProperties .button').button('option', 'disabled', noneSelected);
 
@@ -316,7 +333,7 @@ function selectedChanged() {
     }
 
     last = null;
-    paths.each(function () {
+    paths.add(lines).each(function () {
         var color;
         if (hasClass(this, 'strokeLight'))
             color = 'strokeLight';
@@ -375,7 +392,7 @@ function addLine() {
                 .attr('x2', '80')
                 .attr('y1', '40')
                 .attr('y2', '40')
-			    .attr('class', 'strokeMid')
+			    .attr('class', 'strokeMid selected')
                 .appendTo($('#render'))
                 .click(elementClicked);
 
@@ -732,13 +749,41 @@ $(function () {
         rotatePath(-15);
     });
 
+    $('#lineEnds').button({
+        icons: {
+            primary: "ui-icon ui-icon-carat-2-e-w"
+        },
+        text: false
+    }).click(function () {
+        var btn = $(this);
+        var mode = btn.attr('mode');
+        if (mode == 'first') {
+            btn.button("option", {
+                icons: { primary: "ui-icon ui-icon-carat-1-e" }
+            })
+            .attr('mode', 'second');
+        }
+        else if (mode == 'second') {
+            btn.button("option", {
+                icons: { primary: "ui-icon ui-icon-carat-2-e-w" }
+            })
+            .attr('mode', 'both');
+        }
+        else {
+            btn.button("option", {
+                icons: { primary: "ui-icon ui-icon-carat-1-w" }
+            })
+            .attr('mode', 'first');
+        }
+    });
+
     $('#deleteCell').button({
         icons: {
             primary: "ui-icon-trash"
         },
         text: false
     }).click(function () {
-        $('#render path.selected').remove();
+        $('#render .selected').remove();
         selectedChanged();
         updateBounds();
     });
@@ -749,12 +794,14 @@ $(function () {
         },
         text: false
     }).click(function () {
-        var source = $('#render path.selected');
+        var source = $('#render .selected');
 
         source.clone(true).each(function () {
-            // allocate new IDs!
-            $(this).attr('id', 'cell' + nextElem);
-            nextElem++;
+            if (this.nodeName == 'path') {
+                // allocate new IDs!
+                $(this).attr('id', 'cell' + nextElem);
+                nextElem++;
+            }
         }).appendTo('#render');
 
         remClass(source, 'selected');

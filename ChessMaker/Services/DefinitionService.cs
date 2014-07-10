@@ -37,38 +37,85 @@ namespace ChessMaker.Services
 
             foreach (XmlNode node in svgDoc.DocumentElement.ChildNodes)
             {
-                // nodes must have the "cell" class to count as a cell
-                var classes = node.Attributes["class"];
-                if (classes == null)
-                    continue;
-                var strClasses = " " + classes.Value + " ";
-                if (!strClasses.Contains(" cell "))
-                    continue;
-
-                var cell = definition.CreateElement("cell");
-                
-                var id = node.Attributes["id"];
-                if (id != null)
-                    cell.Attributes.Append(definition.CreateAttribute("id", id.Value));
-
-                var color = strClasses.Contains(" light ") ? "light" : strClasses.Contains(" dark ") ? "dark" : "mid";
-                cell.Attributes.Append(definition.CreateAttribute("color", color));
-
-                var path = node.Attributes["d"];
-                if (path != null)
-                    cell.Attributes.Append(definition.CreateAttribute("path", path.Value));
-
-                // would be neater to "apply" the transform onto the path, so it doesn't need saved/loaded.
-                var transform = node.Attributes["transform"];
-                if (transform != null)
-                    cell.Attributes.Append(definition.CreateAttribute("transform", transform.Value));
-
-                board.AppendChild(cell);
+                if (node.Name == "path")
+                    SaveCellFromSVG(node, board);
+                else if (node.Name == "line")
+                    SaveLineFromSVG(node, board);
             }
             
             definition.Board = board;
             Entities.SaveChanges();
             return true;
+        }
+
+        private static void SaveCellFromSVG(XmlNode node, XmlNode board)
+        {
+            // nodes must have the "cell" class to count as a cell
+            var classes = node.Attributes["class"];
+            if (classes == null)
+                return;
+            var strClasses = " " + classes.Value + " ";
+            if (!strClasses.Contains(" cell "))
+                return;
+
+            var definition = board.OwnerDocument;
+            var cell = definition.CreateElement("cell");
+
+            XmlAttribute attr;
+
+            var id = node.Attributes["id"];
+            if (id != null)
+            {
+                attr = definition.CreateAttribute("id");
+                attr.Value = id.Value;
+                cell.Attributes.Append(attr);
+            }
+
+            var color = strClasses.Contains(" light ") ? "light" : strClasses.Contains(" dark ") ? "dark" : "mid";
+
+            if (strClasses.Contains(" strokeLight "))
+                color += " strokeLight";
+            else if (strClasses.Contains(" strokeMid "))
+                color += " strokeMid";
+            else if (strClasses.Contains(" strokeDark "))
+                color += " strokeDark";
+
+            attr = definition.CreateAttribute("color");
+            attr.Value = color;
+            cell.Attributes.Append(attr);
+
+            var path = node.Attributes["d"];
+            attr = definition.CreateAttribute("path");
+            attr.Value = path.Value;
+            cell.Attributes.Append(attr);
+
+            board.AppendChild(cell);
+        }
+
+        private static void SaveLineFromSVG(XmlNode node, XmlNode board)
+        {
+            var definition = board.OwnerDocument;
+            var line = definition.CreateElement("line");
+
+            var classes = node.Attributes["class"];
+            if (classes == null)
+                return;
+            var strClasses = " " + classes.Value + " ";
+            var color = strClasses.Contains(" strokeLight ") ? "strokeLight" : strClasses.Contains(" strokeDark ") ? "strokeDark" : "strokeMid";
+            var attr = definition.CreateAttribute("color");
+            attr.Value = color;
+            line.Attributes.Append(attr);
+
+            var sourceAttrs = new XmlAttribute[] { node.Attributes["x1"], node.Attributes["y1"], node.Attributes["x2"], node.Attributes["y2"] };
+            foreach ( var sourceAttr in sourceAttrs )
+                if (sourceAttr != null)
+                {
+                    var destAttr = definition.CreateAttribute(sourceAttr.Name);
+                    destAttr.Value = sourceAttr.Value;
+                    line.Attributes.Append(destAttr);
+                }
+
+            board.AppendChild(line);
         }
 
         public XmlDocument GetBoardSVG(VariantVersion version)
@@ -92,23 +139,57 @@ namespace ChessMaker.Services
 
             foreach (XmlNode node in board.ChildNodes)
             {
-                var cell = svgDoc.CreateElement("path");
-                svgDoc.DocumentElement.AppendChild(cell);
-
-                attr = svgDoc.CreateAttribute("id");
-                attr.Value = node.Attributes["id"].Value;
-                cell.Attributes.Append(attr);
-
-                attr = svgDoc.CreateAttribute("class");
-                attr.Value = "cell " + node.Attributes["color"].Value;
-                cell.Attributes.Append(attr);
-
-                attr = svgDoc.CreateAttribute("d");
-                attr.Value = node.Attributes["path"].Value;
-                cell.Attributes.Append(attr);
+                if (node.Name == "cell")
+                    WriteCellToSVG(node, svgDoc);
+                else if (node.Name == "line")
+                    WriteLineToSVG(node, svgDoc);
             }
 
             return svgDoc;
+        }
+
+        private static void WriteCellToSVG(XmlNode node, XmlDocument svgDoc)
+        {
+            var cell = svgDoc.CreateElement("path");
+            svgDoc.DocumentElement.AppendChild(cell);
+
+            var attr = svgDoc.CreateAttribute("id");
+            attr.Value = node.Attributes["id"].Value;
+            cell.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("class");
+            attr.Value = "cell " + node.Attributes["color"].Value;
+            cell.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("d");
+            attr.Value = node.Attributes["path"].Value;
+            cell.Attributes.Append(attr);
+        }
+
+        private static void WriteLineToSVG(XmlNode node, XmlDocument svgDoc)
+        {
+            var line = svgDoc.CreateElement("line");
+            svgDoc.DocumentElement.AppendChild(line);
+
+            var attr = svgDoc.CreateAttribute("x1");
+            attr.Value = node.Attributes["x1"].Value;
+            line.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("y1");
+            attr.Value = node.Attributes["y1"].Value;
+            line.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("x2");
+            attr.Value = node.Attributes["x2"].Value;
+            line.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("y2");
+            attr.Value = node.Attributes["y2"].Value;
+            line.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("class");
+            attr.Value = node.Attributes["color"].Value;
+            line.Attributes.Append(attr);
         }
     }
 }
