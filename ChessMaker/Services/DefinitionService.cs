@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Xml;
 
@@ -15,7 +16,7 @@ namespace ChessMaker.Services
             return new VariantDefinition(version);
         }
 
-        public bool SaveBoardData(VariantVersion version, string boardSVG)
+        public bool SaveBoardData(VariantVersion version, string boardSVG, string cellLinks)
         {
             XmlDocument svgDoc = new XmlDocument();
 
@@ -42,7 +43,8 @@ namespace ChessMaker.Services
                 else if (node.Name == "line")
                     SaveLineFromSVG(node, board);
             }
-            
+
+            SaveLinkData(definition, board, cellLinks);
             definition.Board = board;
             Entities.SaveChanges();
             return true;
@@ -190,6 +192,44 @@ namespace ChessMaker.Services
             attr = svgDoc.CreateAttribute("class");
             attr.Value = node.Attributes["color"].Value;
             line.Attributes.Append(attr);
+        }
+
+        char[] outerSep = new char[] { ';' }, innerSep = new char[] { ':' };
+        private void SaveLinkData(VariantDefinition def, XmlNode board, string cellLinks)
+        {
+            //var board = def.Board;
+            var links = cellLinks.Split(outerSep, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string link in links)
+            {
+                var linkParts = link.Split(innerSep, 3);
+                if (linkParts.Length != 3)
+                    continue;
+
+                // from, dir, to
+                var fromNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[0])); // THIS DOES NOT SELECT ANYTHING!
+                var toNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[2]));
+
+                if (fromNode == null || toNode == null)
+                    return;
+
+                // add a child to fromNode like: <link dir="blah" to="blah" />
+                var linkElem = def.CreateElement("link");
+                linkElem.Attributes.Append(def.CreateAttribute("dir", linkParts[1]));
+                linkElem.Attributes.Append(def.CreateAttribute("to", linkParts[2]));
+                fromNode.AppendChild(linkElem);
+            }
+        }
+
+        public string GetCellLinks(VariantVersion version)
+        {
+            var board = GetDefinition(version).Board;
+            var sb = new StringBuilder();
+
+            foreach (XmlNode cell in board.SelectNodes("cell"))
+                foreach (XmlNode link in cell.SelectNodes("link"))
+                    sb.AppendFormat(";{0}:{1}:{2}", cell.Attributes["id"].Value, link.Attributes["dir"].Value, link.Attributes["to"].Value);
+
+            return sb.ToString();
         }
     }
 }

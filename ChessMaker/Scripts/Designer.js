@@ -374,14 +374,16 @@ function addSingleCell(pathData) {
 
 var nextElem = 1;
 function addCell(pathData, fillColor, strokeColor) {
+    var cellNum = nextElem;
     var elem = $(SVG('path'))
                 .attr('d', pathData)
 			    .attr('class', 'cell ' + fillColor + strokeColor + ' selected')
-                .attr('id', 'cell' + nextElem)
+                .attr('id', 'cell' + cellNum)
                 .appendTo($('#render'))
                 .click(elementClicked);
 
     nextElem++;
+    return cellNum;
 }
 
 function addLine() {
@@ -462,27 +464,50 @@ function resolvePattern(step, pattern) {
     }
 }
 
+var nextGroupDir = 1;
 function addSquares(width, height, pattern, stroke) {
     var bottomRight = ' m-20 -20 l40 0 l0 40 l-40 0 Z';
     var right = ' m-20 -20 l40 0 l0 41 l-40 0 Z';
     var bottom = ' m-20 -20 l41 0 l0 40 l-41 0 Z';
     var elsewhere = ' m-20 -20 l41 0 l0 41 l-41 0 Z';
-
+    
     clearSelection();
 
     if (stroke != '')
         stroke = ' ' + stroke;
 
+    var linkData = $('#linkData')[0];
+
     for (var iy = 0; iy < height; iy++) {
         var ystep = width * iy;
         if (width % 2 == 0 && iy % 2 == 1)
             ystep++;
+        var isTop = iy == 0;
         var isBottom = iy == height - 1;
 
         for (var ix = 0; ix < width; ix++) {
+            var isLeft = ix == 0;
             var isRight = ix == width - 1;
             var path = isRight ? (isBottom ? bottomRight : right) : (isBottom ? bottom : elsewhere);
-            addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + path, resolvePattern(ix + ystep, pattern), stroke);
+            var cellNum = addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + path, resolvePattern(ix + ystep, pattern), stroke);
+
+            if (!isLeft)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+            if (!isTop)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width);
+            if (!isBottom)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width);
+
+            if (!isLeft && !isTop)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width - 1);
+            if (!isRight && !isTop)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width + 1);
+            if (!isLeft && !isBottom)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width - 1);
+            if (!isRight && !isBottom)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width + 1);
         }
     }
 
@@ -499,11 +524,44 @@ function addTriangles(size, pattern, stroke) {
         stroke = ' ' + stroke;
 
     for (var iy = 0; iy < size; iy++) {
+        var isTop = iy == 0;
+        var isBottom = iy == size - 1;
         var ystep = (iy + 1) * iy;
+
         for (var ix = 0; ix <= iy; ix++) {
-            addCell('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
-            if (ix != 0)
-                addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
+            var isLeft = ix == 0;
+            var isRight = ix == iy;
+            var cellNum;
+
+            if (!isLeft) {
+                cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
+
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+
+                if (ix > 1) // same-color "diagonals"
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 2);
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 2);
+            }
+
+            cellNum = addCell('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
+
+            if (!isLeft)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+
+            if (ix > 1) // same-color "diagonals"
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 2);
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 2);
+
+
+
+            // for all triangle cells, i have only set up links to those on the same ROW.
+            // those on other rows ... are more confusing. But perfectly doable, I'm sure.
         }
     }
 
@@ -608,11 +666,11 @@ $('#shapeForm').submit(function () {
         $(this).removeAttr('transform');
     });
 
-    $('#data').val($('#render').prop('outerHTML'));
+    $('#shapeData').val($('#render').prop('outerHTML'));
 });
 
 $(function () {
-    var data = $('#data').val();
+    var data = $('#shapeData').val();
     if (data.length > 0) {
         $('#render')
             .prop('outerHTML', data);

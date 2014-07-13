@@ -155,7 +155,8 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
-    @Html.Hidden("data", Model.SvgData, new { id = "data" })
+    @Html.Hidden("shapeData", Model.SvgData, new { id = "shapeData" })
+    @Html.Hidden("linkData", Model.LinkData, new { id = "linkData" })
 
     <input type="submit" name="next" id="submitShape" value="Shape" />
     <input type="submit" name="next" id="submitLinks" value="Links" />

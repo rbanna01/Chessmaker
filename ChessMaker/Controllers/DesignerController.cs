@@ -25,7 +25,7 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new BoardShapeModel(version, definitions.GetBoardSVG(version));
+            var model = new BoardShapeModel(version, definitions.GetBoardSVG(version), definitions.GetCellLinks(version));
 
             return View(model);
         }
@@ -33,7 +33,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Shape(int id, string data, string next)
+        public ActionResult Shape(int id, string shapeData, string linkData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -44,7 +44,7 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            definitions.SaveBoardData(version, data);
+            definitions.SaveBoardData(version, shapeData, linkData);
 
             if (next == "Done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
