@@ -534,6 +534,9 @@ function addTriangles(size, pattern, stroke) {
             var isRight = ix == iy;
             var cellNum;
 
+            var yAbove = (iy - 1) * (iy - 1) + (ix - 1) * 2; // for inverted
+            var yBelow = (iy + 1) * (iy + 1) + ix * 2 + 1; // for un-inverted
+
             if (!isLeft) {
                 // inverted cell
                 cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
@@ -543,7 +546,17 @@ function addTriangles(size, pattern, stroke) {
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
                 if (!isTop)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + ((iy - 1) * (iy - 1) + (ix - 1) * 2); // adjacent up
+                {
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + yAbove; // adjacent up
+
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (yAbove - 2); // diagonal up-left
+
+                    if (!isRight)
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (yAbove + 2); // diagonal up-right
+                }
+
+                if (!isBottom)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 8) + ':cell' + (yBelow - 1); // diagonal down
             }
 
             // right-way-up cell
@@ -554,12 +567,22 @@ function addTriangles(size, pattern, stroke) {
             if (!isRight)
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
-            // adjacent down
+            if (!isBottom)
+            {
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + yBelow; // adjacent down
 
+                if (!isLeft)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (yBelow - 2); // diagonal down-left
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (yBelow + 2); // diagonal down-right
+            }
+
+            if (!isTop)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (yAbove + 1); // diagonal down
         }
     }
 
-    nextGroupDir += 9;
+    nextGroupDir += 10;
     updateBounds();
     selectedChanged();
 }
