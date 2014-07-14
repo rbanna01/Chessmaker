@@ -492,25 +492,26 @@ function addSquares(width, height, pattern, stroke) {
             var cellNum = addCell('M' + (60 + ix * 40) + ' ' + (60 + iy * 40) + path, resolvePattern(ix + ystep, pattern), stroke);
 
             if (!isLeft)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1);
             if (!isRight)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1);
             if (!isTop)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum - width);
             if (!isBottom)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + (cellNum + width);
 
             if (!isLeft && !isTop)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width - 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum - width - 1);
             if (!isRight && !isTop)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - width + 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum - width + 1);
             if (!isLeft && !isBottom)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width - 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum + width - 1);
             if (!isRight && !isBottom)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + width + 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum + width + 1);
         }
     }
 
+    nextGroupDir += 8;
     updateBounds();
     selectedChanged();
 }
@@ -534,37 +535,31 @@ function addTriangles(size, pattern, stroke) {
             var cellNum;
 
             if (!isLeft) {
+                // inverted cell
                 cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
 
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // adjacent left
                 if (!isRight)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
-                if (ix > 1) // same-color "diagonals"
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 2);
-                if (!isRight)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 2);
+                if (!isTop)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + ((iy - 1) * (iy - 1) + (ix - 1) * 2); // adjacent up
             }
 
+            // right-way-up cell
             cellNum = addCell('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
 
             if (!isLeft)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 1);
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // adjacent left
             if (!isRight)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 1);
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
-            if (ix > 1) // same-color "diagonals"
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum - 2);
-            if (!isRight)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir++) + ':cell' + (cellNum + 2);
+            // adjacent down
 
-
-
-            // for all triangle cells, i have only set up links to those on the same ROW.
-            // those on other rows ... are more confusing. But perfectly doable, I'm sure.
         }
     }
 
+    nextGroupDir += 9;
     updateBounds();
     selectedChanged();
 }
