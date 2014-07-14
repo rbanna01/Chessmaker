@@ -27,3 +27,4 @@ _ReSharper*/
 #ignore thumbnails created by windows
 #Ignore files build by Visual Studio
 obj/
+ChessMaker/Properties/PublishProfiles/chessmaker.pubxml
