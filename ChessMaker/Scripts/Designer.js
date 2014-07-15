@@ -597,20 +597,107 @@ function addHexes(size, pattern, stroke) {
     for (var rowSize = size; rowSize <= maxRowSize; rowSize++) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
-        for (var ix = 0; ix < rowSize; ix++)
-            addCell('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+        var isTop = iy == 0; // never bottom
+        var isMid = rowSize == maxRowSize;
+
+        for (var ix = 0; ix < rowSize; ix++) {
+            var isLeft = ix == 0;
+            var isRight = ix == iy;
+
+            var cellNum = addCell('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+
+            if (!isLeft)
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // left
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // right
+
+            if (!isTop) {
+                if (!isLeft)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum - rowSize); // up-left
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + (cellNum - rowSize + 1); // up-right
+
+                if (iy > 1 && !isLeft && !isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum - rowSize - rowSize + 2); // jump up
+
+                if (ix > 1)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum - rowSize - 1); // jump up left
+
+                if (ix < rowSize - 2)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 8) + ':cell' + (cellNum - rowSize + 2); // jump up right
+            }
+
+            if (isMid) {
+                if (!isLeft)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum + rowSize - 1); // down-left
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize); // down-right
+
+                // jump down 9
+
+                // jump down left 10
+
+                // jump down right 11
+            }
+            else {
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum + rowSize); // down-left
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize + 1); // down-right
+
+                // jump down
+
+                // jump down left
+
+                // jump down right
+            }
+        }
 
         iy++;
     }
     for (var rowSize = maxRowSize - 1; rowSize >= size; rowSize--) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
-        for (var ix = 0; ix < rowSize; ix++)
-            addCell('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+        var isBottom = iy == 0; // never top
+
+        for (var ix = 0; ix < rowSize; ix++) {
+            var isLeft = ix == 0;
+            var isRight = ix == iy;
+
+            var cellNum = addCell('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
+
+            if (!isLeft)
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // left
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // right
+
+            linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum - rowSize - 1); // up-left
+            linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + (cellNum - rowSize); // up-right
+
+            if (!isBottom) {
+                if (!isLeft)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum + rowSize - 1); // down-left
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize); // down-right
+
+                if (rowSize > size + 1) {
+                    // jump down
+
+                    // jump down left
+
+                    // jump down right
+                }
+            }
+
+            // jump up
+
+            // jump up left
+
+            // jump up right
+        }
 
         iy++;
     }
 
+    nextGroupDir += 12;
     updateBounds();
     selectedChanged();
 }
