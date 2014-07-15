@@ -92,7 +92,7 @@ namespace ChessMaker.Services
             version.Number = 1;
             version.LastModified = DateTime.Now;
             version.Variant = variant;
-            version.Definition = "<Temp />";
+            version.Definition = string.Empty;
 
             Entities.Variants.Add(variant);
             Entities.VariantVersions.Add(version);
