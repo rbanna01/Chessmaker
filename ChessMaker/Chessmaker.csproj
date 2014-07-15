@@ -329,7 +329,6 @@
       <DependentUpon>Entities.edmx</DependentUpon>
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
-    <None Include="Properties\PublishProfiles\chessmaker.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\Designer.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
