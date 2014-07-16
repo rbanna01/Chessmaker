@@ -419,7 +419,7 @@ function submitPopup(popup) {
             return true;
         case 'addHexes':
             var length = parseInt($('#hexLength').val());
-            if (isNaN(length) || length < 1 || length > 64)
+            if (isNaN(length) || length < 2 || length > 64)
                 return false;
             addHexes(length, $('#hexPattern').val(), $('#hexStroke').val());
             return true;
@@ -633,21 +633,31 @@ function addHexes(size, pattern, stroke) {
                 if (!isRight)
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize); // down-right
 
-                // jump down 9
+                if (!isLeft && !isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (cellNum + rowSize + rowSize - 2); // jump down
 
-                // jump down left 10
+                if (ix > 1)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 10) + ':cell' + (cellNum + rowSize - 2); // jump down left
 
-                // jump down right 11
+                if (ix < rowSize - 2)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 11) + ':cell' + (cellNum + rowSize + 1); // jump down right
             }
             else {
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum + rowSize); // down-left
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize + 1); // down-right
 
-                // jump down
+                if (rowSize == maxRowSize - 1) {// just above mid
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (cellNum + rowSize + rowSize + 1); // jump down
+                }
+                else {
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (cellNum + rowSize + rowSize + 2); // jump down
+                }
 
-                // jump down left
+                if (!isLeft)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 10) + ':cell' + (cellNum + rowSize - 1); // jump down left
 
-                // jump down right
+                if (!isRight)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 11) + ':cell' + (cellNum + rowSize + 2); // jump down right
             }
         }
 
@@ -678,20 +688,26 @@ function addHexes(size, pattern, stroke) {
                 if (!isRight)
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + rowSize); // down-right
 
-                if (rowSize > size + 1) {
-                    // jump down
+                if (rowSize > size) {
 
-                    // jump down left
+                    if (rowSize > size + 1)
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (cellNum + rowSize + rowSize - 2); // jump down
 
-                    // jump down right
+                    if (ix > 1)
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 10) + ':cell' + (cellNum + rowSize - 2); // jump down left
+
+                    if (ix < rowSize - 2)
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 11) + ':cell' + (cellNum + rowSize + 1); // jump down right
                 }
             }
 
-            // jump up
+            linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum - rowSize - rowSize - 1); // jump up
 
-            // jump up left
+            if (!isLeft)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum - rowSize - 2); // jump up left
 
-            // jump up right
+            if (!isRight)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 8) + ':cell' + (cellNum - rowSize + 1); // jump up right
         }
 
         iy++;
