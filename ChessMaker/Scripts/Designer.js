@@ -728,12 +728,21 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
     for (var ring = radiusInner + 1; ring <= radiusOuter; ring++) {
         var startAngle = 0;
 
-        for (var slice = 0; slice < slicesTot; slice++) {
+        var innerMost = ring == radiusInner + 1;
+        var outerMost = ring == radiusOuter;
+
+        var wrap = slicesAct == slicesTot;
+
+        for (var slice = 0; slice < slicesAct; slice++) {
             var endAngle = startAngle + sliceAngle;
             var outerStart = projectAngle(start, startAngle, ring * 40);
             var outerEnd = projectAngle(start, endAngle, ring * 40);
 
+            var firstSlice = slice == 0;
+            var lastSlice = slice == slicesAct - 1;
+
             var centerX; var centerY;
+            var cellNum;
             if (ring == 1) {
                 centerX = (outerStart.x + outerEnd.x + start.x) / 3;
                 centerY = (outerStart.y + outerEnd.y + start.y) / 3;
@@ -742,7 +751,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
                 outerStart.x -= start.x; outerStart.y -= start.y;
                 var midPoint = { x: start.x - centerX, y: start.y - centerY };
 
-                addCell('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
+                cellNum = addCell('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
                             resolvePattern(slice + ring, pattern), stroke);
@@ -759,7 +768,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
                 innerEnd.x -= innerStart.x; innerEnd.y -= innerStart.y;
                 innerStart.x -= centerX; innerStart.y -= centerY;
 
-                addCell('M' + centerX + ' ' + centerY + ' m' + innerStart.x + ' ' + innerStart.y +
+                cellNum = addCell('M' + centerX + ' ' + centerY + ' m' + innerStart.x + ' ' + innerStart.y +
                             ' a' + ((ring - 1) * 40) + ',' + ((ring - 1) * 40) + ' 0 0,0 ' + innerEnd.x + ',' + innerEnd.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
                             ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
@@ -767,10 +776,58 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
             }
 
             startAngle = endAngle;
+
+            // ccw
+            if (!firstSlice)
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1);
+            else if (wrap)
+                linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum + slicesAct - 1);
+
+            // cw
+            if (!lastSlice)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1);
+            else if (wrap)
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum - slicesAct + 1);
+
+
+            if (!innerMost) {
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum - slicesAct); // inward
+
+                // inward-ccw
+                if (!firstSlice)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum - slicesAct - 1);
+                else if (wrap)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum - 1);
+
+                // inward-cw
+                if (!lastSlice)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum - slicesAct + 1);
+                else if (wrap)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum - slicesAct - slicesAct + 1);
+            }
+
+            if (!outerMost) {
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + (cellNum + slicesAct); // outward
+
+                // outward-ccw
+                if (!firstSlice)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum + slicesAct - 1);
+                else if (wrap)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum + slicesAct + slicesAct - 1);
+
+                // outward-cw
+                if (!lastSlice)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum - slicesAct + 1);
+                else if (wrap)
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum + 1);
+            }
         }
+
     }
 
-    // The "a" sgment's parameters are: rx,ry / ? / largeArc,sweep / dx,dy);
+    nextGroupDir += 8;
+
+    // The "a" segment's parameters are: rx,ry / ? / largeArc,sweep / dx,dy);
     updateBounds();
     selectedChanged();
 }
