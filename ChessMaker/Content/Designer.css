@@ -4,7 +4,7 @@ form {
 
 #board {
     position: absolute;
-    left: 12em;
+    left: 14.5em;
     right: 0px;
     top: 5.5em;
     bottom: 0px;
@@ -16,34 +16,35 @@ form {
     margin-right: auto;
 }
 
-.toolbox {
-    background-color:darkgray;
+#sidebar {
     position:absolute;
-    left:0px;
-    width:12em;
-    top:5.5em;
-    bottom:22em;
+    top:3.5em;
+    bottom:0;
+    left:0.1em;
+    width:14.5em;
 }
 
-.itemProperties {
-    background-color:slategray;
-    position:absolute;
-    left:0px;
-    width:12em;
-    height:22em;
-    bottom:0px;
+#sidebar .section {
+    border:1px solid #d3d3d3;
+    background-color:#d8e0ef;
+    margin-top:1em;
 }
 
-    .itemProperties .color {
-        font-size: 0.85em;
-    }
+#sidebar .section h3 {
+    margin-top:0;
+    margin-bottom:0.1em;
+}
+
+#itemProperties .color {
+    font-size: 0.85em;
+}
 		
-.itemProperties .arrowKeys {
+#itemProperties .arrowKeys {
 	position:relative;
 	height:10.5em;
 }
 		
-.itemProperties .arrowKeys .button {
+#itemProperties .arrowKeys .button {
 	position:absolute;
     width:2em;
     height:2em;
@@ -97,16 +98,16 @@ form {
 	top:5.5em; left:6.6em;
 }
 
-.toolbox, .itemProperties {
+#toolbox, #itemProperties {
     padding: 0.6em;
 }
 
-.toolbox .button.addItem {
+#toolbox .button.addItem {
     width:5.5em;
     font-size:1.0em;
 }
 
-.toolbox .button.addItem .ui-button-text, .itemProperties .color .ui-button-text {
+#toolbox .button.addItem .ui-button-text, #itemProperties .color .ui-button-text {
     padding: .4em;
 }
 

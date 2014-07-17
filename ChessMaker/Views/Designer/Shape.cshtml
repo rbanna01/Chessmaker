@@ -9,54 +9,56 @@
     <svg id="render" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>
 </div>
 
-<div class="toolbox">
-    <h3>Add board elements</h3>
-    <span class="button addItem square">Square</span>
-    <span class="button addItem squares">Squares</span>
-    <span class="button addItem hex">Hex</span>
-    <span class="button addItem hexes">Hexes</span>
-    <span class="button addItem triangle">Triangle</span>
-    <span class="button addItem triangles">Triangles</span>
-    <span class="button addItem line">Line</span>
-    <span class="button addItem circle">Circle</span>
-</div>
-
-<div class="itemProperties">
-    <h3>Edit selected element</h3>
-
-	<div class="arrowKeys">
-		<div class="button" id="moveUp">move up</div>
-		<div class="button" id="moveDown">move down</div>
-		<div class="button" id="moveLeft">move left</div>
-		<div class="button" id="moveRight">move right</div>
-
-		<div class="button" id="moveUpFast">fast up</div>
-		<div class="button" id="moveDownFast">fast down</div>
-		<div class="button" id="moveLeftFast">fast left</div>
-		<div class="button" id="moveRightFast">fast right</div>
-		
-		<div class="button" id="rotateCW">rotate clockwise</div>
-		<div class="button" id="rotateCCW">rotate anticlockwise</div>
-	
-		<div class="button" id="lineEnds" mode="both">change line end(s)</div>
-
-		<div class="button" id="copy">copy selection</div>
-		<div class="button" id="deleteCell">delete selection</div>
-	</div>
-	
-    <div class="fill color">
-        <div>Fill:</div>
-        <input type="radio" id="fillLight" name="color" value="light" checked="checked" /><label for="fillLight">Light</label>
-        <input type="radio" id="fillMid" name="color" value="mid" /><label for="fillMid">Mid</label>
-        <input type="radio" id="fillDark" name="color" value="dark" /><label for="fillDark">Dark</label>
+<div id="sidebar">
+    <div id="toolbox" class="section ui-widget ui-corner-all">
+        <h3>Add board elements</h3>
+        <span class="button addItem square">Square</span>
+        <span class="button addItem squares">Squares</span>
+        <span class="button addItem hex">Hex</span>
+        <span class="button addItem hexes">Hexes</span>
+        <span class="button addItem triangle">Triangle</span>
+        <span class="button addItem triangles">Triangles</span>
+        <span class="button addItem line">Line</span>
+        <span class="button addItem circle">Circle</span>
     </div>
-    <br />
-    <div class="stroke color">
-        <div>Stroke:</div>
-        <input type="radio" id="strokeNone" name="color" value="" checked="checked" /><label for="strokeNone">None</label>
-        <input type="radio" id="strokeLight" name="color" value="strokeLight" /><label for="strokeLight">Light</label>
-        <input type="radio" id="strokeMid" name="color" value="strokeMid" /><label for="strokeMid">Mid</label>
-        <input type="radio" id="strokeDark" name="color" value="strokeDark" /><label for="strokeDark">Dark</label>
+
+    <div id="itemProperties" class="section ui-widget ui-corner-all">
+        <h3>Edit selected element(s)</h3>
+
+        <div class="arrowKeys">
+            <div class="button" id="moveUp">move up</div>
+            <div class="button" id="moveDown">move down</div>
+            <div class="button" id="moveLeft">move left</div>
+            <div class="button" id="moveRight">move right</div>
+
+            <div class="button" id="moveUpFast">fast up</div>
+            <div class="button" id="moveDownFast">fast down</div>
+            <div class="button" id="moveLeftFast">fast left</div>
+            <div class="button" id="moveRightFast">fast right</div>
+
+            <div class="button" id="rotateCW">rotate clockwise</div>
+            <div class="button" id="rotateCCW">rotate anticlockwise</div>
+
+            <div class="button" id="lineEnds" mode="both">change line end(s)</div>
+
+            <div class="button" id="copy">copy selection</div>
+            <div class="button" id="deleteCell">delete selection</div>
+        </div>
+
+        <div class="fill color">
+            <div>Fill:</div>
+            <input type="radio" id="fillLight" name="color" value="light" checked="checked" /><label for="fillLight">Light</label>
+            <input type="radio" id="fillMid" name="color" value="mid" /><label for="fillMid">Mid</label>
+            <input type="radio" id="fillDark" name="color" value="dark" /><label for="fillDark">Dark</label>
+        </div>
+        <br />
+        <div class="stroke color">
+            <div>Stroke:</div>
+            <input type="radio" id="strokeNone" name="color" value="" checked="checked" /><label for="strokeNone">None</label>
+            <input type="radio" id="strokeLight" name="color" value="strokeLight" /><label for="strokeLight">Light</label>
+            <input type="radio" id="strokeMid" name="color" value="strokeMid" /><label for="strokeMid">Mid</label>
+            <input type="radio" id="strokeDark" name="color" value="strokeDark" /><label for="strokeDark">Dark</label>
+        </div>
     </div>
 </div>
 

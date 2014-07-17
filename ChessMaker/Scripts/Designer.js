@@ -276,14 +276,14 @@ function selectedChanged() {
     if (lines.length > 0) {
         if (paths.length > 0) { // both
             $('#lineEnds, #rotateCW, #rotateCCW').hide();
-            $('.itemProperties .color').hide();
+            $('#itemProperties .color').hide();
         }
         else { // only lines
             $('#lineEnds').show();
             $('#rotateCW, #rotateCCW').hide();
 
-            $('.itemProperties .fill.color').hide();
-            $('.itemProperties .stroke.color').show();
+            $('#itemProperties .fill.color').hide();
+            $('#itemProperties .stroke.color').show();
 
             $('#strokeNone').buttonset("option", "disabled", true);
         }
@@ -292,16 +292,16 @@ function selectedChanged() {
         $('#lineEnds').hide();
         $('#rotateCW, #rotateCCW').show();
 
-        $('.itemProperties .color').show();
+        $('#itemProperties .color').show();
 
         $('#strokeNone').buttonset("option", "disabled", false);
     }
 
     var noneSelected = paths.length == 0 && lines.length == 0;
 
-    $('.itemProperties .button').button('option', 'disabled', noneSelected);
+    $('#itemProperties .button').button('option', 'disabled', noneSelected);
 
-    var colorOptions = $('.itemProperties .ui-buttonset');
+    var colorOptions = $('#itemProperties .ui-buttonset');
     colorOptions.buttonset('option', 'disabled', noneSelected);
 
     if (noneSelected)
@@ -320,7 +320,7 @@ function selectedChanged() {
         else
             return;
         if (color != last && last != null) { // color has changed
-            $('.itemProperties .fill input').prop('checked', false);
+            $('#itemProperties .fill input').prop('checked', false);
             last = null;
             return false;
         }
@@ -329,7 +329,7 @@ function selectedChanged() {
 
     if (last != null) {
         // otherwise, all selected items have same color. Update the color selector to match.
-        $('.itemProperties .fill input[value="' + last + '"]').prop('checked', true);
+        $('#itemProperties .fill input[value="' + last + '"]').prop('checked', true);
     }
 
     last = null;
@@ -344,7 +344,7 @@ function selectedChanged() {
         else
             return;
         if (color != last && last != null) { // color has changed
-            $('.itemProperties .stroke input').prop('checked', false);
+            $('#itemProperties .stroke input').prop('checked', false);
             last = null;
             return false;
         }
@@ -353,7 +353,7 @@ function selectedChanged() {
 
     if (last != null) {
         // otherwise, all selected items have same color. Update the color selector to match.
-        $('.itemProperties .stroke input[value="' + last + '"]').prop('checked', true);
+        $('#itemProperties .stroke input[value="' + last + '"]').prop('checked', true);
     }
 
     colorOptions.buttonset('refresh');
@@ -361,8 +361,8 @@ function selectedChanged() {
 
 function addSingleCell(pathData) {
     clearSelection();
-    var fill = $('.fill.itemProperties :radio:checked').attr('value');
-    var stroke = $('.stroke.itemProperties :radio:checked').attr('value');
+    var fill = $('.fill#itemProperties :radio:checked').attr('value');
+    var stroke = $('.stroke#itemProperties :radio:checked').attr('value');
     if (stroke != '')
         stroke = ' ' + stroke;
 
@@ -871,35 +871,35 @@ $(function () {
         }
     });
 
-    $('.toolbox .button').button();
-    $('.toolbox .button.square').click(function () {
+    $('#toolbox .button').button();
+    $('#toolbox .button.square').click(function () {
         addSingleCell('M60 60 m-20 -20 l40 0 l0 40 l-40 0 Z');
     });
-    $('.toolbox .button.triangle').click(function () {
+    $('#toolbox .button.triangle').click(function () {
         addSingleCell('M60 60 m0 -20 l20 35 l-40 0 Z');
     });
-    $('.toolbox .button.hex').click(function () {
+    $('#toolbox .button.hex').click(function () {
         addSingleCell('M60 60 m0 -40 l35 20 l0 40 l-35 20 l-35 -20 l0 -40 Z');
     });
-    $('.toolbox .button.line').click(function () {
+    $('#toolbox .button.line').click(function () {
         addLine();
     });
-    $('.toolbox .button.squares').click(function () {
+    $('#toolbox .button.squares').click(function () {
         $("#addSquares").dialog("open");
     });
-    $('.toolbox .button.triangles').click(function () {
+    $('#toolbox .button.triangles').click(function () {
         $("#addTriangles").dialog("open");
     });
-    $('.toolbox .button.hexes').click(function () {
+    $('#toolbox .button.hexes').click(function () {
         $("#addHexes").dialog("open");
     });
-    $('.toolbox .button.circle').click(function () {
+    $('#toolbox .button.circle').click(function () {
         $("#addCircle").dialog("open");
         // addSingleCell('M60 60 m-20 -0 a20,20 0 0,0 40,0 Z'); // a 75,75 0 0,0 75,75 means rx,ry / ? / largeArc,sweep / dx,dy);
     });
 
     /*
-    $('.toolbox .button[quantity="set"]').click(function () {
+    $('#toolbox .button[quantity="set"]').click(function () {
     //showAddSetPopup($(this).attr('addtype'));
     });
     */
@@ -1053,8 +1053,8 @@ $(function () {
         selectedChanged();
     });
 
-    $('.itemProperties .color.fill').buttonset().click(function () {
-        var fill = $('.itemProperties .color.fill :radio:checked').attr('value');
+    $('#itemProperties .color.fill').buttonset().click(function () {
+        var fill = $('#itemProperties .color.fill :radio:checked').attr('value');
         var selected = $('#render path.selected');
 
         if (fill != 'light')
@@ -1067,8 +1067,8 @@ $(function () {
         addClass(selected, fill);
     });
 
-    $('.itemProperties .color.stroke').buttonset().click(function () {
-        var stroke = $('.itemProperties .color.stroke :radio:checked').attr('value');
+    $('#itemProperties .color.stroke').buttonset().click(function () {
+        var stroke = $('#itemProperties .color.stroke :radio:checked').attr('value');
         var selected = $('#render path.selected');
 
         if (stroke != 'strokeLight')
