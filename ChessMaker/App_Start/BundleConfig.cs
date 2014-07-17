@@ -15,9 +15,6 @@ namespace ChessMaker
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery-ui-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/designer").Include(
-                        "~/Scripts/designer.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.unobtrusive*",
                         "~/Scripts/jquery.validate*"));
@@ -42,8 +39,6 @@ namespace ChessMaker
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
-
-            bundles.Add(new StyleBundle("~/Content/designer").Include("~/Content/Designer.css"));
         }
     }
 }

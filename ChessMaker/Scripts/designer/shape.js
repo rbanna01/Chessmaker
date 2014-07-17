@@ -1,30 +1,4 @@
-﻿function addClass(elems, className) {
-    elems.each(function () {
-        var classes = this.getAttribute('class');
-        var spaced = ' ' + classes + ' ';
-        if (spaced.indexOf(className) != -1)
-            return;
-        this.setAttribute('class', classes + ' ' + className);
-    });
-}
-
-function remClass(elems, className) {
-    var spaced = ' ' + className + ' ';
-    elems.each(function () {
-        var classes = ' ' + this.getAttribute('class') + ' ';
-        if (classes.indexOf(spaced) == -1)
-            return;
-        this.setAttribute('class', classes.replace(spaced, ' ').trim());
-    });
-}
-
-function hasClass(elem, className) {
-    var classes = ' ' + elem.getAttribute('class') + ' ';
-    var spaced = ' ' + className + ' ';
-    return classes.indexOf(spaced) != -1;
-}
-
-function movePath(dx, dy) {
+﻿function movePath(dx, dy) {
     $('#render path.selected').each(function () {
         // all our cell paths are designed such that the first segment is the center of the cell, all others are RELATIVELY positioned.
         // so moving the first should be sufficient!
@@ -129,7 +103,7 @@ function applyOwnTransform(node, transform) {
 
     if (isNaN(deg) || isNaN(rx) || isNaN(ry))
         return;
-    
+
     while (deg > 360)
         deg -= 360;
     while (deg < 0)
@@ -142,9 +116,9 @@ function applyOwnTransform(node, transform) {
         rotateAbout(seg, rx, ry, rad);
 
     var numSegments = node.pathSegList.numberOfItems;
-            
+
     // move each node on the element's path (except the first), assume they are all relative.
-    for (var i=1; i<numSegments; i++ )
+    for (var i = 1; i < numSegments; i++)
         rotateAbout(node.pathSegList.getItem(i), 0, 0, rad);
 }
 
@@ -212,34 +186,6 @@ function updateBounds() {
     svg.setAttribute('viewBox', b.minX + ' ' + b.minY + ' ' + width + ' ' + height);
     svg.setAttribute('ratio', width / height);
     resizeBoard();
-}
-
-function calculateRatio() {
-    var svg = $('#render')[0];
-    var viewBox = svg.getAttribute('viewBox').split(' ');
-    var width = parseFloat(viewBox[2]);
-    var height = parseFloat(viewBox[3]);
-    svg.setAttribute('ratio', width / height);
-}
-
-function resizeBoard() {
-    var svg = $('#render');
-    var ratio = parseFloat(svg.attr('ratio'));
-
-    var parent = svg.parent();
-    var parentWidth = parent.outerWidth(false);
-    var parentHeight = parent.outerHeight(false);
-
-    var width; var height;
-    if (parentHeight * ratio > parentWidth) {
-        width = parentWidth;
-        height = Math.floor(parentWidth / ratio);
-    }
-    else {
-        width = Math.floor(parentHeight * ratio);
-        height = parentHeight;
-    }
-    svg.css('width', width + "px").css('height', height + "px");
 }
 
 function SVG(tag) {
@@ -470,7 +416,7 @@ function addSquares(width, height, pattern, stroke) {
     var right = ' m-20 -20 l40 0 l0 41 l-40 0 Z';
     var bottom = ' m-20 -20 l41 0 l0 40 l-41 0 Z';
     var elsewhere = ' m-20 -20 l41 0 l0 41 l-41 0 Z';
-    
+
     clearSelection();
 
     if (stroke != '')
@@ -545,8 +491,7 @@ function addTriangles(size, pattern, stroke) {
                 if (!isRight)
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
-                if (!isTop)
-                {
+                if (!isTop) {
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + yAbove; // adjacent up
 
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (yAbove - 2); // diagonal up-left
@@ -567,8 +512,7 @@ function addTriangles(size, pattern, stroke) {
             if (!isRight)
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
 
-            if (!isBottom)
-            {
+            if (!isBottom) {
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + yBelow; // adjacent down
 
                 if (!isLeft)
@@ -1125,10 +1069,6 @@ $(function () {
         }
         e.preventDefault();
     });
-
-    calculateRatio();
-    resizeBoard();
-    $(window).resize(function () { resizeBoard(); });
 
     selectedChanged();
 });

@@ -1,0 +1,79 @@
+#itemProperties .color {
+    font-size: 0.85em;
+}
+		
+#itemProperties .arrowKeys {
+	position:relative;
+	height:10.5em;
+}
+		
+#itemProperties .arrowKeys .button {
+	position:absolute;
+    width:2em;
+    height:2em;
+}
+
+#moveUpFast {
+	top:0; left:4.4em;
+}
+		
+#moveUp {
+	top:2.2em; left:4.4em;
+}
+		
+#moveDown {
+	top:4.4em; left:4.4em;
+}
+		
+#moveDownFast {
+	top:6.6em; left:4.4em;
+}
+		
+#moveLeftFast {
+	top:3.3em; left:0px;
+}
+		
+#moveLeft {
+	top:3.3em; left:2.2em;
+}
+		
+#moveRight {
+	top:3.3em; left:6.6em;
+}
+		
+#moveRightFast {
+	top:3.3em; left:8.8em;
+}
+		
+#rotateCCW {
+	top:1.1em; left:2.2em;
+}
+		
+#rotateCW, #lineEnds {
+	top:1.1em; left:6.6em;
+}
+		
+#deleteCell {
+	top:5.5em; left:2.2em;
+}
+		
+#copy {
+	top:5.5em; left:6.6em;
+}
+
+#toolbox, #itemProperties {
+    padding: 0.6em;
+}
+
+#toolbox .button.addItem {
+    width:5.5em;
+    font-size:1.0em;
+}
+
+#toolbox .button.addItem .ui-button-text, #itemProperties .color .ui-button-text {
+    padding: .4em;
+}
+
+#sqPattern, #hexPattern, #triPattern, #cirPattern {
+	margin-bottom:12px;
+}

@@ -1,0 +1,75 @@
+form {
+    display:none;
+}
+
+#board {
+    position: absolute;
+    left: 14.5em;
+    right: 0px;
+    top: 5.5em;
+    bottom: 0px;
+}
+
+#render {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#sidebar {
+    position:absolute;
+    top:3.5em;
+    bottom:0;
+    left:0.1em;
+    width:14.5em;
+}
+
+#sidebar .section {
+    border:1px solid #d3d3d3;
+    background-color:#d8e0ef;
+    margin-top:1em;
+}
+
+#sidebar .section h3 {
+    margin-top:0;
+    margin-bottom:0.1em;
+    font-size:1em;
+}
+
+#render .selected {
+	opacity:0.7;
+}
+
+.popup label, .popup input {
+	display:block;
+}
+		
+.popup input.text {
+	margin-bottom:12px; width:95%; padding: .4em;
+}
+
+/* board theme-specific styling start */
+#render .light {
+    fill:white;
+}
+		
+#render .dark {
+    fill:black;
+}
+		
+#render .mid {
+    fill:gray;
+}
+
+#render .strokeLight {
+    stroke:white;
+}
+		
+#render .strokeDark {
+    stroke:black;
+}
+		
+#render .strokeMid {
+    stroke:gray;
+}
+/* board theme-specific styling end */
