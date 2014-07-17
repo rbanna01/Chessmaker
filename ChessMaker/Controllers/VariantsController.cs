@@ -37,8 +37,8 @@ namespace ChessMaker.Controllers
             VariantService variants = GetService<VariantService>();
 
             var user = users.GetByName(User.Identity.Name);
-            var variant = variants.CreateNewVariant(user, model);
-            return RedirectToAction("Shape", "Designer", new { variant.ID });
+            var version = variants.CreateNewVariant(user, model);
+            return RedirectToAction("Shape", "Designer", new { version.ID });
         }
 
         [Authorize]

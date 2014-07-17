@@ -81,7 +81,7 @@ namespace ChessMaker.Services
             return versionList;
         }
 
-        public Variant CreateNewVariant(User user, VariantEditModel basics)
+        public VariantVersion CreateNewVariant(User user, VariantEditModel basics)
         {
             var variant = new Variant();
             variant.CreatedByID = user.ID;
@@ -98,7 +98,7 @@ namespace ChessMaker.Services
             Entities.VariantVersions.Add(version);
             Entities.SaveChanges();
 
-            return variant;
+            return version;
         }
 
         public List<AIDifficultyModel> ListAiDifficulties()
