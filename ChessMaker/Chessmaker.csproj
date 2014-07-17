@@ -383,6 +383,7 @@
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Variants\Edit.cshtml" />
     <Content Include="Views\Designer\Shape.cshtml" />
+    <Content Include="Views\Designer\Links.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

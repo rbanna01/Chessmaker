@@ -1,0 +1,57 @@
+﻿@model ChessMaker.Models.BoardLinksModel
+
+@{
+    ViewBag.Title = "'" + Model.VariantName + "' cell links & directions";
+    ViewBag.MinimalLayout = true;
+}
+
+<div id="board">
+    <svg id="render" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>
+</div>
+
+<div id="sidebar">
+    <div id="toolbox" class="section ui-widget ui-corner-all">
+        <h3>Absolute Directions</h3>
+        
+        Selectable droppable things go here.
+    </div>
+
+    <div id="itemProperties" class="section ui-widget ui-corner-all">
+        <h3>Relative directions</h3>
+
+        Not sure how we handle these.
+    </div>
+</div>
+
+@using (Html.BeginForm("Links", "Designer", FormMethod.Post, new { id = "linksForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    @Html.Hidden("shapeData", Model.SvgData, new { id = "shapeData" })
+    @Html.Hidden("linkData", Model.LinkData, new { id = "linkData" })
+
+    <input type="submit" name="next" id="submitShape" value="Shape" />
+    <input type="submit" name="next" id="submitLinks" value="Links" />
+    <input type="submit" name="next" id="submitPieces" value="Pieces" />
+    <input type="submit" name="next" id="submitLayout" value="Layout" />
+    <input type="submit" name="next" id="submitRules" value="Rules" />
+    <input type="submit" name="next" id="submitDone" value="Done" />
+}
+
+@section actions {
+    <button onclick="$('#submitShape').click();" title="board shape">Shape</button>
+    <button onclick="$('#submitLinks').click();" title="links between cells" class="current">Links</button>
+    <button onclick="$('#submitPieces').click();" title="piece definitions">Pieces</button>
+    <button onclick="$('#submitLayout').click();" title="starting piece layout">Layout</button>
+    <button onclick="$('#submitRules').click();" title="game rules">Rules</button>
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Done</button>
+}
+
+@section css {
+    @Styles.Render("~/Content/themes/base/css", "~/Content/designer/base.css", "~/Content/designer/links.css")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryui", "~/Scripts/designer/base.js", "~/Scripts/designer/links.js")
+}
