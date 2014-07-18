@@ -6,18 +6,24 @@
 }
 
 <div id="board">
-    <svg id="render" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>
+    @Html.Raw(Model.SvgData)
 </div>
 
 <div id="sidebar">
-    <div id="toolbox" class="section ui-widget ui-corner-all">
+    <div id="absDirs" class="section ui-widget ui-corner-all">
         <h3>Absolute Directions</h3>
         
         Selectable droppable things go here.
     </div>
 
-    <div id="itemProperties" class="section ui-widget ui-corner-all">
+    <div id="relDirs" class="section ui-widget ui-corner-all">
         <h3>Relative directions</h3>
+
+        Not sure how we handle these.
+    </div>
+
+    <div id="dirGroups" class="section ui-widget ui-corner-all">
+        <h3>Direction groups</h3>
 
         Not sure how we handle these.
     </div>
@@ -28,7 +34,6 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
-    @Html.Hidden("shapeData", Model.SvgData, new { id = "shapeData" })
     @Html.Hidden("linkData", Model.LinkData, new { id = "linkData" })
 
     <input type="submit" name="next" id="submitShape" value="Shape" />
