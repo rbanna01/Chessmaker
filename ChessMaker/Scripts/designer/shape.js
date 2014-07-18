@@ -188,10 +188,6 @@ function updateBounds() {
     resizeBoard();
 }
 
-function SVG(tag) {
-    return document.createElementNS('http://www.w3.org/2000/svg', tag);
-}
-
 function elementClicked(e) {
     if (!e.shiftKey && !e.ctrlKey) {
         clearSelection();
@@ -340,7 +336,7 @@ function addLine() {
                 .attr('x2', '80')
                 .attr('y1', '40')
                 .attr('y2', '40')
-			    .attr('class', 'strokeMid selected')
+			    .attr('class', 'detail strokeMid selected')
                 .appendTo($('#render'))
                 .click(elementClicked);
 

@@ -61,10 +61,6 @@
 	top:5.5em; left:6.6em;
 }
 
-#toolbox, #itemProperties {
-    padding: 0.6em;
-}
-
 #toolbox .button.addItem {
     margin-top:0.2em;
     width:5.5em;
@@ -77,4 +73,8 @@
 
 #sqPattern, #hexPattern, #triPattern, #cirPattern {
 	margin-bottom:12px;
+}
+
+#render line.detail {
+    pointer-events: auto !important;
 }

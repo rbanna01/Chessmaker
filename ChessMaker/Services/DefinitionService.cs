@@ -120,12 +120,20 @@ namespace ChessMaker.Services
             board.AppendChild(line);
         }
 
-        public XmlDocument GetBoardSVG(VariantVersion version)
+        public XmlDocument GetBoardSVG(VariantVersion version, bool addArrowheadDef = false)
         {
             var board = GetDefinition(version).Board;
 
             XmlDocument svgDoc = new XmlDocument();
             svgDoc.AppendChild(svgDoc.CreateElement("svg"));
+
+            if (addArrowheadDef)
+            {
+                // add a <defs> section containing an arrowhead marker
+                var defs = svgDoc.CreateElement("defs");
+                defs.InnerXml = @"<marker id=""arrowhead"" viewbox=""0 0 10 10"" refX=""1"" refY=""5"" markerWidth=""6"" markerHeight=""6"" orient=""auto""><path d=""M 0 0 L 10 5 L 0 10 z"" /></marker>";
+                svgDoc.DocumentElement.AppendChild(defs);
+            }
 
             var attr = svgDoc.CreateAttribute("xmlns");
             attr.Value = "http://www.w3.org/2000/svg";
@@ -190,7 +198,7 @@ namespace ChessMaker.Services
             line.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("class");
-            attr.Value = node.Attributes["color"].Value;
+            attr.Value = "detail " + node.Attributes["color"].Value;
             line.Attributes.Append(attr);
         }
 
@@ -206,7 +214,7 @@ namespace ChessMaker.Services
                     continue;
 
                 // from, dir, to
-                var fromNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[0])); // THIS DOES NOT SELECT ANYTHING!
+                var fromNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[0]));
                 var toNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[2]));
 
                 if (fromNode == null || toNode == null)

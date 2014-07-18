@@ -1,0 +1,13 @@
+#render .marker {
+    display:none;
+    stroke:red;
+    stroke-width:1;
+}
+
+#arrowhead {
+    fill:red;
+}
+
+#absDirList li:hover {
+    color:red;
+}

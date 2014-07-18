@@ -67,7 +67,7 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new BoardLinksModel(version, definitions.GetBoardSVG(version), definitions.GetCellLinks(version));
+            var model = new BoardLinksModel(version, definitions.GetBoardSVG(version, true), definitions.GetCellLinks(version));
 
             return View(model);
         }

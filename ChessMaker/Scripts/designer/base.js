@@ -1,4 +1,8 @@
-﻿function addClass(elems, className) {
+﻿function SVG(tag) {
+    return document.createElementNS('http://www.w3.org/2000/svg', tag);
+}
+
+function addClass(elems, className) {
     elems.each(function () {
         var classes = this.getAttribute('class');
         var spaced = ' ' + classes + ' ';

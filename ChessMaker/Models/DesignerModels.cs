@@ -12,6 +12,7 @@ namespace ChessMaker.Models
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
+            LinkData = linkData;
         }
 
         public string VariantName { get; set; }
@@ -25,6 +26,7 @@ namespace ChessMaker.Models
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
+            LinkData = linkData;
         }
 
         public string VariantName { get; set; }
