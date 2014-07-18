@@ -542,7 +542,7 @@ function addHexes(size, pattern, stroke) {
 
         for (var ix = 0; ix < rowSize; ix++) {
             var isLeft = ix == 0;
-            var isRight = ix == iy;
+            var isRight = ix == (rowSize - 1);
 
             var cellNum = addCell('M' + (60 + ix * 70 - iy * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
@@ -606,11 +606,11 @@ function addHexes(size, pattern, stroke) {
     for (var rowSize = maxRowSize - 1; rowSize >= size; rowSize--) {
         var rowOffset = (maxRowSize - rowSize) * 2;
 
-        var isBottom = iy == 0; // never top
+        var isBottom = rowSize == size; // never top
 
         for (var ix = 0; ix < rowSize; ix++) {
             var isLeft = ix == 0;
-            var isRight = ix == iy;
+            var isRight = ix == (rowSize - 1);
 
             var cellNum = addCell('M' + (60 + ix * 70 - (maxRowSize - iy - 1) * 35) + ' ' + (60 + iy * 60) + hexPath, resolvePattern(ix + rowOffset, pattern), stroke);
 
@@ -630,7 +630,7 @@ function addHexes(size, pattern, stroke) {
 
                 if (rowSize > size) {
 
-                    if (rowSize > size + 1)
+                    if (!isLeft && !isRight && rowSize > size + 1)
                         linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (cellNum + rowSize + rowSize - 2); // jump down
 
                     if (ix > 1)
@@ -641,7 +641,8 @@ function addHexes(size, pattern, stroke) {
                 }
             }
 
-            linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum - rowSize - rowSize - 1); // jump up
+            var upOffs = rowSize == maxRowSize - 1 ? 1 : 2
+            linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (cellNum - rowSize - rowSize - upOffs); // jump up
 
             if (!isLeft)
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum - rowSize - 2); // jump up left
