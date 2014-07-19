@@ -459,7 +459,7 @@ function addSquares(width, height, pattern, stroke) {
 }
 
 function addTriangles(size, pattern, stroke) {
-    var triPath = ' m0 -20 l20 35 l-40 0 Z', triPathInverted = ' m0 20 l20 -35 l-40 0 Z';
+    var triPath = ' m0 -24 l20 35 l-40 0 Z', triPathInverted = ' m0 24 l20 -35 l-40 0 Z';
 
     clearSelection();
 
@@ -483,7 +483,7 @@ function addTriangles(size, pattern, stroke) {
 
             if (!isLeft) {
                 // inverted cell
-                cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (55 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
+                cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (47 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
 
                 linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // adjacent left
                 if (!isRight)
