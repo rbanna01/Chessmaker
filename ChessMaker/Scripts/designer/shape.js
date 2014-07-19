@@ -466,6 +466,8 @@ function addTriangles(size, pattern, stroke) {
     if (stroke != '')
         stroke = ' ' + stroke;
 
+    var offset = nextElem - 1;
+
     for (var iy = 0; iy < size; iy++) {
         var isTop = iy == 0;
         var isBottom = iy == size - 1;
@@ -476,8 +478,8 @@ function addTriangles(size, pattern, stroke) {
             var isRight = ix == iy;
             var cellNum;
 
-            var yAbove = (iy - 1) * (iy - 1) + (ix - 1) * 2; // for inverted
-            var yBelow = (iy + 1) * (iy + 1) + ix * 2 + 1; // for un-inverted
+            var yAbove = offset + (iy - 1) * (iy - 1) + (ix - 1) * 2 + 1; // for inverted
+            var yBelow = offset + (iy + 1) * (iy + 1) + ix * 2 + 2; // for un-inverted
 
             if (!isLeft) {
                 // inverted cell
@@ -490,7 +492,8 @@ function addTriangles(size, pattern, stroke) {
                 if (!isTop) {
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + yAbove; // adjacent up
 
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (yAbove - 2); // diagonal up-left
+                    if (ix > 1)
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (yAbove - 2); // diagonal up-left
 
                     if (!isRight)
                         linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (yAbove + 2); // diagonal up-right
@@ -517,7 +520,7 @@ function addTriangles(size, pattern, stroke) {
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (yBelow + 2); // diagonal down-right
             }
 
-            if (!isTop)
+            if (!isTop && !isLeft && !isRight)
                 linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (yAbove + 1); // diagonal down
         }
     }
