@@ -8,6 +8,13 @@
     fill:red;
 }
 
-#absDirList li:hover {
-    color:red;
+#absDirList {
+    list-style-type:none;
+    margin:0; padding:0;
 }
+
+    #absDirList li {
+        margin-top:0.1em;
+        margin-bottom:0.1em;
+        padding: 0.2em 0 0.2em 0.8em;
+    }

@@ -1,17 +1,46 @@
 ﻿$(function () {
     populateAbsDirs();
 
-    $('#absDirList li').hover(function () {
-        var dir = $(this).attr('dir');
-        $('#render .marker[dir="' + dir + '"]').show();
-    }, function () {
-        var dir = $(this).attr('dir');
-        $('#render .marker[dir="' + dir + '"]').hide();
-    });
+    $('#absDirList li').hover(absDirMouseOver, absDirMouseOut).click(absDirClick);
 
     //$('#render path.cell, #render line')
         //.click(elementClicked);
 });
+
+function absDirMouseOver() {
+    if ($('#absDirList li.selected').length > 0)
+        return;
+
+    var dir = $(this).attr('dir');
+    $('#render .marker[dir="' + dir + '"]').show();
+    $(this).removeClass("ui-state-default");
+    $(this).addClass("ui-state-active");
+}
+
+function absDirMouseOut() {
+    if ($('#absDirList li.selected').length == 0) {
+        var dir = $(this).attr('dir');
+        $('#render .marker[dir="' + dir + '"]').hide();
+    }
+    
+    $(this).addClass("ui-state-default");
+    $(this).removeClass("ui-state-active");
+}
+
+function absDirClick() {
+    var selected = $('#absDirList li.selected');
+    if (selected.length > 0) {
+        selected.removeClass('selected ui-state-error');
+        if (selected[0] == this)
+            return;
+
+        $('#render .marker').hide();
+        var dir = $(this).attr('dir');
+        $('#render .marker[dir="' + dir + '"]').show();
+    }
+    
+    $(this).toggleClass("selected ui-state-error");
+}
 
 function populateAbsDirs() {
     var output = $('#absDirList');
@@ -25,7 +54,7 @@ function populateAbsDirs() {
 
         var existing = output.find('li[dir="' + dir + '"]');
         if (existing.length == 0) {
-            output.append('<li dir="' + dir + '">' + dir + '</li>');
+            output.append('<li class="ui-state-default" dir="' + dir + '">' + dir + '</li>');
         }
 
         var from = document.getElementById(parts[0]);
