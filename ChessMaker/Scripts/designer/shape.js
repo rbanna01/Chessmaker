@@ -758,7 +758,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
 
                 // outward-cw
                 if (!lastSlice)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum - slicesAct + 1);
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum + slicesAct + 1);
                 else if (wrap)
                     linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (cellNum + 1);
             }

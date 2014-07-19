@@ -218,7 +218,7 @@ namespace ChessMaker.Services
                 var toNode = board.SelectSingleNode(string.Format("cell[@id='{0}']", linkParts[2]));
 
                 if (fromNode == null || toNode == null)
-                    return;
+                    continue;
 
                 // add a child to fromNode like: <link dir="blah" to="blah" />
                 var linkElem = def.CreateElement("link");
