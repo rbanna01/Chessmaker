@@ -28,6 +28,11 @@ function absDirMouseOut() {
 }
 
 function absDirClick() {
+    if ($(this).hasClass('selected'))
+        $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
+    else
+        $('#lnkRename, #lnkDelete, #lnkMerge').removeClass('disabled');
+
     var selected = $('#absDirList li.selected');
     if (selected.length > 0) {
         selected.removeClass('selected ui-state-error');
