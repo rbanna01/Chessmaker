@@ -3,7 +3,20 @@
 
     $('#absDirList li').hover(absDirMouseOver, absDirMouseOut).click(absDirClick);
 
-    //$('#render path.cell, #render line')
+    $('#lnkDelete').click(function () {
+        var selected = $('#absDirList li.selected');
+        if (selected.length == 0)
+            return;
+
+        var dir = selected.attr('dir');
+        $('#render .marker[dir="' + dir + '"]').remove();
+        selected.remove();
+
+        $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
+    });
+
+
+    //$('#render path.cell')
         //.click(elementClicked);
 });
 
