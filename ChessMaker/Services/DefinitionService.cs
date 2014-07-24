@@ -50,6 +50,15 @@ namespace ChessMaker.Services
             return true;
         }
 
+        public void SaveLinkData(VariantVersion version, string linkData)
+        {
+            var definition = GetDefinition(version);
+            var board = definition.Board;
+            SaveLinkData(definition, board, linkData);
+            definition.Board = board;
+            Entities.SaveChanges();
+        }
+
         private static void SaveCellFromSVG(XmlNode node, XmlNode board)
         {
             // nodes must have the "cell" class to count as a cell
@@ -205,7 +214,11 @@ namespace ChessMaker.Services
         char[] outerSep = new char[] { ';' }, innerSep = new char[] { ':' };
         private void SaveLinkData(VariantDefinition def, XmlNode board, string cellLinks)
         {
-            //var board = def.Board;
+            // clear existing links
+            var existingLinks = board.SelectNodes("cell/link");
+            foreach (XmlNode link in existingLinks)
+                link.ParentNode.RemoveChild(link);
+
             var links = cellLinks.Split(outerSep, StringSplitOptions.RemoveEmptyEntries);
             foreach (string link in links)
             {

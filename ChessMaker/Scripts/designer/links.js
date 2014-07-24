@@ -69,6 +69,16 @@
     });
 
     $('#render path.cell').click(cellClicked);
+
+    $('#linksForm').submit(function () {
+        var data = '';
+        $('#render .marker').each(function () {
+            var m = $(this);
+            data += ';' + m.attr('from') + ':' + m.attr('dir') + ':' + m.attr('to');
+        });
+        $('#linkData').val(data);
+    });
+
 });
 
 function deleteDir() {
@@ -91,8 +101,12 @@ function doRename() {
     if (oldName == newName)
         return true;
 
-    // ensure that the new name is unique, and not blank
-    if (newName.trim() == '' || $('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
+    // ensure the new name is valid
+    if (newName.trim() == '' || newName.indexOf(':') != -1 || newName.indexOf(';') != -1)
+        return false;
+
+    // ensure that the new name is unique
+    if ($('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
         return false;
 
     // update text and dir attribute
@@ -135,8 +149,12 @@ function doMerge() {
 function newAbsDir() {
     var newName = $('#txtNewName').val();
 
-    // ensure that the new name is unique, and not blank
-    if (newName.trim() == '' || $('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
+    // ensure the new name is valid
+    if (newName.trim() == '' || newName.indexOf(':') != -1 || newName.index(';') != -1)
+        return false;
+
+    // ensure that the new name is unique
+    if ($('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
         return false;
 
     // add new list item

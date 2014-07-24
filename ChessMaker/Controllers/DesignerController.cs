@@ -75,7 +75,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Links(int id, string shapeData, string linkData, string next)
+        public ActionResult Links(int id, string linkData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -84,10 +84,10 @@ namespace ChessMaker.Controllers
             UserService users = GetService<UserService>();
             if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
-            /*
+            
             DefinitionService definitions = GetService<DefinitionService>();
-            definitions.SaveBoardData(version, shapeData, linkData);
-            */
+            definitions.SaveLinkData(version, linkData);
+
             if (next == "Done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
 
