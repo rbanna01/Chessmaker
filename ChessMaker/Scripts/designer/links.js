@@ -15,10 +15,132 @@
         $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
     });
 
+    $('#rename').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (doRename())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#merge').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (doMerge())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#new').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (newAbsDir())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#lnkRename').click(function () {
+        var input = $('#txtRename').val($('#absDirList li.selected').attr('dir'));
+        $("#rename").dialog('open');
+        input[0].select(); // select the text only after showing the dialog
+    });
+
+    $('#lnkMerge').click(function () {
+        populateMerge();
+        $("#merge").dialog('open');
+    });
+
+    $('#lnkNew').click(function () {
+        $('#new').dialog('open');
+    });
 
     //$('#render path.cell')
         //.click(elementClicked);
 });
+
+function doRename() {
+    var oldName = $('#absDirList li.selected').attr('dir');
+    var newName = $('#txtRename').val();
+
+    // if no change, "succeed" but do nothing
+    if (oldName == newName)
+        return true;
+
+    // ensure that the new name is unique, and not blank
+    if (newName.trim() == '' || $('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
+        return false;
+
+    // update text and dir attribute
+    $('#absDirList li.selected')
+        .attr('dir', newName)
+        .text(newName);
+
+    // update all markers with this dir attribute
+    $('#render .marker[dir="' + oldName + '"]').attr('dir', newName);
+
+    return true;
+}
+
+function populateMerge() {
+    var ddl = $('#ddlMerge');
+    ddl.children().remove();
+
+    $('#absDirList li:not(.selected)').each(function () {
+        var dir = $(this).attr('dir');
+        ddl.append($('<option />').val(dir).text(dir));
+    });
+}
+
+function doMerge() {
+    var mergeFromItem = $('#absDirList li.selected');
+    var mergeFrom = mergeFromItem.attr('dir');
+    var mergeInto = $('#ddlMerge').val();
+    var mergeIntoItem = $('#absDirList li[dir="' + mergeInto.replace("'", "''").replace('"', '""') + '"]');
+
+    if (mergeIntoItem.length == 0)
+        return false;
+
+    $('#render .marker[dir="' + mergeFrom + '"]').attr('dir', mergeInto);
+
+    mergeIntoItem.click();
+    mergeFromItem.remove();
+    return true;
+}
+
+function newAbsDir() {
+    var newName = $('#txtNewName').val();
+
+    // ensure that the new name is unique, and not blank
+    if (newName.trim() == '' || $('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]:not(.selected)').length > 0)
+        return false;
+
+    // add new list item
+    $('#absDirList').append($('<li />').attr('class', 'ui-state-default').attr('dir', newName).text(newName));
+
+    // select it
+    $('#absDirList li[dir="' + newName.replace("'", "''").replace('"', '""') + '"]')
+        .hover(absDirMouseOver, absDirMouseOut).click(absDirClick)
+        .click();
+    return true;
+}
 
 function absDirMouseOver() {
     if ($('#absDirList li.selected').length > 0)

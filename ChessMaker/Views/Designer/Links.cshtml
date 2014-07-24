@@ -34,6 +34,21 @@
     </div>
 </div>
 
+<div id="rename" class="popup" title="Rename direction">
+    <label for="txtRename">New name</label>
+    <input type="text" id="txtRename" class="text ui-widget-content" />
+</div>
+
+<div id="merge" class="popup" title="Merge direction">
+    <label for="ddlMerge">Direction to merge into</label>
+    <select id="ddlMerge" class="text ui-widget-content"></select>
+</div>
+
+<div id="new" class="popup" title="New direction">
+    <label for="txtNewName">Name</label>
+    <input type="text" id="txtNewName" class="text ui-widget-content" />
+</div>
+
 @using (Html.BeginForm("Links", "Designer", FormMethod.Post, new { id = "linksForm" }))
 {
     @Html.AntiForgeryToken()
