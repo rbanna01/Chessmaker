@@ -1,5 +1,4 @@
 #render .marker {
-    display:none;
     stroke:red;
     stroke-width:1;
 }

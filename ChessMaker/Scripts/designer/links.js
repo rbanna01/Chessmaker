@@ -3,17 +3,7 @@
 
     $('#absDirList li').hover(absDirMouseOver, absDirMouseOut).click(absDirClick);
 
-    $('#lnkDelete').click(function () {
-        var selected = $('#absDirList li.selected');
-        if (selected.length == 0)
-            return;
-
-        var dir = selected.attr('dir');
-        $('#render .marker[dir="' + dir + '"]').remove();
-        selected.remove();
-
-        $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
-    });
+    $('#lnkDelete').click(deleteDir);
 
     $('#rename').dialog({
         modal: true,
@@ -72,9 +62,20 @@
         $('#new').dialog('open');
     });
 
-    //$('#render path.cell')
-        //.click(elementClicked);
+    $('#render path.cell').click(cellClicked);
 });
+
+function deleteDir() {
+    var selected = $('#absDirList li.selected');
+    if (selected.length == 0)
+        return;
+
+    var dir = selected.attr('dir');
+    $('#render .marker[dir="' + dir + '"]').remove();
+    selected.remove();
+
+    $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
+}
 
 function doRename() {
     var oldName = $('#absDirList li.selected').attr('dir');
@@ -163,6 +164,7 @@ function absDirMouseOut() {
 }
 
 function absDirClick() {
+    firstCell = null;
     if ($(this).hasClass('selected'))
         $('#lnkRename, #lnkDelete, #lnkMerge').addClass('disabled');
     else
@@ -203,34 +205,41 @@ function populateAbsDirs() {
         if (from == null || to == null)
             continue;
 
-        from = from.pathSegList.getItem(0);
-        to = to.pathSegList.getItem(0);
-
-        // line ends should be a fixed distance from their cell centers
-        var dx = to.x - from.x, dy = to.y - from.y;
-        var length = Math.sqrt(dx * dx + dy * dy);
-        dx = dx / length; dy = dy / length; // unit lengths
-
-        var distShort = 10;
-
-        var startX = from.x + (dx * distShort);
-        var startY = from.y + (dy * distShort);
-        var endX = to.x - (dx * distShort);
-        var endY = to.y - (dy * distShort);
-
-        // add hidden indicator element to the svg
-        var elem = $(SVG('line'))
-                .attr('x1', startX)
-                .attr('x2', endX)
-                .attr('y1', startY)
-                .attr('y2', endY)
-			    .attr('class', 'marker')
-                .attr('dir', dir)
-                .attr('marker-end', 'url(#arrowhead)')
-                .appendTo($('#render'));
-
-        output.children().sort(sortDirs).appendTo(output);
+        addMarker(from, to, dir);
     }
+
+    $('#render .marker').hide();
+    output.children().sort(sortDirs).appendTo(output);
+}
+
+function addMarker(fromCell, toCell, dir) {
+    var from = fromCell.pathSegList.getItem(0);
+    var to = toCell.pathSegList.getItem(0);
+
+    // line ends should be a fixed distance from their cell centers
+    var dx = to.x - from.x, dy = to.y - from.y;
+    var length = Math.sqrt(dx * dx + dy * dy);
+    dx = dx / length; dy = dy / length; // unit lengths
+
+    var distShort = 10;
+
+    var startX = from.x + (dx * distShort);
+    var startY = from.y + (dy * distShort);
+    var endX = to.x - (dx * distShort);
+    var endY = to.y - (dy * distShort);
+
+    // add hidden indicator element to the svg
+    var elem = $(SVG('line'))
+            .attr('x1', startX)
+            .attr('x2', endX)
+            .attr('y1', startY)
+            .attr('y2', endY)
+            .attr('class', 'marker')
+            .attr('marker-end', 'url(#arrowhead)')
+            .attr('dir', dir)
+            .attr('from', fromCell.getAttribute('id'))
+            .attr('to', toCell.getAttribute('id'))
+            .appendTo($('#render'));
 }
 
 function sortDirs(a, b) {
@@ -257,4 +266,32 @@ function sortDirs(a, b) {
         return -1;
 
     return a > b ? 1 : -1;
+}
+
+var firstCell = null;
+function cellClicked(e) {
+    var dir = $('#absDirList li.selected');
+    if (dir.length == 0)
+        return;
+    dir = dir.attr('dir');
+
+    if (firstCell == null) {
+        firstCell = this;
+        addClass($(this), 'selected');
+        return;
+    }
+    remClass($(firstCell), 'selected');
+
+    if (firstCell == this) {
+        firstCell = null;
+        return;
+    }
+
+    // is there already a marker between these cells, for this direction? If so, remove it. Otherwise, add one.
+    var existing = $('#render .marker[dir="' + dir + '"][from="' + firstCell.getAttribute('id') + '"][to="' + this.getAttribute('id') + '"]');
+    if (existing.length > 0)
+        existing.remove();
+    else
+        addMarker(firstCell, this, dir);
+    firstCell = null;
 }
