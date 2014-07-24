@@ -486,17 +486,19 @@ function addTriangles(size, pattern, stroke) {
                 cellNum = addCell('M' + (40 + ix * 40 - iy * 20) + ' ' + (47 + iy * 35) + triPathInverted, resolvePattern(ystep + 1, pattern), stroke);
 
                 linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // adjacent left
-                if (!isRight)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum - 1); // adjacent down-left
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum + 1); // adjacent right
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + (cellNum + 1); // adjacent down-right
 
                 if (!isTop) {
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + yAbove; // adjacent up
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + yAbove; // adjacent up-left
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + yAbove; // adjacent up-right
 
                     if (ix > 1)
-                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (yAbove - 2); // diagonal up-left
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (yAbove - 2); // diagonal up-left
 
                     if (!isRight)
-                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (yAbove + 2); // diagonal up-right
+                        linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (yAbove + 2); // diagonal up-right
                 }
 
                 if (!isBottom)
@@ -506,26 +508,30 @@ function addTriangles(size, pattern, stroke) {
             // right-way-up cell
             cellNum = addCell('M' + (60 + ix * 40 - iy * 20) + ' ' + (60 + iy * 35) + triPath, resolvePattern(ystep, pattern), stroke);
 
-            if (!isLeft)
+            if (!isLeft) {
                 linkData.value += ';cell' + cellNum + ':temp' + nextGroupDir + ':cell' + (cellNum - 1); // adjacent left
-            if (!isRight)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + (cellNum + 1); // adjacent right
-
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 4) + ':cell' + (cellNum - 1); // adjacent up-left
+            }
+            if (!isRight) {
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 2) + ':cell' + (cellNum + 1); // adjacent right
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 5) + ':cell' + (cellNum + 1); // adjacent up-right
+            }
             if (!isBottom) {
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + yBelow; // adjacent down
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 1) + ':cell' + yBelow; // adjacent down-left
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 3) + ':cell' + yBelow; // adjacent down-right
 
                 if (!isLeft)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 6) + ':cell' + (yBelow - 2); // diagonal down-left
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (yBelow - 2); // diagonal down-left
                 if (!isRight)
-                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 7) + ':cell' + (yBelow + 2); // diagonal down-right
+                    linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 10) + ':cell' + (yBelow + 2); // diagonal down-right
             }
 
             if (!isTop && !isLeft && !isRight)
-                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 9) + ':cell' + (yAbove + 1); // diagonal down
+                linkData.value += ';cell' + cellNum + ':temp' + (nextGroupDir + 11) + ':cell' + (yAbove + 1); // diagonal down
         }
     }
 
-    nextGroupDir += 10;
+    nextGroupDir += 12;
     updateBounds();
     selectedChanged();
 }
