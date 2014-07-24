@@ -49,9 +49,9 @@ namespace ChessMaker.Controllers
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
             else if (next == "next")
-                return RedirectToAction("Links", new { id = version.VariantID });
+                return RedirectToAction("Links", new { id });
             
-            return RedirectToAction("Shape", new { id = version.VariantID });
+            return RedirectToAction("Shape", new { id });
         }
 
         [Authorize]
@@ -90,11 +90,11 @@ namespace ChessMaker.Controllers
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
             else if (next == "prev")
-                return RedirectToAction("Shape", new { id = version.VariantID });
+                return RedirectToAction("Shape", new { id });
             else if (next == "next")
-                return RedirectToAction("Pieces", new { id = version.VariantID });
+                return RedirectToAction("Pieces", new { id });
 
-            return RedirectToAction("Links", new { id = version.VariantID });
+            return RedirectToAction("Links", new { id });
         }
     }
 }
