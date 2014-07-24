@@ -79,6 +79,43 @@
         $('#linkData').val(data);
     });
 
+    $(document).keydown(function (e) {
+        if ($(".ui-dialog").is(":visible"))
+            return; // do nothing if a popup is open
+
+        switch (e.which) {
+            case 82:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkRename').click();
+                break;
+            case 77:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkMerge').click();
+                break;
+            case 78:
+                $('#lnkNew').click();
+                break;
+            case 46:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkDelete').click();
+                break;
+            case 13:
+                var selected = $('#absDirList li.selected');
+                if (selected.length == 0)
+                    $('#absDirList li:first').click();
+                else if (e.shiftKey)
+                    selected.prev().click();
+                else
+                    selected.next().click();
+                break;
+            default:
+                return;
+        }
+        e.preventDefault();
+    });
 });
 
 function deleteDir() {
@@ -141,7 +178,10 @@ function doMerge() {
 
     $('#render .marker[dir="' + mergeFrom + '"]').attr('dir', mergeInto);
 
-    mergeIntoItem.click();
+    var nextItem = mergeFromItem.next();
+    if (nextItem.length == 0)
+        mergeIntoItem.click();
+    nextItem.click();
     mergeFromItem.remove();
     return true;
 }
@@ -201,10 +241,9 @@ function absDirClick() {
             return;
 
         $('#render .marker').hide();
-        var dir = $(this).attr('dir');
-        $('#render .marker[dir="' + dir + '"]').show();
     }
-    
+    var dir = $(this).attr('dir');
+    $('#render .marker[dir="' + dir + '"]').show();
     $(this).toggleClass("selected ui-state-error");
 }
 

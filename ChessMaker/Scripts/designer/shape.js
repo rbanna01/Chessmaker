@@ -1042,6 +1042,9 @@ $(function () {
     });
 
     $(document).keydown(function (e) {
+        if ($(".ui-dialog").is(":visible"))
+            return; // do nothing if a popup is open
+
         switch (e.which) {
             case 37:
                 if (e.shiftKey)
