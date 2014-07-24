@@ -46,13 +46,12 @@ namespace ChessMaker.Controllers
             DefinitionService definitions = GetService<DefinitionService>();
             definitions.SaveBoardData(version, shapeData, linkData);
 
-            if (next == "Done")
+            if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
-
-            else if (next == "Links" || next == "Rules" || next == "Pieces" || next == "Layout")
-                return RedirectToAction(next, new { id = id });
-            else
-                return RedirectToAction("Shape", new { id = id });
+            else if (next == "next")
+                return RedirectToAction("Links", new { id = version.VariantID });
+            
+            return RedirectToAction("Shape", new { id = version.VariantID });
         }
 
         [Authorize]
@@ -88,13 +87,14 @@ namespace ChessMaker.Controllers
             DefinitionService definitions = GetService<DefinitionService>();
             definitions.SaveLinkData(version, linkData);
 
-            if (next == "Done")
+            if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
+            else if (next == "prev")
+                return RedirectToAction("Shape", new { id = version.VariantID });
+            else if (next == "next")
+                return RedirectToAction("Pieces", new { id = version.VariantID });
 
-            else if (next == "Shape" || next == "Rules" || next == "Pieces" || next == "Layout")
-                return RedirectToAction(next, new { id = id });
-            else
-                return RedirectToAction("Links", new { id = id });
+            return RedirectToAction("Links", new { id = version.VariantID });
         }
     }
 }

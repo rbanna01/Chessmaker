@@ -160,21 +160,22 @@
     @Html.Hidden("shapeData", Model.SvgData, new { id = "shapeData" })
     @Html.Hidden("linkData", Model.LinkData, new { id = "linkData" })
 
-    <input type="submit" name="next" id="submitShape" value="Shape" />
-    <input type="submit" name="next" id="submitLinks" value="Links" />
-    <input type="submit" name="next" id="submitPieces" value="Pieces" />
-    <input type="submit" name="next" id="submitLayout" value="Layout" />
-    <input type="submit" name="next" id="submitRules" value="Rules" />
-    <input type="submit" name="next" id="submitDone" value="Done" />
+    <input type="submit" name="next" id="submitPrev" value="prev" />
+    <input type="submit" name="next" id="submitCurrent" value="this" />
+    <input type="submit" name="next" id="submitNext" value="next" />
+    <input type="submit" name="next" id="submitDone" value="done" />
 }
 
 @section actions {
-    <button onclick="$('#submitShape').click();" title="board shape" class="current">Shape</button>
-    <button onclick="$('#submitLinks').click();" title="links between cells">Links</button>
-    <button onclick="$('#submitPieces').click();" title="piece definitions">Pieces</button>
-    <button onclick="$('#submitLayout').click();" title="starting piece layout">Layout</button>
-    <button onclick="$('#submitRules').click();" title="game rules">Rules</button>
-    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Done</button>
+    @if (Model.PrevPage != null) {
+    <button onclick="$('#submitPrev').click();" title="@Model.PrevPageTooltip">&lt; @Model.PrevPage</button>
+    }
+    <button onclick="$('#submitCurrent').click();" title="save your changes, staying on the current page" class="current">@Model.ThisPage</button>
+    @if (Model.NextPage != null) {
+    <button onclick="$('#submitNext').click();" title="@Model.NextPageTooltip">@Model.NextPage &gt;</button>
+    }
+    <button onclick="location.reload();" id="btnReset" title="reload the current page, resetting your changes">Reset</button>
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Close</button>
 }
 
 @section css {

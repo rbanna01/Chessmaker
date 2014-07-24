@@ -6,30 +6,52 @@ using System.Xml;
 
 namespace ChessMaker.Models
 {
-    public class BoardShapeModel
+    public abstract class DesignerModel
+    {
+        public string ThisPage { get; set; }
+        public string PrevPage { get; set; }
+        public string NextPage { get; set; }
+
+        public string PrevPageTooltip { get; set; }
+        public string NextPageTooltip { get; set; }
+
+        public string VariantName { get; set; }
+    }
+
+    public class BoardShapeModel : DesignerModel
     {
         public BoardShapeModel(VariantVersion version, XmlDocument boardSvg, string linkData)
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
             LinkData = linkData;
+
+            ThisPage = "Shape";
+            NextPage = "Links";
+
+            NextPageTooltip = "links between cells";
         }
 
-        public string VariantName { get; set; }
         public string SvgData { get; set; }
         public string LinkData { get; set; }
     }
 
-    public class BoardLinksModel
+    public class BoardLinksModel : DesignerModel
     {
         public BoardLinksModel(VariantVersion version, XmlDocument boardSvg, string linkData)
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
             LinkData = linkData;
+
+            ThisPage = "Links";
+            PrevPage = "Shape";
+            NextPage = "Pieces";
+
+            PrevPageTooltip = "board layout";
+            NextPageTooltip = "piece definitions";
         }
 
-        public string VariantName { get; set; }
         public string SvgData { get; set; }
         public string LinkData { get; set; }
     }

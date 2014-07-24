@@ -79,3 +79,7 @@ form {
     stroke:gray;
 }
 /* board theme-specific styling end */
+
+#btnReset {
+    margin-left:2em;
+}
