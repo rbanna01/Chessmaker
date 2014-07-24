@@ -47,6 +47,12 @@
         }
     });
 
+    $('.popup').keyup(function (e) {
+        if (e.keyCode != 13)
+            return;
+        $(this).parent().find('button:nth-child(1)').click();
+    });
+
     $('#lnkRename').click(function () {
         var input = $('#txtRename').val($('#absDirList li.selected').attr('dir'));
         $("#rename").dialog('open');
