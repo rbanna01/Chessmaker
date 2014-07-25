@@ -27,7 +27,7 @@ namespace ChessMaker.Models
             LinkData = linkData;
 
             ThisPage = "Shape";
-            NextPage = "Links";
+            NextPage = "Dirs 1";
 
             NextPageTooltip = "links between cells";
         }
@@ -44,15 +44,35 @@ namespace ChessMaker.Models
             SvgData = boardSvg.OuterXml;
             LinkData = linkData;
 
-            ThisPage = "Links";
             PrevPage = "Shape";
-            NextPage = "Pieces";
+            ThisPage = "Dirs 1";
+            NextPage = "Dirs 2";
 
             PrevPageTooltip = "board layout";
-            NextPageTooltip = "piece definitions";
+            NextPageTooltip = "relative directions";
         }
 
         public string SvgData { get; set; }
         public string LinkData { get; set; }
+    }
+
+    public class RelativeDirectionsModel : DesignerModel
+    {
+        public RelativeDirectionsModel(VariantVersion version, string globalDirs, string relativeLinks)
+        {
+            VariantName = version.Variant.Name;
+            GlobalDirections = globalDirs;
+            RelativeDirections = relativeLinks;
+
+            PrevPage = "Dirs 1";
+            ThisPage = "Dirs 2";
+            NextPage = "Pieces";
+
+            PrevPageTooltip = "links between cells";
+            NextPageTooltip = "piece definitions";
+        }
+
+        public string GlobalDirections { get; set; }
+        public string RelativeDirections { get; set; }
     }
 }

@@ -49,13 +49,13 @@ namespace ChessMaker.Controllers
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
             else if (next == "next")
-                return RedirectToAction("Links", new { id });
+                return RedirectToAction("Dirs1", new { id });
             
             return RedirectToAction("Shape", new { id });
         }
 
         [Authorize]
-        public ActionResult Links(int id)
+        public ActionResult Dirs1(int id)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -74,7 +74,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Links(int id, string linkData, string next)
+        public ActionResult Dirs1(int id, string linkData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -92,9 +92,51 @@ namespace ChessMaker.Controllers
             else if (next == "prev")
                 return RedirectToAction("Shape", new { id });
             else if (next == "next")
+                return RedirectToAction("Dirs2", new { id });
+
+            return RedirectToAction("Dirs1", new { id });
+        }
+
+        [Authorize]
+        public ActionResult Dirs2(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            var model = new RelativeDirectionsModel(version, definitions.CalculateGlobalDirections(version), definitions.GetRelativeDirs(version));
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Dirs2(int id, string relData, string next)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            // do some savey stuff
+
+            if (next == "done")
+                return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
+            else if (next == "prev")
+                return RedirectToAction("Dirs1", new { id });
+            else if (next == "next")
                 return RedirectToAction("Pieces", new { id });
 
-            return RedirectToAction("Links", new { id });
+            return RedirectToAction("Dirs2", new { id });
         }
     }
 }

@@ -1,0 +1,8 @@
+#render .marker {
+    stroke:red;
+    stroke-width:1;
+}
+
+#arrowhead {
+    fill:red;
+}

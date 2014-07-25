@@ -252,5 +252,108 @@ namespace ChessMaker.Services
 
             return sb.ToString();
         }
+
+        private static readonly char[] space = { ' ' };
+        public string CalculateGlobalDirections(VariantVersion version)
+        {
+            SortedList<string, int> NumLinks = new SortedList<string,int>();
+            SortedList<string, double> DXs = new SortedList<string,double>(), DYs = new SortedList<string,double>();
+            var board = GetDefinition(version).Board;
+            foreach (XmlNode fromCell in board.ChildNodes)
+            {
+                // read path attr for X & Y positions
+                var fromCellPath = fromCell.Attributes["path"].Value.Split(space, 3);
+                double fromCellX, fromCellY;
+                if (!double.TryParse(fromCellPath[1], out fromCellY) || fromCellPath[0].Length < 2 || !double.TryParse(fromCellPath[0].Substring(1), out fromCellX))
+                    continue;
+
+                foreach (XmlNode link in fromCell.ChildNodes)
+                {
+                    var dir = link.Attributes["dir"].Value;
+                    var toCellName = link.Attributes["to"].Value;
+
+                    var toCell = board.SelectSingleNode(string.Format("cell[@id='{0}']", toCellName));
+                    if (toCell == null)
+                    {
+                        if (!NumLinks.ContainsKey(dir))
+                            NumLinks[dir] = 0;
+                        continue;
+                    }
+                    
+                    // read path attr for X & Y positions
+                    var toCellPath = toCell.Attributes["path"].Value.Split(space, 3);
+                    double toCellX, toCellY;
+                    if (!double.TryParse(toCellPath[1], out toCellY) || toCellPath[0].Length < 2 || !double.TryParse(toCellPath[0].Substring(1), out toCellX))
+                    {
+                        if (!NumLinks.ContainsKey(dir))
+                            NumLinks[dir] = 0;
+                        continue;
+                    }
+
+                    var dx = toCellX - fromCellX;
+                    var dy = toCellY - fromCellY;
+
+                    int numLinks;
+                    if (NumLinks.TryGetValue(dir, out numLinks) && numLinks > 0)
+                    {
+                        NumLinks[dir]++;
+                        DXs[dir] += dx;
+                        DYs[dir] += dy;
+                    }
+                    else
+                    {
+                        NumLinks[dir] = 1;
+                        DXs[dir] = dx;
+                        DYs[dir] = dy;
+                    }
+                }
+            }
+
+            var sb = new StringBuilder();
+            foreach(var kvp in NumLinks)
+            {
+                double dx, dy;
+
+                if (kvp.Value == 0)
+                {
+                    dx = 0;
+                    dy = 0;
+                }
+                else
+                {
+                    if (!DXs.TryGetValue(kvp.Key, out dx))
+                        dx = 0;
+                    else
+                        dx /= kvp.Value;
+                    
+                    if (!DYs.TryGetValue(kvp.Key, out dy))
+                        dy = 0;
+                    else
+                        dy /= kvp.Value;
+                }
+
+                if (dx == 0 && dy == 0)
+                    dx = 1;
+                else
+                {
+                    var magnitude = Math.Sqrt(dx * dx + dy * dy);
+                    dx /= magnitude; dy /= magnitude;
+                }
+
+                sb.Append(';');
+                sb.Append(kvp.Key);
+                sb.Append(':');
+                sb.Append(dx.ToString("0.###"));
+                sb.Append(':');
+                sb.Append(dy.ToString("0.###"));
+            }
+
+            return sb.ToString();
+        }
+
+        public string GetRelativeDirs(VariantVersion version)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
