@@ -257,14 +257,16 @@ namespace ChessMaker.Services
         public string CalculateGlobalDirectionDiagram(VariantVersion version)
         {
             SortedList<string, int> NumLinks = new SortedList<string,int>();
-            SortedList<string, double> DXs = new SortedList<string,double>(), DYs = new SortedList<string,double>();
+            SortedList<string, float> DXs = new SortedList<string,float>(), firstDX = new SortedList<string, float>();
+            SortedList<string, float> DYs = new SortedList<string,float>(), firstDY = new SortedList<string, float>();
+
             var board = GetDefinition(version).Board;
             foreach (XmlNode fromCell in board.ChildNodes)
             {
                 // read path attr for X & Y positions
                 var fromCellPath = fromCell.Attributes["path"].Value.Split(space, 3);
-                double fromCellX, fromCellY;
-                if (!double.TryParse(fromCellPath[1], out fromCellY) || fromCellPath[0].Length < 2 || !double.TryParse(fromCellPath[0].Substring(1), out fromCellX))
+                float fromCellX, fromCellY;
+                if (!float.TryParse(fromCellPath[1], out fromCellY) || fromCellPath[0].Length < 2 || !float.TryParse(fromCellPath[0].Substring(1), out fromCellX))
                     continue;
 
                 foreach (XmlNode link in fromCell.ChildNodes)
@@ -282,8 +284,8 @@ namespace ChessMaker.Services
                     
                     // read path attr for X & Y positions
                     var toCellPath = toCell.Attributes["path"].Value.Split(space, 3);
-                    double toCellX, toCellY;
-                    if (!double.TryParse(toCellPath[1], out toCellY) || toCellPath[0].Length < 2 || !double.TryParse(toCellPath[0].Substring(1), out toCellX))
+                    float toCellX, toCellY;
+                    if (!float.TryParse(toCellPath[1], out toCellY) || toCellPath[0].Length < 2 || !float.TryParse(toCellPath[0].Substring(1), out toCellX))
                     {
                         if (!NumLinks.ContainsKey(dir))
                             NumLinks[dir] = 0;
@@ -303,8 +305,8 @@ namespace ChessMaker.Services
                     else
                     {
                         NumLinks[dir] = 1;
-                        DXs[dir] = dx;
-                        DYs[dir] = dy;
+                        DXs[dir] = firstDX[dir] = dx;
+                        DYs[dir] = firstDY[dir] = dy;
                     }
                 }
             }
@@ -329,9 +331,10 @@ namespace ChessMaker.Services
             attr.Value = "-120 -120 240 240";
             svgDoc.DocumentElement.Attributes.Append(attr);
 
+            const float tolerance = 0.01f;
             foreach(var kvp in NumLinks)
             {
-                double dx, dy;
+                float dx, dy;
 
                 if (kvp.Value == 0)
                 {
@@ -351,13 +354,13 @@ namespace ChessMaker.Services
                         dy /= kvp.Value;
                 }
 
-                if (dx == 0 && dy == 0)
-                    dx = 1;
-                else
+                if (Math.Abs(dx) < tolerance && Math.Abs(dy) < tolerance)
                 {
-                    var magnitude = Math.Sqrt(dx * dx + dy * dy);
-                    dx /= magnitude; dy /= magnitude;
+                    dx = firstDX[kvp.Key]; dy = firstDY[kvp.Key];
                 }
+
+                var magnitude = (float)Math.Sqrt(dx * dx + dy * dy);
+                dx /= magnitude; dy /= magnitude;
 
                 var line = svgDoc.CreateElement("line");
                 svgDoc.DocumentElement.AppendChild(line);
