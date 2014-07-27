@@ -1,4 +1,4 @@
-﻿@model ChessMaker.Models.BoardLinksModel
+﻿@model ChessMaker.Models.RelativeDirectionsModel
 
 @{
     ViewBag.Title = "'" + Model.VariantName + "' cell links & directions";
@@ -6,7 +6,7 @@
 }
 
 <div id="board">
-    @Html.Raw(Model.SvgData)
+    @Html.Raw(Model.GlobalDirectionsDiagram)
 </div>
 
 <div id="sidebar">
@@ -22,7 +22,7 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
-    @Html.Hidden("relData", Model.LinkData, new { id = "relData" })
+    @Html.Hidden("relData", Model.RelativeDirections, new { id = "relData" })
 
     <input type="submit" name="next" id="submitPrev" value="prev" />
     <input type="submit" name="next" id="submitCurrent" value="this" />

@@ -254,7 +254,7 @@ namespace ChessMaker.Services
         }
 
         private static readonly char[] space = { ' ' };
-        public string CalculateGlobalDirections(VariantVersion version)
+        public string CalculateGlobalDirectionDiagram(VariantVersion version)
         {
             SortedList<string, int> NumLinks = new SortedList<string,int>();
             SortedList<string, double> DXs = new SortedList<string,double>(), DYs = new SortedList<string,double>();
@@ -309,7 +309,26 @@ namespace ChessMaker.Services
                 }
             }
 
-            var sb = new StringBuilder();
+            var svgDoc = new XmlDocument();
+            svgDoc.AppendChild(svgDoc.CreateElement("svg"));
+
+            // add a <defs> section containing an arrowhead marker
+            var defs = svgDoc.CreateElement("defs");
+            defs.InnerXml = @"<marker id=""arrowhead"" viewbox=""0 0 10 10"" refX=""1"" refY=""5"" markerWidth=""6"" markerHeight=""6"" orient=""auto""><path d=""M 0 0 L 10 5 L 0 10 z"" /></marker>";
+            svgDoc.DocumentElement.AppendChild(defs);
+
+            var attr = svgDoc.CreateAttribute("xmlns");
+            attr.Value = "http://www.w3.org/2000/svg";
+            svgDoc.DocumentElement.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("id");
+            attr.Value = "render";
+            svgDoc.DocumentElement.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("viewbox");
+            attr.Value = "-120 -120 240 240";
+            svgDoc.DocumentElement.Attributes.Append(attr);
+
             foreach(var kvp in NumLinks)
             {
                 double dx, dy;
@@ -340,20 +359,40 @@ namespace ChessMaker.Services
                     dx /= magnitude; dy /= magnitude;
                 }
 
-                sb.Append(';');
-                sb.Append(kvp.Key);
-                sb.Append(':');
-                sb.Append(dx.ToString("0.###"));
-                sb.Append(':');
-                sb.Append(dy.ToString("0.###"));
+                var line = svgDoc.CreateElement("line");
+                svgDoc.DocumentElement.AppendChild(line);
+
+                attr = svgDoc.CreateAttribute("x1");
+                attr.Value = (dx * 10).ToString("0.#");
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("y1");
+                attr.Value = (dy * 10).ToString("0.#");
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("x2");
+                attr.Value = (dx * 100).ToString("0.#");
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("y2");
+                attr.Value = (dy * 100).ToString("0.#");
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("class");
+                attr.Value = "marker " + kvp.Key;
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("marker-end");
+                attr.Value = "url(#arrowhead)";
+                line.Attributes.Append(attr);
             }
 
-            return sb.ToString();
+            return svgDoc.OuterXml;
         }
 
         public string GetRelativeDirs(VariantVersion version)
         {
-            throw new NotImplementedException();
+            return string.Empty;// throw new NotImplementedException();
         }
     }
 }

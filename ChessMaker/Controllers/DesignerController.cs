@@ -109,7 +109,7 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new RelativeDirectionsModel(version, definitions.CalculateGlobalDirections(version), definitions.GetRelativeDirs(version));
+            var model = new RelativeDirectionsModel(version, definitions.CalculateGlobalDirectionDiagram(version), definitions.GetRelativeDirs(version));
 
             return View(model);
         }

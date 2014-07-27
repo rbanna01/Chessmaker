@@ -61,7 +61,7 @@ namespace ChessMaker.Models
         public RelativeDirectionsModel(VariantVersion version, string globalDirs, string relativeLinks)
         {
             VariantName = version.Variant.Name;
-            GlobalDirections = globalDirs;
+            GlobalDirectionsDiagram = globalDirs;
             RelativeDirections = relativeLinks;
 
             PrevPage = "Dirs 1";
@@ -72,7 +72,7 @@ namespace ChessMaker.Models
             NextPageTooltip = "piece definitions";
         }
 
-        public string GlobalDirections { get; set; }
+        public string GlobalDirectionsDiagram { get; set; }
         public string RelativeDirections { get; set; }
     }
 }
