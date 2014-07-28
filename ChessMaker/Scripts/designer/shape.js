@@ -218,25 +218,21 @@ function selectedChanged() {
     if (lines.length > 0) {
         if (paths.length > 0) { // both
             $('#lineEnds, #rotateCW, #rotateCCW').hide();
-            $('#itemProperties .color').hide();
+
+            $('#itemProperties .stroke.color').hide();
         }
         else { // only lines
             $('#lineEnds').show();
             $('#rotateCW, #rotateCCW').hide();
 
-            $('#itemProperties .fill.color').hide();
-            $('#itemProperties .stroke.color').show();
-
-            $('#strokeNone').buttonset("option", "disabled", true);
+            $('#itemProperties .stroke.color').hide();
         }
     }
     else { // only paths, or nothing
         $('#lineEnds').hide();
         $('#rotateCW, #rotateCCW').show();
 
-        $('#itemProperties .color').show();
-
-        $('#strokeNone').buttonset("option", "disabled", false);
+        $('#itemProperties .stroke.color').show();
     }
 
     var noneSelected = paths.length == 0 && lines.length == 0;
@@ -269,22 +265,40 @@ function selectedChanged() {
         last = color;
     });
 
+    lines.each(function () {
+        var color;
+        if (hasClass(this, 'lightStroke'))
+            color = 'light';
+        else if (hasClass(this, 'midStroke'))
+            color = 'mid';
+        else if (hasClass(this, 'darkStroke'))
+            color = 'dark';
+        else
+            return;
+        if (color != last && last != null) { // color has changed
+            $('#itemProperties .fill input').prop('checked', false);
+            last = null;
+            return false;
+        }
+        last = color;
+    });
+
     if (last != null) {
         // otherwise, all selected items have same color. Update the color selector to match.
         $('#itemProperties .fill input[value="' + last + '"]').prop('checked', true);
     }
 
     last = null;
-    paths.add(lines).each(function () {
+    paths.each(function () {
         var color;
-        if (hasClass(this, 'strokeLight'))
-            color = 'strokeLight';
-        else if (hasClass(this, 'strokeMid'))
-            color = 'strokeMid';
-        else if (hasClass(this, 'strokeDark'))
-            color = 'strokeDark';
+        if (hasClass(this, 'lightStroke'))
+            color = 'light';
+        else if (hasClass(this, 'midStroke'))
+            color = 'mid';
+        else if (hasClass(this, 'darkStroke'))
+            color = 'dark';
         else
-            return;
+            color = '';
         if (color != last && last != null) { // color has changed
             $('#itemProperties .stroke input').prop('checked', false);
             last = null;
@@ -303,8 +317,8 @@ function selectedChanged() {
 
 function addSingleCell(pathData) {
     clearSelection();
-    var fill = $('.fill#itemProperties :radio:checked').attr('value');
-    var stroke = $('.stroke#itemProperties :radio:checked').attr('value');
+    var fill = $('#itemProperties .fill :radio:checked').attr('value');
+    var stroke = $('#itemProperties .stroke :radio:checked').attr('value') + 'Stroke';
     if (stroke != '')
         stroke = ' ' + stroke;
 
@@ -330,13 +344,16 @@ function addCell(pathData, fillColor, strokeColor) {
 
 function addLine() {
     clearSelection();
+    var stroke = $('#itemProperties .fill :radio:checked').attr('value') + 'Stroke'; // doesn't come from the "border" selection for cells
+    if (stroke == '')
+        stroke = 'midStroke';
 
     var elem = $(SVG('line'))
                 .attr('x1', '40')
                 .attr('x2', '80')
                 .attr('y1', '40')
                 .attr('y2', '40')
-			    .attr('class', 'detail strokeMid selected')
+			    .attr('class', 'detail ' + stroke + ' selected')
                 .appendTo($('#render'))
                 .click(elementClicked);
 
@@ -1009,31 +1026,39 @@ $(function () {
 
     $('#itemProperties .color.fill').buttonset().click(function () {
         var fill = $('#itemProperties .color.fill :radio:checked').attr('value');
-        var selected = $('#render path.selected');
+        var selectedPaths = $('#render path.selected');
+        var selectedLines = $('#render line.selected');
 
-        if (fill != 'light')
-            remClass(selected, 'light');
-        if (fill != 'mid')
-            remClass(selected, 'mid');
-        if (fill != 'dark')
-            remClass(selected, 'dark');
+        if (fill != 'light') {
+            remClass(selectedPaths, 'light');
+            remClass(selectedLines, 'lightStroke');
+        }
+        if (fill != 'mid') {
+            remClass(selectedPaths, 'mid');
+            remClass(selectedLines, 'midStroke');
+        }
+        if (fill != 'dark') {
+            remClass(selectedPaths, 'dark');
+            remClass(selectedLines, 'darkStroke');
+        }
 
-        addClass(selected, fill);
+        addClass(selectedPaths, fill);
+        addClass(selectedLines, fill + 'Stroke');
     });
 
     $('#itemProperties .color.stroke').buttonset().click(function () {
         var stroke = $('#itemProperties .color.stroke :radio:checked').attr('value');
         var selected = $('#render path.selected');
 
-        if (stroke != 'strokeLight')
-            remClass(selected, 'strokeLight');
-        if (stroke != 'strokeMid')
-            remClass(selected, 'strokeMid');
-        if (stroke != 'strokeDark')
-            remClass(selected, 'strokeDark');
+        if (stroke != 'light')
+            remClass(selected, 'lightStroke');
+        if (stroke != 'mid')
+            remClass(selected, 'midStroke');
+        if (stroke != 'dark')
+            remClass(selected, 'darkStroke');
 
         if (stroke != '')
-            addClass(selected, stroke);
+            addClass(selected, stroke + 'Stroke');
     });
 
     $('#board').click(function (e) {

@@ -67,15 +67,15 @@ form {
     fill:gray;
 }
 
-#render .strokeLight {
+#render .lightStroke{
     stroke:white;
 }
 		
-#render .strokeDark {
+#render .darkStroke {
     stroke:black;
 }
 		
-#render .strokeMid {
+#render .midStroke {
     stroke:gray;
 }
 /* board theme-specific styling end */

@@ -84,12 +84,12 @@ namespace ChessMaker.Services
 
             var color = strClasses.Contains(" light ") ? "light" : strClasses.Contains(" dark ") ? "dark" : "mid";
 
-            if (strClasses.Contains(" strokeLight "))
-                color += " strokeLight";
-            else if (strClasses.Contains(" strokeMid "))
-                color += " strokeMid";
-            else if (strClasses.Contains(" strokeDark "))
-                color += " strokeDark";
+            if (strClasses.Contains(" lightStroke "))
+                color += " lightStroke";
+            else if (strClasses.Contains(" midStroke "))
+                color += " midStroke";
+            else if (strClasses.Contains(" darkStroke "))
+                color += " darkStroke";
 
             attr = definition.CreateAttribute("color");
             attr.Value = color;
@@ -112,7 +112,7 @@ namespace ChessMaker.Services
             if (classes == null)
                 return;
             var strClasses = " " + classes.Value + " ";
-            var color = strClasses.Contains(" strokeLight ") ? "strokeLight" : strClasses.Contains(" strokeDark ") ? "strokeDark" : "strokeMid";
+            var color = strClasses.Contains(" lightStroke ") ? "lightStroke" : strClasses.Contains(" darkStroke ") ? "darkStroke" : "midStroke";
             var attr = definition.CreateAttribute("color");
             attr.Value = color;
             line.Attributes.Append(attr);
