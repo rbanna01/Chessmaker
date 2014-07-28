@@ -803,18 +803,46 @@ function projectAngle(start, angle, dist) {
     return { x: start.x + dist * Math.sin(angle), y: start.y - dist * Math.cos(angle) };
 }
 
-$('#shapeForm').submit(function () {
-    remClass($('#render path.selected'), 'selected');
-
-    $('#render path.cell[transform]').each(function () {
-        applyOwnTransform(this);
-        $(this).removeAttr('transform');
+function initializeCounters() {
+    // find the biggest numbered cell named like cell#. Set nextElem equal to its number plus 1, or 1 if none are found
+    var biggestNum = 0;
+    $('#render path.cell[id^="cell"]').each(function () {
+        var num = parseInt($(this).attr('id').substr(4));
+        if (!isNaN(num) && num > biggestNum)
+            biggestNum = num;
     });
+    nextElem = biggestNum + 1;
 
-    $('#shapeData').val($('#render').prop('outerHTML'));
-});
+    // find the biggest numbered dir in linkData named like temp#. Set nextGroupDir equal to its number plus 1, or 1 if none are found
+    biggestNum = 0;
+    var linkData = $('#linkData').val().split(';');
+    for (var i = 0; i < linkData.length; i++) {
+        var parts = linkData[i].split(':');
+        if (parts.length < 3)
+            continue;
+        var dir = parts[1];
+        if (dir.length <= 4 || dir.substr(0, 4) != 'temp')
+            continue;
+
+        var num = parseInt(dir.substr(4));
+        if (!isNaN(num) && num > biggestNum)
+            biggestNum = num;
+    }
+    nextGroupDir = biggestNum + 1;
+}
 
 $(function () {
+    $('#shapeForm').submit(function () {
+        remClass($('#render path.selected'), 'selected');
+
+        $('#render path.cell[transform]').each(function () {
+            applyOwnTransform(this);
+            $(this).removeAttr('transform');
+        });
+
+        $('#shapeData').val($('#render').prop('outerHTML'));
+    });
+
     var data = $('#shapeData').val();
     if (data.length > 0) {
         $('#render')
@@ -1109,4 +1137,5 @@ $(function () {
     });
 
     selectedChanged();
+    initializeCounters();
 });
