@@ -324,7 +324,7 @@ namespace ChessMaker.Services
             svgDoc.DocumentElement.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("id");
-            attr.Value = "render";
+            attr.Value = "indicator";
             svgDoc.DocumentElement.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("viewbox");
@@ -382,7 +382,11 @@ namespace ChessMaker.Services
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("class");
-                attr.Value = "marker " + kvp.Key;
+                attr.Value = "marker";
+                line.Attributes.Append(attr);
+
+                attr = svgDoc.CreateAttribute("dir");
+                attr.Value = kvp.Key;
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("marker-end");

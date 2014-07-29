@@ -1,8 +1,16 @@
+#indicator {
+    width:12em;
+    height:12em;
+}
 #indicator .marker {
     stroke:red;
-    stroke-width:1;
+    stroke-width:2;
 }
 
 #arrowhead {
-    fill:red;
+    fill: red;
+}
+
+#sidebar .button {
+    font-size: 0.9em;
 }
