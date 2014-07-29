@@ -1089,7 +1089,7 @@ $(function () {
             addClass(selected, stroke + 'Stroke');
     });
 
-    $('#board').click(function (e) {
+    $('#main').click(function (e) {
         if (!e.shiftKey && !e.ctrlKey)
             clearSelection();
     });
@@ -1138,4 +1138,8 @@ $(function () {
 
     selectedChanged();
     initializeCounters();
+
+    calculateRatio();
+    resizeBoard();
+    $(window).resize(function () { resizeBoard(); });
 });

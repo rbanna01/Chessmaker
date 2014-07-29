@@ -55,9 +55,3 @@ function resizeBoard() {
     }
     svg.css('width', width + "px").css('height', height + "px");
 }
-
-$(function () {
-    calculateRatio();
-    resizeBoard();
-    $(window).resize(function () { resizeBoard(); });
-});

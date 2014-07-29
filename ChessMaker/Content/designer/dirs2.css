@@ -1,4 +1,4 @@
-#render .marker {
+#indicator .marker {
     stroke:red;
     stroke-width:1;
 }

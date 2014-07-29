@@ -1,124 +1,4 @@
-﻿$(function () {
-    populateAbsDirs();
-
-    $('#absDirList li').hover(absDirMouseOver, absDirMouseOut).click(absDirClick);
-
-    $('#lnkDelete').click(deleteDir);
-
-    $('#rename').dialog({
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "OK": function () {
-                if (doRename())
-                    $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
-    });
-
-    $('#merge').dialog({
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "OK": function () {
-                if (doMerge())
-                    $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
-    });
-
-    $('#new').dialog({
-        modal: true,
-        autoOpen: false,
-        buttons: {
-            "OK": function () {
-                if (newAbsDir())
-                    $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
-    });
-
-    $('.popup').keyup(function (e) {
-        if (e.keyCode != 13)
-            return;
-        $(this).parent().find('button:nth-child(1)').click();
-    });
-
-    $('#lnkRename').click(function () {
-        var input = $('#txtRename').val($('#absDirList li.selected').attr('dir'));
-        $("#rename").dialog('open');
-        input[0].select(); // select the text only after showing the dialog
-    });
-
-    $('#lnkMerge').click(function () {
-        populateMerge();
-        $("#merge").dialog('open');
-    });
-
-    $('#lnkNew').click(function () {
-        $('#new').dialog('open');
-    });
-
-    $('#render path.cell').click(cellClicked);
-
-    $('#linksForm').submit(function () {
-        var data = '';
-        $('#render .marker').each(function () {
-            var m = $(this);
-            data += ';' + m.attr('from') + ':' + m.attr('dir') + ':' + m.attr('to');
-        });
-        $('#linkData').val(data);
-    });
-
-    $(document).keydown(function (e) {
-        if ($(".ui-dialog").is(":visible"))
-            return; // do nothing if a popup is open
-
-        switch (e.which) {
-            case 82:
-                if ($('#absDirList li.selected').length == 0)
-                    return;
-                $('#lnkRename').click();
-                break;
-            case 77:
-                if ($('#absDirList li.selected').length == 0)
-                    return;
-                $('#lnkMerge').click();
-                break;
-            case 78:
-                $('#lnkNew').click();
-                break;
-            case 46:
-                if ($('#absDirList li.selected').length == 0)
-                    return;
-                $('#lnkDelete').click();
-                break;
-            case 13:
-                var selected = $('#absDirList li.selected');
-                if (selected.length == 0)
-                    $('#absDirList li:first').click();
-                else if (e.shiftKey)
-                    selected.prev().click();
-                else
-                    selected.next().click();
-                break;
-            default:
-                return;
-        }
-        e.preventDefault();
-    });
-});
-
-function deleteDir() {
+﻿function deleteDir() {
     var selected = $('#absDirList li.selected');
     if (selected.length == 0)
         return;
@@ -358,3 +238,127 @@ function cellClicked(e) {
         addMarker(firstCell, this, dir);
     firstCell = null;
 }
+
+$(function () {
+    populateAbsDirs();
+
+    $('#absDirList li').hover(absDirMouseOver, absDirMouseOut).click(absDirClick);
+
+    $('#lnkDelete').click(deleteDir);
+
+    $('#rename').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (doRename())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#merge').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (doMerge())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#new').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                if (newAbsDir())
+                    $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('.popup').keyup(function (e) {
+        if (e.keyCode != 13)
+            return;
+        $(this).parent().find('button:nth-child(1)').click();
+    });
+
+    $('#lnkRename').click(function () {
+        var input = $('#txtRename').val($('#absDirList li.selected').attr('dir'));
+        $("#rename").dialog('open');
+        input[0].select(); // select the text only after showing the dialog
+    });
+
+    $('#lnkMerge').click(function () {
+        populateMerge();
+        $("#merge").dialog('open');
+    });
+
+    $('#lnkNew').click(function () {
+        $('#new').dialog('open');
+    });
+
+    $('#render path.cell').click(cellClicked);
+
+    $('#linksForm').submit(function () {
+        var data = '';
+        $('#render .marker').each(function () {
+            var m = $(this);
+            data += ';' + m.attr('from') + ':' + m.attr('dir') + ':' + m.attr('to');
+        });
+        $('#linkData').val(data);
+    });
+
+    $(document).keydown(function (e) {
+        if ($(".ui-dialog").is(":visible"))
+            return; // do nothing if a popup is open
+
+        switch (e.which) {
+            case 82:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkRename').click();
+                break;
+            case 77:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkMerge').click();
+                break;
+            case 78:
+                $('#lnkNew').click();
+                break;
+            case 46:
+                if ($('#absDirList li.selected').length == 0)
+                    return;
+                $('#lnkDelete').click();
+                break;
+            case 13:
+                var selected = $('#absDirList li.selected');
+                if (selected.length == 0)
+                    $('#absDirList li:first').click();
+                else if (e.shiftKey)
+                    selected.prev().click();
+                else
+                    selected.next().click();
+                break;
+            default:
+                return;
+        }
+        e.preventDefault();
+    });
+
+    calculateRatio();
+    resizeBoard();
+    $(window).resize(function () { resizeBoard(); });
+});

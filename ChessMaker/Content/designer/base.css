@@ -2,7 +2,7 @@ form {
     display:none;
 }
 
-#board {
+#main {
     position: absolute;
     left: 14.5em;
     right: 0px;
