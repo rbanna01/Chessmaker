@@ -22,6 +22,11 @@
     </div>
 </div>
 
+<div id="new" class="popup" title="New direction">
+    <label for="txtNew">Name</label>
+    <input type="text" id="txtNew" class="text ui-widget-content" />
+</div>
+
 @using (Html.BeginForm("Dirs2", "Designer", FormMethod.Post, new { id = "relForm" }))
 {
     @Html.AntiForgeryToken()

@@ -25,7 +25,7 @@ function addRelativeDir(dir) {
         $('#indicator .marker').each(function () {
             var absdir = $(this).attr('dir');
             absDirOptions += '<option value="' + absdir + '">' + absdir + '</option>';
-            absDirTable += '<tr dir="' + absdir + '"><td>' + absdir + '</td><td><select class="toAbsDirs"></select></td></tr>';
+            absDirTable += '<tr class="row" dir="' + absdir + '"><td>' + absdir + '</td><td><select class="toAbsDirs"></select></td></tr>';
         });
         absDirTable += '</table>';
     }
@@ -35,7 +35,37 @@ function addRelativeDir(dir) {
         .attr('dir', dir)
         .html('<h4>' + dir + '</h4>' + absDirTable);
 
-    groupbox.find('select.toAbsDirs').html(absDirOptions);
+    groupbox.find('select.toAbsDirs').html(absDirOptions).change(function () {
+        remClass($('#indicator .marker'), 'to');
+        var dir = $(this).val();
+        var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
+        addClass(marker, 'to');
+    });
+
+    groupbox.find('tr.row').hover(function () {
+        var dir = $(this).attr('dir');
+        var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
+        addClass(marker, 'from');
+
+        dir = $(this).find('select.toAbsDirs');
+        dir.addClass('highlightTo');
+        if (dir.length == 0)
+            return;
+        marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
+        addClass(marker, 'to');
+    }, function () {
+        var dir = $(this).attr('dir');
+        var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
+        remClass(marker, 'from');
+
+        dir = $(this).find('select.toAbsDirs');
+        dir.removeClass('highlightTo');
+        if (dir.length == 0)
+            return;
+        marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
+        remClass(marker, 'to');
+    });
+
     groupbox.appendTo($('#main'));
 }
 
@@ -47,9 +77,26 @@ function populateLink(dir, from, to) {
 $(function () {
     populate();
 
+    $('#new').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                var dir = $('#txtNew').val();
+                if ($('#main .groupbox[dir="' + dir.replace('"', '""') + '"]').length != 0)
+                    return; // one already exists with this name
+                addRelativeDir(dir);
+                $('#txtNew').val('');
+                $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
     $('#addDir').button().click(function () {
-        console.log("add new dir");
-        addRelativeDir('some new dir');
+        $('#new').dialog('open');
     });
     $('#remDir').button().click(function () {
         console.log("remove selected dir");
