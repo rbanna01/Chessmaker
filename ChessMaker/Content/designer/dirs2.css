@@ -38,17 +38,25 @@ select.highlightTo {
     display: inline-block;
 }
 
-.groupbox h4 {
-    margin-top:0;
-    margin-bottom:0.1em;
-    font-size:1.2em;
-}
+    .groupbox.selected {
+        background-color: #c8d0ff;
+    }
 
-.groupbox th {
-    font-size:1em;
-    padding-left:0.5em;
-}
+    .groupbox h4 {
+        margin-top: 0;
+        margin-bottom: 0.1em;
+        font-size: 1.2em;
+    }
 
-.groupbox tr.row:hover {
-    color:red;
-}
+    .groupbox.selected h4 {
+        text-decoration:underline;
+    }
+
+    .groupbox th {
+        font-size: 1em;
+        padding-left: 0.5em;
+    }
+
+    .groupbox tr.row:hover {
+        color: red;
+    }

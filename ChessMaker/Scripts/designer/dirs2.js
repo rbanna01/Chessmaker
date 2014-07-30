@@ -16,7 +16,7 @@
 var absDirTable = null;
 var absDirOptions = null;
 function addRelativeDir(dir) {
-    // add a group box for it, with a row for every absolute dir, and a dropdown-list for where this relative dir leads to from eacht abs dir
+    // add a group box for it, with a row for every absolute dir, and a dropdown-list for where this relative dir leads to from each abs dir
 
     if (absDirTable == null) {
         absDirTable = '<table><tr><th>from</th><th>to</th></tr>';
@@ -33,40 +33,56 @@ function addRelativeDir(dir) {
     var groupbox = $('<div/>')
         .attr('class', 'groupbox ui-widget ui-corner-all')
         .attr('dir', dir)
-        .html('<h4>' + dir + '</h4>' + absDirTable);
+        .html('<h4>' + dir + '</h4>' + absDirTable)
+        .click(groupBoxClicked);
 
     groupbox.find('select.toAbsDirs').html(absDirOptions).change(function () {
         remClass($('#indicator .marker'), 'to');
         var dir = $(this).val();
         var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
         addClass(marker, 'to');
+    }).click(function (e) {
+        e.stopPropagation();
     });
 
-    groupbox.find('tr.row').hover(function () {
-        var dir = $(this).attr('dir');
-        var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
-        addClass(marker, 'from');
-
-        dir = $(this).find('select.toAbsDirs');
-        dir.addClass('highlightTo');
-        if (dir.length == 0)
-            return;
-        marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
-        addClass(marker, 'to');
-    }, function () {
-        var dir = $(this).attr('dir');
-        var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
-        remClass(marker, 'from');
-
-        dir = $(this).find('select.toAbsDirs');
-        dir.removeClass('highlightTo');
-        if (dir.length == 0)
-            return;
-        marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
-        remClass(marker, 'to');
-    });
-
+    groupbox.find('tr.row').hover(groupBoxRowHoverOver, groupBoxRowHoverOut);
     groupbox.appendTo($('#main'));
+}
+
+function groupBoxClicked() {
+    var box = $(this);
+    if (box.hasClass('selected'))
+        box.removeClass('selected');
+    else {
+        $('.groupbox').removeClass('selected');
+        box.addClass('selected');
+    }
+}
+
+function groupBoxRowHoverOver() {
+    var dir = $(this).attr('dir');
+    var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
+    addClass(marker, 'from');
+
+    dir = $(this).find('select.toAbsDirs');
+    dir.addClass('highlightTo');
+    if (dir.length == 0)
+        return;
+    marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
+    addClass(marker, 'to');
+}
+
+function groupBoxRowHoverOut() {
+    var dir = $(this).attr('dir');
+    var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
+    remClass(marker, 'from');
+
+    dir = $(this).find('select.toAbsDirs');
+    dir.removeClass('highlightTo');
+    if (dir.length == 0)
+        return;
+    marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
+    remClass(marker, 'to');
 }
 
 function populateLink(dir, from, to) {
