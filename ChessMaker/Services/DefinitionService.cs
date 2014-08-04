@@ -82,18 +82,26 @@ namespace ChessMaker.Services
                 cell.Attributes.Append(attr);
             }
 
-            var color = strClasses.Contains(" light ") ? "light" : strClasses.Contains(" dark ") ? "dark" : "mid";
+            var fill = strClasses.Contains(" light ") ? "light" : strClasses.Contains(" dark ") ? "dark" : "mid";
 
+            var border = string.Empty;
             if (strClasses.Contains(" lightStroke "))
-                color += " lightStroke";
+                border = "light";
             else if (strClasses.Contains(" midStroke "))
-                color += " midStroke";
+                border = " mid";
             else if (strClasses.Contains(" darkStroke "))
-                color += " darkStroke";
+                border = " dark";
 
-            attr = definition.CreateAttribute("color");
-            attr.Value = color;
+            attr = definition.CreateAttribute("fill");
+            attr.Value = fill;
             cell.Attributes.Append(attr);
+
+            if (border != string.Empty)
+            {
+                attr = definition.CreateAttribute("border");
+                attr.Value = fill;
+                cell.Attributes.Append(attr);
+            }
 
             var path = node.Attributes["d"];
             attr = definition.CreateAttribute("path");
@@ -112,7 +120,7 @@ namespace ChessMaker.Services
             if (classes == null)
                 return;
             var strClasses = " " + classes.Value + " ";
-            var color = strClasses.Contains(" lightStroke ") ? "lightStroke" : strClasses.Contains(" darkStroke ") ? "darkStroke" : "midStroke";
+            var color = strClasses.Contains(" lightStroke ") ? "light" : strClasses.Contains(" darkStroke ") ? "dark" : "mid";
             var attr = definition.CreateAttribute("color");
             attr.Value = color;
             line.Attributes.Append(attr);
@@ -177,7 +185,11 @@ namespace ChessMaker.Services
             cell.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("class");
-            attr.Value = "cell " + node.Attributes["color"].Value;
+            attr.Value = "cell " + node.Attributes["fill"].Value;
+
+            var borderAttr = node.Attributes["border"];
+            if (borderAttr != null)
+                attr.Value += " " + borderAttr.Value + "Stroke";
             cell.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("d");
@@ -207,7 +219,7 @@ namespace ChessMaker.Services
             line.Attributes.Append(attr);
 
             attr = svgDoc.CreateAttribute("class");
-            attr.Value = "detail " + node.Attributes["color"].Value;
+            attr.Value = "detail " + node.Attributes["color"].Value + "Stroke";
             line.Attributes.Append(attr);
         }
 
