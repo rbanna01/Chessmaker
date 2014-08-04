@@ -261,7 +261,7 @@ namespace ChessMaker.Services
             SortedList<string, float> DYs = new SortedList<string,float>(), firstDY = new SortedList<string, float>();
 
             var board = GetDefinition(version).Board;
-            foreach (XmlNode fromCell in board.ChildNodes)
+            foreach (XmlNode fromCell in board.SelectNodes("cell"))
             {
                 // read path attr for X & Y positions
                 var fromCellPath = fromCell.Attributes["path"].Value.Split(space, 3);
