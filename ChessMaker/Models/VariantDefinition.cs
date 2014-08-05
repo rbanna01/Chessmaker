@@ -48,5 +48,22 @@ namespace ChessMaker.Models
                 Changed();
             }
         }
+
+        public XmlElement Dirs
+        {
+            get
+            {
+                return Xml.DocumentElement["dirs"];
+            }
+            set
+            {
+                var existing = Dirs;
+                if (existing != null)
+                    Xml.DocumentElement.ReplaceChild(value, existing);
+                else
+                    Xml.DocumentElement.InsertAfter(value, Board);
+                Changed();
+            }
+        }
     }
 }

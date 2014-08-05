@@ -411,12 +411,78 @@ namespace ChessMaker.Services
 
         public string GetRelativeDirs(VariantVersion version)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+            var dirRoot = GetDefinition(version).Dirs;
+            if (dirRoot == null)
+                return string.Empty;
+
+            foreach (XmlNode relativeNode in dirRoot.SelectNodes("relative"))
+            {
+                var relDir = relativeNode.Attributes["name"].Value;
+
+                foreach(XmlNode link in relativeNode.ChildNodes)
+                    sb.AppendFormat(";{0}:{1}:{2}", link.Attributes["from"].Value, relDir, link.Attributes["to"].Value);
+            }
+
+            return sb.ToString();
         }
 
         internal void SaveRelativeDirs(VariantVersion version, string relData)
         {
-            throw new NotImplementedException();
+            var definition = GetDefinition(version);
+            var root = definition.Dirs;
+            if (root == null)
+            {
+                root = definition.Dirs = definition.CreateElement("dirs");
+            }
+            else
+            {
+                // clear existing relative directions
+                var existingDirs = root.SelectNodes("relative");
+                foreach (XmlNode dir in existingDirs)
+                    dir.ParentNode.RemoveChild(dir);
+            }
+
+            var relativeDirData = new SortedList<string, List<Tuple<string, string>>>();
+
+            var relLink = relData.Split(outerSep, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string link in relLink)
+            {
+                var linkParts = link.Split(innerSep, 3);
+                if (linkParts.Length != 3)
+                    continue;
+
+                string from = linkParts[0];
+                string relDir = linkParts[1];
+                string to = linkParts[2];
+                
+                List<Tuple<string, string>> linksForThisDir;
+                if (!relativeDirData.TryGetValue(relDir, out linksForThisDir))
+                {
+                    linksForThisDir = new List<Tuple<string, string>>();
+                    relativeDirData.Add(relDir, linksForThisDir);
+                }
+
+                linksForThisDir.Add(new Tuple<string, string>(from, to));
+            }
+
+            foreach (var kvp in relativeDirData)
+            {
+                var relDirNode = definition.CreateElement("relative");
+                relDirNode.Attributes.Append(definition.CreateAttribute("name", kvp.Key));
+
+                foreach(var link in kvp.Value)
+                {
+                    var linkNode = definition.CreateElement("link");
+                    linkNode.Attributes.Append(definition.CreateAttribute("from", link.Item1));
+                    linkNode.Attributes.Append(definition.CreateAttribute("to", link.Item2));
+                    relDirNode.AppendChild(linkNode);
+                }
+
+                root.AppendChild(relDirNode);
+            }
+            definition.Dirs = root;
+            Entities.SaveChanges();
         }
     }
 }

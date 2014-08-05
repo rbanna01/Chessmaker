@@ -132,6 +132,4 @@ $(function () {
         });
         $('#relData').val(data);
     });
-
-    // create groupBoxes based on relData
 });
