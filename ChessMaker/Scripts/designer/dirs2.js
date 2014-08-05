@@ -117,4 +117,21 @@ $(function () {
     $('#remDir').button().click(function () {
         console.log("remove selected dir");
     }).button('option', 'disabled', true);
+
+    $('#relForm').submit(function () {
+        var data = '';
+        $('#main .groupbox').each(function () {
+            var dir = $(this).attr('dir');
+
+            var rows = $(this).find('table tr.row').each(function () {
+                var fromDir = $(this).attr('dir');
+                var toDir = $(this).find('select.toAbsDirs').val();
+                if (toDir != '')
+                    data += ';' + fromDir + ':' + dir + ':' + toDir;
+            });
+        });
+        $('#relData').val(data);
+    });
+
+    // create groupBoxes based on relData
 });

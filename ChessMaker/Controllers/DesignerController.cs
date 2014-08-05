@@ -127,7 +127,8 @@ namespace ChessMaker.Controllers
             if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
                 return new HttpUnauthorizedResult();
 
-            // do some savey stuff
+            DefinitionService definitions = GetService<DefinitionService>();
+            definitions.SaveRelativeDirs(version, relData);
 
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });

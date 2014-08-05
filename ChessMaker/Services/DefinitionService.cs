@@ -411,7 +411,12 @@ namespace ChessMaker.Services
 
         public string GetRelativeDirs(VariantVersion version)
         {
-            return string.Empty;// throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        internal void SaveRelativeDirs(VariantVersion version, string relData)
+        {
+            throw new NotImplementedException();
         }
     }
 }
