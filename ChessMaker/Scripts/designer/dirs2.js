@@ -51,12 +51,19 @@ function addRelativeDir(dir) {
 
 function groupBoxClicked() {
     var box = $(this);
-    if (box.hasClass('selected'))
+    var noneSelected;
+
+    if (box.hasClass('selected')) {
         box.removeClass('selected');
+        noneSelected = true;
+    }
     else {
         $('.groupbox').removeClass('selected');
         box.addClass('selected');
+        noneSelected = false;
     }
+
+    $('#renameDir, #deleteDir').button('option', 'disabled', noneSelected);
 }
 
 function groupBoxRowHoverOver() {
@@ -111,11 +118,43 @@ $(function () {
         }
     });
 
+    $('#rename').dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            "OK": function () {
+                var dir = $('#txtRename').val();
+
+                var selected = $('#main .groupbox.selected');
+                if (selected.attr('dir') != dir){ // only make changes if the name has changed
+
+                    if ($('#main .groupbox[dir="' + dir.replace('"', '""') + '"]').length != 0)
+                        return; // one already exists with this name
+
+                    selected.attr('dir', dir).find('h4').html(dir);
+                }
+
+                $('#txtRename').val('');
+                $(this).dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
     $('#addDir').button().click(function () {
         $('#new').dialog('open');
     });
-    $('#remDir').button().click(function () {
-        console.log("remove selected dir");
+
+    $('#renameDir').button().click(function () {
+        $('#txtRename').val($('#main .groupbox.selected').attr('dir'));
+        $('#rename').dialog('open');
+    }).button('option', 'disabled', true);
+
+    $('#deleteDir').button().click(function () {
+        $('#main .groupbox.selected').remove();
+        $('#renameDir, #deleteDir').button('option', 'disabled', true);
     }).button('option', 'disabled', true);
 
     $('#relForm').submit(function () {

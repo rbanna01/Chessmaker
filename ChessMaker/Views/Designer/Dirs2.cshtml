@@ -18,13 +18,19 @@
         @Html.Raw(Model.GlobalDirectionsDiagram)
 
         <span id="addDir" class="button">Add new</span>
-        <span id="remDir" class="button">Remove</span>
+        <span id="renameDir" class="button">Rename</span>
+        <span id="deleteDir" class="button">Delete</span>
     </div>
 </div>
 
 <div id="new" class="popup" title="New direction">
     <label for="txtNew">Name</label>
     <input type="text" id="txtNew" class="text ui-widget-content" />
+</div>
+
+<div id="rename" class="popup" title="Rename direction">
+    <label for="txtRename">Name</label>
+    <input type="text" id="txtRename" class="text ui-widget-content" />
 </div>
 
 @using (Html.BeginForm("Dirs2", "Designer", FormMethod.Post, new { id = "relForm" }))
