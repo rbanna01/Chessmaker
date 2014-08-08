@@ -265,12 +265,25 @@ namespace ChessMaker.Services
             return sb.ToString();
         }
 
+        private class GlobalDirInfo
+        {
+            public GlobalDirInfo(string name, int num = 1) { Name = name; Num = num; }
+            public string Name { get; set; }
+            public int Num { get; set; }
+
+            public float DX { get; set; }
+            public float DY { get; set; }
+
+            public float FirstDX { get; set; }
+            public float FirstDY { get; set; }
+
+            public double Angle { get { return Math.Atan2(-DY, -DX); } }
+        }
+
         private static readonly char[] space = { ' ' };
         public string CalculateGlobalDirectionDiagram(VariantVersion version)
         {
-            SortedList<string, int> NumLinks = new SortedList<string,int>();
-            SortedList<string, float> DXs = new SortedList<string,float>(), firstDX = new SortedList<string, float>();
-            SortedList<string, float> DYs = new SortedList<string,float>(), firstDY = new SortedList<string, float>();
+            SortedList<string, GlobalDirInfo> directions = new SortedList<string, GlobalDirInfo>();
 
             var board = GetDefinition(version).Board;
             foreach (XmlNode fromCell in board.SelectNodes("cell"))
@@ -289,37 +302,31 @@ namespace ChessMaker.Services
                     var toCell = board.SelectSingleNode(string.Format("cell[@id='{0}']", toCellName));
                     if (toCell == null)
                     {
-                        if (!NumLinks.ContainsKey(dir))
-                            NumLinks[dir] = 0;
+                        if (!directions.ContainsKey(dir))
+                            directions[dir] = new GlobalDirInfo(dir, 0);
                         continue;
                     }
-                    
+
                     // read path attr for X & Y positions
                     var toCellPath = toCell.Attributes["path"].Value.Split(space, 3);
                     float toCellX, toCellY;
                     if (!float.TryParse(toCellPath[1], out toCellY) || toCellPath[0].Length < 2 || !float.TryParse(toCellPath[0].Substring(1), out toCellX))
                     {
-                        if (!NumLinks.ContainsKey(dir))
-                            NumLinks[dir] = 0;
+                        if (!directions.ContainsKey(dir))
+                            directions[dir] = new GlobalDirInfo(dir, 0);
                         continue;
                     }
 
                     var dx = toCellX - fromCellX;
                     var dy = toCellY - fromCellY;
 
-                    int numLinks;
-                    if (NumLinks.TryGetValue(dir, out numLinks) && numLinks > 0)
-                    {
-                        NumLinks[dir]++;
-                        DXs[dir] += dx;
-                        DYs[dir] += dy;
-                    }
-                    else
-                    {
-                        NumLinks[dir] = 1;
-                        DXs[dir] = firstDX[dir] = dx;
-                        DYs[dir] = firstDY[dir] = dy;
-                    }
+                    if (!directions.ContainsKey(dir))
+                        directions[dir] = new GlobalDirInfo(dir) { FirstDX = dx, FirstDY = dy };
+
+                    var direction = directions[dir];
+                    direction.Num++;
+                    direction.DX += dx;
+                    direction.DY += dy;
                 }
             }
 
@@ -343,54 +350,49 @@ namespace ChessMaker.Services
             attr.Value = "-120 -120 240 240";
             svgDoc.DocumentElement.Attributes.Append(attr);
 
+            // the elements should be written out here sorted by their directions, such that they come out in a clockwise order (this isn't for the diagram itself, but for the edit groups)
+
             const float tolerance = 0.01f;
-            foreach(var kvp in NumLinks)
+            foreach(var kvp in directions)
             {
-                float dx, dy;
+                var dir = kvp.Value;
 
-                if (kvp.Value == 0)
+                if (dir.Num > 1)
                 {
-                    dx = 0;
-                    dy = 0;
+                    dir.DX /= dir.Num;
+                    dir.DY /= dir.Num;
                 }
-                else
+                
+                if (Math.Abs(dir.DX) < tolerance && Math.Abs(dir.DY) < tolerance)
                 {
-                    if (!DXs.TryGetValue(kvp.Key, out dx))
-                        dx = 0;
-                    else
-                        dx /= kvp.Value;
-                    
-                    if (!DYs.TryGetValue(kvp.Key, out dy))
-                        dy = 0;
-                    else
-                        dy /= kvp.Value;
+                    dir.DX = dir.FirstDX; dir.DY = dir.FirstDY;
                 }
+            }
 
-                if (Math.Abs(dx) < tolerance && Math.Abs(dy) < tolerance)
-                {
-                    dx = firstDX[kvp.Key]; dy = firstDY[kvp.Key];
-                }
 
-                var magnitude = (float)Math.Sqrt(dx * dx + dy * dy);
-                dx /= magnitude; dy /= magnitude;
+            foreach (var dir in directions.Values.OrderBy(dir => dir.Angle))
+            {
+                Console.WriteLine("{0}, {1}", dir.Name, dir.Angle);
+                var magnitude = (float)Math.Sqrt(dir.DX * dir.DX + dir.DY * dir.DY);
+                dir.DX /= magnitude; dir.DY /= magnitude;
 
                 var line = svgDoc.CreateElement("line");
                 svgDoc.DocumentElement.AppendChild(line);
 
                 attr = svgDoc.CreateAttribute("x1");
-                attr.Value = (dx * 10).ToString("0.#");
+                attr.Value = (dir.DX * 10).ToString("0.#");
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("y1");
-                attr.Value = (dy * 10).ToString("0.#");
+                attr.Value = (dir.DY * 10).ToString("0.#");
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("x2");
-                attr.Value = (dx * 100).ToString("0.#");
+                attr.Value = (dir.DX * 100).ToString("0.#");
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("y2");
-                attr.Value = (dy * 100).ToString("0.#");
+                attr.Value = (dir.DY * 100).ToString("0.#");
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("class");
@@ -398,7 +400,7 @@ namespace ChessMaker.Services
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("dir");
-                attr.Value = kvp.Key;
+                attr.Value = dir.Name;
                 line.Attributes.Append(attr);
 
                 attr = svgDoc.CreateAttribute("marker-end");
