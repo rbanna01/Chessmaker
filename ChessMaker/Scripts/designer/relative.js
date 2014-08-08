@@ -67,9 +67,12 @@ function groupBoxClicked() {
 }
 
 function groupBoxRowHoverOver() {
+    $('#indicator .marker').attr('marker-end', 'url(#arrowhead)');
+
     var dir = $(this).attr('dir');
     var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
     addClass(marker, 'from');
+    marker.attr('marker-end', 'url(#arrowhead_from)');
 
     dir = $(this).find('select.toAbsDirs');
     dir.addClass('highlightTo');
@@ -77,9 +80,12 @@ function groupBoxRowHoverOver() {
         return;
     marker = $('#indicator .marker[dir="' + dir.val().replace('"', '""') + '"]');
     addClass(marker, 'to');
+    marker.attr('marker-end', 'url(#arrowhead_to)');
 }
 
 function groupBoxRowHoverOut() {
+    $('#indicator .marker').attr('marker-end', 'url(#arrowhead)');
+
     var dir = $(this).attr('dir');
     var marker = $('#indicator .marker[dir="' + dir.replace('"', '""') + '"]');
     remClass(marker, 'from');
