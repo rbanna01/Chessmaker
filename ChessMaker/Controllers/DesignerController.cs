@@ -66,7 +66,7 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new BoardLinksModel(version, definitions.GetBoardSVG(version, true), definitions.GetCellLinks(version));
+            var model = new GlobalDirectionsModel(version, definitions.GetBoardSVG(version, true), definitions.GetCellLinks(version));
 
             return View(model);
         }
@@ -135,7 +135,7 @@ namespace ChessMaker.Controllers
             else if (next == "prev")
                 return RedirectToAction("Global", new { id });
             else if (next == "next")
-                return RedirectToAction("Pieces", new { id });
+                return RedirectToAction("Groups", new { id });
 
             return RedirectToAction("Relative", new { id });
         }

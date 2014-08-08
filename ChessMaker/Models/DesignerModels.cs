@@ -36,9 +36,9 @@ namespace ChessMaker.Models
         public string LinkData { get; set; }
     }
 
-    public class BoardLinksModel : DesignerModel
+    public class GlobalDirectionsModel : DesignerModel
     {
-        public BoardLinksModel(VariantVersion version, XmlDocument boardSvg, string linkData)
+        public GlobalDirectionsModel(VariantVersion version, XmlDocument boardSvg, string linkData)
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
@@ -66,10 +66,10 @@ namespace ChessMaker.Models
 
             PrevPage = "Global dirs";
             ThisPage = "Relative dirs";
-            NextPage = "Pieces";
+            NextPage = "Dir groups";
 
             PrevPageTooltip = "links between cells";
-            NextPageTooltip = "piece definitions";
+            NextPageTooltip = "grouping directions together";
         }
 
         public string GlobalDirectionsDiagram { get; set; }

@@ -46,6 +46,7 @@ namespace ChessMaker.Services
 
             SaveLinkData(definition, board, cellLinks);
             definition.Board = board;
+            version.LastModified = DateTime.Now;
             Entities.SaveChanges();
             return true;
         }
@@ -56,6 +57,7 @@ namespace ChessMaker.Services
             var board = definition.Board;
             SaveLinkData(definition, board, linkData);
             definition.Board = board;
+            version.LastModified = DateTime.Now;
             Entities.SaveChanges();
         }
 
@@ -486,6 +488,7 @@ namespace ChessMaker.Services
                 root.AppendChild(relDirNode);
             }
             definition.Dirs = root;
+            version.LastModified = DateTime.Now;
             Entities.SaveChanges();
         }
     }
