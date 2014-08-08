@@ -27,7 +27,7 @@ namespace ChessMaker.Models
             LinkData = linkData;
 
             ThisPage = "Shape";
-            NextPage = "Dirs 1";
+            NextPage = "Global dirs";
 
             NextPageTooltip = "links between cells";
         }
@@ -45,8 +45,8 @@ namespace ChessMaker.Models
             LinkData = linkData;
 
             PrevPage = "Shape";
-            ThisPage = "Dirs 1";
-            NextPage = "Dirs 2";
+            ThisPage = "Global dirs";
+            NextPage = "Relative dirs";
 
             PrevPageTooltip = "board layout";
             NextPageTooltip = "relative directions";
@@ -64,8 +64,8 @@ namespace ChessMaker.Models
             GlobalDirectionsDiagram = globalDirs;
             RelativeDirections = relativeLinks;
 
-            PrevPage = "Dirs 1";
-            ThisPage = "Dirs 2";
+            PrevPage = "Global dirs";
+            ThisPage = "Relative dirs";
             NextPage = "Pieces";
 
             PrevPageTooltip = "links between cells";

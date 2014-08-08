@@ -253,8 +253,8 @@
     <Compile Include="Services\VariantService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\designer\dirs2.css" />
-    <Content Include="Content\designer\dirs1.css" />
+    <Content Include="Content\designer\relative.css" />
+    <Content Include="Content\designer\global.css" />
     <Content Include="Content\designer\shape.css" />
     <Content Include="Content\designer\base.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -333,8 +333,8 @@
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\designer\dirs2.js" />
-    <Content Include="Scripts\designer\dirs1.js" />
+    <Content Include="Scripts\designer\relative.js" />
+    <Content Include="Scripts\designer\global.js" />
     <Content Include="Scripts\designer\shape.js" />
     <Content Include="Scripts\designer\base.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
@@ -387,8 +387,8 @@
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Variants\Edit.cshtml" />
     <Content Include="Views\Designer\Shape.cshtml" />
-    <Content Include="Views\Designer\Dirs1.cshtml" />
-    <Content Include="Views\Designer\Dirs2.cshtml" />
+    <Content Include="Views\Designer\Global.cshtml" />
+    <Content Include="Views\Designer\Relative.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

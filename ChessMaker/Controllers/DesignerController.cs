@@ -49,13 +49,13 @@ namespace ChessMaker.Controllers
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
             else if (next == "next")
-                return RedirectToAction("Dirs1", new { id });
+                return RedirectToAction("Global", new { id });
             
             return RedirectToAction("Shape", new { id });
         }
 
         [Authorize]
-        public ActionResult Dirs1(int id)
+        public ActionResult Global(int id)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -74,7 +74,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Dirs1(int id, string linkData, string next)
+        public ActionResult Global(int id, string linkData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -92,13 +92,13 @@ namespace ChessMaker.Controllers
             else if (next == "prev")
                 return RedirectToAction("Shape", new { id });
             else if (next == "next")
-                return RedirectToAction("Dirs2", new { id });
+                return RedirectToAction("Relative", new { id });
 
-            return RedirectToAction("Dirs1", new { id });
+            return RedirectToAction("Global", new { id });
         }
 
         [Authorize]
-        public ActionResult Dirs2(int id)
+        public ActionResult Relative(int id)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -117,7 +117,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Dirs2(int id, string relData, string next)
+        public ActionResult Relative(int id, string relData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -133,11 +133,11 @@ namespace ChessMaker.Controllers
             if (next == "done")
                 return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
             else if (next == "prev")
-                return RedirectToAction("Dirs1", new { id });
+                return RedirectToAction("Global", new { id });
             else if (next == "next")
                 return RedirectToAction("Pieces", new { id });
 
-            return RedirectToAction("Dirs2", new { id });
+            return RedirectToAction("Relative", new { id });
         }
     }
 }

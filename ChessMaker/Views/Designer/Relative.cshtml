@@ -33,7 +33,7 @@
     <input type="text" id="txtRename" class="text ui-widget-content" />
 </div>
 
-@using (Html.BeginForm("Dirs2", "Designer", FormMethod.Post, new { id = "relForm" }))
+@using (Html.BeginForm("Relative", "Designer", FormMethod.Post, new { id = "relForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
@@ -61,9 +61,9 @@
 }
 
 @section css {
-    @Styles.Render("~/Content/themes/base/css", "~/Content/designer/base.css", "~/Content/designer/dirs2.css")
+    @Styles.Render("~/Content/themes/base/css", "~/Content/designer/base.css", "~/Content/designer/relative.css")
 }
 
 @section scripts {
-    @Scripts.Render("~/bundles/jqueryui", "~/Scripts/designer/base.js", "~/Scripts/designer/dirs2.js")
+    @Scripts.Render("~/bundles/jqueryui", "~/Scripts/designer/base.js", "~/Scripts/designer/relative.js")
 }
