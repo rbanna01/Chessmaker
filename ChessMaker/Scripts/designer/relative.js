@@ -163,12 +163,18 @@ $(function () {
         $('#renameDir, #deleteDir').button('option', 'disabled', true);
     }).button('option', 'disabled', true);
 
+    $('.popup').keyup(function (e) {
+        if (e.keyCode != 13)
+            return;
+        $(this).parent().find('button:nth-child(1)').click();
+    });
+
     $('#relForm').submit(function () {
         var data = '';
         $('#main .groupbox').each(function () {
             var dir = $(this).attr('dir');
 
-            var rows = $(this).find('table tr.row').each(function () {
+            $(this).find('table tr.row').each(function () {
                 var fromDir = $(this).attr('dir');
                 var toDir = $(this).find('select.toAbsDirs').val();
                 if (toDir != '')

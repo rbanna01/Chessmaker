@@ -1,0 +1,44 @@
+#dirList {
+    list-style-type:none;
+    margin:0; padding:0;
+}
+
+    #dirList li {
+        margin-top:0.1em;
+        margin-bottom:0.1em;
+        padding: 0.2em 0 0.2em 0.8em;
+    }
+
+.groupbox {
+    font-size:0.8em;
+    margin-left: 0.6em;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+    padding: 0.6em;
+    border: 1px solid #d3d3d3;
+    background-color: #d8e0ef;
+    display: inline-block;
+}
+
+    .groupbox.selected {
+        background-color: #c8d0ff;
+    }
+
+    .groupbox h4 {
+        margin-top: 0;
+        margin-bottom: 0.1em;
+        font-size: 1.2em;
+    }
+
+    .groupbox.selected h4 {
+        text-decoration:underline;
+    }
+
+    .groupbox th {
+        font-size: 1em;
+        padding-left: 0.5em;
+    }
+
+    .groupbox tr.row:hover {
+        color: red;
+    }

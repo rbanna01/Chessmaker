@@ -75,4 +75,24 @@ namespace ChessMaker.Models
         public string GlobalDirectionsDiagram { get; set; }
         public string RelativeDirections { get; set; }
     }
+
+    public class DirectionGroupsModel : DesignerModel
+    {
+        public DirectionGroupsModel(VariantVersion version, string allDirs, string groupData)
+        {
+            VariantName = version.Variant.Name;
+            AllDirs = allDirs;
+            GroupData = groupData;
+
+            PrevPage = "Relative dirs";
+            ThisPage = "Dir groups";
+            NextPage = "Cell refs";
+
+            PrevPageTooltip = "relative directions";
+            NextPageTooltip = "unique references for each cell";
+        }
+
+        public string AllDirs { get; set; }
+        public string GroupData { get; set; }
+    }
 }

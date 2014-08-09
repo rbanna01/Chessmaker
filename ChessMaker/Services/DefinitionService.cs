@@ -285,7 +285,7 @@ namespace ChessMaker.Services
         private static readonly char[] space = { ' ' };
         public string CalculateGlobalDirectionDiagram(VariantVersion version)
         {
-            SortedList<string, GlobalDirInfo> directions = new SortedList<string, GlobalDirInfo>();
+            var directions = new SortedList<string, GlobalDirInfo>();
 
             var board = GetDefinition(version).Board;
             foreach (XmlNode fromCell in board.SelectNodes("cell"))
@@ -433,7 +433,7 @@ namespace ChessMaker.Services
             return sb.ToString();
         }
 
-        internal void SaveRelativeDirs(VariantVersion version, string relData)
+        public void SaveRelativeDirs(VariantVersion version, string relData)
         {
             var definition = GetDefinition(version);
             var root = definition.Dirs;
@@ -485,7 +485,80 @@ namespace ChessMaker.Services
                     relDirNode.AppendChild(linkNode);
                 }
 
-                root.AppendChild(relDirNode);
+                root.PrependChild(relDirNode);
+            }
+            definition.Dirs = root;
+            version.LastModified = DateTime.Now;
+            Entities.SaveChanges();
+        }
+
+        public string ListAllDirections(VariantVersion version)
+        {
+            SortedSet<string> directions = new SortedSet<string>();
+
+            var board = GetDefinition(version).Board;
+            foreach (XmlNode fromCell in board.SelectNodes("cell"))
+                foreach (XmlNode link in fromCell.ChildNodes)
+                {
+                    var dir = link.Attributes["dir"].Value;
+                    if (!directions.Contains(dir))
+                        directions.Add(dir);
+                }
+
+            return string.Join(";", directions);
+        }
+
+        public string GetDirectionGroups(VariantVersion version)
+        {
+            var definition = GetDefinition(version);
+            var groups = definition.Dirs.SelectNodes("group");
+
+            var sb = new StringBuilder();
+            foreach (XmlNode groupNode in groups)
+            {
+                sb.Append(outerSep);
+                sb.Append(groupNode.Attributes["name"].Value);
+
+                foreach (XmlNode dir in groupNode.ChildNodes)
+                {
+                    sb.Append(innerSep);
+                    sb.Append(dir.Attributes["dir"].Value);
+                }
+            }
+            return sb.ToString();
+        }
+
+        public void SaveDirectionGroups(VariantVersion version, string groupData)
+        {
+            var definition = GetDefinition(version);
+            var root = definition.Dirs;
+            if (root == null)
+            {
+                root = definition.Dirs = definition.CreateElement("dirs");
+            }
+            else
+            {
+                // clear existing direction groups
+                var existingGroups = root.SelectNodes("group");
+                foreach (XmlNode group in existingGroups)
+                    group.ParentNode.RemoveChild(group);
+            }
+
+            var groups = groupData.Split(outerSep, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string group in groups)
+            {
+                var groupParts = group.Split(innerSep);
+
+                var groupNode = definition.CreateElement("group");
+                groupNode.Attributes.Append(definition.CreateAttribute("name", groupParts[0]));
+
+                for (int i = 1; i < groupParts.Length; i++)
+                {
+                    var linkNode = definition.CreateElement("include");
+                    linkNode.Attributes.Append(definition.CreateAttribute("dir", groupParts[i]));
+                    groupNode.AppendChild(linkNode);
+                }
+                root.AppendChild(groupNode);
             }
             definition.Dirs = root;
             version.LastModified = DateTime.Now;
