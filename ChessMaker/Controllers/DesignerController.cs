@@ -178,6 +178,49 @@ namespace ChessMaker.Controllers
             else if (next == "prev")
                 return RedirectToAction("Relative", new { id });
             else if (next == "next")
+                return RedirectToAction("References", new { id });
+
+            return RedirectToAction("Groups", new { id });
+        }
+
+        [Authorize]
+        public ActionResult References(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            var model = new CellReferencesModel(version, definitions.GetBoardSVG(version, false, true));
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult References(int id, string renameData, string next)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            definitions.SaveCellReferenceChanges(version, renameData);
+
+            if (next == "done")
+                return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
+            else if (next == "prev")
+                return RedirectToAction("Groups", new { id });
+            else if (next == "next")
                 return RedirectToAction("Pieces", new { id });
 
             return RedirectToAction("Groups", new { id });

@@ -139,7 +139,7 @@ namespace ChessMaker.Services
             board.AppendChild(line);
         }
 
-        public XmlDocument GetBoardSVG(VariantVersion version, bool addArrowheadDef = false)
+        public XmlDocument GetBoardSVG(VariantVersion version, bool addArrowheadDef = false, bool showCellRefs = false)
         {
             var board = GetDefinition(version).Board;
 
@@ -173,6 +173,10 @@ namespace ChessMaker.Services
                 else if (node.Name == "line")
                     WriteLineToSVG(node, svgDoc);
             }
+
+            if (showCellRefs) // done last, so that references appear on top of lines
+                foreach (XmlNode node in board.SelectNodes("cell"))
+                    WriteCellRefToSVG(node, svgDoc);
 
             return svgDoc;
         }
@@ -223,6 +227,26 @@ namespace ChessMaker.Services
             attr = svgDoc.CreateAttribute("class");
             attr.Value = "detail " + node.Attributes["color"].Value + "Stroke";
             line.Attributes.Append(attr);
+        }
+
+        private void WriteCellRefToSVG(XmlNode node, XmlDocument svgDoc)
+        {
+            var text = svgDoc.CreateElement("text");
+            text.InnerText = node.Attributes["id"].Value;
+            svgDoc.DocumentElement.AppendChild(text);
+
+            var cellPathParts = node.Attributes["path"].Value.Substring(1).Split(space, 3);
+            float cellX, cellY;
+            if (!float.TryParse(cellPathParts[1], out cellY) || !float.TryParse(cellPathParts[0], out cellX))
+                return;
+
+            var attr = svgDoc.CreateAttribute("x");
+            attr.Value = cellX.ToString();
+            text.Attributes.Append(attr);
+
+            attr = svgDoc.CreateAttribute("y");
+            attr.Value = cellY.ToString();
+            text.Attributes.Append(attr);
         }
 
         char[] outerSep = new char[] { ';' }, innerSep = new char[] { ':' };
@@ -291,9 +315,9 @@ namespace ChessMaker.Services
             foreach (XmlNode fromCell in board.SelectNodes("cell"))
             {
                 // read path attr for X & Y positions
-                var fromCellPath = fromCell.Attributes["path"].Value.Split(space, 3);
+                var fromCellPath = fromCell.Attributes["path"].Value.Substring(1).Split(space, 3);
                 float fromCellX, fromCellY;
-                if (!float.TryParse(fromCellPath[1], out fromCellY) || fromCellPath[0].Length < 2 || !float.TryParse(fromCellPath[0].Substring(1), out fromCellX))
+                if (!float.TryParse(fromCellPath[1], out fromCellY) || fromCellPath[0].Length < 2 || !float.TryParse(fromCellPath[0], out fromCellX))
                     continue;
 
                 foreach (XmlNode link in fromCell.ChildNodes)
@@ -312,7 +336,7 @@ namespace ChessMaker.Services
                     // read path attr for X & Y positions
                     var toCellPath = toCell.Attributes["path"].Value.Split(space, 3);
                     float toCellX, toCellY;
-                    if (!float.TryParse(toCellPath[1], out toCellY) || toCellPath[0].Length < 2 || !float.TryParse(toCellPath[0].Substring(1), out toCellX))
+                    if (!float.TryParse(toCellPath[1], out toCellY) || !float.TryParse(toCellPath[0].Substring(1), out toCellX))
                     {
                         if (!directions.ContainsKey(dir))
                             directions[dir] = new GlobalDirInfo(dir, 0);
@@ -563,6 +587,11 @@ namespace ChessMaker.Services
             definition.Dirs = root;
             version.LastModified = DateTime.Now;
             Entities.SaveChanges();
+        }
+
+        public void SaveCellReferenceChanges(VariantVersion version, string renameData)
+        {
+            throw new NotImplementedException();
         }
     }
 }

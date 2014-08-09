@@ -1,0 +1,7 @@
+#render text {
+    fill:red;
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-size:10px;
+    pointer-events: none;
+}

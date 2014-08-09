@@ -95,4 +95,22 @@ namespace ChessMaker.Models
         public string AllDirs { get; set; }
         public string GroupData { get; set; }
     }
+
+    public class CellReferencesModel : DesignerModel
+    {
+        public CellReferencesModel(VariantVersion version, XmlDocument boardSvg)
+        {
+            VariantName = version.Variant.Name;
+            SvgData = boardSvg.OuterXml;
+
+            PrevPage = "Dir groups";
+            ThisPage = "Cell refs";
+            NextPage = "Piece types";
+
+            PrevPageTooltip = "grouping directions together";
+            NextPageTooltip = "Piece definitions";
+        }
+
+        public string SvgData { get; set; }
+    }
 }

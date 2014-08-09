@@ -1,0 +1,59 @@
+﻿@model ChessMaker.Models.CellReferencesModel
+
+@{
+    ViewBag.Title = "'" + Model.VariantName + "' cell references";
+    ViewBag.MinimalLayout = true;
+}
+
+<div id="main">
+    @Html.Raw(Model.SvgData)
+</div>
+
+<div id="sidebar">
+    <div id="absDirs" class="section ui-widget ui-corner-all">
+        <h3>Cell References</h3>
+
+        ...
+    </div>
+</div>
+
+<div id="setup" class="popup" title="Auto-name cells">
+    Pick a naming format, and then two (perpendicular) directions across which to propagate that direction
+    <label for="txtNew">Name</label>
+    <input type="text" id="txtNew" class="text ui-widget-content" />
+</div>
+
+@using (Html.BeginForm("References", "Designer", FormMethod.Post, new { id = "refsForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    @Html.Hidden("renameData", "", new { id = "renameData" })
+
+    <input type="submit" name="next" id="submitPrev" value="prev" />
+    <input type="submit" name="next" id="submitCurrent" value="this" />
+    <input type="submit" name="next" id="submitNext" value="next" />
+    <input type="submit" name="next" id="submitDone" value="done" />
+}
+
+@section actions {
+    @if (Model.PrevPage != null)
+    {
+        <button onclick="$('#submitPrev').click();" title="@Model.PrevPageTooltip">&lt; @Model.PrevPage</button>
+    }
+    <button onclick="$('#submitCurrent').click();" title="save your changes, staying on the current page" class="current">@Model.ThisPage</button>
+    @if (Model.NextPage != null)
+    {
+        <button onclick="$('#submitNext').click();" title="@Model.NextPageTooltip">@Model.NextPage &gt;</button>
+    }
+    <button onclick="location.reload();" id="btnReset" title="reload the current page, resetting your changes">Reset</button>
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Close</button>
+}
+
+@section css {
+    @Styles.Render("~/Content/themes/base/css", "~/Content/designer/base.css", "~/Content/designer/references.css")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryui", "~/Scripts/designer/base.js", "~/Scripts/designer/references.js")
+}
