@@ -152,39 +152,14 @@ function getBounds(paths) {
 
 function updateBounds() {
     var paths = $('#render path');
-
     if (paths.length == 0)
         return;
 
-    var b = getBounds(paths);
-
-    // min & max currently based on object CENTERS. So add half width to get full size
-    b.minX -= 40; b.minY -= 40;
-    b.maxX += 40; b.maxY += 40;
-
-    // now account for lines
-    $('#render line').each(function () {
-        b.minX = Math.min(b.minX, this.x1.baseVal.value, this.x2.baseVal.value);
-        b.maxX = Math.max(b.maxX, this.x1.baseVal.value, this.x2.baseVal.value);
-        b.minY = Math.min(b.minY, this.y1.baseVal.value, this.y2.baseVal.value);
-        b.maxY = Math.max(b.maxY, this.y1.baseVal.value, this.y2.baseVal.value);
-    });
-
-    var width = b.maxX - b.minX, height = b.maxY - b.minY;
-
-    if (width < 120) {
-        b.minX = (b.maxX + b.minX) / 2 - 60;
-        width = 120;
-    }
-    if (height < 120) {
-        b.minY = (b.maxY + b.minY) / 2 - 60;
-        height = 120;
-    }
-
-    // jquery's .attr sets everything lowercase. Won't work for viewBox.
     var svg = $('#render')[0];
-    svg.setAttribute('viewBox', b.minX + ' ' + b.minY + ' ' + width + ' ' + height);
-    svg.setAttribute('ratio', width / height);
+    var b = svg.getBBox();
+
+    svg.setAttribute('viewBox', b.x + ' ' + b.y + ' ' + b.width + ' ' + b.height);
+    svg.setAttribute('ratio', b.width / b.height);
     resizeBoard();
 }
 
