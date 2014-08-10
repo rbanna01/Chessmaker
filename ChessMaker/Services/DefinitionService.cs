@@ -591,7 +591,38 @@ namespace ChessMaker.Services
 
         public void SaveCellReferenceChanges(VariantVersion version, string renameData)
         {
-            throw new NotImplementedException();
+            var definition = GetDefinition(version);
+            var board = definition.Board;
+
+            var renames = renameData.Split(outerSep, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var rename in renames)
+            {
+                var parts = rename.Split(innerSep);
+                if (parts.Length != 2)
+                    continue;
+
+                var from = parts[0];
+                var to = parts[1];
+
+                var alreadyExists = board.SelectSingleNode(string.Format("cell[@id='{0}']", to));
+                if (alreadyExists != null)
+                    continue;
+
+                // find the "from" cell, and change its ID to the "to" value.
+                var cell = board.SelectSingleNode(string.Format("cell[@id='{0}']", from));
+                if (cell == null)
+                    continue;
+                cell.Attributes["id"].Value = to;
+
+                // do the same for ALL links to this cell
+                var links = board.SelectNodes(string.Format("cell/link[@to='{0}']", from));
+                foreach (XmlNode link in links)
+                    link.Attributes["to"].Value = to;
+            }
+
+            definition.Board = board;
+            version.LastModified = DateTime.Now;
+            Entities.SaveChanges();
         }
     }
 }

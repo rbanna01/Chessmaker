@@ -13,14 +13,27 @@
     <div id="absDirs" class="section ui-widget ui-corner-all">
         <h3>Cell References</h3>
 
-        ...
+        Click on cells to name
+        <div>
+            @Html.RadioButton("rbMode", "single", true, new { id = "rbSingle" })
+            @Html.Label("rbSingle", "only that cell", new { @class = "radio" })
+        </div>
+        <div>
+            @Html.RadioButton("rbMode", "bulk", false, new { id = "rbBulk" })
+            @Html.Label("rbBulk", "multiple cells", new { @class = "radio" })
+        </div>
     </div>
 </div>
 
-<div id="setup" class="popup" title="Auto-name cells">
+<div id="singleRename" class="popup" title="Rename selected cell">
+    <label for="txtName">Name</label>
+    <input type="text" id="txtName" class="text ui-widget-content" />
+</div>
+
+<div id="bulkRename" class="popup" title="Auto-name cells">
     Pick a naming format, and then two (perpendicular) directions across which to propagate that direction
-    <label for="txtNew">Name</label>
-    <input type="text" id="txtNew" class="text ui-widget-content" />
+    <label for="txtNameFormat">Name</label>
+    <input type="text" id="txtNameFormat" class="text ui-widget-content" />
 </div>
 
 @using (Html.BeginForm("References", "Designer", FormMethod.Post, new { id = "refsForm" }))

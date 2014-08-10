@@ -223,7 +223,7 @@ namespace ChessMaker.Controllers
             else if (next == "next")
                 return RedirectToAction("Pieces", new { id });
 
-            return RedirectToAction("Groups", new { id });
+            return RedirectToAction("References", new { id });
         }
     }
 }

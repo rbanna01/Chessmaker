@@ -424,13 +424,10 @@ aside {
         margin: 0;
     }
 
-    #loginForm input {
+    #loginForm input[type="text"] {
         width: 250px;
     }
 
-    #loginForm input[type="checkbox"],
-    #loginForm input[type="submit"],
-    #loginForm input[type="button"],
     #loginForm button {
         width: auto;
     }
@@ -474,11 +471,11 @@ label {
     font-weight: 600;
 }
 
-label.checkbox {
+label.checkbox, label.radio {
     display: inline;
 }
 
-input, textarea {
+input[type="text"], textarea {
     border: 1px solid #e2e2e2;
     color: #333;
     font-size: 1.2em;
