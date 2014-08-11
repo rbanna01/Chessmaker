@@ -6,25 +6,29 @@
     pointer-events: none;
 }
 
-.blurb
-{
+.blurb {
     padding-bottom:0.8em;
 }
 
-#bulkExample
-{
+#bulkExample {
     font-size: 1.1em;
     font-weight:bold;
     text-decoration:underline;
 }
 
-.popup.bulk label
-{
+.popup.bulk label {
     display:inline;
 }
 
-.popup.bulk input[type="text"]
-{
+.popup.bulk input[type="text"] {
     width:60px;
     display:inline;
+}
+
+#bulkLeft {
+    float:left;
+}
+
+#bulkRight {
+    float:right;
 }

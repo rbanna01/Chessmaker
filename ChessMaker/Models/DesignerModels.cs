@@ -98,10 +98,12 @@ namespace ChessMaker.Models
 
     public class CellReferencesModel : DesignerModel
     {
-        public CellReferencesModel(VariantVersion version, XmlDocument boardSvg)
+        public CellReferencesModel(VariantVersion version, XmlDocument boardSvg, string links, IEnumerable<string> dirs)
         {
             VariantName = version.Variant.Name;
             SvgData = boardSvg.OuterXml;
+            LinkData = links;
+            AllDirs = dirs;
 
             PrevPage = "Dir groups";
             ThisPage = "Cell refs";
@@ -112,5 +114,7 @@ namespace ChessMaker.Models
         }
 
         public string SvgData { get; set; }
+        public string LinkData { get; set; }
+        public IEnumerable<string> AllDirs { get; set; }
     }
 }

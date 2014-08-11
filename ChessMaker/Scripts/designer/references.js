@@ -1,4 +1,26 @@
-﻿function cellClicked() {
+﻿var allLinkData = {};
+function populateLinkData() {
+    var data = $('#linkData').val().split(';');
+    for (var i = 0; i < data.length; i++) {
+        var parts = data[i].split(':');
+        if (parts.length != 3)
+            continue;
+
+        var dir = parts[1];
+        var from = parts[0];
+        var to = document.getElementById(parts[2]); // the actual object, to facilitate finding it easily after renaming
+
+        if (from == null || to == null)
+            continue;
+
+        if (!allLinkData.hasOwnProperty(from))
+            allLinkData[from] = {};
+
+        allLinkData[from][dir] = to;
+    }
+}
+
+function cellClicked() {
     addClass($(this), 'selected');
     if ($('#rbSingle').prop('checked')) {
         var txtName = $('#txtName').val($('#render path.cell.selected').attr('id'));
@@ -28,11 +50,16 @@ function doRenameCell(cell, newName) {
         .text(newName);
 
     $('#renameData').val($('#renameData').val() + ';' + oldName + ':' + newName);
+
+    // now rename the link data
+    allLinkData[newName] = allLinkData[oldName];
+    delete allLinkData[oldName];
+
     return true;
 }
 
-function setupAutoRename() {
-    // should also just be able to name this cell on its own
+function performAutoRename() {
+    // wow, we don't actually have a way to navigate the JS tree. I guess we need markers!
 }
 
 $(function () {
@@ -56,9 +83,11 @@ $(function () {
     $('#bulkRename').dialog({
         modal: true,
         autoOpen: false,
+        width: 540,
+        height: 415,
         buttons: {
             "OK": function () {
-                setupAutoRename();
+                performAutoRename();
                 remClass($('#render path.cell'), 'selected');
                 $(this).dialog("close");
             },
@@ -76,6 +105,16 @@ $(function () {
             return;
         $(this).parent().find('button:nth-child(1)').click();
     });
+
+    $('#bulkDir1Type').change(function () {
+        $('#bulkDir1Start').val($(this).val());
+    });
+
+    $('#bulkDir2Type').change(function () {
+        $('#bulkDir2Start').val($(this).val());
+    });
+
+    populateLinkData();
 
     calculateRatio();
     resizeBoard();

@@ -152,7 +152,8 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
             
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new DirectionGroupsModel(version, definitions.ListAllDirections(version), definitions.GetDirectionGroups(version));
+            var dirs = definitions.ListGlobalDirections(version);
+            var model = new DirectionGroupsModel(version, string.Join(";", dirs), definitions.GetDirectionGroups(version));
 
             return View(model);
         }
@@ -195,7 +196,8 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
 
             DefinitionService definitions = GetService<DefinitionService>();
-            var model = new CellReferencesModel(version, definitions.GetBoardSVG(version, false, true));
+            var dirs = definitions.ListGlobalDirections(version);
+            var model = new CellReferencesModel(version, definitions.GetBoardSVG(version, false, true), definitions.GetCellLinks(version), dirs);
 
             return View(model);
         }

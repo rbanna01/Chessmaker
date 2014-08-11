@@ -516,7 +516,7 @@ namespace ChessMaker.Services
             Entities.SaveChanges();
         }
 
-        public string ListAllDirections(VariantVersion version)
+        public IEnumerable<string> ListGlobalDirections(VariantVersion version)
         {
             SortedSet<string> directions = new SortedSet<string>();
 
@@ -529,7 +529,7 @@ namespace ChessMaker.Services
                         directions.Add(dir);
                 }
 
-            return string.Join(";", directions);
+            return directions;
         }
 
         public string GetDirectionGroups(VariantVersion version)
