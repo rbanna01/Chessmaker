@@ -30,10 +30,77 @@
     <input type="text" id="txtName" class="text ui-widget-content" />
 </div>
 
-<div id="bulkRename" class="popup" title="Auto-name cells">
-    Pick a naming format, and then two (perpendicular) directions across which to propagate that direction
-    <label for="txtNameFormat">Name</label>
-    <input type="text" id="txtNameFormat" class="text ui-widget-content" />
+<div id="bulkRename" class="popup bulk" title="Auto-name cells">
+    <div class="blurb">Pick a naming format, and then two (perpendicular) directions across which to propagate that direction</div>
+    
+    <div>
+        <label for="bulkDir1">moving</label>
+        <select id="bulkDir1" class="ui-widget-content">
+            <option>north</option>
+            <option>east</option>
+            <option>south</option>
+            <option>west</option>
+        </select>
+    </div>
+    <div>
+        <select id="bulkDir1Mode" class="ui-widget-content">
+            <option selected="selected">increment</option>
+            <option>decrement</option>
+        </select>
+
+        <select id="bulkDir1Type" class="ui-widget-content">
+            <option selected="selected">uppercase letter</option>
+            <option>lowercase letter</option>
+            <option>number</option>
+        </select>
+    </div>
+    <div>
+        <label for="bulkDir1Start">starting at</label>
+        <input type="text" width="5" id="bulkDir1Start" class="ui-widget-content" />
+    </div>
+    <hr/>
+
+    <div>
+        <label for="bulkDir2">moving</label>
+        <select id="bulkDir2" class="ui-widget-content">
+            <option>north</option>
+            <option>east</option>
+            <option>south</option>
+            <option>west</option>
+        </select>
+    </div>
+    <div>
+        <select id="bulkDir2Mode" class="ui-widget-content">
+            <option selected="selected">increment</option>
+            <option>decrement</option>
+        </select>
+
+        <select id="bulkDir2Type" class="ui-widget-content">
+            <option selected="selected">uppercase letter</option>
+            <option>lowercase letter</option>
+            <option>number</option>
+        </select>
+    </div>
+    <div>
+        <label for="bulkDir2Start">starting at</label>
+        <input type="text" width="5" id="bulkDir2Start" class="ui-widget-content" />
+    </div>
+    <hr />
+    <div>
+        <label for="bulkDirPrefix">prefix</label>
+        <input type="text" width="8" id="bulkDirPrefix" class="ui-widget-content" />
+    </div>
+    <div>
+        <label for="bulkDirMiddle">middle</label>
+        <input type="text" width="8" id="bulkDirMiddle" class="ui-widget-content" />
+    </div>
+    <div>
+        <label for="bulkDirSuffix">suffix</label>
+        <input type="text" width="8" id="bulkDirSuffix" class="ui-widget-content" />
+    </div>
+    <hr/>
+
+    example: <span id="bulkExample">A1</span>
 </div>
 
 @using (Html.BeginForm("References", "Designer", FormMethod.Post, new { id = "refsForm" }))

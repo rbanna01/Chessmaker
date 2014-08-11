@@ -5,3 +5,26 @@
     font-size:10px;
     pointer-events: none;
 }
+
+.blurb
+{
+    padding-bottom:0.8em;
+}
+
+#bulkExample
+{
+    font-size: 1.1em;
+    font-weight:bold;
+    text-decoration:underline;
+}
+
+.popup.bulk label
+{
+    display:inline;
+}
+
+.popup.bulk input[type="text"]
+{
+    width:60px;
+    display:inline;
+}
