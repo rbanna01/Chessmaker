@@ -68,6 +68,13 @@ function performAutoRename() {
     var isChar1 = $('#bulkDir1Type').val() != '1';
     var isChar2 = $('#bulkDir2Type').val() != '1';
 
+    var increment1 = parseInt($('#bulkDir1Mode').val());
+    var increment2 = parseInt($('#bulkDir2Mode').val());
+    if (isNaN(increment1))
+        increment1 = 1;
+    if (isNaN(increment2))
+        increment2 = 1;
+
     var start1 = $('#bulkDir1Start').val();
     var start2 = $('#bulkDir2Start').val();
 
@@ -97,22 +104,22 @@ function performAutoRename() {
     var middle = $('#bulkDirMiddle').val();
     var suffix = $('#bulkDirSuffix').val();
 
-    renameRecursive(initialCell, dir1, dir2, start1, start2, isChar1, isChar2, prefix, middle, suffix);
+    renameRecursive(initialCell, dir1, dir2, start1, start2, isChar1, isChar2, increment1, increment2, prefix, middle, suffix);
     remClass($('#render path.cell.renamed'), 'renamed');
 }
 
-function renameRecursive(cell, dir1, dir2, nextRef1, nextRef2, isChar1, isChar2, prefix, middle, suffix) {
+function renameRecursive(cell, dir1, dir2, nextRef1, nextRef2, isChar1, isChar2, increment1, increment2, prefix, middle, suffix) {
     var reference = prefix + (isChar1 ? String.fromCharCode(nextRef1) : nextRef1) + middle + (isChar2 ? String.fromCharCode(nextRef2) : nextRef2) + suffix;
     var cellID = doRenameCell(cell, reference);
     addClass(cell, 'renamed');
 
     var dir1cell = allLinkData[cellID][dir1];
     if (typeof dir1cell != 'undefined' && !hasClass(dir1cell[0], 'renamed'))
-        renameRecursive(dir1cell, dir1, dir2, nextRef1 + 1, nextRef2, isChar1, isChar2, prefix, middle, suffix);
+        renameRecursive(dir1cell, dir1, dir2, nextRef1 + increment1, nextRef2, isChar1, isChar2, increment1, increment2, prefix, middle, suffix);
 
     var dir2cell = allLinkData[cellID][dir2];
     if (typeof dir2cell != 'undefined' && !hasClass(dir2cell[0], 'renamed'))
-        renameRecursive(dir2cell, dir1, dir2, nextRef1, nextRef2 + 1, isChar1, isChar2, prefix, middle, suffix);
+        renameRecursive(dir2cell, dir1, dir2, nextRef1, nextRef2 + increment2, isChar1, isChar2, increment1, increment2, prefix, middle, suffix);
 }
 
 function updateExample() {
