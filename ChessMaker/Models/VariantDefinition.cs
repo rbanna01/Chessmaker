@@ -65,5 +65,18 @@ namespace ChessMaker.Models
                 Changed();
             }
         }
+
+        public XmlElement Pieces
+        {
+            get
+            {
+                return Xml.DocumentElement["pieces"];
+            }
+            set
+            {
+                Xml.DocumentElement.ReplaceChild(value, Pieces);
+                Changed();
+            }
+        }
     }
 }

@@ -253,12 +253,12 @@
     <Compile Include="Services\VariantService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\designer\references.css" />
-    <Content Include="Content\designer\groups.css" />
-    <Content Include="Content\designer\relative.css" />
-    <Content Include="Content\designer\global.css" />
-    <Content Include="Content\designer\shape.css" />
-    <Content Include="Content\designer\base.css" />
+    <Content Include="Content\Designer\References.css" />
+    <Content Include="Content\Designer\Groups.css" />
+    <Content Include="Content\Designer\Relative.css" />
+    <Content Include="Content\Designer\Global.css" />
+    <Content Include="Content\Designer\Shape.css" />
+    <Content Include="Content\Designer\Base.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -335,12 +335,12 @@
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\designer\references.js" />
-    <Content Include="Scripts\designer\groups.js" />
-    <Content Include="Scripts\designer\relative.js" />
-    <Content Include="Scripts\designer\global.js" />
-    <Content Include="Scripts\designer\shape.js" />
-    <Content Include="Scripts\designer\base.js" />
+    <Content Include="Scripts\Designer\References.js" />
+    <Content Include="Scripts\Designer\Groups.js" />
+    <Content Include="Scripts\Designer\Relative.js" />
+    <Content Include="Scripts\Designer\Global.js" />
+    <Content Include="Scripts\Designer\Shape.js" />
+    <Content Include="Scripts\Designer\Base.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

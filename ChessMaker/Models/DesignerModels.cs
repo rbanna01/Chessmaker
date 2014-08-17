@@ -117,4 +117,22 @@ namespace ChessMaker.Models
         public string LinkData { get; set; }
         public IEnumerable<string> AllDirs { get; set; }
     }
+
+    public class PieceDefinitionsModel : DesignerModel
+    {
+        public PieceDefinitionsModel(VariantVersion version, XmlNode pieceData)
+        {
+            VariantName = version.Variant.Name;
+            PieceData = pieceData.OuterXml;
+
+            PrevPage = "Cell refs";
+            ThisPage = "Piece types";
+            NextPage = "Initial layout";
+
+            PrevPageTooltip = "unique references for each cell";
+            NextPageTooltip = "Piece starting positions";
+        }
+
+        public string PieceData { get; set; }
+    }
 }

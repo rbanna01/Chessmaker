@@ -227,5 +227,48 @@ namespace ChessMaker.Controllers
 
             return RedirectToAction("References", new { id });
         }
+
+        [Authorize]
+        public ActionResult Pieces(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            var model = new PieceDefinitionsModel(version, definitions.GetPieceDefinitionXML(version));
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Pieces(int id, string pieceData, string next)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            // do savey-type stuff
+
+            if (next == "done")
+                return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
+            else if (next == "prev")
+                return RedirectToAction("References", new { id });
+            else if (next == "next")
+                return RedirectToAction("Layout", new { id });
+
+            return RedirectToAction("Pieces", new { id });
+        }
     }
 }
