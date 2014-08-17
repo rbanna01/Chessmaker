@@ -624,5 +624,11 @@ namespace ChessMaker.Services
             version.LastModified = DateTime.Now;
             Entities.SaveChanges();
         }
+
+        public XmlNode GetPieceDefinitionXML(VariantVersion version)
+        {
+            var definition = GetDefinition(version);
+            return definition.Pieces;
+        }
     }
 }

@@ -123,7 +123,7 @@ namespace ChessMaker.Models
         public PieceDefinitionsModel(VariantVersion version, XmlNode pieceData)
         {
             VariantName = version.Variant.Name;
-            PieceData = pieceData.OuterXml;
+            PieceData = pieceData != null ? pieceData.OuterXml : "<Pieces />";
 
             PrevPage = "Cell refs";
             ThisPage = "Piece types";

@@ -253,6 +253,7 @@
     <Compile Include="Services\VariantService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Designer\Pieces.css" />
     <Content Include="Content\Designer\References.css" />
     <Content Include="Content\Designer\Groups.css" />
     <Content Include="Content\Designer\Relative.css" />
@@ -335,12 +336,16 @@
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\Designer\Pieces.js" />
     <Content Include="Scripts\Designer\References.js" />
     <Content Include="Scripts\Designer\Groups.js" />
     <Content Include="Scripts\Designer\Relative.js" />
     <Content Include="Scripts\Designer\Global.js" />
     <Content Include="Scripts\Designer\Shape.js" />
     <Content Include="Scripts\Designer\Base.js" />
+    <Content Include="Scripts\Game\Base.js" />
+    <Content Include="Scripts\Game\MoveDefinition.js" />
+    <Content Include="Scripts\Game\PieceType.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -395,6 +400,7 @@
     <Content Include="Views\Designer\Relative.cshtml" />
     <Content Include="Views\Designer\Groups.cshtml" />
     <Content Include="Views\Designer\References.cshtml" />
+    <Content Include="Views\Designer\Pieces.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

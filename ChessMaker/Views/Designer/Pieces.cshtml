@@ -1,0 +1,54 @@
+﻿@model ChessMaker.Models.PieceDefinitionsModel
+
+@{
+    ViewBag.Title = "'" + Model.VariantName + "' direction groups";
+    ViewBag.MinimalLayout = true;
+}
+
+<div id="main">
+    
+</div>
+
+<div id="sidebar">
+    <div id="absDirs" class="section ui-widget ui-corner-all">
+        <h3>Piece Definitions</h3>
+
+        blah blah
+    </div>
+</div>
+
+@using (Html.BeginForm("Groups", "Designer", FormMethod.Post, new { id = "groupForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    @Html.Hidden("pieceData", string.Empty, new { id = "pieceData" })
+
+    <input type="submit" name="next" id="submitPrev" value="prev" />
+    <input type="submit" name="next" id="submitCurrent" value="this" />
+    <input type="submit" name="next" id="submitNext" value="next" />
+    <input type="submit" name="next" id="submitDone" value="done" />
+}
+
+@section actions {
+    @if (Model.PrevPage != null)
+    {
+        <button onclick="$('#submitPrev').click();" title="@Model.PrevPageTooltip">&lt; @Model.PrevPage</button>
+    }
+    <button onclick="$('#submitCurrent').click();" title="save your changes, staying on the current page" class="current">@Model.ThisPage</button>
+    @if (Model.NextPage != null)
+    {
+        <button onclick="$('#submitNext').click();" title="@Model.NextPageTooltip">@Model.NextPage &gt;</button>
+    }
+    <button onclick="location.reload();" id="btnReset" title="reload the current page, resetting your changes">Reset</button>
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Close</button>
+}
+
+@section css {
+    @Styles.Render("~/Content/themes/base/css", "~/Content/Designer/Base.css", "~/Content/Designer/Pieces.css")
+}
+
+@section scripts {
+    @Scripts.Render("~/Scripts/Game/Base.js", "~/Scripts/Game/MoveDefinition.js", "~/Scripts/Game/PieceType.js")
+    @Scripts.Render("~/bundles/jqueryui", "~/Scripts/Designer/Base.js", "~/Scripts/Designer/Pieces.js")
+}
