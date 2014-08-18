@@ -4,12 +4,8 @@
 
 MoveDefinition.prototype.allowTopLevel = true;
 
-MoveDefinition.parseDirections = function(xmlNode) {
-    // load absolute directions, relative directions and direction groups.
-};
-
 MoveDefinition.parse = function(xmlNode) {
-    switch ($(xmlNode).get(0).nodeName.toLowerCase()) {
+    switch (xmlNode.nodeName.toLowerCase()) {
         case "slide":
             return Slide.parse(xmlNode);
         case "leap":
@@ -41,7 +37,7 @@ MoveDefinition.parse = function(xmlNode) {
                 throw xmlNode.Name + " not allowed at top level!";
             return ArbitraryAttack.parse(xmlNode);
         default:
-            throw "Unexpected move type: " + $(xmlNode).get(0).nodeName.toLowerCase();
+            throw "Unexpected move type: " + xmlNode.nodeName.toLowerCase();
     }
 }
 

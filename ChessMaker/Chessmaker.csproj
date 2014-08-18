@@ -344,6 +344,7 @@
     <Content Include="Scripts\Designer\Shape.js" />
     <Content Include="Scripts\Designer\Base.js" />
     <Content Include="Scripts\Game\Base.js" />
+    <Content Include="Scripts\Game\Directions.js" />
     <Content Include="Scripts\Game\MoveDefinition.js" />
     <Content Include="Scripts\Game\PieceType.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
