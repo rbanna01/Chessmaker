@@ -46,7 +46,7 @@ PieceType.parse = function (xmlNode) {
         type.capturedAs = $(capturedAs).text();
 
     var movesNode = $(xmlNode).children("moves");
-    if (movesNode != undefined)
+    if (movesNode !== undefined)
         $(movesNode).children().each(function () {
             type.allMoves.push(MoveDefinition.parse(this, true));
         });

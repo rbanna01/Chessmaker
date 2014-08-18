@@ -336,6 +336,8 @@
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\Game\Conditions.js" />
+    <Content Include="Scripts\Game\Distance.js" />
     <Content Include="Scripts\Designer\Pieces.js" />
     <Content Include="Scripts\Designer\References.js" />
     <Content Include="Scripts\Designer\Groups.js" />
