@@ -1,27 +1,29 @@
 ﻿<ul>
-@if (Request.IsAuthenticated)
-{
-    <li>@Html.ActionLink("Find game", "Find", "Game")</li>
-    <li>@Html.ActionLink("Host game", "Host", "Game")</li>
-}
-else
+
+@if (!Request.IsAuthenticated)
 {
     <li>@Html.ActionLink("Log in", "Login", "Account")</li>
     <li>@Html.ActionLink("Register", "Register", "Account")</li>
 }
-    <li>@Html.ActionLink("Local game", "Offline", "Game")</li>
-    <li>@Html.ActionLink("Play AI", "AI", "Game")</li>
+
+    <li>@Html.ActionLink("Play", "New", "Game")</li>
+
+@if (Request.IsAuthenticated)
+{
+    <li>@Html.ActionLink("Design", "Variants", "Users", new { id = User.Identity.Name }, null)</li>
+}
+
     <li>@Html.ActionLink("Variants", "", "Variants")</li>
     <li>@Html.ActionLink("Users", "", "Users")</li>
 
 @if (Request.IsAuthenticated)
 {
-    <li>@Html.ActionLink(User.Identity.Name, "Profile", "Users", new { id = User.Identity.Name }, null)</li>
+    <li>@Html.ActionLink("Account", "Profile", "Users", new { id = User.Identity.Name }, new { title = "Logged in as " + User.Identity.Name })</li>
                             
     <li>
     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
         @Html.AntiForgeryToken()
-        <a href="javascript:document.getElementById('logoutForm').submit()">Log&nbsp;off</a>
+        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
     }
     </li>
 }
