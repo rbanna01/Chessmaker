@@ -10,6 +10,8 @@
         <meta name="msapplication-tap-highlight" content="no">
         <title>@ViewBag.Title - Chessmaker</title>
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        @Scripts.Render("~/bundles/jquery")
+        @Styles.Render("~/Content/themes/base/css")
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
         @RenderSection("css", required: false)
@@ -64,7 +66,6 @@
                 <p>&copy; @DateTime.Now.Year - Chessmaker</p>
             </footer>
         }
-        @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)
     </body>
 </html>
