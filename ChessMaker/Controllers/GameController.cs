@@ -12,41 +12,32 @@ namespace ChessMaker.Controllers
 {
     public class GameController : ControllerBase
     {
-        [Authorize]
-        public ActionResult Host()
+        [AllowAnonymous]
+        public ActionResult New()
         {
             VariantService service = GetService<VariantService>();
 
-            var model = new GameSetupModel();
-            model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
-            model.PromptPlayerSelection = true;
-            model.ConfirmText = "Create game";
-            model.Heading = "Host private game";
-            model.SubmitAction = "CreateOnline";
-            return View("SetupGame", model);
+            var model = new NewGameModel();
+            model.Variants = service.ListPlayableVersions(User.Identity.Name);
+            model.Difficulties = service.ListAiDifficulties();
+            model.AllowOnlinePlay = User.Identity.IsAuthenticated;
+
+            var variantOptions = model.Variants.Select(m => string.Format("<option value=\"{1}\" numPlayers=\"{2}\"{3}>{0}</option>", m.Name, m.VersionID, m.NumPlayers, m.IsPrivate ? " private=\"private\"" : string.Empty));
+            return View(model);
         }
 
+/*
         [Authorize]
         public ActionResult Find()
         {
             VariantService service = GetService<VariantService>();
-            return View("FindGame", service.ListPlayableVersions(User.Identity.Name, false));
+            return View("FindGame", service.ListPlayableVersions(User.Identity.Name));
         }
 
         [AllowAnonymous]
-        public ActionResult Offline(int? id, int? version)
+        public ActionResult Offline(int id, int? version)
         {
             VariantService service = GetService<VariantService>();
-
-            if (id == null)
-            {
-                var model = new GameSetupModel();
-                model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
-                model.ConfirmText = "Play offline";
-                model.Heading = "Setup offline game";
-                model.SubmitAction = "CreateOffline";
-                return View("SetupGame", model);
-            }
 
             var variant = Entities().Variants.Find(id);
             
@@ -68,20 +59,9 @@ namespace ChessMaker.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult AI(int? id, int? difficulty)
+        public ActionResult AI(int id, int? difficulty)
         {
             VariantService service = GetService<VariantService>();
-
-            if (id == null)
-            {
-                var model = new GameSetupModel();
-                model.Variants = service.ListPlayableVersions(User.Identity.Name, true);
-                model.Difficulties = service.ListAiDifficulties();
-                model.ConfirmText = "Play AI";
-                model.Heading = "Setup game vs AI";
-                model.SubmitAction = "CreateAI";
-                return View("SetupGame", model);
-            }
 
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -132,5 +112,6 @@ namespace ChessMaker.Controllers
 
             return View("PlayOnline", game);
         }
+*/
     }
 }

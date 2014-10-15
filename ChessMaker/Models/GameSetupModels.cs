@@ -7,14 +7,11 @@ using System.Web.Security;
 
 namespace ChessMaker.Models
 {
-    public class GameSetupModel
+    public class NewGameModel
     {
         public List<VariantSelectionModel> Variants { get; set; }
         public List<AIDifficultyModel> Difficulties { get; set; }
-        public bool PromptPlayerSelection { get; set; }
-        public string Heading { get; set; }
-        public string ConfirmText { get; set; }
-        public string SubmitAction { get; set; }
+        public bool AllowOnlinePlay { get; set; }
     }
 
     public class VariantSelectionModel
@@ -24,12 +21,14 @@ namespace ChessMaker.Models
             Name = version.Variant.Name;
             VariantID = version.VariantID;
             VersionID = version.ID;
+            NumPlayers = version.Variant.PlayerCount;
         }
 
-        public VariantSelectionModel(VariantVersion version, string customName)
+        public VariantSelectionModel(VariantVersion version, string customName, bool isPrivate)
             : this(version)
         {
             Name = customName;
+            IsPrivate = isPrivate;
         }
 
         public VariantSelectionModel() { }
@@ -37,12 +36,12 @@ namespace ChessMaker.Models
         public string Name { get; set; }
         public int VariantID { get; set; }
         public int VersionID { get; set; }
+        public bool IsPrivate { get; set; }
 
         //public string Author { get; set; }
         //public string Description { get; set; }
 
-        //[Display(Name = "Players")]
-        //public int NumPlayers { get; set; }
+        public int NumPlayers { get; set; }
     }
 
     public class AIDifficultyModel

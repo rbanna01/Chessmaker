@@ -8,7 +8,7 @@ namespace ChessMaker.Services
 {
     public class VariantService : ServiceBase
     {
-        public List<VariantSelectionModel> ListPlayableVersions(string currentUser, bool includePrivateVariants)
+        public List<VariantSelectionModel> ListPlayableVersions(string currentUser)
         {
             var variantList = new List<VariantSelectionModel>();
 
@@ -21,7 +21,7 @@ namespace ChessMaker.Services
             foreach (var variant in publicVariants)
                 variantList.Add(new VariantSelectionModel(variant));
 
-            if (!includePrivateVariants)
+            if (currentUser == null)
                 return variantList;
 
             var privateVariants = Entities.VariantVersions
@@ -37,7 +37,7 @@ namespace ChessMaker.Services
                     DescribeVersion(version),
                     version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID ? " (public)" : string.Empty
                 );
-                variantList.Add(new VariantSelectionModel(version, customName));
+                variantList.Add(new VariantSelectionModel(version, customName, true));
             }
 
             return variantList;

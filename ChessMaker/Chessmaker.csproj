@@ -392,7 +392,7 @@
     <Content Include="Views\Game\PlayOnline.cshtml" />
     <Content Include="Views\Game\PlayOffline.cshtml" />
     <Content Include="Views\Game\PlayAI.cshtml" />
-    <Content Include="Views\Game\SetupGame.cshtml" />
+    <Content Include="Views\Game\New.cshtml" />
     <Content Include="Views\Game\FindGame.cshtml" />
     <Content Include="Views\Variants\Index.cshtml" />
     <Content Include="Views\Users\Variants.cshtml" />

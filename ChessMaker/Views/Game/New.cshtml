@@ -1,0 +1,101 @@
+﻿@model ChessMaker.Models.NewGameModel
+
+@{
+    ViewBag.Title = "New game";
+
+    var playModes = new List<SelectListItem>();
+    if (Model.AllowOnlinePlay)
+    {
+        playModes.Add(new SelectListItem() { Value = "public", Text = "Public" });
+        playModes.Add(new SelectListItem() { Value = "private", Text = "Private" });
+    }
+    playModes.Add(new SelectListItem() { Value = "local", Text = "Local", Selected=true });
+    playModes.Add(new SelectListItem() { Value = "ai", Text = "AI" });
+}
+
+@using (Html.BeginForm("New", "Game")) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <legend>Game setup form</legend>
+        <ol>
+            <li>
+                @Html.Label("modeSelect", "Play mode")
+                @Html.DropDownList("modeSelect", playModes)
+                @if (!Model.AllowOnlinePlay && !User.Identity.IsAuthenticated)
+                {
+                    <span class="hint">To play online, @Html.ActionLink("log in", "Login", "Account") or @Html.ActionLink("register", "Register", "Account").</span>
+                }
+            </li>
+            <li>
+                @Html.Label("variantSelect", "Variant")
+                <select id="variantSelect">
+                    @foreach (var v in Model.Variants)
+                    {
+                        <option value="@v.VersionID" players="@v.NumPlayers" @Html.Raw(v.IsPrivate ? "private=\"private\"" : string.Empty)> @v.Name</option>
+                    }
+                </select>
+            </li>
+            <li id="aiDifficulty" style="display:none">
+                @Html.Label("aiSelect", "Difficulty")
+                @Html.DropDownList("aiSelect", new SelectList(Model.Difficulties, "ID", "Name"))
+            </li>
+            <li id="inviteOpponents" style="display:none">
+                <label>Opponent<span class="opponentsPlural">s</span></label>
+                <span class="hint opponentsPlural">Enter the username of each opponent in the boxes below</span>
+                <span class="hint opponentsSingular">Enter the username of your opponent in the box below</span>
+                <div id="opponentEntry"></div>
+            </li>
+        </ol>
+        <input type="submit" value="Create" />
+    </fieldset>
+}
+
+<script type="text/javascript">
+$(function () {
+    $('#modeSelect').change(function () {
+        $this = $(this);
+
+        if ($this.val() == 'ai')
+            $('#aiDifficulty').show();
+        else
+            $('#aiDifficulty').hide();
+
+        if ($this.val() == 'private')
+            $('#inviteOpponents').show();
+        else
+            $('#inviteOpponents').hide();
+
+        var isPublic = $this.val() == 'public';
+        $('#variantSelect option[private="private"]').attr('disabled', isPublic);
+    });
+
+    $('#variantSelect').change(function () {
+        var numOpponents = parseInt($('option:selected', this).attr('players')) - 1;
+
+        var parent = $('#opponentEntry');
+        var diff = numOpponents - parent.children().length;
+        
+        if (diff < 0) {
+            parent.children().slice(diff).remove();
+        }
+        else
+            while ( diff > 0 )
+            {
+                diff--; // add one
+                parent.append("<div><input type=\"text\" name=\"opponent\"/></div>")
+            }
+
+        if (numOpponents == 1) {
+            $('.opponentsSingular').show();
+            $('.opponentsPlural').hide();
+        }
+        else {
+            $('.opponentsSingular').hide();
+            $('.opponentsPlural').show();
+        }
+    });
+    $('#variantSelect').change();
+});
+</script>
