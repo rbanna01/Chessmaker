@@ -6,11 +6,11 @@
     var playModes = new List<SelectListItem>();
     if (Model.AllowOnlinePlay)
     {
-        playModes.Add(new SelectListItem() { Value = "public", Text = "Public" });
-        playModes.Add(new SelectListItem() { Value = "private", Text = "Private" });
+        playModes.Add(new SelectListItem() { Value = "Public", Text = "Public" });
+        playModes.Add(new SelectListItem() { Value = "Private", Text = "Private" });
     }
-    playModes.Add(new SelectListItem() { Value = "local", Text = "Local", Selected=true });
-    playModes.Add(new SelectListItem() { Value = "ai", Text = "AI" });
+    playModes.Add(new SelectListItem() { Value = "Local", Text = "Local", Selected=true });
+    playModes.Add(new SelectListItem() { Value = "AI", Text = "AI" });
 }
 
 @using (Html.BeginForm("New", "Game")) {
@@ -30,7 +30,7 @@
             </li>
             <li>
                 @Html.Label("variantSelect", "Variant")
-                <select id="variantSelect">
+                <select id="variantSelect" name="variantSelect">
                     @foreach (var v in Model.Variants)
                     {
                         <option value="@v.VersionID" players="@v.NumPlayers" @Html.Raw(v.IsPrivate ? "private=\"private\"" : string.Empty)> @v.Name</option>
@@ -57,17 +57,17 @@ $(function () {
     $('#modeSelect').change(function () {
         $this = $(this);
 
-        if ($this.val() == 'ai')
+        if ($this.val() == 'AI')
             $('#aiDifficulty').show();
         else
             $('#aiDifficulty').hide();
 
-        if ($this.val() == 'private')
+        if ($this.val() == 'Private')
             $('#inviteOpponents').show();
         else
             $('#inviteOpponents').hide();
 
-        var isPublic = $this.val() == 'public';
+        var isPublic = $this.val() == 'Public';
         $('#variantSelect option[private="private"]').attr('disabled', isPublic);
     });
 
@@ -96,6 +96,6 @@ $(function () {
             $('.opponentsPlural').show();
         }
     });
-    $('#variantSelect').change();
+    $('#modeSelect, #variantSelect').change();
 });
 </script>

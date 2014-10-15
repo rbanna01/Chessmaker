@@ -18,6 +18,11 @@ namespace ChessMaker.Services
             return Entities.Users.ToList();
         }
 
+        public bool IsAllowedToPlay(VariantVersion version, string userName)
+        {
+            return (version.Variant.PublicVersionID.HasValue && version.Variant.PublicVersionID == version.ID) || version.Variant.CreatedBy.Name == userName;
+        }
+
         public bool IsAllowedToEdit(Variant variant, string userName)
         {
             var user = GetByName(userName);

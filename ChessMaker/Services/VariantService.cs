@@ -108,6 +108,11 @@ namespace ChessMaker.Services
             return list;
         }
 
+        public Variant GetByName(string name)
+        {
+            return Entities.Variants.FirstOrDefault(u => u.Name == name);
+        }
+
         public VariantVersion GetVersionNumber(Variant variant, int versionID)
         {
             return variant.AllVersions.SingleOrDefault(v => v.Number == versionID);

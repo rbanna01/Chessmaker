@@ -7,6 +7,14 @@ using System.Web.Security;
 
 namespace ChessMaker.Models
 {
+    public enum GameMode
+    {
+        Public,
+        Private,
+        Local,
+        AI,
+    }
+
     public class NewGameModel
     {
         public List<VariantSelectionModel> Variants { get; set; }
@@ -48,5 +56,24 @@ namespace ChessMaker.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+    }
+
+    public class GamePlayModel
+    {
+        public GamePlayModel(VariantVersion version, GameMode mode)
+        {
+            if (version.Variant.PublicVersionID.HasValue && version.ID == version.Variant.PublicVersionID)
+                Name = version.Variant.Name;
+            else
+                Name = string.Format("{0} v{1}", version.Variant.Name, version.Number);
+
+            Mode = mode;
+            SchemaDefinition = version.Definition;
+        }
+
+        public string Name { get; set; }
+        public GameMode Mode { get; set; }
+        public AIDifficultyModel AI { get; set; }
+        public string SchemaDefinition { get; private set; }
     }
 }
