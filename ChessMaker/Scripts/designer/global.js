@@ -70,7 +70,7 @@ function newAbsDir() {
     var newName = $('#txtNewName').val();
 
     // ensure the new name is valid
-    if (newName.trim() == '' || newName.indexOf(':') != -1 || newName.index(';') != -1)
+    if (newName.trim() == '' || newName.indexOf(':') != -1 || newName.indexOf(';') != -1)
         return false;
 
     // ensure that the new name is unique
