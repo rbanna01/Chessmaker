@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Globalization;
 using System.Web.Security;
+using System.Xml;
 
 namespace ChessMaker.Models
 {
@@ -60,7 +61,7 @@ namespace ChessMaker.Models
 
     public class GamePlayModel
     {
-        public GamePlayModel(VariantVersion version, GameMode mode)
+        public GamePlayModel(VariantVersion version, XmlDocument boardSvg, GameMode mode)
         {
             if (version.Variant.PublicVersionID.HasValue && version.ID == version.Variant.PublicVersionID)
                 Name = version.Variant.Name;
@@ -68,12 +69,12 @@ namespace ChessMaker.Models
                 Name = string.Format("{0} v{1}", version.Variant.Name, version.Number);
 
             Mode = mode;
-            SchemaDefinition = version.Definition;
+            SvgData = boardSvg.OuterXml;
         }
 
         public string Name { get; set; }
         public GameMode Mode { get; set; }
         public AIDifficultyModel AI { get; set; }
-        public string SchemaDefinition { get; private set; }
+        public string SvgData { get; private set; }
     }
 }

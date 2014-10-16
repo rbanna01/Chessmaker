@@ -1,0 +1,17 @@
+﻿#main {
+    position: absolute;
+    left: 14.5em;
+    right: 0px;
+    top: 5.5em;
+    bottom: 0px;
+}
+
+#render {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#render line.detail {
+    pointer-events: none;
+}

@@ -54,32 +54,6 @@ form {
     pointer-events: none;
 }
 
-/* board theme-specific styling start */
-#render .light {
-    fill:white;
-}
-		
-#render .dark {
-    fill:black;
-}
-		
-#render .mid {
-    fill:gray;
-}
-
-#render .lightStroke{
-    stroke:white;
-}
-		
-#render .darkStroke {
-    stroke:black;
-}
-		
-#render .midStroke {
-    stroke:gray;
-}
-/* board theme-specific styling end */
-
 #btnReset {
     margin-left:2em;
 }

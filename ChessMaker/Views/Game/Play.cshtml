@@ -4,3 +4,16 @@
     ViewBag.Title = Model.Mode + " game: " + Model.Name;
     ViewBag.MinimalLayout = true;
 }
+
+<div id="main">
+    @Html.Raw(Model.SvgData)
+</div>
+
+@section css {
+    @Styles.Render("~/Content/Game.css")
+    @Styles.Render("~/Content/Theme.css")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/game")
+}

@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using System.Xml;
 using WebMatrix.WebData;
 
 namespace ChessMaker.Controllers
@@ -139,9 +140,10 @@ namespace ChessMaker.Controllers
             return true;
         }
 
-        private VariantVersion DeterminePlayVersion(string variantName, int? versionID, VariantService variants)
+        private VariantVersion DeterminePlayVersion(string variantName, int? versionID, VariantService variants, out XmlDocument boardSvg)
         {
             var variant = variants.GetByName(variantName);
+            boardSvg = null;
 
             if (variant == null)
                 return null;
@@ -157,6 +159,11 @@ namespace ChessMaker.Controllers
             else
                 versionToPlay = variant.PublicVersion;
 
+            if (versionToPlay != null)
+            {
+                DefinitionService definitions = GetService<DefinitionService>();
+                boardSvg = definitions.GetBoardSVG(versionToPlay);
+            }
             return versionToPlay;
         }
 
@@ -164,13 +171,13 @@ namespace ChessMaker.Controllers
         public ActionResult Offline(string id, int? version)
         {
             VariantService variants = GetService<VariantService>();
-            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
+            XmlDocument boardSvg;
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants, out boardSvg);
             
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
 
-            var model = new GamePlayModel(versionToPlay, GameMode.Local);
-
+            var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.Local);
             return View("Play", model);
         }
 
@@ -178,12 +185,13 @@ namespace ChessMaker.Controllers
         public ActionResult AI(string id, int? version, int difficulty)
         {
             VariantService variants = GetService<VariantService>();
-            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
+            XmlDocument boardSvg;
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants, out boardSvg);
 
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
 
-            var model = new GamePlayModel(versionToPlay, GameMode.AI);
+            var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.AI);
             model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty);
 
             return View("Play", model);
