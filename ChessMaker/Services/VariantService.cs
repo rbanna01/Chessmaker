@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace ChessMaker.Services
@@ -80,27 +81,7 @@ namespace ChessMaker.Services
 
             return versionList;
         }
-
-        public VariantVersion CreateNewVariant(User user, VariantEditModel basics)
-        {
-            var variant = new Variant();
-            variant.CreatedByID = user.ID;
-            variant.Name = basics.Name;
-            variant.PlayerCount = (byte)basics.NumPlayers;
-
-            var version = new VariantVersion();
-            version.Number = 1;
-            version.LastModified = DateTime.Now;
-            version.Variant = variant;
-            version.Definition = string.Empty;
-
-            Entities.Variants.Add(variant);
-            Entities.VariantVersions.Add(version);
-            Entities.SaveChanges();
-
-            return version;
-        }
-
+        
         public List<AIDifficultyModel> ListAiDifficulties()
         {
             var list = new List<AIDifficultyModel>();
@@ -110,7 +91,12 @@ namespace ChessMaker.Services
 
         public Variant GetByName(string name)
         {
-            return Entities.Variants.FirstOrDefault(u => u.Name == name);
+            return Entities.Variants.FirstOrDefault(v => v.Name == name);
+        }
+
+        public Variant GetByTag(string tag)
+        {
+            return Entities.Variants.FirstOrDefault(v => v.Tag == tag);
         }
 
         public VariantVersion GetVersionNumber(Variant variant, int versionID)
@@ -155,6 +141,29 @@ namespace ChessMaker.Services
                 model.Versions.Add(new VersionSelectionModel(version, version.ID == variant.PublicVersionID, CanDelete(version)));
 
             return model;
+        }
+
+        public string GenerateTagName(string name)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            bool skipped = false;
+            foreach (char c in name.Trim())
+            {
+                if (char.IsLetterOrDigit(c))
+                {
+                    if (skipped)
+                    {
+                        sb.Append(char.ToUpperInvariant(c));
+                        skipped = false;
+                    }
+                    else
+                        sb.Append(c);
+                }
+                else
+                    skipped = true;
+            }
+            return sb.ToString();
         }
     }
 }

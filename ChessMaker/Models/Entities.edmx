@@ -4,71 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ChessMakerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityContainer Name="ChessMakerModelStoreContainer">
-          <EntitySet Name="GamePlayers" EntityType="ChessMakerModel.Store.GamePlayers" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Games" EntityType="ChessMakerModel.Store.Games" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="GameStatuses" EntityType="ChessMakerModel.Store.GameStatuses" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Moves" EntityType="ChessMakerModel.Store.Moves" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Users" EntityType="ChessMakerModel.Store.Users" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Variants" EntityType="ChessMakerModel.Store.Variants" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="VariantVersions" EntityType="ChessMakerModel.Store.VariantVersions" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_GamePlayers_Games" Association="ChessMakerModel.Store.FK_GamePlayers_Games">
-            <End Role="Games" EntitySet="Games" />
-            <End Role="GamePlayers" EntitySet="GamePlayers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_GamePlayers_Users" Association="ChessMakerModel.Store.FK_GamePlayers_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="GamePlayers" EntitySet="GamePlayers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Games_GameStatuses" Association="ChessMakerModel.Store.FK_Games_GameStatuses">
-            <End Role="GameStatuses" EntitySet="GameStatuses" />
-            <End Role="Games" EntitySet="Games" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Games_Users" Association="ChessMakerModel.Store.FK_Games_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Games" EntitySet="Games" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Games_VariantVersions" Association="ChessMakerModel.Store.FK_Games_VariantVersions">
-            <End Role="VariantVersions" EntitySet="VariantVersions" />
-            <End Role="Games" EntitySet="Games" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Moves_GamePlayers" Association="ChessMakerModel.Store.FK_Moves_GamePlayers">
-            <End Role="GamePlayers" EntitySet="GamePlayers" />
-            <End Role="Moves" EntitySet="Moves" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Moves_Games" Association="ChessMakerModel.Store.FK_Moves_Games">
-            <End Role="Games" EntitySet="Games" />
-            <End Role="Moves" EntitySet="Moves" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Variants_Users" Association="ChessMakerModel.Store.FK_Variants_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Variants" EntitySet="Variants" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Variants_VariantVersions" Association="ChessMakerModel.Store.FK_Variants_VariantVersions">
-            <End Role="VariantVersions" EntitySet="VariantVersions" />
-            <End Role="Variants" EntitySet="Variants" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VariantVersions_Variants" Association="ChessMakerModel.Store.FK_VariantVersions_Variants">
-            <End Role="Variants" EntitySet="Variants" />
-            <End Role="VariantVersions" EntitySet="VariantVersions" />
-          </AssociationSet>
-        </EntityContainer>
+    <Schema Namespace="ChessMakerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="GamePlayers">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GameID" Type="int" Nullable="false" />
           <Property Name="UserID" Type="int" />
-          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Name" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="HasAccepted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Games">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="VariantVersionID" Type="int" Nullable="false" />
           <Property Name="StatusID" Type="tinyint" Nullable="false" />
           <Property Name="NextUserID" Type="int" />
@@ -78,34 +29,35 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="tinyint" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IsClosed" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Moves">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GameID" Type="int" Nullable="false" />
           <Property Name="GamePlayerID" Type="int" Nullable="false" />
           <Property Name="Number" Type="int" Nullable="false" />
-          <Property Name="Notation" Type="varchar" Nullable="false" MaxLength="10" />
+          <Property Name="Notation" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Data" Type="xml" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="30" Nullable="false" />
         </EntityType>
         <EntityType Name="Variants">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedByID" Type="int" Nullable="false" />
           <Property Name="PublicVersionID" Type="int" />
           <Property Name="PlayerCount" Type="tinyint" Nullable="false" />
@@ -114,15 +66,15 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="VariantID" Type="int" Nullable="false" />
           <Property Name="Number" Type="smallint" Nullable="false" />
           <Property Name="LastModified" Type="datetime" Nullable="false" />
           <Property Name="Definition" Type="xml" Nullable="false" />
         </EntityType>
         <Association Name="FK_GamePlayers_Games">
-          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="1" />
-          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="*" />
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Games">
               <PropertyRef Name="ID" />
@@ -133,8 +85,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_GamePlayers_Users">
-          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="0..1" />
-          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="*" />
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
@@ -145,8 +97,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Games_GameStatuses">
-          <End Role="GameStatuses" Type="ChessMakerModel.Store.GameStatuses" Multiplicity="1" />
-          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <End Role="GameStatuses" Type="Self.GameStatuses" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GameStatuses">
               <PropertyRef Name="ID" />
@@ -157,8 +109,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Games_Users">
-          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="0..1" />
-          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
@@ -169,8 +121,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Games_VariantVersions">
-          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="1" />
-          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="*" />
+          <End Role="VariantVersions" Type="Self.VariantVersions" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="VariantVersions">
               <PropertyRef Name="ID" />
@@ -181,8 +133,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Moves_GamePlayers">
-          <End Role="GamePlayers" Type="ChessMakerModel.Store.GamePlayers" Multiplicity="1" />
-          <End Role="Moves" Type="ChessMakerModel.Store.Moves" Multiplicity="*" />
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="1" />
+          <End Role="Moves" Type="Self.Moves" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GamePlayers">
               <PropertyRef Name="ID" />
@@ -193,8 +145,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Moves_Games">
-          <End Role="Games" Type="ChessMakerModel.Store.Games" Multiplicity="1" />
-          <End Role="Moves" Type="ChessMakerModel.Store.Moves" Multiplicity="*" />
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="Moves" Type="Self.Moves" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Games">
               <PropertyRef Name="ID" />
@@ -205,8 +157,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Variants_Users">
-          <End Role="Users" Type="ChessMakerModel.Store.Users" Multiplicity="1" />
-          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="*" />
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Variants" Type="Self.Variants" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
@@ -217,8 +169,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Variants_VariantVersions">
-          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="0..1" />
-          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="*" />
+          <End Role="VariantVersions" Type="Self.VariantVersions" Multiplicity="0..1" />
+          <End Role="Variants" Type="Self.Variants" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="VariantVersions">
               <PropertyRef Name="ID" />
@@ -229,8 +181,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_VariantVersions_Variants">
-          <End Role="Variants" Type="ChessMakerModel.Store.Variants" Multiplicity="1" />
-          <End Role="VariantVersions" Type="ChessMakerModel.Store.VariantVersions" Multiplicity="*" />
+          <End Role="Variants" Type="Self.Variants" Multiplicity="1" />
+          <End Role="VariantVersions" Type="Self.VariantVersions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Variants">
               <PropertyRef Name="ID" />
@@ -240,6 +192,55 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="ChessMakerModelStoreContainer">
+          <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Games" EntityType="Self.Games" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameStatuses" EntityType="Self.GameStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Moves" EntityType="Self.Moves" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Variants" EntityType="Self.Variants" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VariantVersions" EntityType="Self.VariantVersions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_GamePlayers_Games" Association="Self.FK_GamePlayers_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GamePlayers_Users" Association="Self.FK_GamePlayers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_GameStatuses" Association="Self.FK_Games_GameStatuses">
+            <End Role="GameStatuses" EntitySet="GameStatuses" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_Users" Association="Self.FK_Games_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_VariantVersions" Association="Self.FK_Games_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_GamePlayers" Association="Self.FK_Moves_GamePlayers">
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moves_Games" Association="Self.FK_Moves_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="Moves" EntitySet="Moves" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_Users" Association="Self.FK_Variants_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Variants_VariantVersions" Association="Self.FK_Variants_VariantVersions">
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+            <End Role="Variants" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VariantVersions_Variants" Association="Self.FK_VariantVersions_Variants">
+            <End Role="Variants" EntitySet="Variants" />
+            <End Role="VariantVersions" EntitySet="VariantVersions" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -359,6 +360,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Tag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedByID" Type="Int32" Nullable="false" />
           <Property Name="PublicVersionID" Type="Int32" />
           <Property Name="PlayerCount" Type="Byte" Nullable="false" />
@@ -558,6 +560,7 @@
           <EntitySetMapping Name="Variants">
             <EntityTypeMapping TypeName="ChessMakerModel.Variant">
               <MappingFragment StoreEntitySet="Variants">
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
@@ -594,6 +597,7 @@
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->

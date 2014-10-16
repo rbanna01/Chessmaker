@@ -37,7 +37,7 @@ namespace ChessMaker.Controllers
             }
 
             var routeValues = new RouteValueDictionary();
-            routeValues.Add("ID", version.Variant.Name);
+            routeValues.Add("ID", version.Variant.Tag);
 
             if (!version.Variant.PublicVersionID.HasValue || version.Variant.PublicVersionID != version.ID)
                 routeValues.Add("version", version.Number);
@@ -140,9 +140,9 @@ namespace ChessMaker.Controllers
             return true;
         }
 
-        private VariantVersion DeterminePlayVersion(string variantName, int? versionID, VariantService variants, out XmlDocument boardSvg)
+        private VariantVersion DeterminePlayVersion(string variantTag, int? versionID, VariantService variants, out XmlDocument boardSvg)
         {
-            var variant = variants.GetByName(variantName);
+            var variant = variants.GetByTag(variantTag);
             boardSvg = null;
 
             if (variant == null)
