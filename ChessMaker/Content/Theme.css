@@ -22,6 +22,26 @@
     stroke:gray;
 }
 
-#render .selected {
-	opacity:0.7;
+#render .selected.light {
+    fill:#ffabab;
+}
+		
+#render .selected.dark {
+    fill:#540000;
+}
+		
+#render .selected.mid {
+    fill:#aa5656;
+}
+
+#render .selected.lightStroke{
+    stroke:#ffabab;
+}
+		
+#render .selected.darkStroke {
+    stroke:#540000;
+}
+		
+#render .selected.midStroke {
+    stroke:#aa5656;
 }
