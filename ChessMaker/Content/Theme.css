@@ -1,5 +1,4 @@
-﻿/* board theme-specific styling start */
-#render .light {
+﻿#render .light {
     fill:white;
 }
 		
@@ -22,4 +21,7 @@
 #render .midStroke {
     stroke:gray;
 }
-/* board theme-specific styling end */
+
+#render .selected {
+	opacity:0.7;
+}

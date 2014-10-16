@@ -38,10 +38,6 @@ form {
     font-size:1em;
 }
 
-#render .selected {
-	opacity:0.7;
-}
-
 .popup label, .popup input {
 	display:block;
 }
