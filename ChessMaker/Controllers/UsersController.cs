@@ -48,5 +48,24 @@ namespace ChessMaker.Controllers
 
             return View(model);
         }
+
+        public new ActionResult Theme()
+        {
+            UserService users = GetService<UserService>();
+            var user = users.GetByName(User.Identity.Name);
+
+            var model = new ThemeModel();
+
+            model.Light = /*user.ThemeColorLight ??*/ "ffffff";
+            model.Mid = /*user.ThemeColorMid ??*/ "7f7f7f";
+            model.Dark = /*user.ThemeColorDark ??*/ "000000";
+
+            model.LightSelected = /*user.ThemeColorLightSelected ??*/ "ffabab";
+            model.MidSelected = /*user.ThemeColorMidSelected ??*/ "aa5656";
+            model.DarkSelected = /*user.ThemeColorDarkSelected ??*/ "540000";
+
+            Response.ContentType = "text/css";
+            return View(model);
+        }
     }
 }

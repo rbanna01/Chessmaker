@@ -1,0 +1,20 @@
+﻿@model ChessMaker.Models.ThemeModel
+@{
+    Layout = null;
+}
+
+#render .light{fill:#@Model.Light;}
+#render .mid{fill:#@Model.Mid;}
+#render .dark{fill:#@Model.Dark;}
+
+#render .lightStroke{stroke:#@Model.Light;}
+#render .midStroke{stroke:#@Model.Mid;}
+#render .darkStroke{stroke:#@Model.Dark;}
+
+#render .selected.light{fill:#@Model.LightSelected;}
+#render .selected.mid{fill:#@Model.MidSelected;}
+#render .selected.dark{fill:#@Model.DarkSelected;}
+
+#render .selected.lightStroke{stroke:#@Model.LightSelected;}
+#render .selected.midStroke{stroke:#@Model.MidSelected;}
+#render .selected.darkStroke{stroke:#@Model.DarkSelected;}
