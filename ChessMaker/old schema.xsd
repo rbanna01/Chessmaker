@@ -1,0 +1,693 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- firstly define, the various attribute options -->
+  <xs:simpleType name="game_version">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0.0.1"/>
+      <!-- must be extended to include all allowed versions only -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="reqString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="oneChar">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="absDir">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="north" />
+      <xs:enumeration value="east" />
+      <xs:enumeration value="south" />
+      <xs:enumeration value="west" />
+      <xs:enumeration value="northeast" />
+      <xs:enumeration value="northwest" />
+      <xs:enumeration value="southeast" />
+      <xs:enumeration value="southwest" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cellAppearance">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="alternating" />
+      <xs:enumeration value="grid" />
+      <xs:enumeration value="lines" />
+      <xs:enumeration value="plain" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cellDetail">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="diagonalBLTR" />
+      <xs:enumeration value="diagonalTLBR" />
+	  <xs:enumeration value="diagonalBoth" />
+	  <xs:enumeration value="diagonalBL" />
+      <xs:enumeration value="diagonalBR" />
+	  <xs:enumeration value="diagonalTL" />
+      <xs:enumeration value="diagonalTR" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="moveOrder">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="sequence" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="lineAlignment">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="center" />
+      <xs:enumeration value="corner" />
+      <xs:enumeration value="vertical edge" />
+      <xs:enumeration value="horizontal edge" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="boardType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="square" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="promotionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="start_of_move" />
+      <xs:enumeration value="end_of_move" />
+      <xs:enumeration value="start_or_end" />
+      <xs:enumeration value="counts_as_move" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="when">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="any" />
+      <xs:enumeration value="capture" />
+      <xs:enumeration value="move" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="owner">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="any" />
+      <xs:enumeration value="self" />
+      <xs:enumeration value="enemy" />
+      <xs:enumeration value="ally" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="fixed_direction">
+    <!-- These are relative to the player's forward direction -->
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="orthogonal" />
+      <!-- forward, back, left, right -->
+      <xs:enumeration value="diagonal" />
+      <xs:enumeration value="any" />
+      <!-- orthogonal + diagonal -->
+      <xs:enumeration value="forward" />
+      <xs:enumeration value="backward" />
+      <xs:enumeration value="left" />
+      <xs:enumeration value="right" />
+      <xs:enumeration value="sideways" />
+      <!-- left + right -->
+      <xs:enumeration value="forward-left" />
+      <xs:enumeration value="forward-right" />
+      <xs:enumeration value="forward-diagonal" />
+      <!-- forward-left + forward-right -->
+      <xs:enumeration value="backward-left" />
+      <xs:enumeration value="backward-right" />
+      <xs:enumeration value="backward-diagonal" />
+      <!-- backward-left + backward-right -->
+      <xs:enumeration value="left-diagonal" />
+      <!-- forward-left + backward-left -->
+      <xs:enumeration value="right-diagonal" />
+      <!-- forward-right + backward-right -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="direction_relative">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="same" />
+      <!-- same direction as previously -->
+      <xs:enumeration value="opposite" />
+      <!-- turn around -->
+      <xs:enumeration value="left-90" />
+      <xs:enumeration value="right-90" />
+      <xs:enumeration value="left-45" />
+      <xs:enumeration value="right-45" />
+      <xs:enumeration value="left-135" />
+      <xs:enumeration value="right-135" />
+      <xs:enumeration value="perpendicular" />
+      <!-- left-90 + right-90 -->
+      <xs:enumeration value="turn-45" />
+      <!-- left-45 + right-45 -->
+      <xs:enumeration value="turn-135" />
+      <!-- left-45 + right-45 -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="direction">
+    <xs:union memberTypes="fixed_direction direction_relative"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="distance">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="any|(((max|prev)(\+|-))?[1-9][0-9]*)"/>
+      <!-- a positive integer, the text "any", or "max" or "prev" +- a positive integer -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="distance_inc_zero">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+|any|max"/>
+      <!-- a positive integer, or the text "any" or "max" -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="numeric_comparison_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="equals" />
+      <xs:enumeration value="less than" />
+      <xs:enumeration value="greater than" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="part_of_move">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="whole route" />
+      <xs:enumeration value="start" />
+      <xs:enumeration value="destination" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="part_of_turn">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="either" />
+      <xs:enumeration value="before_moving" />
+      <xs:enumeration value="after_moving" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="perpendicular_dir">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="left" />
+      <xs:enumeration value="right" />
+      <xs:enumeration value="both" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="comparison_property">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="rank" />
+      <xs:enumeration value="column" />
+      <xs:enumeration value="destination rank" />
+      <xs:enumeration value="destination column" />
+      <xs:enumeration value="piece move number" />
+      <xs:enumeration value="target move number" />
+      <xs:enumeration value="game turn" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="comparison_value">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="((min_rank|max_rank|min_column|max_column|turn_of_target_first_move|destination_rank|destination_column|rank|column|[0-9]+)(\+|-))*(max_rank|max_column|turn_of_target_first_move|destination_rank|destination_column|rank|column|[0-9]+)" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="game_turn">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[1-9][0-9]*|turn_of_target_first_move|turn_of_target_first_move\+[1-9][0-9]*" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="move_number">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(&lt;|=&lt;|&gt;=|&gt;)?[0-9]+" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="repeat_count">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[1-9][0-9]*|unbounded"/>
+      <!-- a positive integer, or the text "unbounded" -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="piece_count">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="any|all|[1-9][0-9]*"/>
+      <!-- a positive integer, or the text "any" or "all" -->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="pieceAppearance">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="king" />
+      <xs:enumeration value="queen" />
+      <xs:enumeration value="bishop" />
+      <xs:enumeration value="knight" />
+      <xs:enumeration value="rook" />
+      <xs:enumeration value="pawn" />
+      <xs:enumeration value="elephant" />
+      <xs:enumeration value="archer" />
+      <xs:enumeration value="checker" />
+      <xs:enumeration value="checker_double" />
+      <xs:enumeration value="circle" />
+      <xs:enumeration value="crescent" />
+      <xs:enumeration value="arrow" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="pieceShape">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal" />
+      <xs:enumeration value="circle" />
+      <xs:enumeration value="wedge" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="rotation">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal" />
+      <xs:enumeration value="inverted" />
+      <xs:enumeration value="mirrored" />
+      <xs:enumeration value="left-45" />
+      <xs:enumeration value="right-45" />
+      <xs:enumeration value="left-90" />
+      <xs:enumeration value="right-90" />
+      <xs:enumeration value="left-135" />
+      <xs:enumeration value="right-135" />
+      <xs:enumeration value="180" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="conditions">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="and" type="conditions"/>
+      <xs:element name="or" type="conditions"/>
+      <xs:element name="not" type="conditions"/>
+      <xs:element name="nand" type="conditions"/>
+      <xs:element name="nor" type="conditions"/>
+      <xs:element name="xor" type="conditions"/>
+
+      <xs:element name="compare">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="comparison_value">
+              <xs:attribute name="var" type="comparison_property"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="type">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="of" type="xs:string" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="owner">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="owner">
+              <xs:attribute name="of" type="xs:string" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="threatened">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:boolean">
+              <xs:attribute name="where" type="part_of_move" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="num_pieces_in_range">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="comparison_value">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="owner" type="owner" use="required"/>
+              <xs:attribute name="rank_min" type="comparison_value" use="required"/>
+              <xs:attribute name="rank_max" type="comparison_value" use="required"/>
+              <xs:attribute name="col_min" type="comparison_value" use="required"/>
+              <xs:attribute name="col_max" type="comparison_value" use="required"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="move_causes_check" type="xs:boolean"/>
+      <xs:element name="move_causes_checkmate" type="xs:boolean"/>
+	  
+	  
+      <xs:element name="checkmate">
+        <xs:complexType>
+          <xs:attribute name="num" type="piece_count" default="any"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="pieces_threatened">
+        <xs:complexType>
+          <xs:attribute name="num" type="piece_count" default="any"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="repeated_check">
+        <xs:complexType>
+          <xs:attribute name="duration" type="xs:positiveInteger" use="required"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="no_moves_possible">
+        <xs:complexType>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="player" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="repetition_of_position">
+        <xs:complexType>  <!-- requires that "possible moves" are identical - so player to move, and availability of e.g. en passant or castling count as "differences" -->
+          <xs:attribute name="occurances" type="xs:positiveInteger" use="required"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="turns_since_last_capture">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:nonNegativeInteger">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="owner" type="owner" use="required"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="turns_since_last_move">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:nonNegativeInteger">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="owner" type="owner" use="required"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="victoryConditions">
+    <xs:complexContent>
+      <xs:extension base="conditions">
+        <xs:attribute name="when" type="part_of_turn" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="slide">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="piece" type="xs:string" default="self"/>
+    <xs:attribute name="dir" type="direction" use="required"/>
+    <xs:attribute name="dist" type="distance" use="required"/>
+    <xs:attribute name="dist2" type="distance"/>
+    <!-- if present, limits the movement to between dist & dist2 -->
+    <xs:attribute name="when" type="when" default="any"/>
+  </xs:complexType>
+
+  <xs:complexType name="leap">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="piece" type="xs:string" default="self"/>
+    <xs:attribute name="dir" type="direction" use="required"/>
+    <xs:attribute name="dist" type="distance" use="required"/>
+    <xs:attribute name="dist2" type="distance"/>
+    <xs:attribute name="perpdir" type="perpendicular_dir" default="both"/>
+    <xs:attribute name="perpdist" type="distance_inc_zero" default="0"/>
+    <xs:attribute name="when" type="when" default="any"/>
+  </xs:complexType>
+
+  <xs:complexType name="hop">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="piece" type="xs:string" default="self"/>
+    <xs:attribute name="dir" type="direction" use="required"/>
+    <xs:attribute name="dist_to_hurdle" type="distance" use="required"/>
+    <xs:attribute name="dist_after_hurdle" type="distance" use="required"/>
+    <xs:attribute name="when" type="when" default="any"/>
+    <xs:attribute name="capture_hurdle" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="shoot">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="piece" type="xs:string" default="self"/>
+    <xs:attribute name="dir" type="direction" use="required"/>
+    <xs:attribute name="dist" type="distance" use="required"/>
+    <xs:attribute name="dist2" type="distance"/>
+    <!-- if present, limits the movement to between dist & dist2 -->
+    <xs:attribute name="perpdir" type="perpendicular_dir" default="right"/>
+    <xs:attribute name="perpdist" type="distance_inc_zero" default="0"/>
+  </xs:complexType>
+
+  <xs:complexType name="move_like">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="other" type="xs:string" use="required"/>
+    <xs:attribute name="when" type="when" default="any"/>
+  </xs:complexType>
+
+  <xs:complexType name="reference_piece">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="dir" type="direction"/>
+    <xs:attribute name="dist" type="distance"/>
+    <xs:attribute name="type" type="xs:string" default="any"/>
+    <xs:attribute name="owner" type="owner" default="any"/>
+  </xs:complexType>
+
+  <xs:complexType name="arbitrary_attack">
+    <xs:sequence>
+      <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="row_ref" type="xs:string" use="required"/>
+    <xs:attribute name="col_ref" type="xs:string" use="required"/>
+    <xs:attribute name="row_offset" type="xs:integer" default="0"/>
+    <xs:attribute name="col_offset" type="xs:integer" default="0"/>
+    <xs:attribute name="move" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="move_list">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="slide" type="slide"/>
+        <xs:element name="leap" type="leap"/>
+        <xs:element name="hop" type="hop"/>
+        <xs:element name="shoot" type="shoot"/>
+        <xs:element name="move_like" type="move_like"/>
+        <xs:element name="sequence" type="move_sequence"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="move_sequence">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="slide" type="slide"/>
+      <xs:element name="leap" type="leap"/>
+      <xs:element name="hop" type="hop"/>
+      <xs:element name="shoot" type="shoot"/>
+      <xs:element name="move_like" type="move_like"/>
+      <xs:element name="repeat" type="move_sequence_repeat_loop"/>
+      <xs:element name="when_possible" type="move_sequence"/>
+      <xs:element name="reference_piece" type="reference_piece"/>
+      <xs:element name="arbitrary_attack" type="arbitrary_attack"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="move_sequence_repeat_loop">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="slide" type="slide"/>
+      <xs:element name="leap" type="leap"/>
+      <xs:element name="hop" type="hop"/>
+      <xs:element name="shoot" type="shoot"/>
+      <xs:element name="move_like" type="move_like"/>
+      <xs:element name="repeat" type="move_sequence_repeat_loop"/>
+      <xs:element name="when_possible" type="move_sequence"/>
+      <xs:element name="reference_piece" type="reference_piece"/>
+      <xs:element name="arbitrary_attack" type="arbitrary_attack"/>
+    </xs:choice>
+    <xs:attribute name="min" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="max" type="repeat_count" use="required"/>
+  </xs:complexType>
+
+  <!-- and now, the overall structure -->
+  <xs:element name="game">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="reqString"/>
+              <xs:element name="author" type="reqString"/>
+              <xs:element name="description" type="reqString"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="pieces">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="name" type="xs:string"/>
+                    <xs:element name="appearance">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="pieceAppearance">
+                            <xs:attribute name="orientation" type="rotation" default="normal"/>
+                            <xs:attribute name="shape" type="pieceShape" default="normal"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="moves" type="move_list" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="special" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:choice minOccurs="0" maxOccurs="1">
+                            <xs:element name="royal"/>
+                            <xs:element name="anti_royal"/>
+                          </xs:choice>
+                          <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="immobilize">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+                                </xs:sequence>
+                                <xs:attribute name="dir" type="direction" use="required"/>
+                                <xs:attribute name="dist" type="distance" use="required"/>
+                                <xs:attribute name="dist2" type="distance"/>
+                                <!-- if present, limits the movement to between dist & dist2 -->
+                                <xs:attribute name="offset" type="xs:nonNegativeInteger" default="0"/>
+                                <xs:attribute name="allow_immobilized_suicide" type="xs:boolean" default="false"/>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:choice>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="promotion" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+                          <xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                        <xs:attribute name="mandatory" type="xs:boolean" default="true"/>
+                        <xs:attribute name="type" type="promotionType" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="captured_as" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                  </xs:sequence>
+                  <xs:attribute name="value" type="xs:nonNegativeInteger"/>
+                  <xs:attribute name="symbol" type="oneChar"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="board">
+          <xs:complexType>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+              <xs:element name="cells">
+                <xs:complexType>
+                  <xs:attribute name="appearance" type="cellAppearance" use="required"/>
+                  <xs:attribute name="rank_from" type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="rank_to" type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="column_from" type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="column_to" type="xs:nonNegativeInteger" use="required"/>
+                </xs:complexType>
+              </xs:element>
+			</xs:sequence>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="detail">
+                <xs:complexType>
+                  <xs:attribute name="style" type="cellDetail" use="required"/>
+                  <xs:attribute name="rank" type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="column" type="xs:nonNegativeInteger" use="required"/>
+                </xs:complexType>
+              </xs:element>
+			</xs:sequence>
+            <xs:attribute name="type" type="boardType" use="required" fixed="square"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="rules">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="move_order" minOccurs="0" type="moveOrder"/>
+              <xs:element name="hold_captured_pieces" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="drop_pieces_when" type="conditions" minOccurs="0"/>
+              <xs:element name="victory_conditions">
+                <xs:complexType>
+                  <xs:choice minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="win" type="victoryConditions"/>
+                    <xs:element name="lose" type="victoryConditions"/>
+
+                    <xs:element name="draw">
+                      <xs:complexType>
+                        <xs:complexContent>
+                          <xs:extension base="victoryConditions">
+                            <xs:attribute name="optional" type="xs:boolean" use="required"/>
+                          </xs:extension>
+                        </xs:complexContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:choice>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="players">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="player" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="pieces_on_board" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="type" type="xs:string" use="required"/>
+                              <xs:attribute name="rank" type="xs:nonNegativeInteger" use="required"/>
+                              <xs:attribute name="column" type="xs:nonNegativeInteger" use="required"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="held_pieces" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="type" type="xs:string" use="required"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="name" type="reqString" use="required"/>
+                  <xs:attribute name="forward_direction" type="absDir" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="min_version" type="game_version" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -15,7 +15,7 @@ MoveDefinition.parse = function (xmlNode, isTopLevel) {
             return Hop.parse(xmlNode);
         case "shoot":
             return Shoot.parse(xmlNode);
-        case "move_like":
+        case "moveLike":
             return MoveLike.parse(xmlNode);
         case "sequence":
             if (!isTopLevel)
@@ -25,15 +25,15 @@ MoveDefinition.parse = function (xmlNode, isTopLevel) {
             if (isTopLevel)
                 throw xmlNode.Name + " not allowed at top level!";
             return Repeat.parse(xmlNode);
-        case "when_possible":
+        case "whenPossible":
             if (isTopLevel)
                 throw xmlNode.Name + " not allowed at top level!";
             return WhenPossible.parse(xmlNode);
-        case "reference_piece":
+        case "referencePiece":
             if (isTopLevel)
                 throw xmlNode.Name + " not allowed at top level!";
             return ReferencePiece.parse(xmlNode);
-        case "arbitrary_attack":
+        case "arbitraryAttack":
             if (isTopLevel)
                 throw xmlNode.Name + " not allowed at top level!";
             return ArbitraryAttack.parse(xmlNode);
@@ -183,7 +183,7 @@ Hop.parse = function (xmlNode) {
     var distAfterHurdle = Distance.parse(node.attr("distAfterHurdle"));
 
     var when = MoveDefinition.When.parse(node.attr("when"));
-    var captureHurdle = node.attr("capture_hurdle") == "true";
+    var captureHurdle = node.attr("captureHurdle") == "true";
 
     return new Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, conditions);
 }
@@ -303,10 +303,10 @@ ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, game, pr
 ArbitraryAttack.parse = function (xmlNode) {
     var node = $(xmlNode);
     var conditions = node.children("conditions").children();
-    var rowRef = node.attr("row_ref");
-    var colRef = node.attr("col_ref");
-    var rowOffset = parseInt(node.attr("row_offset"));
-    var colOffset = parseInt(node.attr("col_offset"));
+    var rowRef = node.attr("rowRef");
+    var colRef = node.attr("colRef");
+    var rowOffset = parseInt(node.attr("rowOffset"));
+    var colOffset = parseInt(node.attr("colOffset"));
     var move = node.attr("move") == "true";
 
     return new ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, conditions);
@@ -318,7 +318,7 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
     this.contents = [];
     this.minOccurs = minOccurs;
     this.maxOccurs = maxOccurs;
-    this.StepOutIfFail = stepOutIfFail; // true for when_possible, false otherwise - makes a group obligatory unless it fails.
+    this.StepOutIfFail = stepOutIfFail; // true for whenPossible, false otherwise - makes a group obligatory unless it fails.
 }
 
 extend(MoveGroup, MoveDefinition);

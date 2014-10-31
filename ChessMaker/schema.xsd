@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:simpleType name="viewBox">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="-?(\d*\.)?\d+ -?(\d*\.)?\d+ -?(\d*\.)?\d+ -?(\d*\.)?\d+" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="svgPath">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="M-?(\d*\.)?\d+ -?(\d*\.)?\d+ .*Z" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="boardColor">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="light" />
+			<xs:enumeration value="mid" />
+			<xs:enumeration value="dark" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:complexType name="conditions">
+		<xs:sequence>
+			<xs:any minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="when">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="any" />
+			<xs:enumeration value="capture" />
+			<xs:enumeration value="move" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="owner">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="any" />
+			<xs:enumeration value="self" />
+			<xs:enumeration value="enemy" />
+			<xs:enumeration value="ally" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="direction">
+		<xs:restriction base="xs:string" />
+	</xs:simpleType>
+
+	<xs:simpleType name="distance">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="any|(((max|prev)(\+|-))?[1-9][0-9]*)"/>
+			<!-- a positive integer, the text "any", or "max" or "prev" +- a positive integer -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="distanceIncZero">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]+|any|max"/>
+			<!-- a non-negative integer, or the text "any" or "max" -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="repeatCount">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9][0-9]*|unbounded"/>
+			<!-- a positive integer, or the text "unbounded" -->
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:complexType name="slide">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
+		<xs:attribute name="dir" type="direction" use="required"/>
+		<xs:attribute name="dist" type="distance" use="required"/>
+		<xs:attribute name="distLimit" type="distance"/>
+		<!-- if present, limits the movement to between dist & distLimit -->
+		<xs:attribute name="when" type="when" default="any"/>
+	</xs:complexType>
+
+	<xs:complexType name="leap">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
+		<xs:attribute name="dir" type="direction" use="required"/>
+		<xs:attribute name="dist" type="distance" use="required"/>
+		<xs:attribute name="distLimit" type="distance"/>
+		<xs:attribute name="secondDir" type="direction"/>
+		<xs:attribute name="secondDist" type="distanceIncZero" default="0"/>
+		<xs:attribute name="when" type="when" default="any"/>
+	</xs:complexType>
+
+	<xs:complexType name="hop">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
+		<xs:attribute name="dir" type="direction" use="required"/>
+		<xs:attribute name="distToHurdle" type="distance" use="required"/>
+		<xs:attribute name="distAfterHurdle" type="distance" use="required"/>
+		<xs:attribute name="when" type="when" default="any"/>
+		<xs:attribute name="captureHurdle" type="xs:boolean" default="false"/>
+	</xs:complexType>
+
+	<xs:complexType name="shoot">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
+		<xs:attribute name="dir" type="direction" use="required"/>
+		<xs:attribute name="dist" type="distance" use="required"/>
+		<xs:attribute name="distLimit" type="distance"/>
+		<!-- if present, limits the movement to between dist & dist2 -->
+		<xs:attribute name="secondDir" type="direction"/>
+		<xs:attribute name="secondDist" type="distanceIncZero" default="0"/>
+	</xs:complexType>
+
+	<xs:complexType name="moveLike">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="other" type="xs:string" use="required"/>
+		<xs:attribute name="when" type="when" default="any"/>
+	</xs:complexType>
+
+	<xs:complexType name="referencePiece">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="dir" type="direction"/>
+		<xs:attribute name="dist" type="distance"/>
+		<xs:attribute name="type" type="xs:string" default="any"/>
+		<xs:attribute name="owner" type="owner" default="any"/>
+	</xs:complexType>
+
+	<xs:complexType name="arbitraryAttack">
+		<xs:sequence>
+			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="rowRef" type="xs:string" use="required"/>
+		<xs:attribute name="colRef" type="xs:string" use="required"/>
+		<xs:attribute name="rowOffset" type="xs:integer" default="0"/>
+		<xs:attribute name="colOffset" type="xs:integer" default="0"/>
+		<xs:attribute name="move" type="xs:boolean" default="false"/>
+	</xs:complexType>
+
+	<xs:complexType name="moveList">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="slide" type="slide"/>
+				<xs:element name="leap" type="leap"/>
+				<xs:element name="hop" type="hop"/>
+				<xs:element name="shoot" type="shoot"/>
+				<xs:element name="moveLike" type="moveLike"/>
+				<xs:element name="sequence" type="moveSequence"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="moveSequence">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="slide" type="slide"/>
+			<xs:element name="leap" type="leap"/>
+			<xs:element name="hop" type="hop"/>
+			<xs:element name="shoot" type="shoot"/>
+			<xs:element name="moveLike" type="moveLike"/>
+			<xs:element name="repeat" type="moveSequenceLoop"/>
+			<xs:element name="whenPossible" type="moveSequence"/>
+			<xs:element name="referencePiece" type="referencePiece"/>
+			<xs:element name="arbitraryAttack" type="arbitraryAttack"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="moveSequenceLoop">
+		<xs:complexContent>
+			<xs:extension base="moveSequence">
+				<xs:attribute name="min" type="xs:nonNegativeInteger" use="required"/>
+				<xs:attribute name="max" type="repeatCount" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="game">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="board">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="cell">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="link" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="dir" type="xs:string" use="required"/>
+												<xs:attribute name="to" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:string" use="required"/>
+									<xs:attribute name="color" type="boardColor" use="required"/>
+									<xs:attribute name="border" type="boardColor" use="optional"/>
+									<xs:attribute name="path" type="svgPath" use="required"/>
+								</xs:complexType>
+							</xs:element>
+
+							<xs:element name="line">
+								<xs:complexType>
+									<xs:attribute name="color" type="boardColor" use="required"/>
+									<xs:attribute name="x1" type="xs:decimal" use="required"/>
+									<xs:attribute name="y1" type="xs:decimal" use="required"/>
+									<xs:attribute name="x2" type="xs:decimal" use="required"/>
+									<xs:attribute name="y2" type="xs:decimal" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="viewBox" type="viewBox" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="dirs">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="relative">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="link" minOccurs="1" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="from" type="xs:string" use="required"/>
+												<xs:attribute name="to" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="group">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="include" minOccurs="2" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="name" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="pieces">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="appearance" minOccurs="1" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:any />
+												</xs:sequence>
+												<xs:attribute name="player" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="moves" type="moveList" minOccurs="1" maxOccurs="1"/>
+										<!--
+										<xs:element name="special" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice minOccurs="0" maxOccurs="1">
+														<xs:element name="royal"/>
+														<xs:element name="anti_royal"/>
+													</xs:choice>
+													<xs:choice minOccurs="0" maxOccurs="unbounded">
+														<xs:element name="immobilize">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+																</xs:sequence>
+																<xs:attribute name="dir" type="direction" use="required"/>
+																<xs:attribute name="dist" type="distance" use="required"/>
+																<xs:attribute name="dist2" type="distance"/>
+																<xs:attribute name="offset" type="xs:nonNegativeInteger" default="0"/>
+																<xs:attribute name="allow_immobilized_suicide" type="xs:boolean" default="false"/>
+															</xs:complexType>
+														</xs:element>
+													</xs:choice>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="promotion" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+													<xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+												</xs:sequence>
+												<xs:attribute name="mandatory" type="xs:boolean" default="true"/>
+												<xs:attribute name="type" type="promotionType" use="required"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="captured_as" type="xs:string" minOccurs="0" maxOccurs="1"/>
+										-->
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:string"/>
+									<!--
+									<xs:attribute name="value" type="xs:nonNegativeInteger"/>
+									<xs:attribute name="symbol" type="oneChar"/>
+									-->
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="setup">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="player" minOccurs="1" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="piece" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="type" type="xs:string" use="required"/>
+												<xs:attribute name="location" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="forwardDirection" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
