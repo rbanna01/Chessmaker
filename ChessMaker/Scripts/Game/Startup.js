@@ -1,4 +1,11 @@
 ﻿$(function () {
+    
+});
+
+function loadDefinition(xml)
+{
+    console.log('loaded definition...');
+
     $('#render path.cell').click(cellClicked);
     /*
     $('#main').click(function (e) {
@@ -9,7 +16,7 @@
     calculateRatio();
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
-});
+}
 
 function cellClicked(e) {
     if (hasClass(this, 'selected'))

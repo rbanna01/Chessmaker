@@ -16,4 +16,13 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/game")
+
+<script type="text/javascript">
+    $.ajax({
+        type: "GET",
+        url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
+        dataType: "xml",
+        success: loadDefinition
+    });
+</script>
 }

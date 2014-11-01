@@ -49,7 +49,7 @@ namespace ChessMaker.Controllers
             return View(model);
         }
 
-        public new ActionResult Theme()
+        public ActionResult Theme()
         {
             UserService users = GetService<UserService>();
             var user = users.GetByName(User.Identity.Name);

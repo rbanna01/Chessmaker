@@ -63,16 +63,24 @@ namespace ChessMaker.Models
     {
         public GamePlayModel(VariantVersion version, XmlDocument boardSvg, GameMode mode)
         {
+            Tag = version.Variant.Tag;
+
             if (version.Variant.PublicVersionID.HasValue && version.ID == version.Variant.PublicVersionID)
                 Name = version.Variant.Name;
             else
+            {
                 Name = string.Format("{0} v{1}", version.Variant.Name, version.Number);
+                Version = version.Number;
+            }
 
             Mode = mode;
             SvgData = boardSvg.OuterXml;
         }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
+        public string Tag { get; private set; }
+        public int? Version { get; private set; }
+
         public GameMode Mode { get; set; }
         public AIDifficultyModel AI { get; set; }
         public string SvgData { get; private set; }

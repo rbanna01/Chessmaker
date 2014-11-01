@@ -140,42 +140,49 @@ namespace ChessMaker.Controllers
             return true;
         }
 
-        private VariantVersion DeterminePlayVersion(string variantTag, int? versionID, VariantService variants, out XmlDocument boardSvg)
+        private VariantVersion DeterminePlayVersion(string variantTag, int? versionID, VariantService variants)
         {
             var variant = variants.GetByTag(variantTag);
-            boardSvg = null;
-
+            
             if (variant == null)
                 return null;
 
-            VariantVersion versionToPlay;
             if (versionID.HasValue && variant.CreatedBy.Name == User.Identity.Name)
             {
-                versionToPlay = variants.GetVersionNumber(variant, versionID.Value);
+                VariantVersion version = variants.GetVersionNumber(variant, versionID.Value);
 
-                if (versionToPlay == null || versionToPlay.VariantID != variant.ID)
+                if (version == null || version.VariantID != variant.ID)
                     return null;
+
+                return version;
             }
             else
-                versionToPlay = variant.PublicVersion;
+                return variant.PublicVersion;
+        }
 
-            if (versionToPlay != null)
-            {
-                DefinitionService definitions = GetService<DefinitionService>();
-                boardSvg = definitions.GetBoardSVG(versionToPlay);
-            }
-            return versionToPlay;
+        [AllowAnonymous]
+        public ActionResult Definition(string id, int? version)
+        {
+            VariantService variants = GetService<VariantService>();
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
+
+            if (versionToPlay == null)
+                return HttpNotFound("Cannot determine variant version to play");
+
+            return Content(versionToPlay.Definition, "text/xml");
         }
 
         [AllowAnonymous]
         public ActionResult Offline(string id, int? version)
         {
             VariantService variants = GetService<VariantService>();
-            XmlDocument boardSvg;
-            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants, out boardSvg);
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
             
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            XmlDocument boardSvg = definitions.GetBoardSVG(versionToPlay);
 
             var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.Local);
             return View("Play", model);
@@ -185,11 +192,13 @@ namespace ChessMaker.Controllers
         public ActionResult AI(string id, int? version, int difficulty)
         {
             VariantService variants = GetService<VariantService>();
-            XmlDocument boardSvg;
-            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants, out boardSvg);
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
 
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            XmlDocument boardSvg = definitions.GetBoardSVG(versionToPlay);
 
             var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.AI);
             model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty);
