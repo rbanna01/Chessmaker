@@ -181,10 +181,7 @@ namespace ChessMaker.Controllers
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
 
-            DefinitionService definitions = GetService<DefinitionService>();
-            XmlDocument boardSvg = definitions.GetBoardSVG(versionToPlay);
-
-            var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.Local);
+            var model = new GamePlayModel(versionToPlay, GameMode.Local);
             return View("Play", model);
         }
 
@@ -197,10 +194,7 @@ namespace ChessMaker.Controllers
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
 
-            DefinitionService definitions = GetService<DefinitionService>();
-            XmlDocument boardSvg = definitions.GetBoardSVG(versionToPlay);
-
-            var model = new GamePlayModel(versionToPlay, boardSvg, GameMode.AI);
+            var model = new GamePlayModel(versionToPlay, GameMode.AI);
             model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty);
 
             return View("Play", model);

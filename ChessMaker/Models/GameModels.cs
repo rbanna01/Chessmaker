@@ -61,7 +61,7 @@ namespace ChessMaker.Models
 
     public class GamePlayModel
     {
-        public GamePlayModel(VariantVersion version, XmlDocument boardSvg, GameMode mode)
+        public GamePlayModel(VariantVersion version, GameMode mode)
         {
             Tag = version.Variant.Tag;
 
@@ -74,7 +74,6 @@ namespace ChessMaker.Models
             }
 
             Mode = mode;
-            SvgData = boardSvg.OuterXml;
         }
 
         public string Name { get; private set; }
@@ -83,6 +82,5 @@ namespace ChessMaker.Models
 
         public GameMode Mode { get; set; }
         public AIDifficultyModel AI { get; set; }
-        public string SvgData { get; private set; }
     }
 }
