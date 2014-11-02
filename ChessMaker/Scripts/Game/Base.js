@@ -63,3 +63,5 @@ function resizeBoard() {
     }
     svg.css('width', width + "px").css('height', height + "px");
 }
+
+var cellCoordX = {}; var cellCoordY = {};
