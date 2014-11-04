@@ -12,6 +12,6 @@
     margin-right: auto;
 }
 
-#render line.detail {
+#render line.detail, #render use.piece {
     pointer-events: none;
 }
