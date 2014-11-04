@@ -10,7 +10,8 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
-    <textarea id="data" name="data" rows="15" cols="50"></textarea>
+    
+    @Html.TextArea("XmlData", new { rows = 15, cols = 50 });
     
     <input type="submit" name="next" id="submitDone" value="done" />
 }

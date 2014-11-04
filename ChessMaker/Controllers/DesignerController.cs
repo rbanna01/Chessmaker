@@ -33,7 +33,7 @@ namespace ChessMaker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Raw(int id, string data, string next)
+        public ActionResult Raw(int id, string xmlData, string next)
         {
             var version = Entities().VariantVersions.Find(id);
             if (version == null)
@@ -45,16 +45,16 @@ namespace ChessMaker.Controllers
 
             DefinitionService definitions = GetService<DefinitionService>();
             string errors;
-            if (!definitions.ValidateXml(data, out errors))
+            if (!definitions.ValidateXml(xmlData, out errors))
             {
                 ModelState.AddModelError("data", "Error validating XML data: " + errors);
 
                 var model = new RawModel(version);
-                model.XmlData = data;
+                model.XmlData = xmlData;
                 return View(model);
             }
 
-            version.Definition = data;
+            version.Definition = xmlData;
             Entities().SaveChanges();
 
             if (next == "done")
