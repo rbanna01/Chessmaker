@@ -563,20 +563,20 @@
 			<link from="east" to="south" />
 		</relative>
 		<group name="orthogonal">
-			<include name="north" />
-			<include name="south" />
-			<include name="east" />
-			<include name="west" />
+			<include dir="north" />
+			<include dir="south" />
+			<include dir="east" />
+			<include dir="west" />
 		</group>
 		<group name="diagonal">
-			<include name="northeast" />
-			<include name="northwest" />
-			<include name="southeast" />
-			<include name="southwest" />
+			<include dir="northeast" />
+			<include dir="northwest" />
+			<include dir="southeast" />
+			<include dir="southwest" />
 		</group>
 		<group name="sideways">
-			<include name="east" />
-			<include name="west" />
+			<include dir="east" />
+			<include dir="west" />
 		</group>
 	</dirs>
 	<pieces>

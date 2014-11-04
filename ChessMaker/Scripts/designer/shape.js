@@ -695,7 +695,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
 
                 cellNum = addCell('M' + centerX + ' ' + centerY + ' m' + midPoint.x + ' ' + midPoint.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
-                            ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
+                            ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' Z',
                             resolvePattern(slice + ring, pattern), stroke);
             }
             else {
@@ -713,7 +713,7 @@ function addCircle(radiusOuter, radiusInner, slicesTot, slicesAct, pattern, stro
                 cellNum = addCell('M' + centerX + ' ' + centerY + ' m' + innerStart.x + ' ' + innerStart.y +
                             ' a' + ((ring - 1) * 40) + ',' + ((ring - 1) * 40) + ' 0 0,0 ' + innerEnd.x + ',' + innerEnd.y +
                             ' l' + outerStart.x + ' ' + outerStart.y +
-                            ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' z',
+                            ' a' + (ring * 40) + ',' + (ring * 40) + ' 0 0,1 ' + outerEnd.x + ',' + outerEnd.y + ' Z',
                             resolvePattern(slice + ring, pattern), stroke);
             }
 
