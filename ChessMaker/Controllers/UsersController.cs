@@ -60,13 +60,16 @@ namespace ChessMaker.Controllers
             // ffce9e / e8ad73 / d18b47
             // ff4535 / f73a26 / f02e18
 
-            model.Light = /*user.ThemeColorLight ??*/ "d0d0d0";
-            model.Mid = /*user.ThemeColorMid ??*/ "878787";
-            model.Dark = /*user.ThemeColorDark ??*/ "505050";
+            model.BoardLight = /*user.ThemeColorLight ??*/ "e0e0e0";
+            model.BoardMid = /*user.ThemeColorMid ??*/ "909090";
+            model.BoardDark = /*user.ThemeColorDark ??*/ "606060";
 
-            model.LightSelected = /*user.ThemeColorLightSelected ??*/ "ffa0a0";
-            model.MidSelected = /*user.ThemeColorMidSelected ??*/ "ff8787";
-            model.DarkSelected = /*user.ThemeColorDarkSelected ??*/ "ff6060";
+            model.BoardLightSelected = /*user.ThemeColorLightSelected ??*/ "ffa0a0";
+            model.BoardMidSelected = /*user.ThemeColorMidSelected ??*/ "ff9090";
+            model.BoardDarkSelected = /*user.ThemeColorDarkSelected ??*/ "ff7070";
+
+            model.PieceLight = /*user.ThemeColorPieceLight ??*/ "ffffff";
+            model.PieceDark = /*user.ThemeColorPieceDark ??*/ "000000";
 
             Response.ContentType = "text/css";
             return View(model);

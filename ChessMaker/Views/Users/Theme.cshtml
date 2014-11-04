@@ -3,18 +3,23 @@
     Layout = null;
 }
 
-#render .light{fill:#@Model.Light;}
-#render .mid{fill:#@Model.Mid;}
-#render .dark{fill:#@Model.Dark;}
+#render .cell.light{fill:#@Model.BoardLight;}
+#render .cell.mid{fill:#@Model.BoardMid;}
+#render .cell.dark{fill:#@Model.BoardDark;}
 
-#render .lightStroke{stroke:#@Model.Light;}
-#render .midStroke{stroke:#@Model.Mid;}
-#render .darkStroke{stroke:#@Model.Dark;}
+#render .cell.lightStroke, .detail.lightStroke {stroke:#@Model.BoardLight;}
+#render .cell.midStroke, .detail.midStroke{stroke:#@Model.BoardMid;}
+#render .cell.darkStroke, .detail.darkStroke{stroke:#@Model.BoardDark;}
 
-#render .selected.light{fill:#@Model.LightSelected;}
-#render .selected.mid{fill:#@Model.MidSelected;}
-#render .selected.dark{fill:#@Model.DarkSelected;}
+#render .cell.selected.light{fill:#@Model.BoardLightSelected;}
+#render .cell.selected.mid{fill:#@Model.BoardMidSelected;}
+#render .cell.selected.dark{fill:#@Model.BoardDarkSelected;}
 
-#render .selected.lightStroke{stroke:#@Model.LightSelected;}
-#render .selected.midStroke{stroke:#@Model.MidSelected;}
-#render .selected.darkStroke{stroke:#@Model.DarkSelected;}
+#render .cell.selected.lightStroke{stroke:#@Model.BoardLightSelected;}
+#render .cell.selected.midStroke{stroke:#@Model.BoardMidSelected;}
+#render .cell.selected.darkStroke{stroke:#@Model.BoardDarkSelected;}
+
+#render .piece .lightStroke{stroke:#@Model.PieceLight;}
+#render .piece .darkStroke{stroke:#@Model.PieceDark;}
+#render .piece .lightFill{fill:#@Model.PieceLight;}
+#render .piece .darkFill{fill:#@Model.PieceDark;}

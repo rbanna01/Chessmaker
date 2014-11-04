@@ -14,12 +14,15 @@ namespace ChessMaker.Models
 
     public class ThemeModel
     {
-        public string Light { get; set; }
-        public string Mid { get; set; }
-        public string Dark { get; set; }
+        public string BoardLight { get; set; }
+        public string BoardMid { get; set; }
+        public string BoardDark { get; set; }
 
-        public string LightSelected { get; set; }
-        public string MidSelected { get; set; }
-        public string DarkSelected { get; set; }
+        public string BoardLightSelected { get; set; }
+        public string BoardMidSelected { get; set; }
+        public string BoardDarkSelected { get; set; }
+
+        public string PieceLight { get; set; }
+        public string PieceDark { get; set; }
     }
 }

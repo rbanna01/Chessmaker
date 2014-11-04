@@ -74,7 +74,8 @@ function loadBoard(xml) {
             var appearanceName = this.getAttribute('player');
 
             var def = SVG('g');
-            def.setAttribute('id', pieceName + '_' + appearanceName)
+            def.setAttribute('class', 'piece');
+            def.setAttribute('id', pieceName + '_' + appearanceName);
 
             var trans = this.getAttribute('transform');
             if (trans !== undefined)
