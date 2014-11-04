@@ -56,13 +56,17 @@ namespace ChessMaker.Controllers
 
             var model = new ThemeModel();
 
-            model.Light = /*user.ThemeColorLight ??*/ "ffffff";
-            model.Mid = /*user.ThemeColorMid ??*/ "7f7f7f";
-            model.Dark = /*user.ThemeColorDark ??*/ "000000";
+            // here's brown-ish low-contrast theme, as used on wikipedia. Looks good, but doens't go with the blue.
+            // ffce9e / e8ad73 / d18b47
+            // ff4535 / f73a26 / f02e18
 
-            model.LightSelected = /*user.ThemeColorLightSelected ??*/ "ffabab";
-            model.MidSelected = /*user.ThemeColorMidSelected ??*/ "aa5656";
-            model.DarkSelected = /*user.ThemeColorDarkSelected ??*/ "540000";
+            model.Light = /*user.ThemeColorLight ??*/ "d0d0d0";
+            model.Mid = /*user.ThemeColorMid ??*/ "878787";
+            model.Dark = /*user.ThemeColorDark ??*/ "505050";
+
+            model.LightSelected = /*user.ThemeColorLightSelected ??*/ "ffa0a0";
+            model.MidSelected = /*user.ThemeColorMidSelected ??*/ "ff8787";
+            model.DarkSelected = /*user.ThemeColorDarkSelected ??*/ "ff6060";
 
             Response.ContentType = "text/css";
             return View(model);
