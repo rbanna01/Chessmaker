@@ -75,8 +75,11 @@ function loadBoard(xml) {
 
             var def = SVG('g');
             def.setAttribute('id', pieceName + '_' + appearanceName)
-            def.setAttribute('width', this.getAttribute('width'));
-            def.setAttribute('height', this.getAttribute('height'));
+
+            var trans = this.getAttribute('transform');
+            if (trans !== undefined)
+                def.setAttribute('transform', trans);
+
             def.innerHTML = this.innerHTML;
             defs.appendChild(def);
         });
@@ -102,8 +105,9 @@ function loadInitialLayout(xml, boardSVG) {
             }
 
             var piece = SVG('use');
-            piece.setAttribute('x', xPos-22);
-            piece.setAttribute('y', yPos-22);
+            piece.setAttribute('class', 'piece ' + playerName);
+            piece.setAttribute('x', xPos);
+            piece.setAttribute('y', yPos);
             piece.setAttributeNS("http://www.w3.org/1999/xlink", 'href', '#' + type + '_' + playerName);
 
             boardSVG.appendChild(piece);
