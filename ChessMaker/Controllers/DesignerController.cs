@@ -14,6 +14,56 @@ namespace ChessMaker.Controllers
     public class DesignerController : ControllerBase
     {
         [Authorize]
+        public ActionResult Raw(int id)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            var model = new RawModel(version);
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Raw(int id, string data, string next)
+        {
+            var version = Entities().VariantVersions.Find(id);
+            if (version == null)
+                return HttpNotFound();
+
+            UserService users = GetService<UserService>();
+            if (!users.IsAllowedToEdit(version.Variant, User.Identity.Name))
+                return new HttpUnauthorizedResult();
+
+            DefinitionService definitions = GetService<DefinitionService>();
+            string errors;
+            if (!definitions.ValidateXml(data, out errors))
+            {
+                ModelState.AddModelError("data", "Error validating XML data: " + errors);
+
+                var model = new RawModel(version);
+                model.XmlData = data;
+                return View(model);
+            }
+
+            version.Definition = data;
+            Entities().SaveChanges();
+
+            if (next == "done")
+                return RedirectToAction("Edit", "Variants", new { id = version.VariantID });
+
+            return RedirectToAction("Raw", new { id });
+        }
+
+        [Authorize]
         public ActionResult Shape(int id)
         {
             var version = Entities().VariantVersions.Find(id);

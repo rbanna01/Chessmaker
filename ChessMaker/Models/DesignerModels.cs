@@ -18,6 +18,18 @@ namespace ChessMaker.Models
         public string VariantName { get; set; }
     }
 
+    public class RawModel : DesignerModel
+    {
+        public RawModel(VariantVersion version)
+        {
+            VariantName = version.Variant.Name;
+            XmlData = version.Definition;
+            ThisPage = "Raw xml";
+        }
+
+        public string XmlData { get; set; }
+    }
+
     public class BoardShapeModel : DesignerModel
     {
         public BoardShapeModel(VariantVersion version, XmlDocument boardSvg, string linkData)

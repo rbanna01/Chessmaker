@@ -611,8 +611,8 @@
 							<threatened where="whole route">false</threatened>
 						</conditions>
 					</slide>
-					<reference_piece name="castling rook" dir="same" dist="any" type="rook" owner="self"/>
-					<hop piece="castling rook" dir="opposite" dist_to_hurdle="any" dist_after_hurdle="1">
+					<referencePiece name="castling rook" dir="same" dist="any" type="rook" owner="self"/>
+					<hop piece="castling rook" dir="opposite" distToHurdle="any" distAfterHurdle="1">
 						<conditions>
 							<compare var="piece move number" comparison="equals">1</compare>
 							<type of="hurdle">king</type>

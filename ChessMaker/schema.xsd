@@ -23,7 +23,7 @@
 
 	<xs:complexType name="conditions">
 		<xs:sequence>
-			<xs:any minOccurs="0" />
+			<xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -200,7 +200,7 @@
 										</xs:element>
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:string" use="required"/>
-									<xs:attribute name="color" type="boardColor" use="required"/>
+									<xs:attribute name="fill" type="boardColor" use="required"/>
 									<xs:attribute name="border" type="boardColor" use="optional"/>
 									<xs:attribute name="path" type="svgPath" use="required"/>
 								</xs:complexType>
@@ -259,9 +259,10 @@
 										<xs:element name="appearance" minOccurs="1" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:any />
+													<xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
 												</xs:sequence>
 												<xs:attribute name="player" type="xs:string" />
+												<xs:attribute name="transform" type="xs:string" />
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="moves" type="moveList" minOccurs="1" maxOccurs="1"/>

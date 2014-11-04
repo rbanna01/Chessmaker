@@ -336,10 +336,9 @@
       <DependentUpon>Entities.edmx</DependentUpon>
       <LastGenOutput>Entities.cs</LastGenOutput>
     </Content>
-    <None Include="schema.xsd">
+    <EmbeddedResource Include="schema.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\Game\Startup.js" />
     <Content Include="Scripts\Game\Conditions.js" />
@@ -407,6 +406,7 @@
     <Content Include="Views\Designer\References.cshtml" />
     <Content Include="Views\Designer\Pieces.cshtml" />
     <Content Include="Views\Users\Theme.cshtml" />
+    <Content Include="Views\Designer\Raw.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

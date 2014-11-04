@@ -1,0 +1,42 @@
+﻿@model ChessMaker.Models.RawModel
+
+@{
+    ViewBag.Title = "'" + Model.VariantName + "' raw XML";
+    ViewBag.MinimalLayout = true;
+}
+
+<div id="main">
+@using (Html.BeginForm("Raw", "Designer", FormMethod.Post, new { id = "rawForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    <textarea id="data" name="data" rows="15" cols="50"></textarea>
+    
+    <input type="submit" name="next" id="submitDone" value="done" />
+}
+</div>
+
+<div id="sidebar">
+    <div class="section ui-widget ui-corner-all">
+        Modify the raw XML definition of this variant here. 
+        Advanced users only!
+    </div>
+</div>
+
+@section actions {
+    <button onclick="$('#submitDone').click();" title="save changes and exit variant designer">Close</button>
+}
+
+@section css {
+    @Styles.Render("~/Content/Designer/Base.css")
+
+    <style type="text/css">
+        form {
+            display: inherit;
+        }
+    </style>
+}
+
+@section scripts {
+    @Scripts.Render("~/Scripts/Game/Base.js")
+}

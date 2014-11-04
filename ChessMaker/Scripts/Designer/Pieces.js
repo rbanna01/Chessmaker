@@ -68,7 +68,7 @@ Shoot.prototype.save = function (parent) {
 }
 
 MoveLike.prototype.save = function (parent) {
-    var node = parent.ownerDocument.createElement('move_like');
+    var node = parent.ownerDocument.createElement('moveLike');
 
     node.setAttribute('other', this.piece);
     node.setAttribute('when', this.moveWhen);
@@ -79,7 +79,7 @@ MoveLike.prototype.save = function (parent) {
 }
 
 ReferencePiece.prototype.save = function (parent) {
-    var node = parent.ownerDocument.createElement('reference_piece');
+    var node = parent.ownerDocument.createElement('referencePiece');
 
     node.setAttribute('name', this.refName);
 
@@ -97,7 +97,7 @@ ReferencePiece.prototype.save = function (parent) {
 };
 
 ArbitraryAttack.prototype.save = function (parent) {
-    var node = parent.ownerDocument.createElement('arbitrary_attack');
+    var node = parent.ownerDocument.createElement('arbitraryAttack');
 
     node.setAttribute('row_ref', this.piece);
     node.setAttribute('col_ref', this.moveWhen);
@@ -129,7 +129,7 @@ Repeat.prototype.save = function (parent) {
 };
 
 WhenPossible.prototype.save = function (parent) {
-    var node = parent.ownerDocument.createElement('when_possible');
+    var node = parent.ownerDocument.createElement('whenPossible');
 
     for (var i = 0; i < this.contents.length; i++)
         this.contents[i].save(node);

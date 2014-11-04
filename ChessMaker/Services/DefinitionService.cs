@@ -1,10 +1,12 @@
 ﻿using ChessMaker.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Xml;
+using System.Xml.Schema;
 
 namespace ChessMaker.Services
 {
@@ -629,6 +631,45 @@ namespace ChessMaker.Services
         {
             var definition = GetDefinition(version);
             return definition.Pieces;
+        }
+
+        public bool ValidateXml(string data, out string errors)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool success = true;
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(data);
+
+                var schemas = new XmlSchemaSet();
+                using (Stream stream = GetType().Assembly.GetManifestResourceStream("ChessMaker.schema.xsd"))
+                {
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
+                        schemas.Add("", reader);
+                        doc.Schemas = schemas;
+                        doc.Validate((o, e) =>
+                        {
+                            success = false;
+                            sb.AppendLine(" ");
+                            sb.Append(e.Message);
+                            //sb.AppendFormat("Line {1} col {2}: {0}", e.Message, e.Exception.LineNumber, e.Exception.LinePosition); // alas, line numbers ain't working.
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                sb.AppendFormat("{0}", e.Message);
+                return false;
+            }
+            finally
+            {
+                errors = sb.ToString();
+            }
+
+            return success;
         }
     }
 }
