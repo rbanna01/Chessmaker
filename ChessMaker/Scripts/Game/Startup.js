@@ -2,10 +2,18 @@
     
 });
 
+var board;
 function loadDefinition(xml) {
     xml = $(xml.firstChild);
-    var boardSVG = loadBoard(xml);
-    loadInitialLayout(xml, boardSVG);
+    
+    board = new Board();
+
+    var defs = SVG('defs');
+    var boardSVG = board.loadSVG(xml, defs);
+
+    PieceType.parseAll(xml.children('pieces'), defs);
+
+    loadInitialLayout(xml, board, boardSVG);
 
     $('#main').append(boardSVG);
 
@@ -21,97 +29,53 @@ function loadDefinition(xml) {
     $(window).resize(function () { resizeBoard(); });
 }
 
-function loadBoard(xml) {
-    var boardSVG = SVG('svg');
-
-    var boardXml = xml.children('board');
-
-    boardSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    boardSVG.setAttribute('id', 'render');
-    boardSVG.setAttribute('viewBox', boardXml.attr('viewBox'));
-    
-    var defs = SVG('defs');
-    boardSVG.appendChild(defs);
-
-    // create cells & board lines
-    boardXml.children().each(function () {
-        if (this.tagName == 'cell') {
-            var cell = SVG('path');
-            var cellID = this.getAttribute('id');
-            cell.setAttribute('id', cellID);
-            var path = this.getAttribute('path');
-            cell.setAttribute('d', path);
-
-            var cssClass = 'cell ' + this.getAttribute('fill');
-            var border = this.getAttribute('border');
-            if ( border != null)
-                cssClass += ' ' + border + 'Stroke';
-            cell.setAttribute('class', cssClass);
-
-            boardSVG.appendChild(cell);
-
-            // save off each cell's position
-            var seg = cell.pathSegList.getItem(0);
-            cellCoordX[cellID] = seg.x;
-            cellCoordY[cellID] = seg.y;
-        }
-        else if (this.tagName == 'line') {
-            var line = SVG('line');
-            line.setAttribute('x1', this.getAttribute('x1'));
-            line.setAttribute('x2', this.getAttribute('x2'));
-            line.setAttribute('y1', this.getAttribute('y1'));
-            line.setAttribute('y2', this.getAttribute('y2'));
-            line.setAttribute('class', 'detail ' + this.getAttribute('color') + 'Stroke');
-            boardSVG.appendChild(line);
-        }
-    });
-
-    // add defs entry for each piece type & appearance
-    var piecesXml = xml.children('pieces');
-    piecesXml.children().each(function () {
-        var pieceName = this.getAttribute('name');
-        $(this).children('appearance').each(function () {
-            var appearanceName = this.getAttribute('player');
-
-            var def = SVG('g');
-            def.setAttribute('class', 'piece');
-            def.setAttribute('id', pieceName + '_' + appearanceName);
-
-            var trans = this.getAttribute('transform');
-            if (trans !== undefined)
-                def.setAttribute('transform', trans);
-
-            def.innerHTML = this.innerHTML;
-            defs.appendChild(def);
-        });
-    });
-
-    return boardSVG;
-}
-
-function loadInitialLayout(xml, boardSVG) {
+function loadInitialLayout(xml, board, boardSVG) {
     var setupXml = xml.children('setup');
     setupXml.children().each(function () {
-        var playerName = this.getAttribute('name');
+
+        var player = new Player(this.getAttribute('name'));
+        board.players[player.name] = player;
+
         $(this).children('piece').each(function () {
-            var type = this.getAttribute('type');
+
+            var typeName = this.getAttribute('type');
+            var type = PieceType.allTypes[typeName];
+            if (type === undefined)
+                throw 'Unrecognized piece type: ' + typeName;
+
             var location = this.getAttribute('location');
 
-            var xPos = cellCoordX[location];
-            var yPos = cellCoordY[location];
+            var state = Piece.State.OnBoard;
 
-            if (xPos == undefined || yPos == undefined) {
-                console.log('Unrecognised piece location: ' + location);
-                return;
+            var cell = undefined;
+            if (location == 'held') {
+                state = Piece.State.Held;
+            }
+            else if (location == 'captured') {
+                state = Piece.State.Captured;
+            }
+            else {
+                cell = board.cells[location];
+                if (cell === undefined) {
+                    console.log('Unrecognised piece location: ' + location);
+                    return;
+                }
             }
 
-            var piece = SVG('use');
-            piece.setAttribute('class', 'piece ' + playerName);
-            piece.setAttribute('x', xPos);
-            piece.setAttribute('y', yPos);
-            piece.setAttributeNS("http://www.w3.org/1999/xlink", 'href', '#' + type + '_' + playerName);
+            var piece = new Piece(player, type, cell, state);
 
-            boardSVG.appendChild(piece);
+            if (cell != null) {
+                if (cell.piece == null)
+                    cell.piece = piece;
+                else
+                    throw 'Cannot add ' + piece.ownerPlayer.name + ' ' + piece.pieceType.name + ' to cell ' + cell.name + ', as it already has a ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in it';
+
+                board.pieces.push(piece);
+            }
+            player.pieces.push(piece);
+
+            if (state == Piece.State.OnBoard)
+                boardSVG.appendChild(piece.createImage());
         })
     });
 }
@@ -122,6 +86,7 @@ function cellClicked(e) {
     else {
         clearSelection();
         addClass($(this), 'selected');
+        logCellInfo(this);
     }
 
     return false;
@@ -133,4 +98,15 @@ function clearSelection() {
         return;
 
     remClass(paths, 'selected');
+}
+
+function logCellInfo(cellNode) {
+    var id = cellNode.getAttribute('id');
+
+    var cell = board.cells[id];
+
+    if (cell.piece == null)
+        console.log('Clicked ' + cell.name + ', which is empty');
+    else
+        console.log('Clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' at ' + cell.name);
 }

@@ -20,6 +20,12 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="oneChar">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="conditions">
 		<xs:sequence>
@@ -301,14 +307,12 @@
 												<xs:attribute name="type" type="promotionType" use="required"/>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="captured_as" type="xs:string" minOccurs="0" maxOccurs="1"/>
 										-->
+										<xs:element name="capturedAs" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									</xs:sequence>
 									<xs:attribute name="name" type="xs:string"/>
-									<!--
 									<xs:attribute name="value" type="xs:nonNegativeInteger"/>
-									<xs:attribute name="symbol" type="oneChar"/>
-									-->
+									<xs:attribute name="notation" type="oneChar"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>

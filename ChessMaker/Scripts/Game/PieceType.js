@@ -1,7 +1,9 @@
 ﻿function PieceType() {
     this.name = null;
     this.value = 1;
+    this.notation = '?';
     this.capturedAs = null;
+    this.appearances = {};
     this.moves = [];
     //this.promotionOpportunities = [];
 }
@@ -9,11 +11,11 @@
 PieceType.allTypes = {};
 
 // read definitions from xml
-PieceType.parseAll = function (piecesNode) {
+PieceType.parseAll = function (piecesNode, defs) {
     $(piecesNode).children().each(function () {
-        var type = PieceType.parse(this);
+        var type = PieceType.parse(this, defs);
 
-        if (definitions.hasOwnProperty(type.name)) // check for dupes
+        if (PieceType.allTypes.hasOwnProperty(type.name)) // check for dupes
             throw "Duplicate piece types detected: two piece types exist with the name '" + type.name + "'. This is not allowed.";
         PieceType.allTypes[type.name] = type;
     });
@@ -32,25 +34,29 @@ PieceType.parseAll = function (piecesNode) {
     }
 };
 
-PieceType.parse = function (xmlNode) {
+PieceType.parse = function (xmlNode, defs) {
     var type = new PieceType();
 
-    type.name = $(xmlNode).children("name").text();
+    type.name = xmlNode.getAttribute('name');
 
-    var value = $(xmlNode).attr("value");
+    var value = xmlNode.getAttribute('value');
     if (value !== undefined)
         type.value = value;
 
-    var capturedAs = $(xmlNode).children("captured_as");
+    var notation = xmlNode.getAttribute('notation');
+    if (notation !== undefined)
+        type.notation = notation;
+    
+    var capturedAs = $(xmlNode).children("capturedAs");
     if (capturedAs !== undefined)
         type.capturedAs = $(capturedAs).text();
-
+    /*
     var movesNode = $(xmlNode).children("moves");
     if (movesNode !== undefined)
         $(movesNode).children().each(function () {
             type.allMoves.push(MoveDefinition.parse(this, true));
         });
-    /*
+    
     var specialNode = $(xmlNode).children("special");
     if (specialNode != undefined)
         $(specialNode).children().each(function () {
@@ -69,6 +75,25 @@ PieceType.parse = function (xmlNode) {
         type.promotionOpportunities.push(PromotionOpportunity.parse(this));
     });
     */
+
+    $(xmlNode).children('appearance').each(function () {
+        var playerName = this.getAttribute('player');
+        var defID = type.name + '_' + playerName;
+
+        var def = SVG('g');
+        def.setAttribute('class', 'piece');
+        def.setAttribute('id', defID);
+
+        var trans = this.getAttribute('transform');
+        if (trans !== undefined)
+            def.setAttribute('transform', trans);
+
+        def.innerHTML = this.innerHTML;
+        defs.appendChild(def);
+
+        type.appearances[playerName] = '#' + defID;
+    });
+
     return type;
 };
 

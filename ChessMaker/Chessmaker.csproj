@@ -340,6 +340,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\Game\Board.js" />
+    <Content Include="Scripts\Game\Player.js" />
+    <Content Include="Scripts\Game\Piece.js" />
     <Content Include="Scripts\Game\Startup.js" />
     <Content Include="Scripts\Game\Conditions.js" />
     <Content Include="Scripts\Game\Distance.js" />
