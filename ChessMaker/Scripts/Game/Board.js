@@ -20,7 +20,7 @@ Board.prototype.loadSVG = function(xml, defs) {
     var board = this;
     boardXml.children().each(function () {
         if (this.tagName == 'cell') {
-            var cell = new Cell(this.getAttribute('id'));
+            var cell = new Cell(this.getAttribute('id'), $(this).children('link'));
             board.cells[cell.name] = cell;
             boardSVG.appendChild(cell.loadSVG(this));
         }
@@ -35,14 +35,36 @@ Board.prototype.loadSVG = function(xml, defs) {
         }
     });
 
+
+    for (var sourceRef in this.cells) {
+        var cell = this.cells[sourceRef];
+        for (var dir in cell.links) {
+            var ref = cell.links[dir];
+
+            if (this.cells.hasOwnProperty(ref))
+                cell.links[dir] = this.cells[ref];
+            else
+                throw 'Cell ' + cell.name + ' has link to unrecognised cell: ' + ref;
+        }
+    }
+
     return boardSVG;
 }
 
-function Cell(name) {
+function Cell(name, links) {
     this.name = name;
     this.coordX = 0;
     this.coordY = 0;
     this.piece = null;
+    this.links = {};
+
+    var cell = this;
+    links.each(function () {
+        var dir = this.getAttribute('dir');
+        var ref = this.getAttribute('to');
+
+        cell.links[dir] = ref;
+    });
 }
 
 Cell.prototype.loadSVG = function (xml) {

@@ -104,9 +104,20 @@ function logCellInfo(cellNode) {
     var id = cellNode.getAttribute('id');
 
     var cell = board.cells[id];
+    if (cell == null)
+        return;
 
     if (cell.piece == null)
         console.log('Clicked ' + cell.name + ', which is empty');
     else
         console.log('Clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' at ' + cell.name);
+
+    var links = 'This cell links to';
+    for (var link in cell.links) {
+        links += ' ' + cell.links[link].name + ' (' + link + '),';
+    }
+
+    if (links == 'This cell links to')
+        links += ' no other cells';
+    console.log(links);
 }
