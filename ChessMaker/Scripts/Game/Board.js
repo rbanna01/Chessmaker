@@ -2,7 +2,7 @@
     this.svgID = 'render';
     this.cells = {};
     this.players = {};
-    this.pieces = [];
+    this.currentPlayer = null;
 }
 
 Board.prototype.loadSVG = function(xml, defs) {
@@ -35,7 +35,6 @@ Board.prototype.loadSVG = function(xml, defs) {
         }
     });
 
-
     for (var sourceRef in this.cells) {
         var cell = this.cells[sourceRef];
         for (var dir in cell.links) {
@@ -49,6 +48,11 @@ Board.prototype.loadSVG = function(xml, defs) {
     }
 
     return boardSVG;
+}
+
+Board.prototype.moveToNextPlayer = function() {
+    this.currentPlayer = this.currentPlayer.nextPlayer;
+    return this.currentPlayer;
 }
 
 function Cell(name, links) {

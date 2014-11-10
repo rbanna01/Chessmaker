@@ -28,9 +28,10 @@ PieceType.parseAll = function (piecesNode, defs) {
             type.capturedAs = PieceType.allTypes[type.capturedAs];
         else
             type.capturedAs = type;
-
-        //for (var i = 0; i < type.promotionOpportunities.length; i++)
-            //type.promotionOpportunities[i].resolveOptions(definitions);
+        /*
+        for (var i = 0; i < type.promotionOpportunities.length; i++)
+            type.promotionOpportunities[i].resolveOptions(definitions);
+        */
     }
 };
 
@@ -95,8 +96,4 @@ PieceType.parse = function (xmlNode, defs) {
     });
 
     return type;
-};
-
-PieceType.prototype.someFunction = function () {
-
 };

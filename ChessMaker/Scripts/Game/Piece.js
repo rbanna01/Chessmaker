@@ -1,9 +1,10 @@
-﻿function Piece(owner, type, pos, state) {
+﻿function Piece(owner, type, pos, state, stateOwner) {
     this.uniqueID = "p" + (Piece.nextID++);
     this.ownerPlayer = owner;
     this.position = pos;
     this.pieceType = type;
     this.pieceState = state;
+    this.stateOwner = stateOwner;
     this.moveNumber = 1;      // how is this set, when loaded?
     this.firstMoveTurn = null;// how is this set, when loaded?
     this.lastMoveTurn = null; // how is this set, when loaded?
@@ -84,12 +85,22 @@ Piece.prototype.isThreatenedAt = function (game, testPos) {
 
 Piece.prototype.createImage = function () {
     var pieceImg = SVG('use');
+    pieceImg.setAttribute('id', this.uniqueID);
     pieceImg.setAttribute('class', 'piece ' + this.ownerPlayer.name);
     pieceImg.setAttribute('x', this.position.coordX);
     pieceImg.setAttribute('y', this.position.coordY);
     pieceImg.setAttributeNS("http://www.w3.org/1999/xlink", 'href', this.pieceType.appearances[this.ownerPlayer.name]);
     return pieceImg;
 };
+
+Piece.prototype.getImage = function () {
+    return document.getElementById(this.uniqueID);
+}
+
+Piece.prototype.updateImage = function () {
+    var image = this.getImage();
+    image.setAttributeNS("http://www.w3.org/1999/xlink", 'href', this.pieceType.appearances[this.ownerPlayer.name]);
+}
 
 Piece.State = {
     OnBoard: 1,
