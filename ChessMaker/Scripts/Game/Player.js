@@ -24,21 +24,21 @@ Player.parseAll = function (xml, board, boardSVG) {
             if (type === undefined)
                 throw 'Unrecognized piece type: ' + typeName;
 
-            var location = this.getAttribute('location');
+            var position = this.getAttribute('location');
 
             var state = Piece.State.OnBoard;
 
             var cell = undefined;
-            if (location == 'held') {
+            if (position == 'held') {
                 state = Piece.State.Held;
             }
-            else if (location == 'captured') {
+            else if (position == 'captured') {
                 state = Piece.State.Captured;
             }
             else {
-                cell = board.cells[location];
+                cell = board.cells[position];
                 if (cell === undefined) {
-                    console.log('Unrecognised piece location: ' + location);
+                    console.log('Unrecognised piece location: ' + position);
                     return;
                 }
             }

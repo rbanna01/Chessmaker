@@ -3,6 +3,7 @@
     this.cells = {};
     this.players = {};
     this.currentPlayer = null;
+    this.moveNumber = 1;
 }
 
 Board.prototype.loadSVG = function(xml, defs) {

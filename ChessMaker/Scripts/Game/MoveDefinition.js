@@ -95,8 +95,34 @@ function Slide(pieceRef, dir, dist, distLimit, when, conditions) {
 
 extend(Slide, MoveDefinition);
 
-Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Slide.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
+    
+    // this is just a placeholder, move to any adjacent square!
+    for (var dir in piece.position.links) {
+        var adjacent = piece.position.links[dir];
 
+        var captureStep;
+        if (adjacent.piece != null) {
+            var captured = adjacent.piece;
+
+            if (captured.owner == piece.owner)
+                continue; // don't capture your own
+
+            captureStep = MoveStep.CreateCapture(captured, captured.position, piece.owner, false);
+        }
+
+        var move = new Move(piece.owner, piece, piece.position, board.moveNumber);
+
+        if (adjacent.piece != null)
+            move.addStep(captureStep);
+
+        move.addStep(MoveStep.CreateMove(piece, piece.position, adjacent));
+
+        moves.push(move);
+    }
+
+    return moves;
 };
 
 Slide.parse = function (xmlNode) {
@@ -127,8 +153,10 @@ function Leap(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, condi
 
 extend(Leap, MoveDefinition);
 
-Leap.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Leap.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 Leap.parse = function (xmlNode) {
@@ -165,8 +193,10 @@ function Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, 
 
 extend(Hop, MoveDefinition);
 
-Hop.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Hop.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 Hop.parse = function (xmlNode) {
@@ -199,8 +229,10 @@ function Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, cond
 
 extend(Shoot, MoveDefinition);
 
-Shoot.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Shoot.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 Shoot.parse = function (xmlNode) {
@@ -222,7 +254,7 @@ Shoot.parse = function (xmlNode) {
 
     var secondDir = node.attr("secondDir");
 
-    var when = XmlHelper.readWhen(xmlNode, "when");
+    var when = null;/*XmlHelper.readWhen(xmlNode, "when");*/
 
     return new Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, conditions);
 }
@@ -234,8 +266,10 @@ function MoveLike(other, when, conditions) {
 
 extend(MoveLike, MoveDefinition);
 
-MoveLike.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+MoveLike.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 MoveLike.parse = function (xmlNode) {
@@ -259,8 +293,10 @@ function ReferencePiece(name, type, owner, dir, dist) {
 
 extend(ReferencePiece, MoveDefinition);
 
-ReferencePiece.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+ReferencePiece.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 ReferencePiece.parse = function (xmlNode) {
@@ -296,8 +332,10 @@ function ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, moveWithAttack, c
 
 extend(ArbitraryAttack, MoveDefinition);
 
-ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
 
+    return moves;
 };
 
 ArbitraryAttack.parse = function (xmlNode) {
@@ -322,6 +360,12 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 }
 
 extend(MoveGroup, MoveDefinition);
+
+MoveGroup.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+    var moves = [];
+
+    return moves;
+};
 
 
 function Sequence() {

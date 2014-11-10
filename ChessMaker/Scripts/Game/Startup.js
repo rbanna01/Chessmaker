@@ -57,15 +57,15 @@ function logCellInfo(cellNode) {
 
     if (cell.piece == null)
         console.log('Clicked ' + cell.name + ', which is empty');
-    else
-        console.log('Clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' at ' + cell.name);
+    else {
+        console.log('Clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' at ' + cell.name + '. This can move to:');
 
-    var links = 'This cell links to';
-    for (var link in cell.links) {
-        links += ' ' + cell.links[link].name + ' (' + link + '),';
+        var moves = cell.piece.getPossibleMoves(board);
+        if (moves.length == 0) {
+            console.log('nowhere!');
+        }
+        for (var i = 0; i < moves.length; i++) {
+            console.log(moves[i].getEndPos().name);
+        }
     }
-
-    if (links == 'This cell links to')
-        links += ' no other cells';
-    console.log(links);
 }

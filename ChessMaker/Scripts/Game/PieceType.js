@@ -51,13 +51,13 @@ PieceType.parse = function (xmlNode, defs) {
     var capturedAs = $(xmlNode).children("capturedAs");
     if (capturedAs !== undefined)
         type.capturedAs = $(capturedAs).text();
-    /*
+    
     var movesNode = $(xmlNode).children("moves");
     if (movesNode !== undefined)
         $(movesNode).children().each(function () {
-            type.allMoves.push(MoveDefinition.parse(this, true));
+            type.moves.push(MoveDefinition.parse(this, true));
         });
-    
+    /*
     var specialNode = $(xmlNode).children("special");
     if (specialNode != undefined)
         $(specialNode).children().each(function () {

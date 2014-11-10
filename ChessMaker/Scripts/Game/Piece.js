@@ -16,31 +16,31 @@ Piece.nextID = 1;
 
 Piece.prototype.clearPossibleMoves = function () { this.possibleMoves = null; };
 
-Piece.prototype.getPossibleMoves = function (game) {
+Piece.prototype.getPossibleMoves = function (board) {
     if (this.possibleMoves != null)
         return this.possibleMoves;
     this.possibleMoves = [];
-    /*
-    var piece = this;
-    if (this.pieceState == Piece.State.OnBoard) {
-        // get promotion possibilities
-        var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber, true);
 
+    if (this.pieceState == Piece.State.OnBoard) {
+        var moveTemplate = new Move(this.ownerPlayer, this, this.position, board.moveNumber, true);
+
+        /*// get promotion possibilities
         this.pieceType.promotionOpportunities.each(function (op) {
             if (!op.mandatory && op.type != PromotionType.EndOfMove && op.isAvailable(moveTemplate, game))
                 op.options.each(function (option) {
                     piece.possibleMoves.push(new Promotion(piece.ownerPlayer, piece, option, game.moveNumber, op.type == PromotionType.CountsAsMove));
                 });
         });
-
+        */
         // and then get move possibilities
-        this.pieceType.allMoves.each(function (move) {
-            var possibilities = move.appendValidNextSteps(moveTemplate, piece, game, null);
-            possibilities.each(function (possibility) {
-                piece.possibleMoves.push(possibility);
-            });
-        });
-    }
+        for (var i = 0; i < this.pieceType.moves.length; i++) {
+            var move = this.pieceType.moves[i];
+            console.log(move);
+            var possibilities = move.appendValidNextSteps(moveTemplate, this, board, null);
+            for (var j = 0; j < possibilities.length; j++)
+                this.possibleMoves.push(possibilities[j]);
+        }
+    }/*
     else if (this.pieceState == Piece.State.Held) {
         game.board.cells.items.each(function (coord, cell) {
             if (cell.value != Board.CellType.Normal)

@@ -1,5 +1,11 @@
-﻿function Move() {
+﻿function Move(player, piece, startPos, moveNum) {
+    this.player = player;
+    this.piece = piece;
+    this.startPos = startPos;
+    this.moveNumber = moveNum;
+
     this.steps = [];
+    this.references = {};
 }
 
 Move.prototype.addStep = function(step) {
@@ -7,15 +13,15 @@ Move.prototype.addStep = function(step) {
 };
 
 Move.prototype.clone = function() {
-    var move = new Move();
+    var move = new Move(this.player, this.piece, this.startPos, this.moveNumber);
 		
     for ( var i=0; i<this.steps.length; i++ )
         move.addStep(this.steps[i]);
-	/*
-    this.references.each(function(ref, piece) {
-        move.addPieceReference(piece, ref);
-    });
-	*/
+
+    for (var ref in this.references) {
+        move.addPieceReference(ref, this.references[ref]);
+    }
+
     return move;
 };
 
@@ -56,15 +62,31 @@ Move.prototype.reverse = function (board, updateDisplay) {
 
     return true;
 };
-/*
+
 Move.prototype.addPieceReference = function(piece, ref) {
-    this.references.setItem(ref, piece);
+    this.references[ref] = piece;
 };
-	
+
 Move.prototype.getPieceByRef = function (ref) {
-    var piece = this.references.getItem(ref);
-    if (piece == undefined)
+    var piece = this.references[ref];
+    if (piece === undefined)
         return null;
     return piece;
 };
-*/
+
+Move.prototype.getEndPos = function () {
+    for (var i = this.steps.length - 1; i >= 0; i--) {
+        var s = this.steps[i];
+        if (s.piece == this.piece && s.toState == Piece.State.OnBoard)
+            return s.toPos;
+    }
+    return this.startPos;
+};
+
+Move.prototype.getAllPositions = function () {
+    var allPos = [];
+    for (var i = 0; i < this.steps.length; i++)
+        if (this.steps[i].piece == this.piece && this.steps[i].toState == PieceState.OnBoard)
+            allPoints.push(this.steps[i].toPos);
+    return allPos;
+};
