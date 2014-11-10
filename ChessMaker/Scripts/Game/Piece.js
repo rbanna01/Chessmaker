@@ -16,13 +16,13 @@ Piece.nextID = 1;
 
 Piece.prototype.clearPossibleMoves = function () { this.possibleMoves = null; };
 
-Piece.prototype.getPossibleMoves = function (board) {
+Piece.prototype.getPossibleMoves = function (game) {
     if (this.possibleMoves != null)
         return this.possibleMoves;
     this.possibleMoves = [];
 
     if (this.pieceState == Piece.State.OnBoard) {
-        var moveTemplate = new Move(this.ownerPlayer, this, this.position, board.moveNumber, true);
+        var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber, true);
 
         /*// get promotion possibilities
         this.pieceType.promotionOpportunities.each(function (op) {
@@ -35,8 +35,7 @@ Piece.prototype.getPossibleMoves = function (board) {
         // and then get move possibilities
         for (var i = 0; i < this.pieceType.moves.length; i++) {
             var move = this.pieceType.moves[i];
-            console.log(move);
-            var possibilities = move.appendValidNextSteps(moveTemplate, this, board, null);
+            var possibilities = move.appendValidNextSteps(moveTemplate, this, game, null);
             for (var j = 0; j < possibilities.length; j++)
                 this.possibleMoves.push(possibilities[j]);
         }

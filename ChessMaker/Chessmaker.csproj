@@ -340,6 +340,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\Game\Game.js" />
     <Content Include="Scripts\Game\Board.js" />
     <Content Include="Scripts\Game\Move.js" />
     <Content Include="Scripts\Game\MoveStep.js" />

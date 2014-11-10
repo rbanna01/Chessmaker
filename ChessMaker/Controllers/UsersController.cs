@@ -68,6 +68,10 @@ namespace ChessMaker.Controllers
             model.BoardMidSelected = /*user.ThemeColorMidSelected ??*/ "ff9090";
             model.BoardDarkSelected = /*user.ThemeColorDarkSelected ??*/ "ff7070";
 
+            model.BoardLightHighlight = /*user.ThemeColorLightHighlight ??*/ "ffffa0";
+            model.BoardMidHighlight = /*user.ThemeColorMidHighlight ??*/ "ffff90";
+            model.BoardDarkHighlight = /*user.ThemeColorDarkHighlight ??*/ "ffff70";
+
             model.PieceLight = /*user.ThemeColorPieceLight ??*/ "ffffff";
             model.PieceDark = /*user.ThemeColorPieceDark ??*/ "000000";
 

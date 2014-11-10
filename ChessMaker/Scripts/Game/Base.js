@@ -12,12 +12,16 @@ function SVG(tag) {
 
 function addClass(elems, className) {
     elems.each(function () {
-        var classes = this.getAttribute('class');
-        var spaced = ' ' + classes + ' ';
-        if (spaced.indexOf(className) != -1)
-            return;
-        this.setAttribute('class', classes + ' ' + className);
+        addClassSingle(this, className);
     });
+}
+
+function addClassSingle(elem, className) {
+    var classes = elem.getAttribute('class');
+    var spaced = ' ' + classes + ' ';
+    if (spaced.indexOf(className) != -1)
+        return;
+    elem.setAttribute('class', classes + ' ' + className);
 }
 
 function remClass(elems, className) {
@@ -35,6 +39,26 @@ function hasClass(elem, className) {
     var spaced = ' ' + className + ' ';
     return classes.indexOf(spaced) != -1;
 }
+
+// knockout has a method for this, apparently. Can we use that? do we need knockout?
+function arrayIndexOf(array, item) {
+    if (typeof Array.prototype.indexOf == "function")
+        return Array.prototype.indexOf.call(array, item);
+    for (var i = 0, j = array.length; i < j; i++)
+        if (array[i] === item)
+            return i;
+    return -1;
+}
+
+// knockout has a method for this, apparently. Can we use that? do we need knockout?
+function arrayRemoveItem(array, itemToRemove) {
+    var index = arrayIndexOf(array, itemToRemove);
+    if (index >= 0) {
+        array.splice(index, 1);
+        return true;
+    }
+    return false;
+};
 
 function calculateRatio() {
     var svg = $('#render')[0];

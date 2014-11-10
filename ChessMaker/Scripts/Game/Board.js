@@ -1,9 +1,7 @@
-﻿function Board() {
+﻿function Board(game) {
+    this.game = game;
     this.svgID = 'render';
     this.cells = {};
-    this.players = {};
-    this.currentPlayer = null;
-    this.moveNumber = 1;
 }
 
 Board.prototype.loadSVG = function(xml, defs) {
@@ -51,9 +49,54 @@ Board.prototype.loadSVG = function(xml, defs) {
     return boardSVG;
 }
 
-Board.prototype.moveToNextPlayer = function() {
-    this.currentPlayer = this.currentPlayer.nextPlayer;
-    return this.currentPlayer;
+Board.prototype.showMoveOptions = function (piece) {
+    console.log('Clicked ' + piece.ownerPlayer.name + ' ' + piece.pieceType.name + ' at ' + piece.position.name + '. This can move to:');
+
+    var moves = piece.getPossibleMoves(this.game);
+    if (moves.length == 0) {
+        console.log('nowhere!');
+    }
+    for (var i = 0; i < moves.length; i++) {
+        var destCell = moves[i].getEndPos();
+        console.log(destCell.name);
+
+        var img = destCell.getImage();
+        addClassSingle(img, 'option');
+    }
+};
+
+Board.prototype.selectMoveByCell = function (piece, cell) {
+    if (piece.ownerPlayer == null)
+        console.log('piece.ownerPlayer is null');
+    if (piece.ownerPlayer === undefined)
+        console.log('piece.ownerPlayer is undefined');
+
+    var moves = piece.getPossibleMoves(this.game);
+    for (var i = 0; i < moves.length; i++) {
+        var move = moves[i]
+        var destCell = move.getEndPos();
+        if (destCell != cell)
+            continue;
+
+        if (!move.perform(game, true))
+            console.log('unable to perform move');
+        break;
+    }
+};
+
+Board.prototype.getCellBySelector = function (selector) {
+    var cellImage = $('#render path.cell' + selector);
+    if (cellImage.length == 0)
+        return null;
+
+    return this.getCellByElement(cellImage[0]);
+}
+
+Board.prototype.getCellByElement = function (element) {
+    var cell = game.board.cells[element.getAttribute('id')];
+    if (cell === undefined)
+        return null;
+    return cell;
 }
 
 function Cell(name, links) {
@@ -89,4 +132,9 @@ Cell.prototype.loadSVG = function (xml) {
     this.coordX = seg.x;
     this.coordY = seg.y;
     return cell;
+}
+
+
+Cell.prototype.getImage = function () {
+    return document.getElementById(this.name);
 }

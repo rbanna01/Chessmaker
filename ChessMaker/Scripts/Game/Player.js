@@ -8,14 +8,14 @@
     this.piecesCaptured = [];
 }
 
-Player.parseAll = function (xml, board, boardSVG) {
+Player.parseAll = function (xml, game, boardSVG) {
     var setupXml = xml.children('setup');
     setupXml.children().each(function () {
 
         var playerName = this.getAttribute('name');
         var forwardDir = this.getAttribute('forwardDirection');
         var player = new Player(playerName, forwardDir);
-        board.players[player.name] = player;
+        game.players[player.name] = player;
 
         $(this).children('piece').each(function () {
 
@@ -27,23 +27,27 @@ Player.parseAll = function (xml, board, boardSVG) {
             var position = this.getAttribute('location');
 
             var state = Piece.State.OnBoard;
+            var stateOwner;
 
             var cell = undefined;
             if (position == 'held') {
                 state = Piece.State.Held;
+                stateOwner = player;
             }
             else if (position == 'captured') {
                 state = Piece.State.Captured;
+                stateOwner = player;
             }
             else {
-                cell = board.cells[position];
+                cell = game.board.cells[position];
                 if (cell === undefined) {
                     console.log('Unrecognised piece location: ' + position);
                     return;
                 }
+                stateOwner = null;
             }
 
-            var piece = new Piece(player, type, cell, state, player);
+            var piece = new Piece(player, type, cell, state, stateOwner);
 
             switch (state) {
                 case Piece.State.OnBoard:
@@ -65,19 +69,7 @@ Player.parseAll = function (xml, board, boardSVG) {
         })
     });
 
-    // set up a cycle between the players. At some point, this is presumably gonna need to be more complex.
-    var prevPlayer = null, firstPlayer = null;
-    for (var name in board.players) {
-        var player = board.players[name];
-        if (prevPlayer == null)
-            firstPlayer = player;
-        else
-            prevPlayer.nextPlayer = player;
-
-        prevPlayer = player;
-    }
-    prevPlayer.nextPlayer = firstPlayer;
-    board.currentPlayer = firstPlayer;
+    game.setupTurnOrder();
 }
 
 Player.prototype.calculatePossibleMoves = function () {

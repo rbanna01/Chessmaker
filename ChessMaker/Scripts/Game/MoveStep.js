@@ -12,7 +12,7 @@
     this.toType = piece.pieceType;
 }
 
-MoveStep.prototype.perform = function (board, updateDisplay) {
+MoveStep.prototype.perform = function (game, updateDisplay) {
     if (!this.pickup(this.fromState, this.fromStateOwner, this.fromPos, this.fromOwner, this.fromType))
         return false;
     
@@ -20,9 +20,11 @@ MoveStep.prototype.perform = function (board, updateDisplay) {
 
     if (updateDisplay)
         this.updateDisplay();
+
+    return true;
 };
 
-MoveStep.prototype.reverse = function (board, updateDisplay) {
+MoveStep.prototype.reverse = function (game, updateDisplay) {
     if (!this.pickup(this.toState, this.toStateOwner, this.toPos, this.toOwner, this.toType))
         return false;
 
@@ -30,6 +32,8 @@ MoveStep.prototype.reverse = function (board, updateDisplay) {
 
     if (updateDisplay)
         this.updateDisplay();
+
+    return true;
 };
 
 MoveStep.prototype.pickup = function (state, stateOwner, pos, owner, type) {
@@ -39,13 +43,13 @@ MoveStep.prototype.pickup = function (state, stateOwner, pos, owner, type) {
         return false;
     }
 
-    if (this.piece.owner != owner) {
-        console.log('state owner is wrong: got ' + this.piece.owner + ', expected ' + owner + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+    if (this.piece.ownerPlayer != owner) {
+        console.log('owner is wrong: got ' + this.piece.ownerPlayer.name + ', expected ' + owner.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
         return false;
     }
 
     if (this.piece.stateOwner != stateOwner) {
-        console.log('state owner is wrong: got ' + (this.piece.stateOwner == null ? '[null]' : this.piece.stateOwner) + ', expected ' + (stateOwner == null ? '[null]' : stateOwner) + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+        console.log('state owner is wrong: got ' + (this.piece.stateOwner == null ? '[null]' : this.piece.stateOwner.name) + ', expected ' + (stateOwner == null ? '[null]' : stateOwner.name) + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
         return false;
     }
 
@@ -55,15 +59,15 @@ MoveStep.prototype.pickup = function (state, stateOwner, pos, owner, type) {
                 console.log('position is wrong: got ' + this.piece.position.name + ', expected ' + pos.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
                 return false;
             }
-            this.piece.ownerPlayer.piecesOnBoard.removeItem(this.piece);
-            cell.piece = null;
+            arrayRemoveItem(this.piece.ownerPlayer.piecesOnBoard, this.piece);
+            pos.piece = null;
             return true;
         case Piece.State.Captured:
-            if (stateOwner == null || !stateOwner.piecesCaptured.removeItem(this.piece))
+            if (stateOwner == null || !arrayRemoveItem(stateOwner.piecesCaptured, this.piece))
                 return false; // wasn't captured by that player after all ... can't perform this action
             return true;
         case Piece.State.Held:
-            if (stateOwner == null || !stateOwner.piecesHeld.removeItem(this.piece))
+            if (stateOwner == null || !arrayRemoveItem(stateOwner.piecesHeld, this.piece))
                 return false; // wasn't held by that player after all ... can't perform this action
             return true;
         default:

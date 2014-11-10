@@ -2,17 +2,18 @@
     
 });
 
-var board;
+var game;
 function loadDefinition(xml) {
     xml = $(xml.firstChild);
     
-    board = new Board();
+    game = new Game();
+    game.board = new Board(game);
 
     var defs = SVG('defs');
-    var boardSVG = board.loadSVG(xml, defs);
+    var boardSVG = game.board.loadSVG(xml, defs);
 
     PieceType.parseAll(xml.children('pieces'), defs);
-    Player.parseAll(xml, board, boardSVG);
+    Player.parseAll(xml, game, boardSVG);
 
     $('#main').append(boardSVG);
 
@@ -31,10 +32,17 @@ function loadDefinition(xml) {
 function cellClicked(e) {
     if (hasClass(this, 'selected'))
         remClass($(this), 'selected');
+    else if (hasClass(this, 'option')) {
+        selectMove(this);
+        clearSelection();
+    }
     else {
         clearSelection();
         addClass($(this), 'selected');
-        logCellInfo(this);
+
+        var cell = game.board.cells[this.getAttribute('id')];
+        if (cell != null && cell.piece != null)
+            game.board.showMoveOptions(cell.piece);
     }
 
     return false;
@@ -46,26 +54,24 @@ function clearSelection() {
         return;
 
     remClass(paths, 'selected');
-}
 
-function logCellInfo(cellNode) {
-    var id = cellNode.getAttribute('id');
-
-    var cell = board.cells[id];
-    if (cell == null)
+    var paths = $('#render .option');
+    if (paths.length == 0)
         return;
 
-    if (cell.piece == null)
-        console.log('Clicked ' + cell.name + ', which is empty');
-    else {
-        console.log('Clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' at ' + cell.name + '. This can move to:');
+    remClass(paths, 'option');
+}
 
-        var moves = cell.piece.getPossibleMoves(board);
-        if (moves.length == 0) {
-            console.log('nowhere!');
-        }
-        for (var i = 0; i < moves.length; i++) {
-            console.log(moves[i].getEndPos().name);
-        }
-    }
+function selectMove(clicked) {
+    var pieceCell = game.board.getCellBySelector('.selected');
+    var destCell = game.board.getCellByElement(clicked);
+
+    if (pieceCell == null || destCell == null)
+        return;
+
+    var piece = pieceCell.piece;
+    if (piece == null)
+        return;
+
+    game.board.selectMoveByCell(piece, destCell);
 }

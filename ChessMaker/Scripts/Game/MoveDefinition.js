@@ -95,7 +95,7 @@ function Slide(pieceRef, dir, dist, distLimit, when, conditions) {
 
 extend(Slide, MoveDefinition);
 
-Slide.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
     
     // this is just a placeholder, move to any adjacent square!
@@ -112,7 +112,7 @@ Slide.prototype.appendValidNextSteps = function (move, piece, board, previousSte
             captureStep = MoveStep.CreateCapture(captured, captured.position, piece.owner, false);
         }
 
-        var move = new Move(piece.owner, piece, piece.position, board.moveNumber);
+        var move = new Move(piece.owner, piece, piece.position, game.moveNumber);
 
         if (adjacent.piece != null)
             move.addStep(captureStep);
@@ -153,7 +153,7 @@ function Leap(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, condi
 
 extend(Leap, MoveDefinition);
 
-Leap.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+Leap.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -193,7 +193,7 @@ function Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, 
 
 extend(Hop, MoveDefinition);
 
-Hop.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+Hop.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -229,7 +229,7 @@ function Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, cond
 
 extend(Shoot, MoveDefinition);
 
-Shoot.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+Shoot.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -266,7 +266,7 @@ function MoveLike(other, when, conditions) {
 
 extend(MoveLike, MoveDefinition);
 
-MoveLike.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+MoveLike.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -293,7 +293,7 @@ function ReferencePiece(name, type, owner, dir, dist) {
 
 extend(ReferencePiece, MoveDefinition);
 
-ReferencePiece.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+ReferencePiece.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -332,7 +332,7 @@ function ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, moveWithAttack, c
 
 extend(ArbitraryAttack, MoveDefinition);
 
-ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -361,7 +361,7 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 
 extend(MoveGroup, MoveDefinition);
 
-MoveGroup.prototype.appendValidNextSteps = function (move, piece, board, previousStep) {
+MoveGroup.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
     var moves = [];
 
     return moves;
