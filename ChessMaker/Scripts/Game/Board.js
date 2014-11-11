@@ -50,16 +50,9 @@ Board.prototype.loadSVG = function(xml, defs) {
 }
 
 Board.prototype.showMoveOptions = function (piece) {
-    console.log('Clicked ' + piece.ownerPlayer.name + ' ' + piece.pieceType.name + ' at ' + piece.position.name + '. This can move to:');
-
     var moves = piece.getPossibleMoves(this.game);
-    if (moves.length == 0) {
-        console.log('nowhere!');
-    }
     for (var i = 0; i < moves.length; i++) {
         var destCell = moves[i].getEndPos();
-        console.log(destCell.name);
-
         var img = destCell.getImage();
         addClassSingle(img, 'option');
     }
@@ -78,7 +71,9 @@ Board.prototype.selectMoveByCell = function (piece, cell) {
         if (destCell != cell)
             continue;
 
-        if (!move.perform(game, true))
+        if (move.perform(game, true))
+            game.endTurn();
+        else
             console.log('unable to perform move');
         break;
     }

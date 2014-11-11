@@ -31,7 +31,7 @@ function loadDefinition(xml) {
 
 function cellClicked(e) {
     if (hasClass(this, 'selected'))
-        remClass($(this), 'selected');
+        clearSelection();
     else if (hasClass(this, 'option')) {
         selectMove(this);
         clearSelection();
@@ -41,8 +41,10 @@ function cellClicked(e) {
         addClass($(this), 'selected');
 
         var cell = game.board.cells[this.getAttribute('id')];
-        if (cell != null && cell.piece != null)
+        if (cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer)
             game.board.showMoveOptions(cell.piece);
+        else
+            console.log('clicked cell ' + cell.name);
     }
 
     return false;
