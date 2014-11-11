@@ -12,6 +12,28 @@
     margin-right: auto;
 }
 
+#sidebar {
+    position:absolute;
+    top:3.5em;
+    bottom:0;
+    left:0.1em;
+    width:14.5em;
+    z-index:-1;
+}
+
+#sidebar .section {
+    border:1px solid #d3d3d3;
+    background-color:#d8e0ef;
+    margin-top:1em;
+    padding: 0.6em;
+}
+
+#sidebar .section h3 {
+    margin-top:0;
+    margin-bottom:0.1em;
+    font-size:1em;
+}
+
 #render line.detail, #render use.piece {
     pointer-events: none;
 }
