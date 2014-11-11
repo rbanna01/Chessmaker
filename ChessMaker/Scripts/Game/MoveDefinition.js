@@ -114,8 +114,10 @@ Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep
 
         var move = new Move(piece.ownerPlayer, piece, piece.position, game.moveNumber);
 
-        if (captureStep !== undefined)
+        if (captureStep !== undefined) {
             move.addStep(captureStep);
+            captureStep = undefined;
+        }
 
         move.addStep(MoveStep.CreateMove(piece, piece.position, adjacent));
 
