@@ -12,7 +12,7 @@ namespace ChessMaker.Models
     {
         Public,
         Private,
-        Local,
+        Offline,
         AI,
     }
 

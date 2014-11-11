@@ -44,7 +44,7 @@ namespace ChessMaker.Controllers
 
             switch (modeSelect)
             {
-                case GameMode.Local:
+                case GameMode.Offline:
                     return RedirectToAction("Offline", routeValues);
 
                 case GameMode.AI:
@@ -181,7 +181,7 @@ namespace ChessMaker.Controllers
             if (versionToPlay == null)
                 return HttpNotFound("Cannot determine variant version to play");
 
-            var model = new GamePlayModel(versionToPlay, GameMode.Local);
+            var model = new GamePlayModel(versionToPlay, GameMode.Offline);
             return View("Play", model);
         }
 
