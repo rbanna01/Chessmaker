@@ -3,6 +3,7 @@
     this.players = {};
     this.currentPlayer = null;
     this.moveNumber = 1;
+    this.isActive = true;
 }
 
 Game.prototype.setupTurnOrder = function () {
@@ -25,7 +26,21 @@ Game.prototype.endTurn = function () {
     for (var j = 0; j < this.currentPlayer.piecesOnBoard.length; j++)
         this.currentPlayer.piecesOnBoard[j].clearPossibleMoves();
 
+    if (!this.isActive) {
+        $('#nextMove').text('Game finished');
+        $('#wait').hide();
+        return;
+    }
+
     this.currentPlayer = this.currentPlayer.nextPlayer;
+    this.startNextTurn();
+};
+
+Game.prototype.startNextTurn = function () {
+    $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
+    $('#wait').hide(); // show this if the current player is AI or remote
+
+    // calculate all possible moves here?
 };
 
 Game.prototype.showMoveOptions = function (piece) {

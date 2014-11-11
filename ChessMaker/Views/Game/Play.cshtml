@@ -6,7 +6,14 @@
 }
 
 <div id="main">
-    
+
+</div>
+
+<div id="sidebar">
+    <div class="section ui-widget ui-corner-all">
+        <h3 id="nextMove">Initializing</h3>
+        <div id="wait">Please wait...</div>
+    </div>
 </div>
 
 @section css {
@@ -17,12 +24,12 @@
 @section scripts {
     @Scripts.Render("~/bundles/game")
 
-<script type="text/javascript">
-    $.ajax({
-        type: "GET",
-        url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
-        dataType: "xml",
-        success: loadDefinition
-    });
-</script>
+    <script type="text/javascript">
+        $.ajax({
+            type: "GET",
+            url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
+            dataType: "xml",
+            success: loadDefinition
+        });
+    </script>
 }

@@ -27,6 +27,8 @@ function loadDefinition(xml) {
     calculateRatio();
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
+
+    game.startNextTurn();
 }
 
 function cellClicked(e) {
