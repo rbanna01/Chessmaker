@@ -105,14 +105,14 @@ Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep
         var captureStep;
         if (adjacent.piece != null) {
             var captured = adjacent.piece;
-
-            if (captured.owner == piece.owner)
+            
+            if (captured.ownerPlayer == piece.ownerPlayer)
                 continue; // don't capture your own
-
-            captureStep = MoveStep.CreateCapture(captured, captured.position, piece.owner, false);
+            
+            captureStep = MoveStep.CreateCapture(captured, captured.position, piece.ownerPlayer, false);
         }
 
-        var move = new Move(piece.owner, piece, piece.position, game.moveNumber);
+        var move = new Move(piece.ownerPlayer, piece, piece.position, game.moveNumber);
 
         if (captureStep !== undefined)
             move.addStep(captureStep);

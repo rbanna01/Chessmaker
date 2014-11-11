@@ -49,36 +49,6 @@ Board.prototype.loadSVG = function(xml, defs) {
     return boardSVG;
 }
 
-Board.prototype.showMoveOptions = function (piece) {
-    var moves = piece.getPossibleMoves(this.game);
-    for (var i = 0; i < moves.length; i++) {
-        var destCell = moves[i].getEndPos();
-        var img = destCell.getImage();
-        addClassSingle(img, 'option');
-    }
-};
-
-Board.prototype.selectMoveByCell = function (piece, cell) {
-    if (piece.ownerPlayer == null)
-        console.log('piece.ownerPlayer is null');
-    if (piece.ownerPlayer === undefined)
-        console.log('piece.ownerPlayer is undefined');
-
-    var moves = piece.getPossibleMoves(this.game);
-    for (var i = 0; i < moves.length; i++) {
-        var move = moves[i]
-        var destCell = move.getEndPos();
-        if (destCell != cell)
-            continue;
-
-        if (move.perform(game, true))
-            game.endTurn();
-        else
-            console.log('unable to perform move');
-        break;
-    }
-};
-
 Board.prototype.getCellBySelector = function (selector) {
     var cellImage = $('#render path.cell' + selector);
     if (cellImage.length == 0)

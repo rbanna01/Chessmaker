@@ -41,8 +41,10 @@ function cellClicked(e) {
         addClass($(this), 'selected');
 
         var cell = game.board.cells[this.getAttribute('id')];
-        if (cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer)
-            game.board.showMoveOptions(cell.piece);
+        if (cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer) {
+            console.log('clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in cell ' + cell.name);
+            game.showMoveOptions(cell.piece);
+        }
         else
             console.log('clicked cell ' + cell.name);
     }
@@ -75,5 +77,5 @@ function selectMove(clicked) {
     if (piece == null)
         return;
 
-    game.board.selectMoveByCell(piece, destCell);
+    game.selectMoveByCell(piece, destCell);
 }

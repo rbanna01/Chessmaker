@@ -111,7 +111,7 @@ MoveStep.prototype.place = function (state, stateOwner, pos, owner, type) {
 MoveStep.prototype.updateDisplay = function () {
     var image = this.piece.getImage();
 
-    if (this.fromPos != this.toPos) {
+    if (this.fromPos != this.toPos && this.toPos != null) {
         /*
         doesn't currently animate
         */
@@ -123,6 +123,9 @@ MoveStep.prototype.updateDisplay = function () {
         don't have anywhere to put this at present.
         move piece into the correct hand of the correct player.
         */
+
+        image.setAttribute('x', 1);
+        image.setAttribute('y', 1);
     }
 };
 

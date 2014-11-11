@@ -27,3 +27,33 @@ Game.prototype.endTurn = function () {
 
     this.currentPlayer = this.currentPlayer.nextPlayer;
 };
+
+Game.prototype.showMoveOptions = function (piece) {
+    var moves = piece.getPossibleMoves(this);
+    for (var i = 0; i < moves.length; i++) {
+        var destCell = moves[i].getEndPos();
+        var img = destCell.getImage();
+        addClassSingle(img, 'option');
+    }
+};
+
+Game.prototype.selectMoveByCell = function (piece, cell) {
+    if (piece.ownerPlayer == null)
+        console.log('piece.ownerPlayer is null');
+    if (piece.ownerPlayer === undefined)
+        console.log('piece.ownerPlayer is undefined');
+
+    var moves = piece.getPossibleMoves(this);
+    for (var i = 0; i < moves.length; i++) {
+        var move = moves[i]
+        var destCell = move.getEndPos();
+        if (destCell != cell)
+            continue;
+
+        if (move.perform(this, true))
+            this.endTurn();
+        else
+            console.log('unable to perform move');
+        break;
+    }
+};
