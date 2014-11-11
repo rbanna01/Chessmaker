@@ -1,0 +1,9 @@
+﻿User-agent: *
+Allow: /
+Disallow: /Account/
+Disallow: /Content/
+Disallow: /Designer/
+Allow: /Game/
+Disallow: /Scripts/
+Disallow: /Users/
+Disallow: /Views/
