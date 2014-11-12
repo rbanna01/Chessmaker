@@ -39,6 +39,8 @@ Game.prototype.endTurn = function () {
         return;
     }
 
+    this.moveNumber++;
+
     this.currentPlayer = this.currentPlayer.nextPlayer;
     this.startNextTurn();
 };
@@ -72,10 +74,20 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
         if (destCell != cell)
             continue;
 
-        if (move.perform(this, true))
+        if (move.perform(this, true)) {
+            this.logMove(this.currentPlayer, move);
             this.endTurn();
+        }
         else
             console.log('unable to perform move');
         break;
     }
+};
+
+Game.prototype.logMove = function (player, move) {
+    $('<div/>', {
+        class: 'move ' + player.name,
+        number: move.moveNumber,
+        text: move.piece.ownerPlayer.name + ' ' + move.piece.pieceType.name + ' from ' + move.startPos.name + ' to ' + move.getEndPos().name
+    }).appendTo('#moveHistory')[0].scrollIntoView();
 };

@@ -54,4 +54,7 @@ svg.pieceList {
 
 #moveHistory {
     padding: 0.25em;
+    font-size: 0.6em;
+    height: 12em;
+    overflow-y:scroll;
 }

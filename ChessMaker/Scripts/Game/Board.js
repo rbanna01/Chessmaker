@@ -108,7 +108,7 @@ Board.prototype.updatePiecePositions = function (groupNode) {
         else
             num = counts[player] = 1;
 
-        this.setAttribute('y', num * stepSize);
+        this.setAttribute('y', (num - 0.45) * stepSize);
     });
 };
 
