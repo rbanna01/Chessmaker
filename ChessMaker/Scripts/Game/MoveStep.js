@@ -98,11 +98,9 @@ MoveStep.prototype.place = function (state, stateOwner, pos, owner, type) {
 };
 
 MoveStep.prototype.updateDisplay = function () {
-    var image;
+    var image = this.piece.getImage();
     if (this.fromOwner != this.toOwner || this.fromType != this.toType)
-        image = this.piece.updateImage();
-    else
-        image = this.piece.getImage();
+        this.piece.updateImage(image);
 
     if (this.fromPos != this.toPos && this.toPos != null) {
         /*

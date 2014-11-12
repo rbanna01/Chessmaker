@@ -83,23 +83,21 @@ Piece.prototype.isThreatenedAt = function (game, testPos) {
 };
 
 Piece.prototype.createImage = function () {
-    var pieceImg = SVG('use');
-    pieceImg.setAttribute('id', this.uniqueID);
-    pieceImg.setAttribute('class', 'piece ' + this.ownerPlayer.name);
-    pieceImg.setAttribute('x', this.position.coordX);
-    pieceImg.setAttribute('y', this.position.coordY);
-    pieceImg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.pieceType.appearances[this.ownerPlayer.name]);
-    return pieceImg;
+    var image = SVG('use');
+    image.setAttribute('id', this.uniqueID);
+    image.setAttribute('class', 'piece ' + this.ownerPlayer.name);
+    image.setAttribute('x', this.position.coordX);
+    image.setAttribute('y', this.position.coordY);
+    this.updateImage(image);
+    return image;
 };
 
 Piece.prototype.getImage = function () {
     return document.getElementById(this.uniqueID);
 }
 
-Piece.prototype.updateImage = function () {
-    var image = this.getImage();
+Piece.prototype.updateImage = function (image) {
     image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.pieceType.appearances[this.ownerPlayer.name]);
-    return iamge;
 }
 
 Piece.State = {
