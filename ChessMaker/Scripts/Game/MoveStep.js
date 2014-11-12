@@ -125,7 +125,7 @@ MoveStep.prototype.updateDisplay = function () {
                 throw 'Unexpected piece state in MoveStep.updateDisplay: ' + this.piece.pieceState;
         }
 
-        if (newParent !== undefined)
+        if (newParent != null)
             newParent.appendChild(image);
 
         if (this.piece.pieceState != Piece.State.OnBoard)
