@@ -2,6 +2,7 @@
     this.name = name;
     this.forwardDir = forwardDir;
     this.nextPlayer = null;
+    this.pieceListX = 0;
     
     this.piecesOnBoard = [];
     this.piecesHeld = [];

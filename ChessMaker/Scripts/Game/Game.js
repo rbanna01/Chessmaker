@@ -4,17 +4,24 @@
     this.currentPlayer = null;
     this.moveNumber = 1;
     this.isActive = true;
+    this.showCaptured = true;
+    this.showHeld = false;
 }
 
 Game.prototype.setupTurnOrder = function () {
     // set up a cycle between the players. At some point, this is presumably gonna need to be more complex.
     var prevPlayer = null, firstPlayer = null;
+    var listX = 25, listXStep = 50; // stepListX should be calculated based on the pixel width of ... either of the two containers. Probably. And whether or not we have multiple columns.
+
     for (var name in this.players) {
         var player = this.players[name];
         if (prevPlayer == null)
             firstPlayer = player;
         else
             prevPlayer.nextPlayer = player;
+
+        player.pieceListX = listX;
+        listX += listXStep;
 
         prevPlayer = player;
     }

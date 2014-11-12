@@ -28,6 +28,18 @@ function loadDefinition(xml) {
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
 
+    $('#moveHistory').slideDown();
+
+    if (game.showCaptured)
+        $('#captureSection').slideDown();
+    else
+        $('#captureSection').remove();
+
+    if (game.showHeld)
+        $('#heldSection').slideDown();
+    else
+        $('#heldSection').remove();
+
     game.startNextTurn();
 }
 

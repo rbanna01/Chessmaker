@@ -37,3 +37,21 @@
 #render line.detail, #render use.piece {
     pointer-events: none;
 }
+
+#moveHistory, #captureSection, #heldSection {
+    display: none;
+}
+
+.sideList {
+    background-color: white;
+    border: 1px solid #d3d3d3;
+}
+
+svg.pieceList {
+    width:11.75em;
+    height:12em;
+}
+
+#moveHistory {
+    padding: 0.25em;
+}

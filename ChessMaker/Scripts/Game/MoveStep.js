@@ -76,32 +76,21 @@ MoveStep.prototype.pickup = function (state, stateOwner, pos, owner, type) {
 };
 
 MoveStep.prototype.place = function (state, stateOwner, pos, owner, type) {
-    if (this.piece.ownerPlayer != owner) {
-        this.piece.ownerPlayer = owner;
-        this.piece.updateImage();
-    }
+    this.piece.pieceState = state;
+    this.piece.stateOwner = stateOwner;
+    this.piece.position = pos;
+    this.piece.ownerPlayer = owner;
+    this.piece.type = type;
     
-    if (this.piece.type != type) {
-        this.piece.type = type;
-        this.piece.updateImage();
-    }
-
     switch (state) {
         case Piece.State.OnBoard:
-            this.piece.position = pos;
-            this.piece.state = state;
-            this.piece.stateOwner = null;
             pos.piece = this.piece;
             owner.piecesOnBoard.push(this.piece);
             break;
         case Piece.State.Captured:
-            this.piece.position = null;
-            this.piece.state = state;
             stateOwner.piecesCaptured.push(this.piece);
             break;
         case Piece.State.Held:
-            this.piece.position = null;
-            this.piece.state = state;
             stateOwner.piecesHeld.push(this.piece);
         default:
             throw 'Unexpected piece state in MoveStep.place: ' + state;
@@ -109,7 +98,11 @@ MoveStep.prototype.place = function (state, stateOwner, pos, owner, type) {
 };
 
 MoveStep.prototype.updateDisplay = function () {
-    var image = this.piece.getImage();
+    var image;
+    if (this.fromOwner != this.toOwner || this.fromType != this.toType)
+        image = this.piece.updateImage();
+    else
+        image = this.piece.getImage();
 
     if (this.fromPos != this.toPos && this.toPos != null) {
         /*
@@ -118,14 +111,36 @@ MoveStep.prototype.updateDisplay = function () {
         image.setAttribute('x', this.piece.position.coordX);
         image.setAttribute('y', this.piece.position.coordY);
     }
-    else if (this.fromState != this.toState || this.fromStateOwner != this.toStateOwner) {
-        /*
-        don't have anywhere to put this at present.
-        move piece into the correct hand of the correct player.
-        */
 
-        image.setAttribute('x', 1);
-        image.setAttribute('y', 1);
+    if (this.fromState != this.toState) {
+        var oldParent = image.parentNode;
+        oldParent.removeChild(image);
+        var newParent;
+        switch(this.piece.pieceState) {
+            case Piece.State.OnBoard:
+                newParent = document.getElementById('render'); break;
+            case Piece.State.Captured:
+                newParent = document.getElementById('captured'); break;
+            case Piece.State.Held:
+                newParent = document.getElementById('held'); break;
+            default:
+                throw 'Unexpected piece state in MoveStep.updateDisplay: ' + this.piece.pieceState;
+        }
+
+        if (newParent !== undefined)
+            newParent.appendChild(image);
+
+        if (this.piece.pieceState != Piece.State.OnBoard)
+            image.setAttribute('x', this.piece.ownerPlayer.pieceListX);
+
+        if (oldParent.getAttribute('id') != 'render')
+            game.board.updatePiecePositions(oldParent);
+        if (newParent.getAttribute('id') != 'render')
+            game.board.updatePiecePositions(newParent);
+    }
+    else if (this.fromStateOwner != this.toStateOwner) {
+        image.setAttribute('x', this.piece.ownerPlayer.pieceListX);
+        game.board.updatePiecePositions(image.parentNode);
     }
 };
 

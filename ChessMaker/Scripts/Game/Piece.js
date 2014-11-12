@@ -88,7 +88,7 @@ Piece.prototype.createImage = function () {
     pieceImg.setAttribute('class', 'piece ' + this.ownerPlayer.name);
     pieceImg.setAttribute('x', this.position.coordX);
     pieceImg.setAttribute('y', this.position.coordY);
-    pieceImg.setAttributeNS("http://www.w3.org/1999/xlink", 'href', this.pieceType.appearances[this.ownerPlayer.name]);
+    pieceImg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.pieceType.appearances[this.ownerPlayer.name]);
     return pieceImg;
 };
 
@@ -98,7 +98,8 @@ Piece.prototype.getImage = function () {
 
 Piece.prototype.updateImage = function () {
     var image = this.getImage();
-    image.setAttributeNS("http://www.w3.org/1999/xlink", 'href', this.pieceType.appearances[this.ownerPlayer.name]);
+    image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.pieceType.appearances[this.ownerPlayer.name]);
+    return iamge;
 }
 
 Piece.State = {
