@@ -3,7 +3,6 @@
     this.players = {};
     this.currentPlayer = null;
     this.moveNumber = 1;
-    this.isActive = true;
     this.showCaptured = true;
     this.showHeld = false;
 }
@@ -29,12 +28,37 @@ Game.prototype.setupTurnOrder = function () {
     this.currentPlayer = firstPlayer;
 };
 
+Game.prototype.checkForEnd = function () {
+    // return the victor, or null if nobody wins. return undefined if the game isn't over yet.
+
+    // for now, just count remaining pieces. Eventually, should look at victory conditions.
+    var playerWithPieces = null;
+    for (var name in this.players) {
+        var player = this.players[name];
+        if (player.piecesOnBoard.length == 0)
+            continue;
+        else if (playerWithPieces == null)
+            playerWithPieces = player;
+        else
+            return undefined; // multiple players still have pieces, game is not over.
+    }
+
+    // return null if nobody has pieces left: stalemate. Otherwise, only one player has pieces left: they win.
+    return playerWithPieces;
+};
+
 Game.prototype.endTurn = function () {
     for (var j = 0; j < this.currentPlayer.piecesOnBoard.length; j++)
         this.currentPlayer.piecesOnBoard[j].clearPossibleMoves();
 
-    if (!this.isActive) {
-        $('#nextMove').text('Game finished');
+    var victor = this.checkForEnd();
+    if (victor !== undefined) {
+        var text;
+        if (victor == null)
+            text = 'Game finished, stalemate';
+        else
+            text = 'Game finished, ' + victor.name + ' wins';
+        $('#nextMove').text(text);
         $('#wait').hide();
         return;
     }
