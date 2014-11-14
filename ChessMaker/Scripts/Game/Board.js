@@ -2,6 +2,8 @@
     this.game = game;
     this.svgID = 'render';
     this.cells = {};
+    this.relativeDirections = {};
+    this.directionGroups = {};
 }
 
 Board.prototype.loadSVG = function(xml, defs) {
@@ -49,20 +51,65 @@ Board.prototype.loadSVG = function(xml, defs) {
     return boardSVG;
 }
 
+Board.prototype.parseDirections = function (dirsNode) {
+    var board = this;
+    dirsNode.children('relative').each(function () {
+        var dirNode = $(this);
+        var name = dirNode.attr('name');
+        var relDir = {};
+
+        dirNode.children().each(function () {
+            var link = $(this);
+            relD[link.attr('from')] = link.attr('to');
+        });
+
+        board.relativeDirections[name] = relDir;
+    });
+
+    dirsNode.children('group').each(function () {
+        var groupNode = $(this);
+        var name = groupNode.attr('name');
+        var group = [];
+
+        groupNode.children().each(function () {
+            var link = $(this);
+            group.push(link.attr('dir'));
+        });
+
+        board.directionGroups[name] = group;
+    });
+};
+
+// whether its a global, relative or group name, this should output an array of resultant global directions
+Board.prototype.resolveDirection = function (name, prevDir) {
+    if (this.directionGroups.hasOwnProperty(name))
+        return this.directionGroups[name];
+
+    if (this.relativeDirections.hasOwnProperty(name)) {
+        var relDir = this.relativeDirections[name];
+        if (relDir.hasOwnProperty(prevDir))
+            return [relDir[prevDir]];
+        else
+            return [];
+    }
+
+    return [name];
+};
+
 Board.prototype.getCellBySelector = function (selector) {
     var cellImage = $('#render path.cell' + selector);
     if (cellImage.length == 0)
         return null;
 
     return this.getCellByElement(cellImage[0]);
-}
+};
 
 Board.prototype.getCellByElement = function (element) {
     var cell = game.board.cells[element.getAttribute('id')];
     if (cell === undefined)
         return null;
     return cell;
-}
+};
 
 Board.prototype.updatePiecePositions = function (groupNode) {
     /*
@@ -145,9 +192,9 @@ Cell.prototype.loadSVG = function (xml) {
     this.coordX = seg.x;
     this.coordY = seg.y;
     return cell;
-}
+};
 
 
 Cell.prototype.getImage = function () {
     return document.getElementById(this.name);
-}
+};

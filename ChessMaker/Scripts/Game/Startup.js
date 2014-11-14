@@ -12,6 +12,8 @@ function loadDefinition(xml) {
     var defs = SVG('defs');
     var boardSVG = game.board.loadSVG(xml, defs);
 
+    game.board.parseDirections(xml.children('dirs'));
+
     PieceType.parseAll(xml.children('pieces'), defs);
     Player.parseAll(xml, game, boardSVG);
 
