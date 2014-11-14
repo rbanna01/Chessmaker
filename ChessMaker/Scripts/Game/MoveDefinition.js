@@ -95,7 +95,7 @@ function Slide(pieceRef, dir, dist, distLimit, when, conditions) {
 
 extend(Slide, MoveDefinition);
 
-Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
     
     // this is just a placeholder, move to any adjacent square!
@@ -112,7 +112,7 @@ Slide.prototype.appendValidNextSteps = function (move, piece, game, previousStep
             captureStep = MoveStep.CreateCapture(captured, captured.position, piece.ownerPlayer, false);
         }
 
-        var move = new Move(piece.ownerPlayer, piece, piece.position, game.moveNumber);
+        var move = baseMove.clone();
 
         if (captureStep !== undefined) {
             move.addStep(captureStep);

@@ -3,6 +3,7 @@
     this.piece = piece;
     this.startPos = startPos;
     this.moveNumber = moveNum;
+    this.notation = '';
 
     this.steps = [];
     this.references = {};
@@ -86,7 +87,61 @@ Move.prototype.getEndPos = function () {
 Move.prototype.getAllPositions = function () {
     var allPos = [];
     for (var i = 0; i < this.steps.length; i++)
-        if (this.steps[i].piece == this.piece && this.steps[i].toState == PieceState.OnBoard)
+        if (this.steps[i].piece == this.piece && this.steps[i].toState == Piece.State.OnBoard)
             allPoints.push(this.steps[i].toPos);
     return allPos;
+};
+
+Move.prototype.isCapture = function () {
+    for (var i = 0; i < this.steps.length; i++) {
+        var s = this.steps[i];
+        if (s.piece != this.piece && s.toState != Piece.State.OnBoard)
+            return true;
+    }
+    return false;
+};
+
+Move.prototype.getPromotionType = function () {
+    for (var i = this.steps.length - 1; i >= 0; i--) {
+        var s = this.steps[i];
+        if (s.piece == this.piece && s.toType != s.fromType)
+            return s.fromType;
+    }
+    return null;
+};
+
+Move.prototype.determineNotation = function (detailLevel) {
+    // include an X if capturing a piece
+    var capture = this.isCapture() ? 'x' : '';
+
+    var desc;
+    switch (detailLevel) {
+        case 1:
+            desc = this.piece.pieceType.notation + capture + this.getEndPos().name;
+            break;
+        case 2:
+            desc = this.piece.pieceType.notation + this.startPos.name + capture + this.getEndPos().name;
+            break;
+        default:
+            desc = this.piece.pieceType.notation + '(' + this.piece.uniqueID + ')' + this.startPos.name + capture + this.getEndPos().name;
+            break;
+    }
+
+    // add promotion letter onto the end
+    var promotion = this.getPromotionType();
+    if (promotion != null)
+        desc += promotion.notation;
+
+    // add a plus to the end if its check. add a hash if its checkmate.
+
+    // how to account for castling? some special moves simply need to specify their own special notation, i guess...
+
+    var displayNumber = Math.ceil(this.moveNumber / game.numPlayers);
+    if (this.moveNumber % game.numPlayers == 1) // first player's move
+        displayNumber += '.  ';
+    else
+        displayNumber += '...';
+
+    this.notation = displayNumber + desc;
+    return this.notation;
 };

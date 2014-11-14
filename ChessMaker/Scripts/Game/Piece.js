@@ -22,7 +22,7 @@ Piece.prototype.getPossibleMoves = function (game) {
     this.possibleMoves = [];
 
     if (this.pieceState == Piece.State.OnBoard) {
-        var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber, true);
+        var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber);
 
         /*// get promotion possibilities
         this.pieceType.promotionOpportunities.each(function (op) {

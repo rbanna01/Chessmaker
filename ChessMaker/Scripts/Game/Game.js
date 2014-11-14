@@ -1,6 +1,7 @@
 ﻿function Game() {
     this.board = null;
     this.players = {};
+    this.numPlayers = 0;
     this.currentPlayer = null;
     this.moveNumber = 1;
     this.showCaptured = true;
@@ -23,6 +24,7 @@ Game.prototype.setupTurnOrder = function () {
         listX += listXStep;
 
         prevPlayer = player;
+        this.numPlayers++;
     }
     prevPlayer.nextPlayer = firstPlayer;
     this.currentPlayer = firstPlayer;
@@ -48,8 +50,8 @@ Game.prototype.checkForEnd = function () {
 };
 
 Game.prototype.endTurn = function () {
-    for (var j = 0; j < this.currentPlayer.piecesOnBoard.length; j++)
-        this.currentPlayer.piecesOnBoard[j].clearPossibleMoves();
+    for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
+        this.currentPlayer.piecesOnBoard[i].clearPossibleMoves();
 
     var victor = this.checkForEnd();
     if (victor !== undefined) {
@@ -73,7 +75,35 @@ Game.prototype.startNextTurn = function () {
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
     $('#wait').hide(); // show this if the current player is AI or remote
 
-    // calculate all possible moves here?
+    this.ensureUniqueMoveNotation();
+};
+
+Game.prototype.ensureUniqueMoveNotation = function () {
+    // calculate all moves, which pieces store internally. this just ensures they all have unique notation, whereas doing it one piece at a time wouldn't.
+    var allMoves = {};
+
+    for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++) {
+        var movesForThisPiece = this.currentPlayer.piecesOnBoard[i].getPossibleMoves(this);
+
+        for (var j = 0; j < movesForThisPiece.length; j++) {
+            var move = movesForThisPiece[j];
+
+            for (var detailLevel = 1; detailLevel <= 3; detailLevel++) {
+                var notation = move.determineNotation(detailLevel);
+
+                if (allMoves.hasOwnProperty(notation)) {
+                    // another move uses this notation. Calculate a new, more-specific notation for that other move.
+                    var other = allMoves[notation];
+                    var otherNot = other.determineNotation(detailLevel + 1);
+                    allMoves[otherNot] = other;
+                }
+                else {
+                    allMoves[notation] = move;
+                    break;
+                }
+            }
+        }
+    }
 };
 
 Game.prototype.showMoveOptions = function (piece) {
@@ -112,6 +142,6 @@ Game.prototype.logMove = function (player, move) {
     $('<div/>', {
         class: 'move ' + player.name,
         number: move.moveNumber,
-        text: move.piece.ownerPlayer.name + ' ' + move.piece.pieceType.name + ' from ' + move.startPos.name + ' to ' + move.getEndPos().name
+        html: move.notation
     }).appendTo('#moveHistory')[0].scrollIntoView();
 };

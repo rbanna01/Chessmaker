@@ -20,9 +20,9 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="oneChar">
+	<xs:simpleType name="notation">
 		<xs:restriction base="xs:string">
-			<xs:minLength value="1"/>
+			<xs:minLength value="0"/>
 			<xs:maxLength value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -312,7 +312,7 @@
 									</xs:sequence>
 									<xs:attribute name="name" type="xs:string"/>
 									<xs:attribute name="value" type="xs:nonNegativeInteger"/>
-									<xs:attribute name="notation" type="oneChar"/>
+									<xs:attribute name="notation" type="notation"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
