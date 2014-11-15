@@ -3,5 +3,9 @@
 }
 
 Conditions.parse = function (nodes) {
-    return null;
+    return new Conditions();
+};
+
+Conditions.prototype.isSatisfied = function (move, game) {
+    return true; /* aye, well */
 };

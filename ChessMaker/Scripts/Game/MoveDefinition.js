@@ -97,31 +97,68 @@ extend(Slide, MoveDefinition);
 
 Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
+
+    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
     
-    // this is just a placeholder, move to any adjacent square!
-    for (var dir in piece.position.links) {
-        var adjacent = piece.position.links[dir];
-
-        var captureStep;
-        if (adjacent.piece != null) {
-            var captured = adjacent.piece;
-            
-            if (captured.ownerPlayer == piece.ownerPlayer)
-                continue; // don't capture your own
-            
-            captureStep = MoveStep.CreateCapture(captured, captured.position, piece.ownerPlayer, false);
+    if (this.piece != 'self')
+    {// some steps will specify a different piece to act upon, rather than the piece being moved
+        piece = baseMove.getPieceByRef(this.piece);
+        if (piece == null) {
+            console.log('piece ref not found: ' + this.piece);
+            return null;
         }
+    }
 
-        var move = baseMove.clone();
+    for (var i=0; i<dirs.length; i++)
+    {
+        var dir = dirs[i];
 
-        if (captureStep !== undefined) {
-            move.addStep(captureStep);
-            captureStep = undefined;
+        var maxDist = game.board.getMaxDistance(piece.position, dir);
+        var distances = this.dist.getRange(this.distLimit, previousStep, maxDist);
+        var minDist = distances[0]; var maxDist = distances[1];
+        var cell = piece.position;
+
+        for (var dist = 1; dist <= maxDist; dist++) {
+            var prevCell = cell;
+            cell = cell.links[dir];
+            if (cell === undefined)
+                break;
+
+            var target = cell.piece;
+            if (dist >= minDist) {
+                var captureStep = null;
+                if (this.moveWhen == MoveDefinition.When.Capture) {
+                    if (target == null)
+                        continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
+                    else if (piece.canCapture(target))
+                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, game.holdCapturedPieces);
+                    else
+                        break; // cannot capture this piece. Slides cannot pass over pieces, so there can be no more valid slides in this direction.
+                }
+                else if (this.moveWhen == MoveDefinition.When.Move && target != null)
+                    break;
+                else if (target != null) {
+                    if (piece.canCapture(target))
+                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, game.holdCapturedPieces);
+                    else
+                        break; // cannot capture this piece (probably own it)
+                }
+
+                var move = baseMove.clone();
+                if (captureStep != null) {
+                    move.addStep(captureStep);
+                    move.addPieceReference(target, 'target');
+                }
+
+                move.addStep(MoveStep.CreateMove(piece, piece.position, cell, dir));
+
+                if (this.conditions.isSatisfied(move, game))
+                    moves.push(move);
+            }
+
+            if (target != null)
+                break; // Slides can't pass intervening pieces. As this cell was occupied, can be no more valid slides in this direction.
         }
-
-        move.addStep(MoveStep.CreateMove(piece, piece.position, adjacent));
-
-        moves.push(move);
     }
 
     return moves;

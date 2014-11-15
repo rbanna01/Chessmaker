@@ -4,7 +4,7 @@
 }
 
 Distance.prototype.equals = function (other) {
-    return this.number === other.number && this.reference === other.reference;
+    return this.number == other.number && this.reference == other.reference;
 };
 
 Distance.RelativeTo = {
@@ -29,3 +29,37 @@ Distance.parse = function (val) {
     else
         return new Distance(Distance.RelativeTo.None, parseInt(val));
 };
+
+Distance.prototype.getValue = function (previousStep, maxDist) {
+    switch (this.reference) {
+        case Distance.RelativeTo.None:
+            return this.equals(Distance.Any) ? 1 : this.number; /* don't understand this */
+        case Distance.RelativeTo.Max:
+            return maxDist + this.number;
+        case Distance.RelativeTo.Prev:
+            if (previousStep != null)
+                return previousStep.distance + this.number;
+            return this.number;
+        default:
+            throw "Unexpected Distance.RelativeTo value in Distance.parseValue: " + this.reference;
+    }
+}
+
+Distance.prototype.getRange = function (dist2, previousStep, maxDist) {
+    var outDist1 = this.getValue(previousStep, maxDist);
+    var outDist2;
+
+    if (this.equals(Distance.Any))
+        outDist2 = maxDist;
+    else if (dist2 == null)
+        outDist2 = outDist1;
+    else {
+        outDist2 = dist2.getValue(previousStep, maxDist);
+        if (outDist2 > maxDist)
+            outDist2 = maxDist;
+    }
+
+    if (outDist1 > outDist2)
+        return [outDist2, outDist1];
+    return [outDist1, outDist2];
+}

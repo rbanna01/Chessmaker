@@ -10,6 +10,8 @@
     this.toStateOwner = null;
     this.fromType = piece.pieceType;
     this.toType = piece.pieceType;
+
+    this.direction = null; // used only for resolving relative directions of subsequent steps
 }
 
 MoveStep.prototype.perform = function (game, updateDisplay) {
@@ -142,12 +144,13 @@ MoveStep.prototype.updateDisplay = function () {
     }
 };
 
-MoveStep.CreateMove = function (piece, from, to) {
+MoveStep.CreateMove = function (piece, from, to, dir) {
     var s = new MoveStep(piece);
     s.fromPos = from;
     s.toPos = to;
     s.fromState = Piece.State.OnBoard;
     s.toState = Piece.State.OnBoard;
+    s.direction = dir;
     return s;
 };
 

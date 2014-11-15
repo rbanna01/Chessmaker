@@ -6,6 +6,8 @@
     this.moveNumber = 1;
     this.showCaptured = true;
     this.showHeld = false;
+
+    this.holdCapturedPieces = false;
 }
 
 Game.prototype.setupTurnOrder = function () {

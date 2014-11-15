@@ -4,6 +4,7 @@
     this.cells = {};
     this.relativeDirections = {};
     this.directionGroups = {};
+    this.allDirections = [];
 }
 
 Board.prototype.loadSVG = function(xml, defs) {
@@ -36,9 +37,14 @@ Board.prototype.loadSVG = function(xml, defs) {
         }
     });
 
+    var allDirs = {};
+
     for (var sourceRef in this.cells) {
         var cell = this.cells[sourceRef];
         for (var dir in cell.links) {
+            if (!allDirs.hasOwnProperty(dir))
+                allDirs[dir] = dir;
+
             var ref = cell.links[dir];
 
             if (this.cells.hasOwnProperty(ref))
@@ -47,6 +53,9 @@ Board.prototype.loadSVG = function(xml, defs) {
                 throw 'Cell ' + cell.name + ' has link to unrecognised cell: ' + ref;
         }
     }
+
+    for (var dir in allDirs)
+        this.allDirections.push(dir);
 
     return boardSVG;
 }
@@ -60,7 +69,7 @@ Board.prototype.parseDirections = function (dirsNode) {
 
         dirNode.children().each(function () {
             var link = $(this);
-            relD[link.attr('from')] = link.attr('to');
+            relDir[link.attr('from')] = link.attr('to');
         });
 
         board.relativeDirections[name] = relDir;
@@ -82,6 +91,11 @@ Board.prototype.parseDirections = function (dirsNode) {
 
 // whether its a global, relative or group name, this should output an array of resultant global directions
 Board.prototype.resolveDirection = function (name, prevDir) {
+    if (name == 'forward')
+        return [prevDir];
+    else if (name == 'any')
+        return this.allDirections;
+
     if (this.directionGroups.hasOwnProperty(name))
         return this.directionGroups[name];
 
@@ -94,6 +108,26 @@ Board.prototype.resolveDirection = function (name, prevDir) {
     }
 
     return [name];
+};
+
+Board.prototype.getMaxDistance = function (cell, dir) {
+    var num = 0;
+
+    var alreadyVisited = {};
+    alreadyVisited[cell.name] = cell;
+
+    while (cell.links.hasOwnProperty(dir)) {
+        cell = cell.links[dir];
+
+        // without this bit, circular boards would infinite loop
+        if (alreadyVisited.hasOwnProperty(cell.name))
+            break;
+        alreadyVisited[cell.name] = cell;
+
+        num++;
+    }
+
+    return num;
 };
 
 Board.prototype.getCellBySelector = function (selector) {
