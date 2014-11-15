@@ -98,8 +98,6 @@ extend(Slide, MoveDefinition);
 Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
-    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
-    
     if (this.piece != 'self')
     {// some steps will specify a different piece to act upon, rather than the piece being moved
         piece = baseMove.getPieceByRef(this.piece);
@@ -108,18 +106,18 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
             return null;
         }
     }
-
-    for (var i=0; i<dirs.length; i++)
-    {
+    
+    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+    
+    for (var i = 0; i < dirs.length; i++) {
         var dir = dirs[i];
 
-        var maxDist = game.board.getMaxDistance(piece.position, dir);
-        var distances = this.dist.getRange(this.distLimit, previousStep, maxDist);
+        var boardMaxDist = game.board.getMaxDistance(piece.position, dir);
+        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
         var cell = piece.position;
 
         for (var dist = 1; dist <= maxDist; dist++) {
-            var prevCell = cell;
             cell = cell.links[dir];
             if (cell === undefined)
                 break;
@@ -192,8 +190,87 @@ function Leap(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, condi
 
 extend(Leap, MoveDefinition);
 
-Leap.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
+
+    if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
+        piece = baseMove.getPieceByRef(this.piece);
+        if (piece == null) {
+            console.log('piece ref not found: ' + this.piece);
+            return null;
+        }
+    }
+    
+    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+
+    for (var i = 0; i < dirs.length; i++) {
+        var firstDir = dirs[i];
+
+        var boardMaxDist = game.board.getMaxDistance(piece.position, firstDir);
+        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
+        var minDist = distances[0]; var maxDist = distances[1];
+
+        var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
+        for (var j = 0; j < secondDirs.length; j++) {
+            var secondDir = secondDirs[j];
+
+            boardMaxDist = game.board.getMaxDistance(piece.position, secondDir);
+            distances = this.secondDist.getRange(null, previousStep, boardMaxDist);
+            var minDist2 = distances[0]; var maxDist2 = distances[1];
+
+            var straightCell = piece.position;
+
+            for (var dist = 1; dist <= maxDist; dist++) {
+                straightCell = straightCell.links[firstDir];
+                if (straightCell === undefined)
+                    break;
+
+                if (dist < minDist)
+                    continue; // not yet reached minimum straight distance, so don't turn
+
+                var destCell = straightCell;
+                for (var secondDist = 1; secondDist <= maxDist2; secondDist++) {
+                    destCell = destCell.links[secondDir];
+                    if (destCell === undefined)
+                        break;
+
+                    var target = destCell.piece;
+                    if (secondDist >= minDist2) {
+                        var captureStep = null;
+                        if (this.moveWhen == MoveDefinition.When.Capture) {
+                            if (target == null)
+                                continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
+                            else if (piece.canCapture(target))
+                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
+                            else
+                                continue; // cannot capture this piece
+                        }
+                        else if (this.moveWhen == MoveDefinition.When.Move && target != null)
+                            break;
+                        else if (target != null) {
+                            if (piece.canCapture(target))
+                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
+                            else
+                                continue; // cannot capture this piece
+                        }
+
+                        var move = baseMove.clone();
+                        if (captureStep != null) {
+                            move.addStep(captureStep);
+                            move.addPieceReference(target, 'target');
+                        }
+
+                        move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, secondDir));
+
+                        if (this.conditions.isSatisfied(move, game))
+                            moves.push(move);
+                    }
+                }
+            }
+        }
+
+
+    }
 
     return moves;
 };
@@ -232,7 +309,7 @@ function Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, 
 
 extend(Hop, MoveDefinition);
 
-Hop.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -268,7 +345,7 @@ function Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, cond
 
 extend(Shoot, MoveDefinition);
 
-Shoot.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -305,7 +382,7 @@ function MoveLike(other, when, conditions) {
 
 extend(MoveLike, MoveDefinition);
 
-MoveLike.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -332,7 +409,7 @@ function ReferencePiece(name, type, owner, dir, dist) {
 
 extend(ReferencePiece, MoveDefinition);
 
-ReferencePiece.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -371,7 +448,7 @@ function ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, moveWithAttack, c
 
 extend(ArbitraryAttack, MoveDefinition);
 
-ArbitraryAttack.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+ArbitraryAttack.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
@@ -400,7 +477,7 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 
 extend(MoveGroup, MoveDefinition);
 
-MoveGroup.prototype.appendValidNextSteps = function (move, piece, game, previousStep) {
+MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
     return moves;
