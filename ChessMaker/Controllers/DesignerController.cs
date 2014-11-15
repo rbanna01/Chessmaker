@@ -202,8 +202,9 @@ namespace ChessMaker.Controllers
                 return new HttpUnauthorizedResult();
             
             DefinitionService definitions = GetService<DefinitionService>();
-            var dirs = definitions.ListGlobalDirections(version);
-            var model = new DirectionGroupsModel(version, string.Join(";", dirs), definitions.GetDirectionGroups(version));
+            var global = definitions.ListGlobalDirections(version);
+            var relative = definitions.ListRelativeDirections(version);
+            var model = new DirectionGroupsModel(version, string.Join(";", global.Concat(relative)), definitions.GetDirectionGroups(version));
 
             return View(model);
         }

@@ -534,6 +534,24 @@ namespace ChessMaker.Services
             return directions;
         }
 
+        public IEnumerable<string> ListRelativeDirections(VariantVersion version)
+        {
+            SortedSet<string> directions = new SortedSet<string>();
+
+            var dirRoot = GetDefinition(version).Dirs;
+            if (dirRoot == null)
+                return new string[0];
+
+            foreach (XmlNode relativeNode in dirRoot.SelectNodes("relative"))
+            {
+                var dir = relativeNode.Attributes["name"].Value;
+                if (!directions.Contains(dir))
+                    directions.Add(dir);
+            }
+
+            return directions;
+        }
+
         public string GetDirectionGroups(VariantVersion version)
         {
             var definition = GetDefinition(version);

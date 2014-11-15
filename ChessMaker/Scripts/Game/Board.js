@@ -96,18 +96,33 @@ Board.prototype.resolveDirection = function (name, prevDir) {
     else if (name == 'any')
         return this.allDirections;
 
-    if (this.directionGroups.hasOwnProperty(name))
-        return this.directionGroups[name];
+    if (this.directionGroups.hasOwnProperty(name)) {
+        var group = this.directionGroups[name];
+        var output = [];
+        for (var i = 0; i < group.length; i++) {
+            var dir = this.resolveSingleDirection(group[i], prevDir);
+            if (dir != null)
+                output.push(dir);
+        }
+        return output;
+    }
 
+    var dir = this.resolveSingleDirection(name, prevDir);
+    if (dir == null)
+        return [];
+    return [dir];
+};
+
+Board.prototype.resolveSingleDirection = function (name, prevDir) {
     if (this.relativeDirections.hasOwnProperty(name)) {
         var relDir = this.relativeDirections[name];
         if (relDir.hasOwnProperty(prevDir))
-            return [relDir[prevDir]];
+            return relDir[prevDir];
         else
-            return [];
+            return null;
     }
 
-    return [name];
+    return name;
 };
 
 Board.prototype.getMaxDistance = function (cell, dir) {
