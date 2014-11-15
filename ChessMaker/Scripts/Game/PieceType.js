@@ -41,35 +41,31 @@ PieceType.parse = function (xmlNode, defs) {
     type.name = xmlNode.getAttribute('name');
 
     var value = xmlNode.getAttribute('value');
-    if (value !== undefined)
+    if (value != null)
         type.value = value;
 
     var notation = xmlNode.getAttribute('notation');
-    if (notation !== undefined)
+    if (notation != null)
         type.notation = notation;
     
     var capturedAs = $(xmlNode).children("capturedAs");
-    if (capturedAs !== undefined)
+    if (capturedAs.length > 0)
         type.capturedAs = $(capturedAs).text();
     
-    var movesNode = $(xmlNode).children("moves");
-    if (movesNode !== undefined)
-        $(movesNode).children().each(function () {
-            type.moves.push(MoveDefinition.parse(this, true));
-        });
+    $(xmlNode).children("moves").children().each(function () {
+        type.moves.push(MoveDefinition.parse(this, true));
+    });
     /*
-    var specialNode = $(xmlNode).children("special");
-    if (specialNode != undefined)
-        $(specialNode).children().each(function () {
-            if (this.tagName == "royal") // consider: while these properties should remain on pieces IN CODE (for game logic's sake) - shouldn't royalty in the DEFINITION be handled via victory conditions? lose when any/all pieces of given type are checkmated/captured/are in check/aren't in check? loading code could then apply royal / antiroyal values
-                type.royalty = PieceType.RoyalState.Royal;
-            else if (this.tagName == "anti_royal")
-                type.royalty = PieceType.RoyalState.AntiRoyal;
-            else if (this.tagName == "immobilize")
-                type.immobilizations.push(Immobilization.parse(this));
-            else // consider: other special types: blocks (as per immobilize, but instead prevents pieces entering a square), kills (kills pieces in target squares without expending a move)
-                throw "Unexpected node name in piece's \"special\" tag: " + this.tagName;
-        });
+    $(xmlNode).children("special").children().each(function () {
+        if (this.tagName == "royal") // consider: while these properties should remain on pieces IN CODE (for game logic's sake) - shouldn't royalty in the DEFINITION be handled via victory conditions? lose when any/all pieces of given type are checkmated/captured/are in check/aren't in check? loading code could then apply royal / antiroyal values
+            type.royalty = PieceType.RoyalState.Royal;
+        else if (this.tagName == "anti_royal")
+            type.royalty = PieceType.RoyalState.AntiRoyal;
+        else if (this.tagName == "immobilize")
+            type.immobilizations.push(Immobilization.parse(this));
+        else // consider: other special types: blocks (as per immobilize, but instead prevents pieces entering a square), kills (kills pieces in target squares without expending a move)
+            throw "Unexpected node name in piece's \"special\" tag: " + this.tagName;
+    });
     */
     /*
     $(xmlNode).children("promotion").each(function () {
