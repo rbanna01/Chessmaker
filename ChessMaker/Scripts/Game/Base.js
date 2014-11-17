@@ -11,15 +11,19 @@ function SVG(tag) {
 }
 
 function addClass(elems, className) {
+    var classNameSpaced = ' ' + className + ' ';
     elems.each(function () {
-        addClassSingle(this, className);
+        addClassSingle(this, className, classNameSpaced);
     });
 }
 
-function addClassSingle(elem, className) {
+function addClassSingle(elem, className, classNameSpaced) {
+    if (classNameSpaced === undefined)
+        classNameSpaced = ' ' + className + ' ';
+
     var classes = elem.getAttribute('class');
     var spaced = ' ' + classes + ' ';
-    if (spaced.indexOf(className) != -1)
+    if (spaced.indexOf(classNameSpaced) != -1)
         return;
     elem.setAttribute('class', classes + ' ' + className);
 }
