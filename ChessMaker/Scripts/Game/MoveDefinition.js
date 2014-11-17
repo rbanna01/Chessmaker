@@ -312,6 +312,97 @@ extend(Hop, MoveDefinition);
 Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
 
+    if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
+        piece = baseMove.getPieceByRef(this.piece);
+        if (piece == null) {
+            console.log('piece ref not found: ' + this.piece);
+            return null;
+        }
+    }
+
+    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+
+    
+    for (var i = 0; i < dirs.length; i++) {
+        var dir = dirs[i];
+
+        var boardMaxDist = game.board.getMaxDistance(piece.position, dir);
+        var distances = this.distToHurdle.getRange(null, previousStep, boardMaxDist); /* do we need a distLimitToHurdle to allow for variable hurdle distances (e.g. 2-4) */
+        var minDistTo = distances[0]; var maxDistTo = distances[1];
+        distances = this.distAfterHurdle.getRange(null, previousStep, boardMaxDist); /* doesn't the "board max" need recalculated based on hurdle position? */
+        var minDistAfter = distances[0]; var maxDistAfter = distances[1];
+
+        var hurdleCell = piece.position;
+        for (var distTo = 1; distTo <= maxDistTo; distTo++) {
+            hurdleCell = hurdleCell.links[dir];
+            if (hurdleCell === undefined)
+                break;
+
+            var hurdle = hurdleCell.piece;
+            if (hurdle == null)
+                continue;
+
+            if (distTo < minDistTo)
+                break; // this piece is too close to hop over
+
+            if (this.captureHurdle && !piece.canCapture(hurdle))
+                break; // can't capture this hurdle, so can't hop it
+
+            // now we've found the only possible hurdle. Do what we will with that, then there cannot be another hurdle, so break after
+            var destCell = hurdleCell;
+            for (var distAfter = 1; distAfter <= maxDistAfter; distAfter++) {
+                destCell = destCell.links[dir];
+                if (destCell === undefined)
+                    break;
+
+                var target = destCell.piece;
+
+                if (distAfter >= minDistAfter) {
+                    var captureStep = null;
+                    if (this.moveWhen == MoveDefinition.When.Capture) {
+                        if (target == null)
+                            continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
+                        else if (piece.canCapture(target))
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
+                        else
+                            break; // cannot capture this piece. Slides cannot pass over pieces, so there can be no more valid slides in this direction.
+                    }
+                    else if (this.moveWhen == MoveDefinition.When.Move && target != null)
+                        break;
+                    else if (target != null) {
+                        if (piece.canCapture(target))
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
+                        else
+                            break; // cannot capture this piece (probably own it)
+                    }
+
+                    var move = baseMove.clone();
+
+                    if (this.captureHurdle) {
+                        var hurdleCaptureStep = MoveStep.CreateCapture(hurdle, hurdle.position, piece.ownerPlayer, game.holdCapturedPieces);
+                        move.addStep(hurdleCaptureStep);
+                        move.addPieceReference(hurdle, "hurdle");
+                    }
+
+                    if (captureStep != null) {
+                        move.addStep(captureStep);
+                        move.addPieceReference(target, 'target');
+                    }
+
+                    move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, dir));
+
+                    if (this.conditions.isSatisfied(move, game))
+                        moves.push(move);
+                }
+
+                if (target != null)
+                    break; // whether we capture it or not, can't pass a second piece
+            }
+
+            break;
+        }
+    }
+
     return moves;
 };
 
