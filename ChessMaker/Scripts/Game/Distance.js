@@ -33,7 +33,7 @@ Distance.parse = function (val) {
 Distance.prototype.getValue = function (previousStep, maxDist) {
     switch (this.reference) {
         case Distance.RelativeTo.None:
-            return this.equals(Distance.Any) ? 1 : this.number; /* don't understand this */
+            return this.equals(Distance.Any) ? 1 : this.number; // the minimum for "any" is 1, and the max will be maxDist (from getRange)
         case Distance.RelativeTo.Max:
             return maxDist + this.number;
         case Distance.RelativeTo.Prev:
@@ -53,13 +53,10 @@ Distance.prototype.getRange = function (dist2, previousStep, maxDist) {
         outDist2 = maxDist;
     else if (dist2 == null)
         outDist2 = outDist1;
-    else {
+    else
         outDist2 = dist2.getValue(previousStep, maxDist);
-        if (outDist2 > maxDist)
-            outDist2 = maxDist;
-    }
 
-    if (outDist1 > outDist2)
-        return [outDist2, outDist1];
+    if (outDist2 > maxDist)
+        outDist2 = maxDist;
     return [outDist1, outDist2];
 }
