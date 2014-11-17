@@ -455,6 +455,9 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         var minDist = distances[0]; var maxDist = distances[1];
 
         var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
+        if (secondDirs.length == 0 && this.secondDist == Distance.Zero)
+            secondDirs = [firstDir]; // shoot moves may not have a second dir, but we need one to function here
+
         for (var j = 0; j < secondDirs.length; j++) {
             var secondDir = secondDirs[j];
 
