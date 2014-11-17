@@ -121,7 +121,7 @@
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="dist" type="distance" use="required"/>
 		<xs:attribute name="distLimit" type="distance"/>
-		<!-- if present, limits the movement to between dist & dist2 -->
+		<!-- if present, limits the movement to between dist & distLimit -->
 		<xs:attribute name="secondDir" type="direction"/>
 		<xs:attribute name="secondDist" type="distanceIncZero" default="0"/>
 	</xs:complexType>

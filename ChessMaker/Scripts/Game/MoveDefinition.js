@@ -239,7 +239,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
                         var captureStep = null;
                         if (this.moveWhen == MoveDefinition.When.Capture) {
                             if (target == null)
-                                continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
+                                continue; // needs to be a capture for this leap to be valid, and there is no piece here. But there might be pieces beyond this one.
                             else if (piece.canCapture(target))
                                 captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
                             else
@@ -268,8 +268,6 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
                 }
             }
         }
-
-
     }
 
     return moves;
@@ -361,11 +359,11 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousSt
                     var captureStep = null;
                     if (this.moveWhen == MoveDefinition.When.Capture) {
                         if (target == null)
-                            continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
+                            continue; // needs to be a capture for this hop to be valid, and there is no piece here. But there might be pieces beyond this one.
                         else if (piece.canCapture(target))
                             captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
                         else
-                            break; // cannot capture this piece. Slides cannot pass over pieces, so there can be no more valid slides in this direction.
+                            break; // cannot capture this piece. Cannot hop over a second piece, so there can be no more valid hops in this direction.
                     }
                     else if (this.moveWhen == MoveDefinition.When.Move && target != null)
                         break;
@@ -438,6 +436,71 @@ extend(Shoot, MoveDefinition);
 
 Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
+
+    if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
+        piece = baseMove.getPieceByRef(this.piece);
+        if (piece == null) {
+            console.log('piece ref not found: ' + this.piece);
+            return null;
+        }
+    }
+
+    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+
+    for (var i = 0; i < dirs.length; i++) {
+        var firstDir = dirs[i];
+
+        var boardMaxDist = game.board.getMaxDistance(piece.position, firstDir);
+        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
+        var minDist = distances[0]; var maxDist = distances[1];
+
+        var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
+        for (var j = 0; j < secondDirs.length; j++) {
+            var secondDir = secondDirs[j];
+
+            boardMaxDist = game.board.getMaxDistance(piece.position, secondDir);
+            distances = this.secondDist.getRange(null, previousStep, boardMaxDist);
+            var minDist2 = distances[0]; var maxDist2 = distances[1];
+
+            var straightCell = piece.position;
+
+            for (var dist = 1; dist <= maxDist; dist++) {
+                straightCell = straightCell.links[firstDir];
+                if (straightCell === undefined)
+                    break;
+
+                if (dist < minDist)
+                    continue; // not yet reached minimum straight distance, so don't turn
+
+                var destCell = straightCell;
+                for (var secondDist = 0; secondDist <= maxDist2; secondDist++) {
+                    if (secondDist > 0) {
+                        destCell = destCell.links[secondDir];
+                        if (destCell === undefined)
+                            break;
+                    }
+
+                    var target = destCell.piece;
+                    if (secondDist >= minDist2) {
+                        var captureStep = null;
+                        if (target == null)
+                            continue; // needs to be a capture for this shoot to be valid, and there is no piece here. But there might be pieces beyond this one.
+                        else if (piece.canCapture(target))
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, game.holdCapturedPieces);
+                        else
+                            break; // cannot capture this piece
+
+                        var move = baseMove.clone();
+                        move.addStep(captureStep);
+                        move.addPieceReference(target, 'target');
+
+                        if (this.conditions.isSatisfied(move, game))
+                            moves.push(move);
+                    }
+                }
+            }
+        }
+    }
 
     return moves;
 };
