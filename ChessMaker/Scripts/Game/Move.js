@@ -80,6 +80,13 @@ Move.prototype.getEndPos = function () {
         var s = this.steps[i];
         if (s.piece == this.piece && s.toState == Piece.State.OnBoard)
             return s.toPos;
+    }// if this piece doesn't move, consider other pieces that it might move or capture
+    for (var i = this.steps.length - 1; i >= 0; i--) {
+        var s = this.steps[i];
+        if (s.toState == Piece.State.OnBoard)
+            return s.toPos;
+        else if (s.fromState == Piece.State.OnBoard)
+            return s.fromPos;
     }
     return this.startPos;
 };
