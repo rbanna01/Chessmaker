@@ -83,7 +83,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         }
     }
     
-    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+    var dirs = baseMove.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
     
     for (var i = 0; i < dirs.length; i++) {
         var dir = dirs[i];
@@ -177,7 +177,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
         }
     }
     
-    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+    var dirs = baseMove.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
 
     for (var i = 0; i < dirs.length; i++) {
         var firstDir = dirs[i];
@@ -186,7 +186,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
         var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
-        var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
+        var secondDirs = baseMove.player.resolveDirection(this.secondDir, firstDir);
         for (var j = 0; j < secondDirs.length; j++) {
             var secondDir = secondDirs[j];
 
@@ -296,7 +296,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousSt
         }
     }
 
-    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+    var dirs = baseMove.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
 
     
     for (var i = 0; i < dirs.length; i++) {
@@ -426,7 +426,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         }
     }
 
-    var dirs = game.board.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+    var dirs = baseMove.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
 
     for (var i = 0; i < dirs.length; i++) {
         var firstDir = dirs[i];
@@ -435,7 +435,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
-        var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
+        var secondDirs = baseMove.player.resolveDirection(this.secondDir, firstDir);
         if (secondDirs.length == 0 && this.secondDist == Distance.Zero)
             secondDirs = [firstDir]; // shoot moves may not have a second dir, but we need one to function here
 
@@ -623,7 +623,7 @@ ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, game,
     var other = null;
 
     if (this.direction != null && this.distance != null) {
-        var dirs = game.board.resolveDirection(this.direction, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+        var dirs = baseMove.player.resolveDirection(this.direction, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
         for (var i = 0; i < dirs.length; i++) {
             var dir = dirs[i];
 
@@ -743,13 +743,12 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 extend(MoveGroup, MoveDefinition);
 
 MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
-    var results = []; var prevStepMoves = [];
-	prevStepMoves.push(baseMove);
-
+    var results = [];
+    var prevStepMoves = [baseMove];
 	for (var rep = 1; rep <= this.maxOccurs; rep++) {
-		for (var i=0; i<this.contents.length; i++)
+	    for (var iStep = 0; iStep < this.contents.length; iStep++)
 		{
-			var step = this.contents[i];
+	        var stepDef = this.contents[iStep];
 			var stepMoves = [];
             
 			for (var j=0; j<prevStepMoves.length; j++)
@@ -759,12 +758,12 @@ MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, game, prev
 			    for (var doStep = 0; doStep < prevMove.steps.length; doStep++)
 			        prevMove.steps[doStep].perform(game);
 			    
-				var nextMovesForStep = step.appendValidNextSteps(prevMove, piece, game, prevMove.steps.length > 0 ? prevMove.steps[prevMove.steps.length-1] : previousStep);
+			    var nextMovesForStep = stepDef.appendValidNextSteps(prevMove, piece, game, prevMove.steps.length > 0 ? prevMove.steps[prevMove.steps.length - 1] : previousStep);
 					
 				stepMoves = stepMoves.concat(nextMovesForStep);
 				
-			    for (var undoStep = prevMove.steps.length - 1; undoStep >= 0; undoStep--)
-			        prevMove.steps[undoStep].reverse(game);
+				for (var undoStep = prevMove.steps.length - 1; undoStep >= 0; undoStep--)
+				    prevMove.steps[undoStep].reverse(game);
 			}
 
 			prevStepMoves = stepMoves;
@@ -781,7 +780,7 @@ MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, game, prev
 		
     // this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
     if (this.stepOutIfFail && results.length == 0 && baseMove.steps.count > 0)
-        results.push(baseMove);
+        return [baseMove];
 
 	return results;
 };

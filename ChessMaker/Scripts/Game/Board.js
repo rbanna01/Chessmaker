@@ -91,7 +91,7 @@ Board.prototype.parseDirections = function (dirsNode) {
 
 // whether its a global, relative or group name, this should output an array of resultant global directions
 Board.prototype.resolveDirection = function (name, prevDir) {
-    if (name == 'forward')
+    if (name == 'same')
         return [prevDir];
     else if (name == 'any')
         return this.allDirections;
