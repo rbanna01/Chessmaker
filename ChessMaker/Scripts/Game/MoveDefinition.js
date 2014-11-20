@@ -62,30 +62,6 @@ MoveDefinition.When.parse = function (val) {
         throw "Unexpected when value: " + val;
 };
 
-MoveDefinition.Owner = {
-    Any: 0,
-    Self: 1,
-    Enemy: 2,
-    Ally: 3
-};
-
-MoveDefinition.Owner.parse = function (val) {
-    if (val === undefined)
-        return "any";
-    switch (val) {
-        case "any":
-            return MoveDefinition.Owner.Any;
-        case "self":
-            return MoveDefinition.Owner.Self;
-        case "enemy":
-            return MoveDefinition.Owner.Enemy;
-        case "ally":
-            return MoveDefinition.Owner.Ally;
-        default:
-            throw "Unexpected owner value: " + val;
-    }
-};
-
 
 function Slide(pieceRef, dir, dist, distMax, when, conditions) {
     MoveDefinition.call(this, pieceRef, dir, when, conditions);
@@ -103,7 +79,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         piece = baseMove.getPieceByRef(this.piece);
         if (piece == null) {
             console.log('piece ref not found: ' + this.piece);
-            return null;
+            return moves;
         }
     }
     
@@ -197,7 +173,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
         piece = baseMove.getPieceByRef(this.piece);
         if (piece == null) {
             console.log('piece ref not found: ' + this.piece);
-            return null;
+            return moves;
         }
     }
     
@@ -316,7 +292,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousSt
         piece = baseMove.getPieceByRef(this.piece);
         if (piece == null) {
             console.log('piece ref not found: ' + this.piece);
-            return null;
+            return moves;
         }
     }
 
@@ -446,7 +422,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         piece = baseMove.getPieceByRef(this.piece);
         if (piece == null) {
             console.log('piece ref not found: ' + this.piece);
-            return null;
+            return moves;
         }
     }
 
@@ -545,8 +521,79 @@ function MoveLike(other, when, conditions) {
 extend(MoveLike, MoveDefinition);
 
 MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
+    if (this.pieceref == "target") {
+        // difficult special case - we don't know what piece we're to move like until we've already made the move
+        return this.appendMoveLikeTarget(baseMove, piece, game, previousStep);
+    }
+
     var moves = [];
 
+    var other = baseMove.getPieceByRef(this.piece);
+    if (other == null) {
+        console.log('piece ref not found: ' + this.piece);
+        return moves;
+    }
+
+    // iterate over all possible moves of the specific piece being referenced, but *for* the piece being moved
+    for (var i = 0; i < other.pieceType.moves; i++) {
+        var moveDef = other.pieceType.moves[i];
+        var possibilities = moveDef.appendValidNextSteps(baseMove, piece, game, previousStep);
+        for (var j = 0; j < possibilities.length; j++)
+            moves.push(possibilities[j]);
+    }
+
+    return moves;
+};
+
+MoveLike.AllowMoveLikeTarget = true;
+
+MoveLike.prototype.appendMoveLikeTarget = function (baseMove, piece, game, previousStep) {
+    var moves = [];
+
+    if (!MoveLike.AllowMoveLikeTarget)
+        return moves; // "move like target" shouldn't try to capture other pieces using "move like target" - that's nonsense
+
+    MoveLike.AllowMoveLikeTarget = false;
+
+
+    // loop through all possible piece types, try out every move, and then if the piece(s) captured are of the same type, use it
+/*
+	for ( var i=0; i<game.pieceTypes.length; i++ )
+	{
+		var pieceType = game.pieceTypes[i];
+		for ( var j=0; j<pieceType.allMoves.length; j++ )
+		{
+			var possibilities = pieceType.allMoves[j].appendValidNextSteps(move, piece, game, previousStep);
+			for ( var k=0; k<possibilities.length; k++ )
+			{
+				var newMove = possibilities[k];
+				var moveIsOk = false;
+				for ( var step = move.steps.length; step < newMove.steps.count; step++ ) // for each of the NEW steps added
+				{
+					if ( newMove.steps[step].toState != Piece.State.OnBoard )
+					{// moving piece off board means its a capture (debatable)
+						var target = newMove.steps[step].piece;
+						if ( target == piece )
+							continue; // if capturing like a "kamakaze" piece, it should be OK to capture yourself
+								
+						if ( target != null && target.pieceType == pieceType && piece.canCapture(target) )
+							moveIsOk = true;
+							// debatable: do we want an option to allow capturing multiple pieces, as long as ONE is of the target type? If so, you'd break here instead of below
+						else
+						{
+							moveIsOk = false;
+							break;
+						}
+					}
+				}
+				if (moveIsOk) // must be a capture, and every piece captured must be of pieceType.Name
+					moves.push(newMove);
+			}
+		}
+	}    
+*/
+
+    MoveLike.AllowMoveLikeTarget = true;
     return moves;
 };
 
@@ -560,11 +607,11 @@ MoveLike.parse = function (xmlNode) {
 }
 
 
-function ReferencePiece(name, type, owner, dir, dist) {
+function ReferencePiece(name, type, relationship, dir, dist) {
     MoveDefinition.call(this, undefined, undefined, undefined, undefined);
     this.refName = name;
     this.otherType = type;
-    this.otherOwner = owner;
+    this.otherRelationship = relationship;
     this.direction = dir;
     this.distance = dist;
 }
@@ -573,6 +620,62 @@ extend(ReferencePiece, MoveDefinition);
 
 ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
     var moves = [];
+    var other = null;
+
+    if (this.direction != null && this.distance != null) {
+        var dirs = game.board.resolveDirection(this.direction, previousStep != null && previousStep.direction != null ? previousStep.direction : baseMove.player.forwardDir);
+        for (var i = 0; i < dirs.length; i++) {
+            var dir = dirs[i];
+
+            var boardMaxDist = game.board.getMaxDistance(piece.position, dir);
+            var distances = this.distance.getRange(null, previousStep, boardMaxDist);
+            var minDist = distances[0]; var maxDist = distances[1];
+
+            var cell = piece.position;
+            for (var dist = 1; dist <= maxDist; dist++) {
+                cell = cell.links[dir];
+                if (cell === undefined)
+                    break;
+
+                if (dist < minDist)
+                    continue;
+
+                var target = cell.piece;
+                if (target == null)
+                    continue;
+                
+                if (this.otherRelationship != Player.Relationship.Any && piece.ownerPlayer.getRelationship(target.ownerPlayer) != this.otherRelationship)
+                    continue;
+
+                if (!target.typeMatches(this.otherType))
+                    continue;
+
+                var newMove = baseMove.clone();
+                newMove.addPieceReference(target, this.refName);
+                moves.push(newMove);
+            }
+        }
+    }
+	else
+    {
+        for (var name in game.players) {
+            var player = this.players[name];
+
+            if (this.otherRelationship != Player.Relationship.Any && piece.ownerPlayer.getRelationship(player) != this.otherRelationship)
+                continue;
+
+            for (var i = 0; i < player.piecesOnBoard.length; i++) {
+                var target = player.piecesOnBoard[i];
+
+                if (!target.typeMatches(this.otherType))
+                    continue;
+
+                var newMove = baseMove.clone();
+                newMove.addPieceReference(target, this.refName);
+                moves.push(newMove);
+            }
+        }
+	}
 
     return moves;
 };
@@ -593,9 +696,9 @@ ReferencePiece.parse = function (xmlNode) {
     if (type == undefined)
         type = "any";
 
-    var owner = MoveDefinition.Owner.parse(node.attr("owner"));
+    var relationship = Player.Relationship.parse(node.attr("owner"));
 
-    return new ReferencePiece(name, type, owner, dir, dist);
+    return new ReferencePiece(name, type, relationship, dir, dist);
 }
 
 

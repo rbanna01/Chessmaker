@@ -56,7 +56,7 @@ Piece.prototype.getPossibleMoves = function (game) {
 };
 
 Piece.prototype.canCapture = function (targetPiece) {
-    return this.ownerPlayer != targetPiece.ownerPlayer;/*this.ownerPlayer.getOwnerFromPlayer(targetPiece.ownerPlayer) == MoveDefinition.Owner.Enemy;*/
+    return this.ownerPlayer.getRelationship(targetPiece.ownerPlayer) == Player.Relationship.Enemy;
 };
 
 Piece.prototype.typeMatches = function (strType) {

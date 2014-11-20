@@ -73,8 +73,33 @@ Player.parseAll = function (xml, game, boardSVG) {
     game.setupTurnOrder();
 }
 
-Player.prototype.calculatePossibleMoves = function () {
-    var moves = [];
+Player.Relationship = {
+    Any: 0,
+    Self: 1,
+    Enemy: 2,
+    Ally: 3
+};
 
-    return moves;
-}
+Player.Relationship.parse = function (val) {
+    if (val === undefined)
+        return "any";
+    switch (val) {
+        case "any":
+            return Player.Relationship.Any;
+        case "self":
+            return Player.Relationship.Self;
+        case "enemy":
+            return Player.Relationship.Enemy;
+        case "ally":
+            return Player.Relationship.Ally;
+        default:
+            throw "Unexpected relationship value: " + val;
+    }
+};
+
+Player.prototype.getRelationship = function (otherPlayer) {
+    if (this == otherPlayer)
+        return Player.Relationship.Self;
+    else
+        return Player.Relationship.Enemy;
+};
