@@ -87,10 +87,10 @@ MoveDefinition.Owner.parse = function (val) {
 };
 
 
-function Slide(pieceRef, dir, dist, distLimit, when, conditions) {
+function Slide(pieceRef, dir, dist, distMax, when, conditions) {
     MoveDefinition.call(this, pieceRef, dir, when, conditions);
     this.dist = dist;
-    this.distLimit = distLimit;
+    this.distMax = distMax;
 }
 
 extend(Slide, MoveDefinition);
@@ -113,7 +113,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         var dir = dirs[i];
 
         var boardMaxDist = game.board.getMaxDistance(piece.position, dir);
-        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
+        var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
         var cell = piece.position;
 
@@ -173,17 +173,17 @@ Slide.parse = function (xmlNode) {
     var dir = node.attr("dir");
 
     var dist = Distance.parse(node.attr("dist"));
-    var distLimit = Distance.parse(node.attr("distLimit"));
+    var distMax = Distance.parse(node.attr("distMax"));
 	var when = MoveDefinition.When.parse(node.attr("when"));
 
-	return new Slide(pieceRef, dir, dist, distLimit, when, conditions);
+	return new Slide(pieceRef, dir, dist, distMax, when, conditions);
 }
 
 
-function Leap(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, conditions) {
+function Leap(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions) {
     MoveDefinition.call(this, pieceRef, dir, when, conditions);
     this.dist = dist;
-    this.distLimit = distLimit;
+    this.distMax = distMax;
     this.secondDir = secondDir;
     this.secondDist = secondDist;
 }
@@ -207,7 +207,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, game, previousS
         var firstDir = dirs[i];
 
         var boardMaxDist = game.board.getMaxDistance(piece.position, firstDir);
-        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
+        var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
         var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
@@ -284,7 +284,7 @@ Leap.parse = function (xmlNode) {
     var dir = node.attr("dir");
 
     var dist = Distance.parse(node.attr("dist"));
-    var distLimit = Distance.parse(node.attr("distLimit"));
+    var distMax = Distance.parse(node.attr("distMax"));
 
     var secondDist = Distance.parse(node.attr("secondDist"));
     if (secondDist == null)
@@ -294,7 +294,7 @@ Leap.parse = function (xmlNode) {
 
     var when = MoveDefinition.When.parse(node.attr("when"));
 
-    return new Leap(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, conditions);
+    return new Leap(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions);
 }
 
 
@@ -424,10 +424,10 @@ Hop.parse = function (xmlNode) {
 }
 
 
-function Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, conditions) {
+function Shoot(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions) {
     MoveDefinition.call(this, pieceRef, dir, when, conditions);
     this.dist = dist;
-    this.distLimit = distLimit;
+    this.distMax = distMax;
     this.secondDir = secondDir;
     this.secondDist = secondDist;
 }
@@ -451,7 +451,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, game, previous
         var firstDir = dirs[i];
 
         var boardMaxDist = game.board.getMaxDistance(piece.position, firstDir);
-        var distances = this.dist.getRange(this.distLimit, previousStep, boardMaxDist);
+        var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
         var secondDirs = game.board.resolveDirection(this.secondDir, firstDir);
@@ -519,7 +519,7 @@ Shoot.parse = function (xmlNode) {
     var dir = node.attr("dir");
 
     var dist = Distance.parse(node.attr("dist"));
-    var distLimit = Distance.parse(node.attr("distLimit"));
+    var distMax = Distance.parse(node.attr("distMax"));
 
     var secondDist = Distance.parse(node.attr("secondDist"));
     if (secondDist == null)
@@ -529,7 +529,7 @@ Shoot.parse = function (xmlNode) {
 
     var when = null;/*XmlHelper.readWhen(xmlNode, "when");*/
 
-    return new Shoot(pieceRef, dir, dist, distLimit, secondDir, secondDist, when, conditions);
+    return new Shoot(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions);
 }
 
 

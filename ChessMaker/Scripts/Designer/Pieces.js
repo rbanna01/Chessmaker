@@ -6,7 +6,7 @@
 
     node.setAttribute('dir', this.dir);
     node.setAttribute('dist', this.dist);
-    node.setAttribute('distLimit', this.distLimit);
+    node.setAttribute('distMax', this.distLimit);
     node.setAttribute('when', this.moveWhen);
 
     parent.appendChild(node);
@@ -22,7 +22,7 @@ Leap.prototype.save = function (parent) {
 
     node.setAttribute('dir', this.dir);
     node.setAttribute('dist', this.dist);
-    node.setAttribute('distLimit', this.distLimit);
+    node.setAttribute('distMax', this.distLimit);
     node.setAttribute('secondDist', this.secondDist);
     node.setAttribute('secondDir', this.secondDir);
     node.setAttribute('when', this.moveWhen);
@@ -57,7 +57,7 @@ Shoot.prototype.save = function (parent) {
 
     node.setAttribute('dir', this.dir);
     node.setAttribute('dist', this.dist);
-    node.setAttribute('distLimit', this.distLimit);
+    node.setAttribute('distMax', this.distLimit);
     node.setAttribute('secondDist', this.secondDist);
     node.setAttribute('secondDir', this.secondDir);
     node.setAttribute('when', this.moveWhen);

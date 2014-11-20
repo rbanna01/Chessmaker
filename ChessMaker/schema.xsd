@@ -83,7 +83,7 @@
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="dist" type="distance" use="required"/>
-		<xs:attribute name="distLimit" type="distance"/>
+		<xs:attribute name="distMax" type="distance"/>
 		<!-- if present, limits the movement to between dist & distLimit -->
 		<xs:attribute name="when" type="when" default="any"/>
 	</xs:complexType>
@@ -95,7 +95,7 @@
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="dist" type="distance" use="required"/>
-		<xs:attribute name="distLimit" type="distance"/>
+		<xs:attribute name="distMax" type="distance"/>
 		<xs:attribute name="secondDir" type="direction"/>
 		<xs:attribute name="secondDist" type="distanceIncZero" default="0"/>
 		<xs:attribute name="when" type="when" default="any"/>
@@ -108,7 +108,9 @@
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="distToHurdle" type="distance" use="required"/>
+    <xs:attribute name="distToHurdleMax" type="distance"/>
 		<xs:attribute name="distAfterHurdle" type="distance" use="required"/>
+    <xs:attribute name="distAfterHurdleMax" type="distance"/>
 		<xs:attribute name="when" type="when" default="any"/>
 		<xs:attribute name="captureHurdle" type="xs:boolean" default="false"/>
 	</xs:complexType>
@@ -120,7 +122,7 @@
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="dist" type="distance" use="required"/>
-		<xs:attribute name="distLimit" type="distance"/>
+		<xs:attribute name="distMax" type="distance"/>
 		<!-- if present, limits the movement to between dist & distLimit -->
 		<xs:attribute name="secondDir" type="direction"/>
 		<xs:attribute name="secondDist" type="distanceIncZero" default="0"/>
