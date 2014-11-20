@@ -76,7 +76,7 @@ Player.parseAll = function (xml, game, boardSVG) {
 // whether its a global, relative or group name, this should output an array of resultant global directions
 Player.prototype.resolveDirection = function (name, prevDir) {
     if (name == 'forward')
-        return this.forwardDir;
+        return [this.forwardDir];
 
     return game.board.resolveDirection(name, prevDir);
 };
