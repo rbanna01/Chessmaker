@@ -27,7 +27,7 @@ Move.prototype.clone = function() {
 };
 
 Move.prototype.perform = function (game, updateDisplay) {
-    for (var i = 0; i < this.steps.length; i++)
+    for (var i = 0; i < this.steps.length; i++) {
         if (!this.steps[i].perform(game, updateDisplay)) // move failed, roll-back
         {
             for (var j = i - 1; j >= 0; j--)
@@ -36,7 +36,7 @@ Move.prototype.perform = function (game, updateDisplay) {
 
             return false;
         }
-
+    }
     if (this.piece.moveNumber == 1)
         this.piece.firstMoveTurn = game.TurnNumber;
 

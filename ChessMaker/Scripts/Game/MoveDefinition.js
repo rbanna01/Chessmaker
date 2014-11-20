@@ -743,9 +743,47 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 extend(MoveGroup, MoveDefinition);
 
 MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
-    var moves = [];
+    var results = []; var prevStepMoves = [];
+	prevStepMoves.push(baseMove);
 
-    return moves;
+	for (var rep = 1; rep <= this.maxOccurs; rep++) {
+		for (var i=0; i<this.contents.length; i++)
+		{
+			var step = this.contents[i];
+			var stepMoves = [];
+            
+			for (var j=0; j<prevStepMoves.length; j++)
+			{
+			    var prevMove = prevStepMoves[j];
+			    
+			    for (var doStep = 0; doStep < prevMove.steps.length; doStep++)
+			        prevMove.steps[doStep].perform(game);
+			    
+				var nextMovesForStep = step.appendValidNextSteps(prevMove, piece, game, prevMove.steps.length > 0 ? prevMove.steps[prevMove.steps.length-1] : previousStep);
+					
+				stepMoves = stepMoves.concat(nextMovesForStep);
+				
+			    for (var undoStep = prevMove.steps.length - 1; undoStep >= 0; undoStep--)
+			        prevMove.steps[undoStep].reverse(game);
+			}
+
+			prevStepMoves = stepMoves;
+			if (prevStepMoves.Count == 0)
+				break;
+		}
+        
+		if (prevStepMoves.length == 0) // this FULL iteration through the loop ended with no suitable moves
+			break;
+           
+		if (rep >= this.minOccurs)
+			results = results.concat(prevStepMoves);
+	}
+		
+    // this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
+    if (this.stepOutIfFail && results.length == 0 && baseMove.steps.count > 0)
+        results.push(baseMove);
+
+	return results;
 };
 
 
