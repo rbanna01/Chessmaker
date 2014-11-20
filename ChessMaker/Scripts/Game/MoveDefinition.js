@@ -298,10 +298,12 @@ Leap.parse = function (xmlNode) {
 }
 
 
-function Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, conditions) {
+function Hop(pieceRef, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, when, captureHurdle, conditions) {
     MoveDefinition.call(this, pieceRef, dir, when, conditions);
     this.distToHurdle = distToHurdle;
+    this.distToHurdleMax = distToHurdleMax;
     this.distAfterHurdle = distAfterHurdle;
+    this.distAfterHurdleMax = distAfterHurdleMax;
     this.captureHurdle = captureHurdle;
 }
 
@@ -325,9 +327,9 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousSt
         var dir = dirs[i];
 
         var boardMaxDist = game.board.getMaxDistance(piece.position, dir);
-        var distances = this.distToHurdle.getRange(null, previousStep, boardMaxDist); /* do we need a distLimitToHurdle to allow for variable hurdle distances (e.g. 2-4) */
+        var distances = this.distToHurdle.getRange(this.distToHurdleMax, previousStep, boardMaxDist);
         var minDistTo = distances[0]; var maxDistTo = distances[1];
-        distances = this.distAfterHurdle.getRange(null, previousStep, boardMaxDist); /* doesn't the "board max" need recalculated based on hurdle position? */
+        distances = this.distAfterHurdle.getRange(this.distAfterHurdleMax, previousStep, boardMaxDist); /* doesn't the "board max" need recalculated based on hurdle position? */
         var minDistAfter = distances[0]; var maxDistAfter = distances[1];
 
         var hurdleCell = piece.position;
@@ -415,12 +417,15 @@ Hop.parse = function (xmlNode) {
     var dir = node.attr("dir");
 
     var distToHurdle = Distance.parse(node.attr("distToHurdle"));
+    var distToHurdleMax = Distance.parse(node.attr("distToHurdleMax"));
+
     var distAfterHurdle = Distance.parse(node.attr("distAfterHurdle"));
+    var distAfterHurdleMax = Distance.parse(node.attr("distAfterHurdleMax"));
 
     var when = MoveDefinition.When.parse(node.attr("when"));
     var captureHurdle = node.attr("captureHurdle") == "true";
 
-    return new Hop(pieceRef, dir, distToHurdle, distAfterHurdle, when, captureHurdle, conditions);
+    return new Hop(pieceRef, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, when, captureHurdle, conditions);
 }
 
 

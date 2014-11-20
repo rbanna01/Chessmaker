@@ -40,7 +40,9 @@ Hop.prototype.save = function (parent) {
 
     node.setAttribute('dir', this.dir);
     node.setAttribute('distToHurdle', this.distToHurdle);
+    node.setAttribute('distToHurdleMax', this.distToHurdleMax);
     node.setAttribute('distAfterHurdle', this.distAfteroHurdle);
+    node.setAttribute('distAfterHurdleMax', this.distAfteroHurdleMax);
     node.setAttribute('when', this.moveWhen);
     node.setAttribute('captureHurdle', this.captureHurdle);
 
