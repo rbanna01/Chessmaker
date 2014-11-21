@@ -130,7 +130,7 @@ Move.prototype.determineNotation = function (detailLevel) {
             desc = this.piece.pieceType.notation + this.startPos.name + capture + this.getEndPos().name;
             break;
         default:
-            desc = this.piece.pieceType.notation + '(' + this.piece.uniqueID + ')' + this.startPos.name + capture + this.getEndPos().name;
+            desc = this.piece.pieceType.notation + '(' + this.piece.elementID + ')' + this.startPos.name + capture + this.getEndPos().name;
             break;
     }
 

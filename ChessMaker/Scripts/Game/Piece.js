@@ -1,5 +1,5 @@
 ﻿function Piece(owner, type, pos, state, stateOwner) {
-    this.uniqueID = "p" + (Piece.nextID++);
+    this.elementID = "p" + (Piece.nextID++);
     this.ownerPlayer = owner;
     this.position = pos;
     this.pieceType = type;
@@ -84,7 +84,7 @@ Piece.prototype.isThreatenedAt = function (game, testPos) {
 
 Piece.prototype.createImage = function () {
     var image = SVG('use');
-    image.setAttribute('id', this.uniqueID);
+    image.setAttribute('id', this.elementID);
     image.setAttribute('class', 'piece ' + this.ownerPlayer.name);
     image.setAttribute('x', this.position.coordX);
     image.setAttribute('y', this.position.coordY);
@@ -93,7 +93,7 @@ Piece.prototype.createImage = function () {
 };
 
 Piece.prototype.getImage = function () {
-    return document.getElementById(this.uniqueID);
+    return document.getElementById(this.elementID);
 }
 
 Piece.prototype.updateImage = function (image) {
