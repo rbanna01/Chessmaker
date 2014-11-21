@@ -358,8 +358,8 @@
 				</xs:element>
 				<xs:element name="dirs">
 					<xs:complexType>
-						<xs:choice minOccurs="0" maxOccurs="unbounded">
-							<xs:element name="relative">
+						<xs:sequence>
+							<xs:element name="relative" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="link" minOccurs="1" maxOccurs="unbounded">
@@ -372,7 +372,7 @@
 									<xs:attribute name="name" type="xs:string" use="required"/>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="group">
+							<xs:element name="group" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="include" minOccurs="2" maxOccurs="unbounded">
@@ -384,7 +384,7 @@
 									<xs:attribute name="name" type="xs:string" use="required"/>
 								</xs:complexType>
 							</xs:element>
-						</xs:choice>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="pieces">
