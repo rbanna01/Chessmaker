@@ -353,16 +353,16 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, game, previousSt
                     }
 
                     var move = baseMove.clone();
+                    move.addPieceReference(hurdle, "hurdle");
 
                     if (this.captureHurdle) {
                         var hurdleCaptureStep = MoveStep.CreateCapture(hurdle, hurdle.position, piece.ownerPlayer, game.holdCapturedPieces);
                         move.addStep(hurdleCaptureStep);
-                        move.addPieceReference(hurdle, "hurdle");
                     }
 
                     if (captureStep != null) {
-                        move.addStep(captureStep);
                         move.addPieceReference(target, 'target');
+                        move.addStep(captureStep);
                     }
 
                     move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, dir));

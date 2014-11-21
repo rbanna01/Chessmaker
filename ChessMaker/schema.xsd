@@ -28,9 +28,138 @@
 	</xs:simpleType>
 
 	<xs:complexType name="conditions">
-		<xs:sequence>
-			<xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="and" type="conditions"/>
+			<xs:element name="or" type="conditions"/>
+			<xs:element name="not" type="conditions"/>
+			<xs:element name="nand" type="conditions"/>
+			<xs:element name="nor" type="conditions"/>
+			<xs:element name="xor" type="conditions"/>
+
+			<xs:element name="type">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="of" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="owner">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="owner">
+							<xs:attribute name="of" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<!--
+      <xs:element name="threatened">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:boolean">
+              <xs:attribute name="where" type="partOfMove" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="compare">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="comparison_value">
+              <xs:attribute name="var" type="comparison_property"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="num_pieces_in_range">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="comparison_value">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="owner" type="owner" use="required"/>
+              <xs:attribute name="rank_min" type="comparison_value" use="required"/>
+              <xs:attribute name="rank_max" type="comparison_value" use="required"/>
+              <xs:attribute name="col_min" type="comparison_value" use="required"/>
+              <xs:attribute name="col_max" type="comparison_value" use="required"/>
+              <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="move_causes_check" type="xs:boolean"/>
+      <xs:element name="move_causes_checkmate" type="xs:boolean"/>
+	  
+	  
+      <xs:element name="checkmate">
+        <xs:complexType>
+          <xs:attribute name="num" type="piece_count" default="any"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="pieces_threatened">
+        <xs:complexType>
+          <xs:attribute name="num" type="piece_count" default="any"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="repeated_check">
+        <xs:complexType>
+          <xs:attribute name="duration" type="xs:positiveInteger" use="required"/>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="owner" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="no_moves_possible">
+        <xs:complexType>
+          <xs:attribute name="type" type="xs:string" default="any"/>
+          <xs:attribute name="player" type="owner" default="any"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="repetition_of_position">
+        <xs:complexType>
+      <xs:attribute name="occurances" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="turns_since_last_capture">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:nonNegativeInteger">
+          <xs:attribute name="type" type="xs:string" use="required"/>
+          <xs:attribute name="owner" type="owner" use="required"/>
+          <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="turns_since_last_move">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:nonNegativeInteger">
+          <xs:attribute name="type" type="xs:string" use="required"/>
+          <xs:attribute name="owner" type="owner" use="required"/>
+          <xs:attribute name="comparison" type="numeric_comparison_type" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  -->
+		</xs:choice>
 	</xs:complexType>
 
 	<xs:simpleType name="when">
@@ -108,9 +237,9 @@
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
 		<xs:attribute name="distToHurdle" type="distance" use="required"/>
-    <xs:attribute name="distToHurdleMax" type="distance"/>
+		<xs:attribute name="distToHurdleMax" type="distance"/>
 		<xs:attribute name="distAfterHurdle" type="distance" use="required"/>
-    <xs:attribute name="distAfterHurdleMax" type="distance"/>
+		<xs:attribute name="distAfterHurdleMax" type="distance"/>
 		<xs:attribute name="when" type="when" default="any"/>
 		<xs:attribute name="captureHurdle" type="xs:boolean" default="false"/>
 	</xs:complexType>

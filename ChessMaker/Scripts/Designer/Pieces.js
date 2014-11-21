@@ -140,7 +140,7 @@ WhenPossible.prototype.save = function (parent) {
 };
 
 Conditions.prototype.save = function(parent) {
-
+    // arg, this would need every condition type to have a save as well
 }
 
 $(function () {
