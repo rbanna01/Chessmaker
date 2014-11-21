@@ -117,6 +117,7 @@ Move.prototype.getPromotionType = function () {
     return null;
 };
 
+Move.maxNotationDetail = 3;
 Move.prototype.determineNotation = function (detailLevel) {
     // include an X if capturing a piece
     var capture = this.isCapture() ? 'x' : '';

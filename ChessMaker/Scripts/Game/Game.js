@@ -108,7 +108,7 @@ Game.prototype.ensureUniqueMoveNotation = function () {
         for (var j = 0; j < movesForThisPiece.length; j++) {
             var move = movesForThisPiece[j];
 
-            for (var detailLevel = 1; detailLevel <= 3; detailLevel++) {
+            for (var detailLevel = 1; detailLevel <= Move.maxNotationDetail; detailLevel++) {
                 var notation = move.determineNotation(detailLevel);
 
                 if (allMoves.hasOwnProperty(notation)) {
