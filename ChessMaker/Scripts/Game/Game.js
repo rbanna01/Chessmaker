@@ -159,9 +159,13 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
 };
 
 Game.prototype.logMove = function (player, move) {
+    var historyDiv = $('#moveHistory');
+
     $('<div/>', {
         class: 'move ' + player.name,
         number: move.moveNumber,
         html: move.notation
-    }).appendTo('#moveHistory')[0].scrollIntoView();
+    }).appendTo(historyDiv);
+
+    historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
 };
