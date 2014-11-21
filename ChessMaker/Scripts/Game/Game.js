@@ -51,11 +51,13 @@ Game.prototype.checkForEnd = function () {
     return playerWithPieces;
 };
 
-Game.prototype.endTurn = function () {
+Game.prototype.endTurn = function (stalemate) {
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
         this.currentPlayer.piecesOnBoard[i].clearPossibleMoves();
 
     var victor = this.checkForEnd();
+    if (stalemate !== undefined && victor === undefined)
+        victor = null;
     if (victor !== undefined) {
         var text;
         if (victor == null)
@@ -76,7 +78,10 @@ Game.prototype.endTurn = function () {
 Game.prototype.startNextTurn = function () {
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
-    this.ensureUniqueMoveNotation();
+    if (!this.ensureUniqueMoveNotation()) {
+        this.endTurn(true); // no available moves, so stalemate
+        return;
+    }
 
     if (this.currentPlayer.type == Player.Type.Local)
         $('#wait').hide();
@@ -85,7 +90,7 @@ Game.prototype.startNextTurn = function () {
 
         if (this.currentPlayer.type == Player.Type.AI) {
             var move = AI_selectMove();
-            if (move === undefined)
+            if (move === undefined || move == null)
                 throw 'AI returned an invalid move... (' + move + ')';
 
             if (move.perform(this, true)) {
@@ -101,6 +106,7 @@ Game.prototype.startNextTurn = function () {
 Game.prototype.ensureUniqueMoveNotation = function () {
     // calculate all moves, which pieces store internally. this just ensures they all have unique notation, whereas doing it one piece at a time wouldn't.
     var allMoves = {};
+    var anyMoves = false;
 
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++) {
         var movesForThisPiece = this.currentPlayer.piecesOnBoard[i].getPossibleMoves(this);
@@ -109,6 +115,7 @@ Game.prototype.ensureUniqueMoveNotation = function () {
             var move = movesForThisPiece[j];
 
             for (var detailLevel = 1; detailLevel <= Move.maxNotationDetail; detailLevel++) {
+                anyMoves = true;
                 var notation = move.determineNotation(detailLevel);
 
                 if (allMoves.hasOwnProperty(notation)) {
@@ -124,6 +131,7 @@ Game.prototype.ensureUniqueMoveNotation = function () {
             }
         }
     }
+    return anyMoves;
 };
 
 Game.prototype.showMoveOptions = function (piece) {
