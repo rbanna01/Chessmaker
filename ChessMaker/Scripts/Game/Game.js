@@ -75,9 +75,27 @@ Game.prototype.endTurn = function () {
 
 Game.prototype.startNextTurn = function () {
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
-    $('#wait').hide(); // show this if the current player is AI or remote
 
     this.ensureUniqueMoveNotation();
+
+    if (this.currentPlayer.type == Player.Type.Local)
+        $('#wait').hide();
+    else {
+        $('#wait').show();
+
+        if (this.currentPlayer.type == Player.Type.AI) {
+            var move = AI_selectMove();
+            if (move === undefined)
+                throw 'AI returned an invalid move... (' + move + ')';
+
+            if (move.perform(this, true)) {
+                this.logMove(this.currentPlayer, move);
+                this.endTurn();
+            }
+            else
+                console.log('unable to perform move');
+        }
+    }
 };
 
 Game.prototype.ensureUniqueMoveNotation = function () {

@@ -33,7 +33,13 @@
 @section scripts {
     @Scripts.Render("~/bundles/game")
 
+    @if (Model.AI != null) {
+        @Scripts.Render("~/Scripts/AI/" + Model.AI.Filename)
+    }
+
     <script type="text/javascript">
+        var aiGame = @(Model.AI != null ? "true" : "false");
+
         $.ajax({
             type: "GET",
             url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",

@@ -2,6 +2,7 @@
     this.name = name;
     this.forwardDir = forwardDir;
     this.nextPlayer = null;
+    this.type = Player.Type.Local;
     this.pieceListX = 0;
     
     this.piecesOnBoard = [];
@@ -79,6 +80,12 @@ Player.prototype.resolveDirection = function (name, prevDir) {
         return [this.forwardDir];
 
     return game.board.resolveDirection(name, prevDir);
+};
+
+Player.Type = {
+    Local: 0,
+    AI: 1,
+    Remote: 2
 };
 
 Player.Relationship = {

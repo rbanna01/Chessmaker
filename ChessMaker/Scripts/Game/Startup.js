@@ -17,6 +17,10 @@ function loadDefinition(xml) {
     PieceType.parseAll(xml.children('pieces'), defs);
     Player.parseAll(xml, game, boardSVG);
 
+    // this needs enhanced to also allow for remote players
+    if (aiGame)
+        game.currentPlayer.nextPlayer.type = Player.Type.AI;
+
     $('#main').append(boardSVG);
 
     $('#render path.cell').click(cellClicked);
