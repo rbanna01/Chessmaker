@@ -11,22 +11,25 @@
 }
 
 Player.parseAll = function (xml, game, boardSVG) {
-    var setupXml = xml.children('setup');
-    setupXml.children().each(function () {
+    var players = xml.childNodes;
+    for (var i=0; i<players.length; i++) {
+        var playerNode = players[i];
 
-        var playerName = this.getAttribute('name');
-        var forwardDir = this.getAttribute('forwardDirection');
+        var playerName = playerNode.getAttribute('name');
+        var forwardDir = playerNode.getAttribute('forwardDirection');
         var player = new Player(playerName, forwardDir);
         game.players[player.name] = player;
 
-        $(this).children('piece').each(function () {
+        var pieces = playerNode.childNodes;
+        for (var j = 0; j < pieces.length; j++) {
+            var pieceNode = pieces[j];
 
-            var typeName = this.getAttribute('type');
+            var typeName = pieceNode.getAttribute('type');
             var type = PieceType.allTypes[typeName];
             if (type === undefined)
                 throw 'Unrecognized piece type: ' + typeName;
 
-            var position = this.getAttribute('location');
+            var position = pieceNode.getAttribute('location');
 
             var state = Piece.State.OnBoard;
             var stateOwner;
@@ -68,8 +71,8 @@ Player.parseAll = function (xml, game, boardSVG) {
                     player.piecesHeld.push(piece);
                     break;
             }
-        })
-    });
+        }
+    }
 
     game.setupTurnOrder();
 }
@@ -96,7 +99,7 @@ Player.Relationship = {
 };
 
 Player.Relationship.parse = function (val) {
-    if (val === undefined)
+    if (val == null)
         return "any";
     switch (val) {
         case "any":

@@ -6,12 +6,16 @@
     this.links = {};
 
     var cell = this;
-    links.each(function () {
-        var dir = this.getAttribute('dir');
-        var ref = this.getAttribute('to');
+    for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        if (link.tagName != 'link')
+            continue;
+
+        var dir = link.getAttribute('dir');
+        var ref = link.getAttribute('to');
 
         cell.links[dir] = ref;
-    });
+    }
 }
 
 Cell.prototype.loadSVG = function (xml) {

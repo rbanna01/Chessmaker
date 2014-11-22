@@ -17,7 +17,7 @@ Distance.Any = new Distance(Distance.RelativeTo.None, -1);
 Distance.Zero = new Distance(Distance.RelativeTo.None, 0);
 
 Distance.parse = function (val) {
-    if (val === undefined)
+    if (val == null)
         return null;
 
     if (val == "any")

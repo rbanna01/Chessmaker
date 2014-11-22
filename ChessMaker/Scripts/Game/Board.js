@@ -1,41 +1,43 @@
 ﻿function Board(game) {
     this.game = game;
-    this.svgID = 'render';
+    this.elementID = 'render';
     this.cells = {};
     this.relativeDirections = {};
     this.directionGroups = {};
     this.allDirections = [];
 }
 
-Board.prototype.loadSVG = function(xml, defs) {
+Board.prototype.loadSVG = function (xml, defs) {
     var boardSVG = SVG('svg');
-
-    var boardXml = xml.children('board');
-
+    
     boardSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    boardSVG.setAttribute('id', this.svgID);
-    boardSVG.setAttribute('viewBox', boardXml.attr('viewBox'));
+    boardSVG.setAttribute('id', this.elementID);
+    boardSVG.setAttribute('viewBox', xml.getAttribute('viewBox'));
     
     boardSVG.appendChild(defs);
-
+    
     // create cells & board lines
     var board = this;
-    boardXml.children().each(function () {
-        if (this.tagName == 'cell') {
-            var cell = new Cell(this.getAttribute('id'), $(this).children('link'));
+
+    var childNodes = xml.childNodes;
+    for (var i = 0; i < childNodes.length; i++) {
+        var child = childNodes[i];
+
+        if (child.tagName == 'cell') {
+            var cell = new Cell(child.getAttribute('id'), child.childNodes);
             board.cells[cell.name] = cell;
-            boardSVG.appendChild(cell.loadSVG(this));
+            boardSVG.appendChild(cell.loadSVG(child));
         }
-        else if (this.tagName == 'line') {
+        else if (child.tagName == 'line') {
             var line = SVG('line');
-            line.setAttribute('x1', this.getAttribute('x1'));
-            line.setAttribute('x2', this.getAttribute('x2'));
-            line.setAttribute('y1', this.getAttribute('y1'));
-            line.setAttribute('y2', this.getAttribute('y2'));
-            line.setAttribute('class', 'detail ' + this.getAttribute('color') + 'Stroke');
+            line.setAttribute('x1', child.getAttribute('x1'));
+            line.setAttribute('x2', child.getAttribute('x2'));
+            line.setAttribute('y1', child.getAttribute('y1'));
+            line.setAttribute('y2', child.getAttribute('y2'));
+            line.setAttribute('class', 'detail ' + child.getAttribute('color') + 'Stroke');
             boardSVG.appendChild(line);
         }
-    });
+    }
 
     var allDirs = {};
 
@@ -62,31 +64,39 @@ Board.prototype.loadSVG = function(xml, defs) {
 
 Board.prototype.parseDirections = function (dirsNode) {
     var board = this;
-    dirsNode.children('relative').each(function () {
-        var dirNode = $(this);
-        var name = dirNode.attr('name');
-        var relDir = {};
+    var children = dirsNode.childNodes;
 
-        dirNode.children().each(function () {
-            var link = $(this);
-            relDir[link.attr('from')] = link.attr('to');
-        });
+    for (var i = 0; i < children.length; i++) {
+        var dir = children[i];
 
-        board.relativeDirections[name] = relDir;
-    });
+        if (dir.tagName == 'relative') {
 
-    dirsNode.children('group').each(function () {
-        var groupNode = $(this);
-        var name = groupNode.attr('name');
-        var group = [];
+            var name = dir.getAttribute('name');
+            var relDir = {};
 
-        groupNode.children().each(function () {
-            var link = $(this);
-            group.push(link.attr('dir'));
-        });
+            var links = dir.childNodes;
 
-        board.directionGroups[name] = group;
-    });
+            for (var j = 0; j < links.length; j++) {
+                var link = links[j];
+                relDir[link.getAttribute('from')] = link.getAttribute('to');
+            }
+
+            board.relativeDirections[name] = relDir;
+        }
+
+        if (dir.tagName == 'group') {
+            var name = dir.getAttribute('name');
+            var group = [];
+
+            var links = dir.childNodes;
+            for (var j = 0; j < links.length; j++) {
+                var link = links[j];
+                group.push(link.getAttribute('dir'));
+            }
+
+            board.directionGroups[name] = group;
+        }
+    }
 };
 
 // whether its a global, relative or group name, this should output an array of resultant global directions

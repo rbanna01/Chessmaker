@@ -1,21 +1,22 @@
-﻿$(function () {
-    
-});
-
-var game;
+﻿var game;
 function loadDefinition(xml) {
-    xml = $(xml.firstChild);
+    xml = xml.firstChild;
     
     game = new Game();
     game.board = new Board(game);
 
     var defs = SVG('defs');
-    var boardSVG = game.board.loadSVG(xml, defs);
+    var boardXml = xml.firstChild;
+    var boardSVG = game.board.loadSVG(boardXml, defs);
 
-    game.board.parseDirections(xml.children('dirs'));
+    var dirsXml = boardXml.nextSibling;
+    game.board.parseDirections(dirsXml);
 
-    PieceType.parseAll(xml.children('pieces'), defs);
-    Player.parseAll(xml, game, boardSVG);
+    var piecesXml = dirsXml.nextSibling;
+    PieceType.parseAll(piecesXml, defs);
+
+    var setupXml = piecesXml.nextSibling;
+    Player.parseAll(setupXml, game, boardSVG);
 
     // this needs enhanced to also allow for remote players
     if (aiGame)

@@ -11,42 +11,55 @@ Conditions.GroupType = {
     Xor: 4
 };
 
-Conditions.parse = function (nodes, type) {
+Conditions.findNode = function (node) {
+    var nodes = node.childNodes;
+    for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (node.tagName == 'conditions') 
+            return node;
+    }
+    return null;
+}
+
+Conditions.parse = function (node, type) {
     if (type === undefined)
         type = Conditions.GroupType.And;
 
     var group = new Conditions(type);
+    if (node == null)
+        return group;
 
-    $(nodes).each(function (i, child) {
+    var children = node.childNodes;
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
         var name = child.nodeName.toLowerCase();
-        child = $(child);
 
         switch (name) {
             case 'and':
-                group.elements.push(Conditions.parse(child.children(), Conditions.GroupType.And));
+                group.elements.push(Conditions.parse(child, Conditions.GroupType.And));
                 break;
             case 'or':
-                group.elements.push(Conditions.parse(child.children(), Conditions.GroupType.Or));
+                group.elements.push(Conditions.parse(child, Conditions.GroupType.Or));
                 break;
             case 'nand':
-                group.elements.push(Conditions.parse(child.children(), Conditions.GroupType.Nand));
+                group.elements.push(Conditions.parse(child, Conditions.GroupType.Nand));
                 break;
             case 'nor':
             case 'not':
-                group.elements.push(Conditions.parse(child.children(), Conditions.GroupType.Nor));
+                group.elements.push(Conditions.parse(child, Conditions.GroupType.Nor));
                 break;
             case 'xor':
-                group.elements.push(Conditions.parse(child.children(), Conditions.GroupType.Xor));
+                group.elements.push(Conditions.parse(child, Conditions.GroupType.Xor));
                 break;
 
             case 'type':
-                var of = child.attr('of');
-                var type = child.text();
+                var of = child.getAttribute('of');
+                var type = child.textContent;
                 group.elements.push(new Conditions_Type(of, type));
                 break;
             case 'owner':
-                var of = child.attr('of');
-                var type = child.text();
+                var of = child.getAttribute('of');
+                var type = child.textContent;
                 group.elements.push(new Conditions_Owner(of, type));
                 break;
 
@@ -66,7 +79,7 @@ Conditions.parse = function (nodes, type) {
                 console.log("Unrecognised condition type: " + name);
                 break;
         }
-    });
+    }
 
     return group;
 };
