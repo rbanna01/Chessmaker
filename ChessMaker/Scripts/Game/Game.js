@@ -108,8 +108,9 @@ Game.prototype.ensureUniqueMoveNotation = function () {
     var allMoves = {};
     var anyMoves = false;
 
-    for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++) {
-        var movesForThisPiece = this.currentPlayer.piecesOnBoard[i].getPossibleMoves(this);
+    var pieces = this.currentPlayer.piecesOnBoard.slice();
+    for (var i = 0; i < pieces.length; i++) {
+        var movesForThisPiece = pieces[i].getPossibleMoves(this);
 
         for (var j = 0; j < movesForThisPiece.length; j++) {
             var move = movesForThisPiece[j];

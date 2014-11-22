@@ -65,7 +65,7 @@ Player.parseAll = function (xml, game, boardSVG) {
                         throw 'Cannot add ' + piece.ownerPlayer.name + ' ' + piece.pieceType.name + ' to cell ' + cell.name + ', as it already has a ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in it';
                     break;
                 case Piece.State.Captured:
-                    player.piecesOnBoard.push(piece);
+                    player.piecesCaptured.push(piece);
                     break;
                 case Piece.State.Held:
                     player.piecesHeld.push(piece);

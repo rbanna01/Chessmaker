@@ -61,7 +61,8 @@ MoveStep.prototype.pickup = function (state, stateOwner, pos, owner, type) {
                 console.log('position is wrong: got ' + this.piece.position.name + ', expected ' + pos.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
                 return false;
             }
-            arrayRemoveItem(this.piece.ownerPlayer.piecesOnBoard, this.piece);
+            if (this.toState != this.fromState || this.fromOwner != this.toOwner)
+                arrayRemoveItem(owner.piecesOnBoard, this.piece);
             pos.piece = null;
             return true;
         case Piece.State.Captured:
@@ -87,7 +88,8 @@ MoveStep.prototype.place = function (state, stateOwner, pos, owner, type) {
     switch (state) {
         case Piece.State.OnBoard:
             pos.piece = this.piece;
-            owner.piecesOnBoard.push(this.piece);
+            if (this.toState != this.fromState || this.fromOwner != this.toOwner)
+                owner.piecesOnBoard.push(this.piece);
             break;
         case Piece.State.Captured:
             stateOwner.piecesCaptured.push(this.piece);
