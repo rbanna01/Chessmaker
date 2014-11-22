@@ -22,7 +22,7 @@ function loadDefinition(xml) {
     if (aiGame)
         game.currentPlayer.nextPlayer.type = Player.Type.AI;
 
-    $('#main').append(boardSVG);
+    document.getElementById('main').appendChild(boardSVG);
 
     $('#render path.cell').click(cellClicked);
     /*

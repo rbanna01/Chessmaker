@@ -59,8 +59,8 @@ Conditions.parse = function (node, type) {
                 break;
             case 'owner':
                 var of = child.getAttribute('of');
-                var type = child.textContent;
-                group.elements.push(new Conditions_Owner(of, type));
+                var relationship = Player.Relationship.parse(child.textContent);
+                group.elements.push(new Conditions_Owner(of, relationship));
                 break;
 
             case 'threatened':
@@ -143,7 +143,7 @@ Conditions_Owner.prototype.isSatisfied = function (move, game) {
     if (other == null)
         throw "Piece reference not found: " + this.of;
 
-    if (this.relationship == Player.Relationship.any)
+    if (this.relationship == Player.Relationship.Any)
         return true;
 
     return this.relationship == move.player.getRelationship(other.ownerPlayer);
