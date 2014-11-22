@@ -2,7 +2,12 @@
 
 var game;
 function loadDefinition(xml) {
+    console.timeEnd('load');
+    console.time('parse');
+    
     game = Game.parse(xml, document.getElementById('main'));
+    console.timeEnd('parse');
+
     initializeUI();
     game.state = new GameState(game, null, 1);
     game.state.currentPlayer = game.turnOrder.getNextPlayer();
@@ -10,6 +15,8 @@ function loadDefinition(xml) {
 }
 
 function initializeUI() {
+    console.time('gui');
+
     $('#render path.cell').click(cellClicked);
     /*
     $('#main').click(function (e) {
@@ -40,6 +47,8 @@ function initializeUI() {
         $('#heldSection').slideDown();
     else
         $('#heldSection').remove();
+
+    console.timeEnd('gui');
 }
 
 function cellClicked(e) {

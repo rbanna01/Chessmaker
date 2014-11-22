@@ -115,8 +115,11 @@ Game.prototype.endTurn = function (newState, move) {
 Game.prototype.startNextTurn = function () {
     $('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
 
+    console.time('moves');
     var anyPossibleMoves = this.state.prepareMovesForTurn();
     var result = this.endOfGame.checkStartOfTurn(this.state, anyPossibleMoves);
+    console.timeEnd('moves');
+
     if (result !== undefined) {
         this.processEndOfGame(result);
         return;

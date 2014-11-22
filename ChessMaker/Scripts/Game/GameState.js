@@ -13,10 +13,14 @@ function GameState(game, prevMove, moveNum) {
 
 GameState.prototype.determinePossibleMoves = function () {
     if (this.possibleMoves === null) {
+        //console.time('moves');
+
         this.possibleMoves = [];
 
         MoveStep.nextStepID = 1;
         this.calculateMovesForPlayer(this.currentPlayer, this.possibleMoves);
+
+        //console.timeEnd('moves');
     }
     return this.possibleMoves;
 };
@@ -25,7 +29,7 @@ GameState.prototype.determineThreatMoves = function (prevStep) {
     var stepID = prevStep == null ? '' : prevStep.stepID;
 
     if (!this.threatCheckMoves.hasOwnProperty(stepID)) {
-
+        //console.time('threat moves');
         for (var p = 0; p < game.players.length; p++) {
             var opponent = game.players[p];
 
@@ -36,6 +40,7 @@ GameState.prototype.determineThreatMoves = function (prevStep) {
             this.calculateMovesForPlayer(opponent, threatMoves);
             this.threatCheckMoves[stepID] = threatMoves;
         }
+        //console.timeEnd('threat moves');
     }
 
     return this.threatCheckMoves[stepID];
