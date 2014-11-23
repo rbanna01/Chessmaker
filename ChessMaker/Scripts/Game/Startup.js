@@ -65,7 +65,7 @@ function cellClicked(e) {
         addClass($(this), 'selected');
 
         var cell = game.board.cells[this.getAttribute('id')];
-        if (cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer) {
+        if (game.currentPlayer.type == Player.Type.Local && cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer) {
             console.log('clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in cell ' + cell.name);
             game.showMoveOptions(cell.piece);
         }
