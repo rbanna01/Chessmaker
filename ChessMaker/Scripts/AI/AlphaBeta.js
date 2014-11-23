@@ -62,6 +62,7 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
             var victor = game.checkForEnd();
             if (victor !== undefined) {
                 game.moveNumber--;
+                move.reverse(game, false);
                 if (victor == null)
                     return 0;
                 return player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
