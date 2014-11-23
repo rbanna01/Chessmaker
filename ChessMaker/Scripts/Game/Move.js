@@ -144,8 +144,8 @@ Move.prototype.determineNotation = function (detailLevel) {
 
     // how to account for castling? some special moves simply need to specify their own special notation, i guess...
 
-    var displayNumber = Math.ceil(this.moveNumber / game.numPlayers);
-    if (this.moveNumber % game.numPlayers == 1) // first player's move
+    var displayNumber = Math.ceil(this.moveNumber / game.players.length);
+    if (this.moveNumber % game.players.length == 1) // first player's move
         displayNumber += '.  ';
     else
         displayNumber += '...';

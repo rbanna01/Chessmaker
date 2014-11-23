@@ -654,14 +654,14 @@ ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, game,
     }
 	else
     {
-        for (var name in game.players) {
-            var player = this.players[name];
+        for (var i = 0; i < game.players.length; i++)  {
+            var player = this.players[i];
 
             if (this.otherRelationship != Player.Relationship.Any && piece.ownerPlayer.getRelationship(player) != this.otherRelationship)
                 continue;
 
-            for (var i = 0; i < player.piecesOnBoard.length; i++) {
-                var target = player.piecesOnBoard[i];
+            for (var j = 0; j < player.piecesOnBoard.length; j++) {
+                var target = player.piecesOnBoard[j];
 
                 if (!target.typeMatches(this.otherType))
                     continue;

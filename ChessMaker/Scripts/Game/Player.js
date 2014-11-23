@@ -19,7 +19,7 @@ Player.parseAll = function (xml, game, boardSVG) {
         var playerName = playerNode.getAttribute('name');
         var forwardDir = playerNode.getAttribute('forwardDirection');
         var player = new Player(playerName, forwardDir);
-        game.players[player.name] = player;
+        game.players.push(player);
 
         var pieces = playerNode.childNodes;
         for (var j = 0; j < pieces.length; j++) {

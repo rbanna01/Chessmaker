@@ -19,22 +19,19 @@ function loadDefinition(xml) {
     Player.parseAll(setupXml, game, boardSVG);
 
     // this needs enhanced to also allow for remote players
-    if (typeof AIs != 'undefined') {
-        var i = -1;
-        for (var name in game.players) {
-            i++;
+    if (typeof AIs != 'undefined')
+        for (var i = 0; i < game.players.length; i++)  {
             var AI = AIs[i];
             if (AI == null)
                 continue;
 
-            var player = game.players[name];
+            var player = game.players[i];
             player.type = Player.Type.AI;
             player.AI = AIs[i];
 
-            if (i == AIs.length - 1)
+            if (i >= AIs.length - 1)
                 break;
         }
-    }
 
     document.getElementById('main').appendChild(boardSVG);
 

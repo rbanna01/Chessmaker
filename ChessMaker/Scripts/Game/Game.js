@@ -1,7 +1,6 @@
 ﻿function Game() {
     this.board = null;
-    this.players = {};
-    this.numPlayers = 0;
+    this.players = [];
     this.currentPlayer = null;
     this.moveNumber = 1;
     this.showCaptured = true;
@@ -15,8 +14,8 @@ Game.prototype.setupTurnOrder = function () {
     var prevPlayer = null, firstPlayer = null;
     var listX = 25, listXStep = 50; // stepListX should be calculated based on the pixel width of ... either of the two containers. Probably. And whether or not we have multiple columns.
 
-    for (var name in this.players) {
-        var player = this.players[name];
+    for (var i = 0; i < this.players.length; i++) {
+        var player = this.players[i];
         if (prevPlayer == null)
             firstPlayer = player;
         else
@@ -26,7 +25,6 @@ Game.prototype.setupTurnOrder = function () {
         listX += listXStep;
 
         prevPlayer = player;
-        this.numPlayers++;
     }
     prevPlayer.nextPlayer = firstPlayer;
     this.currentPlayer = firstPlayer;
@@ -37,8 +35,8 @@ Game.prototype.checkForEnd = function () {
 
     // for now, just count remaining pieces. Eventually, should look at victory conditions.
     var playerWithPieces = null;
-    for (var name in this.players) {
-        var player = this.players[name];
+    for (var i = 0; i < this.players.length; i++) {
+        var player = this.players[i];
         if (player.piecesOnBoard.length == 0)
             continue;
         else if (playerWithPieces == null)
