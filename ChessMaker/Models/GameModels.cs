@@ -84,7 +84,6 @@ namespace ChessMaker.Models
         public int? Version { get; private set; }
 
         public GameMode Mode { get; set; }
-        public AIDifficultyModel AI { get; set; }
-        public AIDifficultyModel AI2 { get; set; } // only used by AI vs AI games
+        public AIDifficultyModel[] AIs { get; set; }
     }
 }

@@ -195,13 +195,13 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             var model = new GamePlayModel(versionToPlay, GameMode.AI);
-            model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty);
+            model.AIs = new[] { null, variants.ListAiDifficulties().Single(ai => ai.ID == difficulty) };
 
             return View("Play", model);
         }
 
         [AllowAnonymous]
-        public ActionResult AI_vs_AI(string id, int? version, int difficulty1, int difficulty2)
+        public ActionResult AI_vs_AI(string id, int? version, int[] difficulty)
         {
             VariantService variants = GetService<VariantService>();
             VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
@@ -210,9 +210,15 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             var model = new GamePlayModel(versionToPlay, GameMode.AI_vs_AI);
-            model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty1);
-            model.AI2 = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty2);
 
+            var AIs = new AIDifficultyModel[versionToPlay.Variant.PlayerCount];
+            for (var i = 0; i < AIs.Length && i < difficulty.Length; i++)
+                AIs[i] = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty[i]);
+
+            for (var i = difficulty.Length; i < AIs.Length; i++)
+                AIs[i] = AIs[difficulty.Length];
+
+            model.AIs = AIs;
             return View("Play", model);
         }
 /*

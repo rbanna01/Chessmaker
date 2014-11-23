@@ -19,15 +19,20 @@ function loadDefinition(xml) {
     Player.parseAll(setupXml, game, boardSVG);
 
     // this needs enhanced to also allow for remote players
-    if (typeof AI != 'undefined') {
-        var aiPlayer = game.currentPlayer.nextPlayer;
-        aiPlayer.type = Player.Type.AI;
-        aiPlayer.AI = AI;
+    if (typeof AIs != 'undefined') {
+        var i = -1;
+        for (var name in game.players) {
+            i++;
+            var AI = AIs[i];
+            if (AI == null)
+                continue;
 
-        if (typeof AI2 != 'undefined') {
-            aiPlayer = game.currentPlayer;
-            aiPlayer.type = Player.Type.AI;
-            aiPlayer.AI = AI2;
+            var player = game.players[name];
+            player.type = Player.Type.AI;
+            player.AI = AIs[i];
+
+            if (i == AIs.length - 1)
+                break;
         }
     }
 

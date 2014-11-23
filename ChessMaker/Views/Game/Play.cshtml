@@ -33,21 +33,23 @@
 @section scripts {
     @Scripts.Render("~/bundles/game")
 
-    @if (Model.AI != null) {
-        @Scripts.Render("~/Scripts/AI/" + Model.AI.Filename)
-        
-        if (Model.AI2 != null && Model.AI2 != Model.AI) {
-            @Scripts.Render("~/Scripts/AI/" + Model.AI2.Filename)
+    @if (Model.AIs != null) {
+        for (var i = 0; i < Model.AIs.Length; i++) {
+            var AI = Model.AIs[i];
+            if (AI != null) {
+                @Scripts.Render("~/Scripts/AI/" + AI.Filename);
+            }
         }
     }
 
     <script type="text/javascript">
-    @if (Model.AI != null) {
-        @:var AI = @Model.AI.Init;
-
-        if (Model.AI2 != null) { 
-            @:var AI2 = @Model.AI2.Init;
+    @if (Model.AIs != null) {
+        @:var AIs = [
+        @: @(Model.AIs[0] == null ? "null" : Model.AIs[0].Init)
+        for (var i = 1; i < Model.AIs.Length; i++) {
+            @:, @(Model.AIs[i] == null ? "null" : Model.AIs[i].Init)
         }
+        @:];
     }
 
     $.ajax({
