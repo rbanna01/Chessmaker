@@ -199,6 +199,22 @@ namespace ChessMaker.Controllers
 
             return View("Play", model);
         }
+
+        [AllowAnonymous]
+        public ActionResult AI_vs_AI(string id, int? version, int difficulty1, int difficulty2)
+        {
+            VariantService variants = GetService<VariantService>();
+            VariantVersion versionToPlay = DeterminePlayVersion(id, version, variants);
+
+            if (versionToPlay == null)
+                return HttpNotFound("Cannot determine variant version to play");
+
+            var model = new GamePlayModel(versionToPlay, GameMode.AI_vs_AI);
+            model.AI = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty1);
+            model.AI2 = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty2);
+
+            return View("Play", model);
+        }
 /*
         [Authorize]
         public ActionResult Find()

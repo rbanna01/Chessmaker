@@ -14,6 +14,7 @@ namespace ChessMaker.Models
         Private,
         Offline,
         AI,
+        AI_vs_AI,
     }
 
     public class NewGameModel
@@ -58,6 +59,7 @@ namespace ChessMaker.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string Filename { get; set; }
+        public string Init { get; set; }
     }
 
     public class GamePlayModel
@@ -83,5 +85,6 @@ namespace ChessMaker.Models
 
         public GameMode Mode { get; set; }
         public AIDifficultyModel AI { get; set; }
+        public AIDifficultyModel AI2 { get; set; } // only used by AI vs AI games
     }
 }

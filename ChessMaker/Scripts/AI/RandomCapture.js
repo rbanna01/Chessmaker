@@ -28,5 +28,3 @@ AI_RandomCapture.prototype.selectMove = function () {
     var index = Math.floor(Math.random() * allMoves.length);
     return allMoves[index];
 };
-
-var AI = new AI_RandomCapture();

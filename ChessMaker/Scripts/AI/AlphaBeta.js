@@ -134,4 +134,3 @@ AI_AlphaBeta.prototype.countCaptures = function (player) {
     return captures;
 };
 */
-var AI = new AI_AlphaBeta(4);

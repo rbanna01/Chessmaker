@@ -15,5 +15,3 @@ AI_Random.prototype.selectMove = function () {
     var index = Math.floor(Math.random() * allMoves.length);
     return allMoves[index];
 };
-
-var AI = new AI_Random();

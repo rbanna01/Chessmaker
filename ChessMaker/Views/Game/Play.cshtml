@@ -35,16 +35,26 @@
 
     @if (Model.AI != null) {
         @Scripts.Render("~/Scripts/AI/" + Model.AI.Filename)
+        
+        if (Model.AI2 != null && Model.AI2 != Model.AI) {
+            @Scripts.Render("~/Scripts/AI/" + Model.AI2.Filename)
+        }
     }
 
     <script type="text/javascript">
-        var aiGame = @(Model.AI != null ? "true" : "false");
+    @if (Model.AI != null) {
+        @:var AI = @Model.AI.Init;
 
-        $.ajax({
-            type: "GET",
-            url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
-            dataType: "xml",
-            success: loadDefinition
-        });
+        if (Model.AI2 != null) { 
+            @:var AI2 = @Model.AI2.Init;
+        }
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
+        dataType: "xml",
+        success: loadDefinition
+    });
     </script>
 }

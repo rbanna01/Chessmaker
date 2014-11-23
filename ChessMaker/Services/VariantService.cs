@@ -85,9 +85,12 @@ namespace ChessMaker.Services
         public List<AIDifficultyModel> ListAiDifficulties()
         {
             var list = new List<AIDifficultyModel>();
-            list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random", Filename = "Random.js" });
-            list.Add(new AIDifficultyModel() { ID = 2, Name = "Random capture", Filename = "RandomCapture.js" });
-            list.Add(new AIDifficultyModel() { ID = 3, Name = "AlphaBeta", Filename = "AlphaBeta.js" });
+            list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random", Filename = "Random.js", Init = "new AI_Random()" });
+            list.Add(new AIDifficultyModel() { ID = 2, Name = "Random capture", Filename = "RandomCapture.js", Init = "new AI_RandomCapture()" });
+            list.Add(new AIDifficultyModel() { ID = 3, Name = "AlphaBeta, depth 3", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(3)" });
+            list.Add(new AIDifficultyModel() { ID = 4, Name = "AlphaBeta, depth 4", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(4)" });
+            list.Add(new AIDifficultyModel() { ID = 5, Name = "AlphaBeta, depth 5", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(5)" });
+            list.Add(new AIDifficultyModel() { ID = 6, Name = "AlphaBeta, depth 6", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(6)" });
             return list;
         }
 
