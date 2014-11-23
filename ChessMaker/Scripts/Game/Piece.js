@@ -9,17 +9,13 @@
     this.firstMoveTurn = null;// how is this set, when loaded?
     this.lastMoveTurn = null; // how is this set, when loaded?
 
-    this.possibleMoves = null;
+    this.cachedMoves = null;
 }
 
 Piece.nextID = 1;
 
-Piece.prototype.clearPossibleMoves = function () { this.possibleMoves = null; };
-
-Piece.prototype.getPossibleMoves = function (game, cache) {
-    if (this.possibleMoves != null)
-        return this.possibleMoves;
-    this.possibleMoves = [];
+Piece.prototype.determinePossibleMoves = function (game) {
+    var moves = [];
 
     if (this.pieceState == Piece.State.OnBoard) {
         var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber);
@@ -37,7 +33,7 @@ Piece.prototype.getPossibleMoves = function (game, cache) {
             var move = this.pieceType.moves[i];
             var possibilities = move.appendValidNextSteps(moveTemplate, this, game, null);
             for (var j = 0; j < possibilities.length; j++)
-                this.possibleMoves.push(possibilities[j]);
+                moves.push(possibilities[j]);
         }
     }/*
     else if (this.pieceState == Piece.State.Held) {
@@ -53,9 +49,6 @@ Piece.prototype.getPossibleMoves = function (game, cache) {
         });
     }*/
 
-    var moves = this.possibleMoves;
-    if (cache != true)
-        this.possibleMoves = [];
     return moves;
 };
 

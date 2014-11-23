@@ -10,7 +10,7 @@ AI_RandomCapture.prototype.selectMove = function () {
     var allMoves = [];
     for (var i = 0; i < player.piecesOnBoard.length; i++) {
         var piece = player.piecesOnBoard[i];
-        allMoves = allMoves.concat(piece.getPossibleMoves(game));
+        allMoves = allMoves.concat(piece.cachedMoves);
     }
 
     var captures = [];

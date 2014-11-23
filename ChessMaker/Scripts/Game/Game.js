@@ -53,7 +53,7 @@ Game.prototype.checkForEnd = function () {
 
 Game.prototype.endTurn = function (stalemate) {
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
-        this.currentPlayer.piecesOnBoard[i].clearPossibleMoves();
+        this.currentPlayer.piecesOnBoard[i].cachedMoves = null;
 
     var victor = this.checkForEnd();
     if (stalemate !== undefined && victor === undefined)
@@ -105,7 +105,9 @@ Game.prototype.ensureUniqueMoveNotation = function () {
 
     var pieces = this.currentPlayer.piecesOnBoard.slice();
     for (var i = 0; i < pieces.length; i++) {
-        var movesForThisPiece = pieces[i].getPossibleMoves(this, true);
+        var piece = pieces[i];
+        var movesForThisPiece = piece.determinePossibleMoves(this);
+        piece.cachedMoves = movesForThisPiece;
 
         for (var j = 0; j < movesForThisPiece.length; j++) {
             var move = movesForThisPiece[j];
@@ -131,7 +133,7 @@ Game.prototype.ensureUniqueMoveNotation = function () {
 };
 
 Game.prototype.showMoveOptions = function (piece) {
-    var moves = piece.getPossibleMoves(this);
+    var moves = piece.cachedMoves;
     for (var i = 0; i < moves.length; i++) {
         var destCell = moves[i].getEndPos();
         var img = destCell.getImage();
@@ -145,7 +147,7 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
     if (piece.ownerPlayer === undefined)
         console.log('piece.ownerPlayer is undefined');
 
-    var moves = piece.getPossibleMoves(this);
+    var moves = piece.cachedMoves;
     for (var i = 0; i < moves.length; i++) {
         var move = moves[i]
         var destCell = move.getEndPos();

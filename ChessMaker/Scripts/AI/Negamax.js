@@ -3,38 +3,63 @@
 }
 
 AI_Negamax.prototype.selectMove = function () {
-    return this.findBestScore(game.currentPlayer, this.ply, true);
-};
-
-AI_Negamax.prototype.findBestScore = function (player, depth, returnMove) {
-    if (depth == 0) // or if this is the end of the game...
-        return this.evaluateBoard(player);
+    var player = game.currentPlayer;
 
     var bestScore = Number.NEGATIVE_INFINITY;
-    var bestMove = null;
-    for (var i = 0; i < player.piecesOnBoard.length; i++) {
-        var piece = player.piecesOnBoard[i];
-        var moves = piece.getPossibleMoves(game);
+    var bestMoves = [];
+    var pieces = player.piecesOnBoard.slice();
+    for (var i = 0; i < pieces.length; i++) {
+        var piece = pieces[i];
+        var moves = piece.cachedMoves;
         for (var j = 0; j < moves.length; j++) {
             var move = moves[j];
 
             move.perform(game, false);
 
-            var score = this.findBestScore(player.nextPlayer, depth - 1, false);
+            var score = this.findBestScore(player.nextPlayer, this.ply - 1, false);
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
                 score = -score;
 
             if (score > bestScore) {
                 bestScore = score;
-                bestMove = move;
+                bestMoves = [move];
             }
+            else if (score == bestScore)
+                bestMoves.push(move);
 
             move.reverse(game, false);
         }
     }
 
-    if (returnMove)
-        return bestMove;
+    var i = Math.floor(Math.random() * bestMoves.length);
+    return bestMoves[i];
+};
+
+AI_Negamax.prototype.findBestScore = function (player, depth) {
+    if (depth == 0) // or if this is the end of the game...
+        return this.evaluateBoard(player);
+
+    var bestScore = Number.NEGATIVE_INFINITY;
+    var pieces = player.piecesOnBoard.slice();
+    for (var i = 0; i < pieces.length; i++) {
+        var piece = pieces[i];
+        var moves = piece.determinePossibleMoves(game);
+
+        for (var j = 0; j < moves.length; j++) {
+            var move = moves[j];
+
+            move.perform(game, false);
+
+            var score = this.findBestScore(player.nextPlayer, depth - 1);
+            if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
+                score = -score;
+
+            if (score > bestScore)
+                bestScore = score;
+
+            move.reverse(game, false);
+        }
+    }
 
     return bestScore;
 }
@@ -73,11 +98,10 @@ AI_Negamax.prototype.countCaptures = function (player) {
     var captures = 0;
     for (var i = 0; i < player.piecesOnBoard.length; i++) {
         var piece = player.piecesOnBoard[i];
-        var moves = piece.getPossibleMoves(game);
+        var moves = piece.determinePossibleMoves(game);
         for (var j = 0; j < moves.length; j++)
             if (moves[j].isCapture())
                 captures++;
-        piece.clearPossibleMoves();
     }
     return captures;
 };
