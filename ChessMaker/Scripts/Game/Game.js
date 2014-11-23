@@ -88,18 +88,13 @@ Game.prototype.startNextTurn = function () {
     else {
         $('#wait').show();
 
-        if (this.currentPlayer.type == Player.Type.AI) {
-            var move = this.currentPlayer.AI.selectMove();
-            if (move === undefined || move == null)
-                throw 'AI returned an invalid move... (' + move + ')';
-
-            if (move.perform(this, true)) {
-                this.logMove(this.currentPlayer, move);
-                this.endTurn();
-            }
-            else
-                console.log('unable to perform move');
-        }
+        if (this.currentPlayer.type == Player.Type.AI)
+            setTimeout(function () {
+                console.time('ai');
+                var move = game.currentPlayer.AI.selectMove();
+                console.timeEnd('ai');
+                game.performMove(move);
+            }, 1);
     }
 };
 
@@ -157,15 +152,19 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
         if (destCell != cell)
             continue;
 
-        if (move.perform(this, true)) {
-            this.logMove(this.currentPlayer, move);
-            this.endTurn();
-        }
-        else
-            console.log('unable to perform move');
+        this.performMove(move);
         break;
     }
 };
+
+Game.prototype.performMove = function (move) {
+    if (move.perform(this, true)) {
+        this.logMove(this.currentPlayer, move);
+        this.endTurn();
+    }
+    else
+        console.log('unable to perform move');
+}
 
 Game.prototype.logMove = function (player, move) {
     var historyDiv = $('#moveHistory');
