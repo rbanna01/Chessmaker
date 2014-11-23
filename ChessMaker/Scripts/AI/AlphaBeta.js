@@ -18,6 +18,7 @@ AI_AlphaBeta.prototype.selectMove = function () {
             var move = moves[j];
 
             move.perform(game, false);
+            game.moveNumber++;
 
             var score;
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
@@ -32,6 +33,7 @@ AI_AlphaBeta.prototype.selectMove = function () {
             else if (score == bestScore)
                 bestMoves.push(move);
 
+            game.moveNumber--;
             move.reverse(game, false);
         }
     }
@@ -44,21 +46,34 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
     if (depth == 0) // or if this is the end of the game...
         return this.evaluateBoard(player);
 
+    var anyMoves = false;
     var pieces = player.piecesOnBoard.slice();
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
         var moves = piece.determinePossibleMoves(game);
 
         for (var j = 0; j < moves.length; j++) {
+            anyMoves = true;
             var move = moves[j];
 
             move.perform(game, false);
+            game.moveNumber++;
+
+            var victor = game.checkForEnd();
+            if (victor !== undefined) {
+                game.moveNumber--;
+                if (victor == null)
+                    return 0;
+                return player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+            }
 
             var score;
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
                 score = -this.findBestScore(player.nextPlayer, -beta, -alpha, depth - 1);
             else
                 score = this.findBestScore(player.nextPlayer, alpha, beta, depth - 1);
+
+            game.moveNumber--;
 
             if (score >= beta) {
                 move.reverse(game, false);
@@ -70,6 +85,9 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
             move.reverse(game, false);
         }
     }
+
+    if (!anyMoves)
+        return 0; // stalemate, if nothing can move
 
     return alpha;
 }

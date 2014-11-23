@@ -51,12 +51,12 @@ Game.prototype.checkForEnd = function () {
     return playerWithPieces;
 };
 
-Game.prototype.endTurn = function (stalemate) {
+Game.prototype.endTurn = function (cannotMove) {
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
         this.currentPlayer.piecesOnBoard[i].cachedMoves = null;
 
     var victor = this.checkForEnd();
-    if (stalemate !== undefined && victor === undefined)
+    if (cannotMove !== undefined && victor === undefined)
         victor = null;
     if (victor !== undefined) {
         var text;
@@ -79,7 +79,7 @@ Game.prototype.startNextTurn = function () {
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
     if (!this.ensureUniqueMoveNotation()) {
-        this.endTurn(true); // no available moves, so stalemate
+        this.endTurn(true); // no available moves (stalemate)
         return;
     }
 
