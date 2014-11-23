@@ -1,9 +1,12 @@
-﻿function AI_Negamax(ply) {
+﻿function AI_AlphaBeta(ply) {
     this.ply = ply;
 }
 
-AI_Negamax.prototype.selectMove = function () {
+AI_AlphaBeta.prototype.selectMove = function () {
     var player = game.currentPlayer;
+
+    var alpha = Number.NEGATIVE_INFINITY;
+    var beta = Number.POSITIVE_INFINITY;
 
     var bestScore = Number.NEGATIVE_INFINITY;
     var bestMoves = [];
@@ -16,9 +19,11 @@ AI_Negamax.prototype.selectMove = function () {
 
             move.perform(game, false);
 
-            var score = this.findBestScore(player.nextPlayer, this.ply - 1, false);
+            var score;
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
-                score = -score;
+                score = -this.findBestScore(player.nextPlayer, -beta, -alpha, this.ply - 1);
+            else
+                score = this.findBestScore(player.nextPlayer, alpha, beta, this.ply - 1);
 
             if (score > bestScore) {
                 bestScore = score;
@@ -35,11 +40,10 @@ AI_Negamax.prototype.selectMove = function () {
     return bestMoves[i];
 };
 
-AI_Negamax.prototype.findBestScore = function (player, depth) {
+AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
     if (depth == 0) // or if this is the end of the game...
         return this.evaluateBoard(player);
 
-    var bestScore = Number.NEGATIVE_INFINITY;
     var pieces = player.piecesOnBoard.slice();
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
@@ -50,21 +54,27 @@ AI_Negamax.prototype.findBestScore = function (player, depth) {
 
             move.perform(game, false);
 
-            var score = this.findBestScore(player.nextPlayer, depth - 1);
+            var score;
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
-                score = -score;
+                score = -this.findBestScore(player.nextPlayer, -beta, -alpha, depth - 1);
+            else
+                score = this.findBestScore(player.nextPlayer, alpha, beta, depth - 1);
 
-            if (score > bestScore)
-                bestScore = score;
+            if (score >= beta) {
+                move.reverse(game, false);
+                return beta;
+            }
+            if (score > alpha)
+                alpha = score;
 
             move.reverse(game, false);
         }
     }
 
-    return bestScore;
+    return alpha;
 }
 
-AI_Negamax.prototype.evaluateBoard = function (player) {
+AI_AlphaBeta.prototype.evaluateBoard = function (player) {
     // for now, just count the number of pieces
     var friendlyPieces = player.piecesOnBoard.length;
     var opponentPieces = 0;
@@ -94,7 +104,7 @@ AI_Negamax.prototype.evaluateBoard = function (player) {
     return myCaptures - opponentCaptures;*/
 };
 /*
-AI_Negamax.prototype.countCaptures = function (player) {
+AI_AlphaBeta.prototype.countCaptures = function (player) {
     var captures = 0;
     for (var i = 0; i < player.piecesOnBoard.length; i++) {
         var piece = player.piecesOnBoard[i];
@@ -106,4 +116,4 @@ AI_Negamax.prototype.countCaptures = function (player) {
     return captures;
 };
 */
-var AI = new AI_Negamax(4);
+var AI = new AI_AlphaBeta(4);
