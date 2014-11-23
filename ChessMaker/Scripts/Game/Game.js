@@ -89,7 +89,7 @@ Game.prototype.startNextTurn = function () {
         $('#wait').show();
 
         if (this.currentPlayer.type == Player.Type.AI) {
-            var move = AI_selectMove();
+            var move = this.currentPlayer.AI.selectMove();
             if (move === undefined || move == null)
                 throw 'AI returned an invalid move... (' + move + ')';
 
@@ -110,7 +110,7 @@ Game.prototype.ensureUniqueMoveNotation = function () {
 
     var pieces = this.currentPlayer.piecesOnBoard.slice();
     for (var i = 0; i < pieces.length; i++) {
-        var movesForThisPiece = pieces[i].getPossibleMoves(this);
+        var movesForThisPiece = pieces[i].getPossibleMoves(this, true);
 
         for (var j = 0; j < movesForThisPiece.length; j++) {
             var move = movesForThisPiece[j];

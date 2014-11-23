@@ -50,7 +50,7 @@ Move.prototype.reverse = function (game, updateDisplay) {
     for (var i = this.steps.length - 1; i >= 0; i--)
         if (!this.steps[i].reverse(game, updateDisplay)) // move failed, roll-back
         {
-            for (var j = i + 1; j < steps.length; j++)
+            for (var j = i + 1; j < this.steps.length; j++)
                 if (!this.steps[j].perform(game, updateDisplay))
                     throw "Reversing move failed on step " + i + "/" + this.steps.length + " (counting backwards), and rolling move back then failed on step " + j + ". Unable to rectify board state.";
 

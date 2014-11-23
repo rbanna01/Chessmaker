@@ -87,6 +87,7 @@ namespace ChessMaker.Services
             var list = new List<AIDifficultyModel>();
             list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random", Filename = "Random.js" });
             list.Add(new AIDifficultyModel() { ID = 2, Name = "Random capture", Filename = "RandomCapture.js" });
+            list.Add(new AIDifficultyModel() { ID = 3, Name = "Negamax", Filename = "Negamax.js" });
             return list;
         }
 

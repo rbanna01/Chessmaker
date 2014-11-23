@@ -1,5 +1,9 @@
-﻿// Picks from all available moves, completely randomly.
-function AI_selectMove() {
+﻿function AI_Random() {
+
+}
+
+// Picks from all available moves, completely randomly.
+AI_Random.prototype.selectMove = function () {
     var player = game.currentPlayer;
 
     var allMoves = [];
@@ -10,4 +14,6 @@ function AI_selectMove() {
 
     var index = Math.floor(Math.random() * allMoves.length);
     return allMoves[index];
-}
+};
+
+var AI = new AI_Random();

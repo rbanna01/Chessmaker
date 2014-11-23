@@ -3,6 +3,7 @@
     this.forwardDir = forwardDir;
     this.nextPlayer = null;
     this.type = Player.Type.Local;
+    this.AI = null;
     this.pieceListX = 0;
     
     this.piecesOnBoard = [];

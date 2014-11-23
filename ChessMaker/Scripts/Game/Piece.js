@@ -16,7 +16,7 @@ Piece.nextID = 1;
 
 Piece.prototype.clearPossibleMoves = function () { this.possibleMoves = null; };
 
-Piece.prototype.getPossibleMoves = function (game) {
+Piece.prototype.getPossibleMoves = function (game, cache) {
     if (this.possibleMoves != null)
         return this.possibleMoves;
     this.possibleMoves = [];
@@ -52,7 +52,11 @@ Piece.prototype.getPossibleMoves = function (game) {
                 piece.possibleMoves.push(move);
         });
     }*/
-    return this.possibleMoves;
+
+    var moves = this.possibleMoves;
+    if (cache != true)
+        this.possibleMoves = [];
+    return moves;
 };
 
 Piece.prototype.canCapture = function (targetPiece) {

@@ -1,6 +1,10 @@
-﻿// Picks from all available CAPTURE moves, completely randomly.
+﻿function AI_RandomCapture() {
+
+}
+
+// Picks from all available CAPTURE moves, completely randomly.
 // If there are non, picks from all available moves, completely randomly.
-function AI_selectMove() {
+AI_RandomCapture.prototype.selectMove = function () {
     var player = game.currentPlayer;
 
     var allMoves = [];
@@ -23,4 +27,6 @@ function AI_selectMove() {
 
     var index = Math.floor(Math.random() * allMoves.length);
     return allMoves[index];
-}
+};
+
+var AI = new AI_RandomCapture();

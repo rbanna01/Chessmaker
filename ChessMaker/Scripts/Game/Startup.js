@@ -19,8 +19,11 @@ function loadDefinition(xml) {
     Player.parseAll(setupXml, game, boardSVG);
 
     // this needs enhanced to also allow for remote players
-    if (aiGame)
-        game.currentPlayer.nextPlayer.type = Player.Type.AI;
+    if (aiGame) {
+        var aiPlayer = game.currentPlayer.nextPlayer;
+        aiPlayer.type = Player.Type.AI;
+        aiPlayer.AI = AI; // instance is created in AI script file, for now
+    }
 
     document.getElementById('main').appendChild(boardSVG);
 
