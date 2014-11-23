@@ -94,44 +94,32 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
 }
 
 AI_AlphaBeta.prototype.evaluateBoard = function (player) {
-    // for now, just count the number of pieces
-    var friendlyPieces = player.piecesOnBoard.length;
-    var opponentPieces = 0;
+    var score = 0;
 
-    var other = player.nextPlayer;
-    //while (other != player) {
+    for (var i = 0; i < game.players.length; i++) {
+        var other = game.players[i];
+        var playerScore = 0;
+
+        // add piece value to score
+        for (var j = 0; j < other.piecesOnBoard.length; j++) {
+            var piece = other.piecesOnBoard[j];
+            playerScore += piece.value;
+
+            // calculating possible moves (again?) here is gonna slow things down more
+
+            // one simple option
+            //playerScore += 0.1 * piece.determinePossibleMoves(game).length;
+
+            // more complicated
+            /*var moves = piece.determinePossibleMoves(game);
+            for (var k = 0; k < moves.length; k++)
+                playerScore += moves[k].isCapture() ? 0.2 : 0.1;*/
+        }
+
         if (player.getRelationship(other) == Player.Relationship.Enemy)
-            opponentPieces += other.piecesOnBoard.length;
+            score -= playerScore;
         else
-            friendlyPieces += other.piecesOnBoard.length;
-
-        other = player.nextPlayer;
-    //}
-    
-    return friendlyPieces - opponentPieces;
-
-    /*var myCaptures = this.countCaptures(player);
-    var opponentCaptures = 0;
-
-    var other = player.nextPlayer;
-    while (other != player)
-    {
-        opponentCaptures += this.countCaptures(other);
-        other = player.nextPlayer;
+            score += playerScore;
     }
-
-    return myCaptures - opponentCaptures;*/
+    return score;
 };
-/*
-AI_AlphaBeta.prototype.countCaptures = function (player) {
-    var captures = 0;
-    for (var i = 0; i < player.piecesOnBoard.length; i++) {
-        var piece = player.piecesOnBoard[i];
-        var moves = piece.determinePossibleMoves(game);
-        for (var j = 0; j < moves.length; j++)
-            if (moves[j].isCapture())
-                captures++;
-    }
-    return captures;
-};
-*/
