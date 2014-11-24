@@ -61,8 +61,8 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
 
             var victor = game.checkForEnd();
             if (victor !== undefined) {
-                game.moveNumber--;
                 move.reverse(game, false);
+                game.moveNumber--;
                 if (victor == null)
                     return 0;
                 return player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
@@ -74,16 +74,13 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
             else
                 score = this.findBestScore(player.nextPlayer, alpha, beta, depth - 1);
 
+            move.reverse(game, false);
             game.moveNumber--;
 
-            if (score >= beta) {
-                move.reverse(game, false);
+            if (score >= beta)
                 return beta;
-            }
             if (score > alpha)
                 alpha = score;
-
-            move.reverse(game, false);
         }
     }
 
@@ -103,7 +100,7 @@ AI_AlphaBeta.prototype.evaluateBoard = function (player) {
         // add piece value to score
         for (var j = 0; j < other.piecesOnBoard.length; j++) {
             var piece = other.piecesOnBoard[j];
-            playerScore += piece.value;
+            playerScore += piece.pieceType.value;
 
             // calculating possible moves (again?) here is gonna slow things down more
 

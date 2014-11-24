@@ -43,8 +43,11 @@ PieceType.parse = function (xmlNode, defs) {
     type.name = xmlNode.getAttribute('name');
     
     var value = xmlNode.getAttribute('value');
-    if (value != null)
-        type.value = value;
+    if (value != null) {
+        value = parseInt(value);
+        if (!isNaN(value))
+            type.value = value;
+    }
 
     var notation = xmlNode.getAttribute('notation');
     if (notation != null)
