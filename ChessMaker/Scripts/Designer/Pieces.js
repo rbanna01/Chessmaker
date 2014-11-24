@@ -98,20 +98,6 @@ ReferencePiece.prototype.save = function (parent) {
     parent.appendChild(node);
 };
 
-ArbitraryAttack.prototype.save = function (parent) {
-    var node = parent.ownerDocument.createElement('arbitraryAttack');
-
-    node.setAttribute('row_ref', this.piece);
-    node.setAttribute('col_ref', this.moveWhen);
-    node.setAttribute('row_offset', this.piece);
-    node.setAttribute('col_offset', this.moveWhen);
-    node.setAttribute('move', this.moveWithAttack.toString());
-
-    parent.appendChild(node);
-    if (this.conditions !== null)
-        this.conditions.save(node);
-};
-
 Sequence.prototype.save = function (parent) {
     var node = parent.ownerDocument.createElement('sequence');
 

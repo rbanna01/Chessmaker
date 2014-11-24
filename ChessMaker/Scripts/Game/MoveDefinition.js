@@ -33,10 +33,6 @@ MoveDefinition.parse = function (xmlNode, isTopLevel) {
             if (isTopLevel)
                 throw xmlNode.Name + ' not allowed at top level!';
             return ReferencePiece.parse(xmlNode);
-        case 'arbitraryAttack':
-            if (isTopLevel)
-                throw xmlNode.Name + ' not allowed at top level!';
-            return ArbitraryAttack.parse(xmlNode);
         default:
             throw 'Unexpected move type: ' + xmlNode.nodeName;
     }
@@ -692,36 +688,6 @@ ReferencePiece.parse = function (xmlNode) {
     var relationship = Player.Relationship.parse(xmlNode.getAttribute('owner'));
 
     return new ReferencePiece(name, type, relationship, dir, dist);
-}
-
-
-function ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, moveWithAttack, conditions) {
-    MoveDefinition.call(this, undefined, undefined, undefined, conditions);
-    this.rowRef = rowRef;
-    this.colRef = colRef;
-    this.rowOffset = rowOffset;
-    this.colOffset = colOffset;
-    this.moveWithAttack = moveWithAttack;
-}
-
-extend(ArbitraryAttack, MoveDefinition);
-
-ArbitraryAttack.prototype.appendValidNextSteps = function (baseMove, piece, game, previousStep) {
-    var moves = [];
-
-    return moves;
-};
-
-ArbitraryAttack.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var rowRef = xmlNode.getAttribute('rowRef');
-    var colRef = xmlNode.getAttribute('colRef');
-    var rowOffset = parseInt(xmlNode.getAttribute('rowOffset'));
-    var colOffset = parseInt(xmlNode.getAttribute('colOffset'));
-    var move = xmlNode.getAttribute('move') == 'true';
-
-    return new ArbitraryAttack(rowRef, colRef, rowOffset, colOffset, conditions);
 }
 
 

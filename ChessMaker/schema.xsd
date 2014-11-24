@@ -273,17 +273,6 @@
 		<xs:attribute name="owner" type="owner" default="any"/>
 	</xs:complexType>
 
-	<xs:complexType name="arbitraryAttack">
-		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-		<xs:attribute name="rowRef" type="xs:string" use="required"/>
-		<xs:attribute name="colRef" type="xs:string" use="required"/>
-		<xs:attribute name="rowOffset" type="xs:integer" default="0"/>
-		<xs:attribute name="colOffset" type="xs:integer" default="0"/>
-		<xs:attribute name="move" type="xs:boolean" default="false"/>
-	</xs:complexType>
-
 	<xs:complexType name="moveList">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -307,7 +296,6 @@
 			<xs:element name="repeat" type="moveSequenceLoop"/>
 			<xs:element name="whenPossible" type="moveSequence"/>
 			<xs:element name="referencePiece" type="referencePiece"/>
-			<xs:element name="arbitraryAttack" type="arbitraryAttack"/>
 		</xs:choice>
 	</xs:complexType>
 
