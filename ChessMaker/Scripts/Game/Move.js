@@ -69,6 +69,8 @@ Move.prototype.addPieceReference = function(piece, ref) {
 };
 
 Move.prototype.getPieceByRef = function (ref) {
+    if (ref == 'self')
+        return this.piece;
     var piece = this.references[ref];
     if (piece === undefined)
         return null;

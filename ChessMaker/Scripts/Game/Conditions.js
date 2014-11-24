@@ -11,6 +11,48 @@ Conditions.GroupType = {
     Xor: 4
 };
 
+Conditions.NumericComparison = {
+    Equals: 0,
+    LessThan: 1,
+    GreaterThan: 2,
+    LessThanOrEquals: 3,
+    GreaterThanOrEquals: 4,
+}
+
+Conditions.NumericComparison.parse = function (str) {
+    switch (str) {
+        case 'equals':
+            return Conditions.NumericComparison.Equals;
+        case 'less than':
+            return Conditions.NumericComparison.LessThan;
+        case 'greater than':
+            return Conditions.NumericComparison.GreaterThan;
+        case 'less than or equals':
+            return Conditions.NumericComparison.LessThanOrEquals;
+        case 'greater than or equals':
+            return Conditions.NumericComparison.GreaterThanOrEquals;
+        default:
+            throw 'Invalid comparison type: ' + str;
+    }
+};
+
+Conditions.ResolveComparison = function (type, val1, val2) {
+    switch (type) {
+        case Conditions.NumericComparison.Equals:
+            return val1 == val2;
+        case Conditions.NumericComparison.LessThan:
+            return val1 < val2;
+        case Conditions.NumericComparison.GreaterThan:
+            return val1 > val2;
+        case Conditions.NumericComparison.LessThanOrEquals:
+            return val1 <= val2;
+        case Conditions.NumericComparison.GreaterThanOrEquals:
+            return val1 >= val2;
+        default:
+            return false;
+    }
+}
+
 Conditions.findNode = function (node) {
     var nodes = node.childNodes;
     for (var i = 0; i < nodes.length; i++) {
@@ -32,7 +74,7 @@ Conditions.parse = function (node, type) {
     var children = node.childNodes;
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
-        var name = child.nodeName.toLowerCase();
+        var name = child.nodeName;
 
         switch (name) {
             case 'and':
@@ -61,6 +103,24 @@ Conditions.parse = function (node, type) {
                 var of = child.getAttribute('of');
                 var relationship = Player.Relationship.parse(child.textContent);
                 group.elements.push(new Conditions_Owner(of, relationship));
+                break;
+            case 'moveNumber':
+                var of = child.getAttribute('of');
+                if (of == null)
+                    of = 'self';
+                var number = parseInt(child.textContent);
+                var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+                group.elements.push(new Conditions_MoveNumber(of, number, comparison));
+                break;
+            case 'maxDist':
+                var from = child.getAttribute('from');
+                if (from == null)
+                    from = 'self';
+
+                var dir = child.getAttribute('dir');
+                var number = parseInt(child.textContent);
+                var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+                group.elements.push(new Conditions_MaxDist(from, dir, number, comparison));
                 break;
 
             case 'threatened':
@@ -147,4 +207,41 @@ Conditions_Owner.prototype.isSatisfied = function (move, game) {
         return true;
 
     return this.relationship == move.player.getRelationship(other.ownerPlayer);
+};
+
+function Conditions_MoveNumber(of, number, comparison) {
+    this.of = of;
+    this.number = number;
+    this.comparison = comparison;
+}
+
+Conditions_MoveNumber.prototype.isSatisfied = function (move, game) {
+    var other = move.getPieceByRef(this.of);
+    if (other == null)
+        throw "Piece reference not found: " + this.of;
+
+    return Conditions.ResolveComparison(this.comparison, other.moveNumber, this.number);
+};
+
+function Conditions_MaxDist(from, dir, number, comparison) {
+    this.from = from;
+    this.dir = dir;
+    this.number = number;
+    this.comparison = comparison;
+}
+
+Conditions_MaxDist.prototype.isSatisfied = function (move, game) {
+    var other = move.getPieceByRef(this.from);
+    if (other == null)
+        throw "Piece reference not found: " + this.from;
+
+    var previousStep = move.steps.length > 0 ? move.steps[move.steps.length - 1] : null;
+    var dirs = move.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : move.player.forwardDir);
+
+    for (var i = 0; i < dirs.length; i++) {
+        var maxDist = game.board.getMaxDistance(other.position, dirs[i]);
+        if (Conditions.ResolveComparison(this.comparison, maxDist, this.number))
+            return true;
+    }
+    return false;
 };
