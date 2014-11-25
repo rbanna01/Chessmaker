@@ -67,8 +67,6 @@ Game.prototype.endTurn = function (cannotMove) {
         return;
     }
 
-    this.moveNumber++;
-
     this.currentPlayer = this.currentPlayer.nextPlayer;
     this.startNextTurn();
 };

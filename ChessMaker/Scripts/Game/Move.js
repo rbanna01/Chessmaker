@@ -4,6 +4,7 @@
     this.startPos = startPos;
     this.moveNumber = moveNum;
     this.notation = '';
+    this.prevPieceMoveTurn = null;
 
     this.steps = [];
     this.references = {};
@@ -38,9 +39,10 @@ Move.prototype.perform = function (game, updateDisplay) {
         }
     }
 
+    this.prevPieceMoveTurn = this.piece.lastMoveTurn;
     this.piece.lastMoveTurn = game.moveNumber;
     this.piece.moveNumber++;
-
+    game.moveNumber++;
     return true;
 };
 
@@ -55,7 +57,9 @@ Move.prototype.reverse = function (game, updateDisplay) {
             return false;
         }
 
+    this.piece.lastMoveTurn = this.prevPieceMoveTurn;
     this.piece.moveNumber--;
+    game.moveNumber--;
     return true;
 };
 

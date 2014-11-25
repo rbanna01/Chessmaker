@@ -18,7 +18,6 @@ AI_AlphaBeta.prototype.selectMove = function () {
             var move = moves[j];
 
             move.perform(game, false);
-            game.moveNumber++;
 
             var score;
             if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
@@ -33,7 +32,6 @@ AI_AlphaBeta.prototype.selectMove = function () {
             else if (score == bestScore)
                 bestMoves.push(move);
 
-            game.moveNumber--;
             move.reverse(game, false);
         }
     }
@@ -56,14 +54,11 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
             anyMoves = true;
             var move = moves[j];
 
-            var cache = piece.lastMoveTurn;
             move.perform(game, false);
-            game.moveNumber++;
 
             var victor = game.checkForEnd();
             if (victor !== undefined) {
                 move.reverse(game, false);
-                game.moveNumber--;
                 if (victor == null)
                     return 0;
                 return player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
@@ -76,8 +71,6 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
                 score = this.findBestScore(player.nextPlayer, alpha, beta, depth - 1);
 
             move.reverse(game, false);
-            game.moveNumber--;
-            piece.lastMoveTurn = cache;
 
             if (score >= beta)
                 return beta;

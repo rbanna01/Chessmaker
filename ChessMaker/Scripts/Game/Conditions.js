@@ -281,12 +281,14 @@ function Conditions_Threatened(start, end, value) {
 }
 
 Conditions_Threatened.prototype.isSatisfied = function (move, game) {
-    if (this.start) {
+    var step = move.steps[move.steps.length - 1];
+
+    if (this.start && step.fromState == Piece.State.OnBoard) {
         var threatened = false;
         if (threatened != this.value)
             return false;
     }
-    if (this.end) {
+    if (this.end && step.toState == Piece.State.OnBoard) {
         var threatened = false;
         if (threatened != this.value)
             return false;
