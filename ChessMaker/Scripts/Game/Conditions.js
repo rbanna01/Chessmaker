@@ -138,6 +138,7 @@ Conditions.parse = function (node, type) {
                 var start = where != 'end';
                 var end = where != 'start';
                 group.elements.push(new Conditions_Threatened(start, end, value));
+                break;
 
             case 'num_pieces_in_range':
             case 'move_causes_check':
@@ -280,19 +281,52 @@ function Conditions_Threatened(start, end, value) {
     this.value = value;
 }
 
+Conditions_Threatened.alreadyChecking = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
+
 Conditions_Threatened.prototype.isSatisfied = function (move, game) {
-    var step = move.steps[move.steps.length - 1];
+    if (Conditions_Threatened.alreadyChecking)
+        return true;
+    Conditions_Threatened.alreadyChecking = true;
+
+    var step = move.steps[move.steps.length - 1]; // all steps except the current one will already have been performed
 
     if (this.start && step.fromState == Piece.State.OnBoard) {
-        var threatened = false;
-        if (threatened != this.value)
+        var threatened = this.isThreatened(move, game, step.fromPos);
+        
+        if (threatened != this.value) {
+            Conditions_Threatened.alreadyChecking = false;
             return false;
-    }
-    if (this.end && step.toState == Piece.State.OnBoard) {
-        var threatened = false;
-        if (threatened != this.value)
-            return false;
+        }
     }
 
+    if (this.end && step.toState == Piece.State.OnBoard) {
+        if (!step.perform(game, false)) {
+            Conditions_Threatened.alreadyChecking = false;
+            return false;
+        }
+        var threatened = this.isThreatened(move, game, step.toPos);
+        step.reverse(game, false);
+
+        if (threatened != this.value) {
+            Conditions_Threatened.alreadyChecking = false;
+            return false;
+        }
+    }
+
+    Conditions_Threatened.alreadyChecking = false;
     return true;
+};
+
+Conditions_Threatened.prototype.isThreatened = function (move, game, pos) {
+    // todo: look at all opponent players, rather than just the next one, in order, once the game turn order is properly implemented
+    var opponent = game.currentPlayer.nextPlayer;
+    for (var i = 0; i < opponent.piecesOnBoard.length; i++) {
+        var piece = opponent.piecesOnBoard[i];
+        var moves = piece.determinePossibleMoves(game);
+
+        for (var j = 0; j < moves.length; j++)
+            if (moves[j].threatens(pos))
+                return true;
+    }
+    return false;
 };
