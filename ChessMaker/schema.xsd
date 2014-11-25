@@ -37,6 +37,14 @@
     </xs:restriction>
   </xs:simpleType>
   
+  <xs:simpleType name="partOfMove">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="start" />
+      <xs:enumeration value="end" />
+      <xs:enumeration value="both" />
+    </xs:restriction>
+  </xs:simpleType>
+  
 	<xs:complexType name="conditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="and" type="conditions"/>
@@ -99,7 +107,6 @@
         </xs:complexType>
       </xs:element>
 
-			<!--
       <xs:element name="threatened">
         <xs:complexType>
           <xs:simpleContent>
@@ -109,18 +116,7 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
-
-      <xs:element name="compare">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="comparison_value">
-              <xs:attribute name="var" type="comparison_property"/>
-              <xs:attribute name="comparison" type="numeric_comparison_type"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-
+      <!--
       <xs:element name="num_pieces_in_range">
         <xs:complexType>
           <xs:simpleContent>

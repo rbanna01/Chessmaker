@@ -133,7 +133,12 @@ Conditions.parse = function (node, type) {
                 break;
 
             case 'threatened':
-            case 'compare':
+                var value = child.textContent == 'true';
+                var where = child.getAttribute('where');
+                var start = where != 'end';
+                var end = where != 'start';
+                group.elements.push(new Conditions_Threatened(start, end, value));
+
             case 'num_pieces_in_range':
             case 'move_causes_check':
             case 'move_causes_checkmate':
@@ -267,4 +272,25 @@ Conditions_TurnsSinceLastMove.prototype.isSatisfied = function (move, game) {
         throw "Piece reference not found: " + this.of;
 
     return Conditions.ResolveComparison(this.comparison, game.moveNumber - other.lastMoveTurn, this.number);
+};
+
+function Conditions_Threatened(start, end, value) {
+    this.start = start;
+    this.end = end;
+    this.value = value;
+}
+
+Conditions_Threatened.prototype.isSatisfied = function (move, game) {
+    if (this.start) {
+        var threatened = false;
+        if (threatened != this.value)
+            return false;
+    }
+    if (this.end) {
+        var threatened = false;
+        if (threatened != this.value)
+            return false;
+    }
+
+    return true;
 };
