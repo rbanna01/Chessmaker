@@ -19,11 +19,14 @@ function MoveStep(piece) {
 
 MoveStep.nextStepID = 1;
 
-MoveStep.prototype.perform = function (game, updateDisplay) {
+MoveStep.prototype.perform = function (game, updateDisplay, log) {
     if (!this.pickup(this.fromState, this.fromStateOwner, this.fromPos, this.fromOwner, this.fromType))
         return false;
     
     this.place(this.toState, this.toStateOwner, this.toPos, this.toOwner, this.toType);
+    
+    if (log)
+        console.log('> moved ' + this.piece.pieceType.name + ' from ' + this.fromPos.name + ' to ' + this.toPos.name);
 
     if (updateDisplay)
         this.updateDisplay();
@@ -31,11 +34,14 @@ MoveStep.prototype.perform = function (game, updateDisplay) {
     return true;
 };
 
-MoveStep.prototype.reverse = function (game, updateDisplay) {
+MoveStep.prototype.reverse = function (game, updateDisplay, log) {
     if (!this.pickup(this.toState, this.toStateOwner, this.toPos, this.toOwner, this.toType))
         return false;
 
     this.place(this.fromState, this.fromStateOwner, this.fromPos, this.fromOwner, this.fromType);
+
+    if (log)
+        console.log('< moved ' + this.piece.pieceType.name + ' from ' + this.toPos.name + ' to ' + this.fromPos.name);
 
     if (updateDisplay)
         this.updateDisplay();

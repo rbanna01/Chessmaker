@@ -25,6 +25,7 @@ AI_AlphaBeta.prototype.selectMove = function () {
             bestMoves.push(move);
     }
 
+    console.log('best score ' + bestScore);
     var i = Math.floor(Math.random() * bestMoves.length);
     return bestMoves[i];
 };
