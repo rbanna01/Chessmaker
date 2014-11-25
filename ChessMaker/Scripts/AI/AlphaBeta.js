@@ -56,6 +56,7 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
             anyMoves = true;
             var move = moves[j];
 
+            var cache = piece.lastMoveTurn;
             move.perform(game, false);
             game.moveNumber++;
 
@@ -76,6 +77,7 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
 
             move.reverse(game, false);
             game.moveNumber--;
+            piece.lastMoveTurn = cache;
 
             if (score >= beta)
                 return beta;

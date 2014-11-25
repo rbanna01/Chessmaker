@@ -123,6 +123,15 @@ Conditions.parse = function (node, type) {
                 group.elements.push(new Conditions_MaxDist(from, dir, number, comparison));
                 break;
 
+            case 'turnsSinceLastMove':
+                var of = child.getAttribute('of');
+                if (of == null)
+                    of = 'self';
+                var number = parseInt(child.textContent);
+                var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+                group.elements.push(new Conditions_TurnsSinceLastMove(of, number, comparison));
+                break;
+
             case 'threatened':
             case 'compare':
             case 'num_pieces_in_range':
@@ -244,4 +253,18 @@ Conditions_MaxDist.prototype.isSatisfied = function (move, game) {
             return true;
     }
     return false;
+};
+
+function Conditions_TurnsSinceLastMove(of, number, comparison) {
+    this.of = of;
+    this.number = number;
+    this.comparison = comparison;
+}
+
+Conditions_TurnsSinceLastMove.prototype.isSatisfied = function (move, game) {
+    var other = move.getPieceByRef(this.of);
+    if (other == null)
+        throw "Piece reference not found: " + this.of;
+
+    return Conditions.ResolveComparison(this.comparison, game.moveNumber - other.lastMoveTurn, this.number);
 };

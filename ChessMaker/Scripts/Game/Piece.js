@@ -6,8 +6,7 @@
     this.pieceState = state;
     this.stateOwner = stateOwner;
     this.moveNumber = 1;      // how is this set, when loaded?
-    this.firstMoveTurn = null;// how is this set, when loaded?
-    this.lastMoveTurn = null; // how is this set, when loaded?
+    this.lastMoveTurn = 0; // how is this set, when loaded?
 
     this.cachedMoves = null;
 }

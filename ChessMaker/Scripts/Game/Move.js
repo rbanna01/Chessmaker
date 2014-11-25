@@ -37,10 +37,8 @@ Move.prototype.perform = function (game, updateDisplay) {
             return false;
         }
     }
-    if (this.piece.moveNumber == 1)
-        this.piece.firstMoveTurn = game.TurnNumber;
 
-    this.piece.lastMoveTurn = game.TurnNumber;
+    this.piece.lastMoveTurn = game.moveNumber;
     this.piece.moveNumber++;
 
     return true;
@@ -58,9 +56,6 @@ Move.prototype.reverse = function (game, updateDisplay) {
         }
 
     this.piece.moveNumber--;
-    if (this.piece.firstMoveTurn == game.TurnNumber)
-        this.piece.firstMoveTurn = null;
-
     return true;
 };
 

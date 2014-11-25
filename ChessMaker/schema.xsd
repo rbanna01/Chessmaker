@@ -88,6 +88,17 @@
         </xs:complexType>
       </xs:element>
 
+      <xs:element name="turnsSinceLastMove">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:positiveInteger">
+              <xs:attribute name="of" type="xs:string"/>
+              <xs:attribute name="comparison" type="numericComparison"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+
 			<!--
       <xs:element name="threatened">
         <xs:complexType>
