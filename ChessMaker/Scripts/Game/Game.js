@@ -2,6 +2,7 @@
     this.board = null;
     this.players = [];
     this.currentPlayer = null;
+    this.turnOrder = null;
     this.moveNumber = 1;
     this.showCaptured = true;
     this.showHeld = false;
@@ -38,20 +39,20 @@ Game.parse = function (xml, boardRootElement) {
         console.log('can\'t find "pieces" node in game definition');
     }
 
-    var rulesXml = piecesXml.nextSibling;
-    if (rulesXml != null && rulesXml.nodeName == 'rules')
-        game.parseRules(rulesXml);
-    else {
-        rulesXml = piecesXml;
-        console.log('can\'t find "rules" node in game definition');
-    }
-
-    var setupXml = rulesXml.nextSibling;
+    var setupXml = piecesXml.nextSibling;
     if (setupXml != null && setupXml.nodeName == 'setup')
         Player.parseAll(setupXml, game, boardSVG);
     else {
-        setupXml = rulesXml;
+        setupXml = piecesXml;
         console.log('can\'t find "setup" node in game definition');
+    }
+
+    var rulesXml = setupXml.nextSibling;
+    if (rulesXml != null && rulesXml.nodeName == 'rules')
+        game.parseRules(rulesXml);
+    else {
+        rulesXml = setupXml;
+        console.log('can\'t find "rules" node in game definition');
     }
 
     // this needs enhanced to also allow for remote players
@@ -74,6 +75,10 @@ Game.parse = function (xml, boardRootElement) {
 };
 
 Game.prototype.parseRules = function (xml) {
+    var turnOrder = xml.firstChild;
+    this.turnOrder = TurnOrder.parse(turnOrder, this);
+
+    //var endOfGame = turnOrder.nextSibling;
 };
 
 Game.prototype.setupTurnOrder = function () {

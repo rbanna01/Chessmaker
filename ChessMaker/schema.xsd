@@ -27,24 +27,24 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-  <xs:simpleType name="numericComparison">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="equals" />
-      <xs:enumeration value="less than" />
-      <xs:enumeration value="greater than" />
-      <xs:enumeration value="less than or equals" />
-      <xs:enumeration value="greater than or equals" />
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="partOfMove">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="start" />
-      <xs:enumeration value="end" />
-      <xs:enumeration value="both" />
-    </xs:restriction>
-  </xs:simpleType>
-  
+	<xs:simpleType name="numericComparison">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="equals" />
+			<xs:enumeration value="less than" />
+			<xs:enumeration value="greater than" />
+			<xs:enumeration value="less than or equals" />
+			<xs:enumeration value="greater than or equals" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="partOfMove">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="start" />
+			<xs:enumeration value="end" />
+			<xs:enumeration value="both" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:complexType name="conditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="and" type="conditions"/>
@@ -74,49 +74,49 @@
 				</xs:complexType>
 			</xs:element>
 
-      <xs:element name="moveNumber">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:positiveInteger">
-              <xs:attribute name="of" type="xs:string"/>
-              <xs:attribute name="comparison" type="numericComparison"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
+			<xs:element name="moveNumber">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="of" type="xs:string"/>
+							<xs:attribute name="comparison" type="numericComparison"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
 
-      <xs:element name="maxDist">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:positiveInteger">
-              <xs:attribute name="dir" type="direction" use="required"/>
-              <xs:attribute name="comparison" type="numericComparison"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
+			<xs:element name="maxDist">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="dir" type="direction" use="required"/>
+							<xs:attribute name="comparison" type="numericComparison"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
 
-      <xs:element name="turnsSinceLastMove">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:positiveInteger">
-              <xs:attribute name="of" type="xs:string"/>
-              <xs:attribute name="comparison" type="numericComparison"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
+			<xs:element name="turnsSinceLastMove">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="of" type="xs:string"/>
+							<xs:attribute name="comparison" type="numericComparison"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
 
-      <xs:element name="threatened">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:boolean">
-              <xs:attribute name="where" type="partOfMove" use="required"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-      <!--
+			<xs:element name="threatened">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:boolean">
+							<xs:attribute name="where" type="partOfMove" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<!--
       <xs:element name="num_pieces_in_range">
         <xs:complexType>
           <xs:simpleContent>
@@ -243,6 +243,24 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:complexType name="turnOrder">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="turn">
+				<xs:complexType>
+					<xs:attribute name="player" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="repeat" type="turnRepeat" />
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="turnRepeat">
+		<xs:complexContent>
+			<xs:extension base="turnOrder">
+				<xs:attribute name="count" type="xs:positiveInteger"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 	<xs:complexType name="slide">
 		<xs:sequence>
@@ -476,6 +494,13 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="rules">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="turnOrder" type="turnOrder" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="setup">
 					<xs:complexType>
 						<xs:sequence>
@@ -499,4 +524,5 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
 </xs:schema>

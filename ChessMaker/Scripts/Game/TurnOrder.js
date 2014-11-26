@@ -2,16 +2,21 @@
     this.currentStep = null;
 }
 
-TurnOrder.parse = function (xmlNode) {
+TurnOrder.parse = function (xmlNode, game) {
     var turnOrder = new TurnOrder();
+    var players = {};
+    for (var i = 0; i < game.players.length; i++) {
+        var p = game.players[i]
+        players[p.name] = p;
+    }
 
     var fakeStep = new TurnStep(null);
-    fakeStep.next = TurnOrder.parseRepeat(xmlNode, true);
+    fakeStep.next = TurnOrder.parseRepeat(xmlNode, players, true);
     turnOrder.currentStep = fakeStep;
     return turnOrder;
 };
 
-TurnOrder.parseRepeat = function (xmlNode, topLevel) {
+TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
     var count = xmlNode.getAttribute('count');
     if (count != null)
         count = parseInt(count); // todo: this could reference several different variables, it might not be just a number
@@ -25,9 +30,12 @@ TurnOrder.parseRepeat = function (xmlNode, topLevel) {
         
         var child;
         if (childNode.tagName == 'repeat')
-            child = TurnOrder.parseRepeat(childNode, false);
+            child = TurnOrder.parseRepeat(childNode, players, false);
         else if (childNode.tagName == 'turn') {
-            var player = childNode.getAttribute('player');
+            var playerName = childNode.getAttribute('player');
+            var player = players[playerName];
+            if (player === undefined)
+                console.log('Invalid player in turn order: ' + playerName);
             child = new TurnStep(player);
         }
 
