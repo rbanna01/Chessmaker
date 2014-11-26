@@ -1,40 +1,10 @@
 ﻿var game;
 function loadDefinition(xml) {
-    xml = xml.firstChild;
-    
-    game = new Game();
-    game.board = new Board(game);
+    game = Game.parse(xml, document.getElementById('main'));
+    initializeUI();
+}
 
-    var defs = SVG('defs');
-    var boardXml = xml.firstChild;
-    var boardSVG = game.board.loadSVG(boardXml, defs);
-
-    var dirsXml = boardXml.nextSibling;
-    game.board.parseDirections(dirsXml);
-
-    var piecesXml = dirsXml.nextSibling;
-    PieceType.parseAll(piecesXml, defs);
-
-    var setupXml = piecesXml.nextSibling;
-    Player.parseAll(setupXml, game, boardSVG);
-
-    // this needs enhanced to also allow for remote players
-    if (typeof AIs != 'undefined')
-        for (var i = 0; i < game.players.length; i++)  {
-            var AI = AIs[i];
-            if (AI == null)
-                continue;
-
-            var player = game.players[i];
-            player.type = Player.Type.AI;
-            player.AI = AIs[i];
-
-            if (i >= AIs.length - 1)
-                break;
-        }
-
-    document.getElementById('main').appendChild(boardSVG);
-
+function initializeUI() {
     $('#render path.cell').click(cellClicked);
     /*
     $('#main').click(function (e) {

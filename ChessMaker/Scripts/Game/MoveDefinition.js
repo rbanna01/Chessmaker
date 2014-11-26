@@ -676,8 +676,8 @@ ReferencePiece.parse = function (xmlNode) {
     var name = xmlNode.getAttribute('name');
 
     var dir = xmlNode.getAttribute('dir');
-    if (dir != null && game.board.directionGroups.hasOwnProperty(dir))
-        throw 'ReferencePiece requires a discreet direction, not a compound one!';
+    //if (dir != null && game.board.directionGroups.hasOwnProperty(dir))
+        //throw 'ReferencePiece requires a discreet direction, not a compound one!';
 
     var dist = Distance.parse(xmlNode.getAttribute('dist'));
 

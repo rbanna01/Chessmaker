@@ -9,6 +9,73 @@
     this.holdCapturedPieces = false;
 }
 
+Game.parse = function (xml, boardRootElement) {
+    xml = xml.firstChild;
+
+    var game = new Game();
+    game.board = new Board(game);
+
+    var defs = SVG('defs'); var boardSVG;
+    var boardXml = xml.firstChild;
+    if (boardXml.nodeName == 'board')
+        boardSVG = game.board.loadSVG(boardXml, defs);
+    else
+        throw 'can\'t find "board" node in game definition';
+
+    var dirsXml = boardXml.nextSibling;
+    if (dirsXml != null && dirsXml.nodeName == 'dirs')
+        game.board.parseDirections(dirsXml);
+    else {
+        dirsXml = boardXml;
+        console.log('can\'t find "dirs" node in game definition');
+    }
+
+    var piecesXml = dirsXml.nextSibling;
+    if (piecesXml != null && piecesXml.nodeName == 'pieces')
+        PieceType.parseAll(piecesXml, defs);
+    else {
+        piecesXml = dirsXml;
+        console.log('can\'t find "pieces" node in game definition');
+    }
+
+    var rulesXml = piecesXml.nextSibling;
+    if (rulesXml != null && rulesXml.nodeName == 'rules')
+        game.parseRules(rulesXml);
+    else {
+        rulesXml = piecesXml;
+        console.log('can\'t find "rules" node in game definition');
+    }
+
+    var setupXml = rulesXml.nextSibling;
+    if (setupXml != null && setupXml.nodeName == 'setup')
+        Player.parseAll(setupXml, game, boardSVG);
+    else {
+        setupXml = rulesXml;
+        console.log('can\'t find "setup" node in game definition');
+    }
+
+    // this needs enhanced to also allow for remote players
+    if (typeof AIs != 'undefined')
+        for (var i = 0; i < game.players.length; i++) {
+            var AI = AIs[i];
+            if (AI == null)
+                continue;
+
+            var player = game.players[i];
+            player.type = Player.Type.AI;
+            player.AI = AIs[i];
+
+            if (i >= AIs.length - 1)
+                break;
+        }
+
+    boardRootElement.appendChild(boardSVG);
+    return game;
+};
+
+Game.prototype.parseRules = function (xml) {
+};
+
 Game.prototype.setupTurnOrder = function () {
     // set up a cycle between the players. At some point, this is presumably gonna need to be more complex.
     var prevPlayer = null, firstPlayer = null;
