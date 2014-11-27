@@ -19,7 +19,7 @@ TurnOrder.parse = function (xmlNode, game) {
 TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
     var count = xmlNode.getAttribute('count');
     if (count != null)
-        count = parseInt(count); // todo: this could reference several different variables, it might not be just a number
+        count = turnRepeat.parseCount(count);
 
     var children = xmlNode.childNodes;
 
@@ -92,12 +92,26 @@ function TurnRepeat(count, firstChild, lastChild) {
     this.isGroup = true;
 }
 
+TurnRepeat.parseCount = function (val) {
+    // todo: this could reference several different variables, it might not be just an integer
+    return parseInt(val);
+};
+
+TurnRepeat.prototype.getCount = function () {
+    if (this.count === null || typeof this.count == 'number')
+        return this.count;
+
+    // otherwise, count is some variable. Get an integer out of that, somehow.
+    throw 'Got non-integer count on TurnRepeat. Cannot currently handle...'
+};
+
 TurnRepeat.prototype.getNext = function () {
     this.currentIteration++;
-    if (this.count == null) // no limit, keep going
+    var count = this.getCount();
+    if (count == null) // no limit, keep going
         return this.firstChild;
 
-    if (this.currentIteration > this.count) {
+    if (this.currentIteration > count) {
         this.currentIteration = 0;
         return this.next;
     }
