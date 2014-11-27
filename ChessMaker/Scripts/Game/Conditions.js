@@ -318,15 +318,20 @@ Conditions_Threatened.prototype.isSatisfied = function (move, game) {
 };
 
 Conditions_Threatened.prototype.isThreatened = function (move, game, pos) {
-    // todo: look at all opponent players, rather than just the next one, in order, once the game turn order is properly implemented
-    var opponent = game.currentPlayer.nextPlayer;
-    for (var i = 0; i < opponent.piecesOnBoard.length; i++) {
-        var piece = opponent.piecesOnBoard[i];
-        var moves = piece.determinePossibleMoves(game);
+    for (var p = 0; p < game.players.length; p++) {
+        var opponent = game.players[p];
 
-        for (var j = 0; j < moves.length; j++)
-            if (moves[j].threatens(pos))
-                return true;
+        if (move.player.getRelationship(opponent) != Player.Relationship.Enemy)
+            continue;
+
+        for (var i = 0; i < opponent.piecesOnBoard.length; i++) {
+            var piece = opponent.piecesOnBoard[i];
+            var moves = piece.determinePossibleMoves(game);
+
+            for (var j = 0; j < moves.length; j++)
+                if (moves[j].threatens(pos))
+                    return true;
+        }
     }
     return false;
 };

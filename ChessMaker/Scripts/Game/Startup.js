@@ -2,6 +2,7 @@
 function loadDefinition(xml) {
     game = Game.parse(xml, document.getElementById('main'));
     initializeUI();
+    game.startNextTurn();
 }
 
 function initializeUI() {
@@ -16,6 +17,14 @@ function initializeUI() {
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
 
+    // calculate column positions within captured piece controls
+    var listX = 25, listXStep = 50; // stepListX should be calculated based on the pixel width of ... either of the two containers. Probably. And whether or not we have multiple columns.
+    for (var i = 0; i < game.players.length; i++) {
+        var player = game.players[i];
+        player.pieceListX = listX;
+        listX += listXStep;
+    }
+
     $('#moveHistory').slideDown();
 
     if (game.showCaptured)
@@ -27,8 +36,6 @@ function initializeUI() {
         $('#heldSection').slideDown();
     else
         $('#heldSection').remove();
-
-    game.startNextTurn();
 }
 
 function cellClicked(e) {

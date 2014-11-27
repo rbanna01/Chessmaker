@@ -11,19 +11,13 @@ AI_AlphaBeta.prototype.selectMove = function () {
     var bestScore = Number.NEGATIVE_INFINITY;
     var bestMoves = [];
     var pieces = player.piecesOnBoard.slice();
+
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
         var moves = piece.cachedMoves;
         for (var j = 0; j < moves.length; j++) {
             var move = moves[j];
-
-            move.perform(game, false);
-
-            var score;
-            if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
-                score = -this.findBestScore(player.nextPlayer, -beta, -alpha, this.ply - 1);
-            else
-                score = this.findBestScore(player.nextPlayer, alpha, beta, this.ply - 1);
+            var score = this.getMoveScore(move, alpha, beta, this.ply);
 
             if (score > bestScore) {
                 bestScore = score;
@@ -31,8 +25,6 @@ AI_AlphaBeta.prototype.selectMove = function () {
             }
             else if (score == bestScore)
                 bestMoves.push(move);
-
-            move.reverse(game, false);
         }
     }
 
@@ -52,25 +44,7 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
 
         for (var j = 0; j < moves.length; j++) {
             anyMoves = true;
-            var move = moves[j];
-
-            move.perform(game, false);
-
-            var victor = game.checkForEnd();
-            if (victor !== undefined) {
-                move.reverse(game, false);
-                if (victor == null)
-                    return 0;
-                return player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
-            }
-
-            var score;
-            if (player.getRelationship(player.nextPlayer) == Player.Relationship.Enemy)
-                score = -this.findBestScore(player.nextPlayer, -beta, -alpha, depth - 1);
-            else
-                score = this.findBestScore(player.nextPlayer, alpha, beta, depth - 1);
-
-            move.reverse(game, false);
+            var score = this.getMoveScore(moves[j], alpha, beta, depth);
 
             if (score >= beta)
                 return beta;
@@ -83,6 +57,31 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
         return 0; // stalemate, if nothing can move
 
     return alpha;
+}
+
+AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
+    move.perform(game, false);
+
+    var score;
+    var victor = game.checkForEnd();
+    if (victor !== undefined) {
+        if (victor == null)
+            score = 0;
+        else
+            score = move.player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+    }
+    else {
+        var nextPlayer = game.turnOrder.getNextPlayer();
+        if (move.player.getRelationship(nextPlayer) == Player.Relationship.Enemy)
+            score = -this.findBestScore(nextPlayer, -beta, -alpha, depth - 1);
+        else
+            score = this.findBestScore(nextPlayer, alpha, beta, depth - 1);
+
+        game.turnOrder.stepBackward();
+    }
+
+    move.reverse(game, false);
+    return score;
 }
 
 AI_AlphaBeta.prototype.evaluateBoard = function (player) {

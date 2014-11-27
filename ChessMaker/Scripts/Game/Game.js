@@ -81,29 +81,14 @@ Game.prototype.parseRules = function (xml) {
     //var endOfGame = turnOrder.nextSibling;
 };
 
-Game.prototype.setupTurnOrder = function () {
-    // set up a cycle between the players. At some point, this is presumably gonna need to be more complex.
-    var prevPlayer = null, firstPlayer = null;
-    var listX = 25, listXStep = 50; // stepListX should be calculated based on the pixel width of ... either of the two containers. Probably. And whether or not we have multiple columns.
-
-    for (var i = 0; i < this.players.length; i++) {
-        var player = this.players[i];
-        if (prevPlayer == null)
-            firstPlayer = player;
-        else
-            prevPlayer.nextPlayer = player;
-
-        player.pieceListX = listX;
-        listX += listXStep;
-
-        prevPlayer = player;
-    }
-    prevPlayer.nextPlayer = firstPlayer;
-    this.currentPlayer = firstPlayer;
-};
-
 Game.prototype.checkForEnd = function () {
     // return the victor, or null if nobody wins. return undefined if the game isn't over yet.
+
+    // if the next player is null, we've reached the end of the turn order
+    var nextPlayer = this.turnOrder.getNextPlayer();
+    if (nextPlayer == null)
+        return null; // todo: this should consider the endOfGame rules, but we ALWAYS want to end the game in this scenario
+    this.turnOrder.stepBackward();
 
     // for now, just count remaining pieces. Eventually, should look at victory conditions.
     var playerWithPieces = null;
@@ -117,7 +102,7 @@ Game.prototype.checkForEnd = function () {
             return undefined; // multiple players still have pieces, game is not over.
     }
 
-    // return null if nobody has pieces left: stalemate. Otherwise, only one player has pieces left: they win.
+    // return null if nobody has pieces left: this is stalemate. Otherwise, only one player has pieces left: they win.
     return playerWithPieces;
 };
 
@@ -139,11 +124,12 @@ Game.prototype.endTurn = function (cannotMove) {
         return;
     }
 
-    this.currentPlayer = this.currentPlayer.nextPlayer;
     this.startNextTurn();
 };
 
 Game.prototype.startNextTurn = function () {
+    this.currentPlayer = this.turnOrder.getNextPlayer();
+
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
     if (!this.ensureUniqueMoveNotation()) {

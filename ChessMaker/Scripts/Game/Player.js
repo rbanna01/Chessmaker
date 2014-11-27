@@ -1,7 +1,6 @@
 ﻿function Player(name, forwardDir) {
     this.name = name;
     this.forwardDir = forwardDir;
-    this.nextPlayer = null;
     this.type = Player.Type.Local;
     this.AI = null;
     this.pieceListX = 0;
@@ -74,8 +73,6 @@ Player.parseAll = function (xml, game, boardSVG) {
             }
         }
     }
-
-    game.setupTurnOrder();
 }
 
 // whether its a global, relative or group name, this should output an array of resultant global directions

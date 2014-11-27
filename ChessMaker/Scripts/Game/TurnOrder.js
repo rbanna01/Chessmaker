@@ -23,7 +23,7 @@ TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
 
     var children = xmlNode.childNodes;
 
-    var first = null; var prev = null;
+    var firstChild = null; var lastChild = null;
 
     for (var i = 0; i < children.length; i++) {
         var childNode = children[i];
@@ -40,17 +40,20 @@ TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
         }
 
         if (i == 0)
-            first = child;
-        else
-            prev.next = child;
-        prev = child;
+            firstChild = child;
+        else {
+            lastChild.next = child;
+            child.prev = lastChild;
+        }
+        lastChild = child;
     }
     
     if (topLevel)
-        return first;
+        return firstChild;
 
-    var repeat = new TurnRepeat(count, first);
-    prev.next = repeat;
+    var repeat = new TurnRepeat(count, firstChild, lastChild);
+    firstChild.prev = repeat;
+    lastChild.next = repeat;
 
     return repeat;
 };
@@ -68,33 +71,60 @@ TurnOrder.prototype.getNextPlayer = function (xml) {
     return this.currentStep.player;
 };
 
-function TurnRepeat(count, firstChild) {
+TurnOrder.prototype.stepBackward = function () {
+    if (this.currentStep == null)
+        return;
+
+    do {
+        this.currentStep = this.currentStep.getPrev();
+        if (this.currentStep == null)
+            break;
+    } while (this.currentStep.isGroup);
+};
+
+function TurnRepeat(count, firstChild, lastChild) {
     this.currentIteration = 0;
     this.count = count;
     this.firstChild = firstChild;
+    this.lastChild = lastChild;
     this.next = null;
+    this.prev = null;
     this.isGroup = true;
 }
 
 TurnRepeat.prototype.getNext = function () {
+    this.currentIteration++;
     if (this.count == null) // no limit, keep going
         return this.firstChild;
 
-    if (this.currentIteration == this.count) {
+    if (this.currentIteration > this.count) {
         this.currentIteration = 0;
         return this.next;
     }
 
-    this.currentIteration++;
     return this.firstChild;
+};
+
+TurnRepeat.prototype.getPrev = function () {
+    this.currentIteration--;
+
+    if (this.currentIteration == 0)
+        return this.prev;
+    
+    return this.lastChild;
 };
 
 function TurnStep(player) {
     this.player = player;
     this.next = null;
+    this.prev = null;
     this.isGroup = false;
 }
 
 TurnStep.prototype.getNext = function () {
     return this.next;
+};
+
+TurnStep.prototype.getPrev = function () {
+    return this.prev;
 };
