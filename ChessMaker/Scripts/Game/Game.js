@@ -3,6 +3,7 @@
     this.players = [];
     this.currentPlayer = null;
     this.turnOrder = null;
+    this.endOfGame = null;
     this.moveNumber = 1;
     this.showCaptured = true;
     this.showHeld = false;
@@ -51,6 +52,7 @@ Game.parse = function (xml, boardRootElement) {
     if (rulesXml != null && rulesXml.nodeName == 'rules')
         game.parseRules(rulesXml);
     else {
+        game.parseRules(null);
         rulesXml = setupXml;
         console.log('can\'t find "rules" node in game definition');
     }
@@ -75,42 +77,34 @@ Game.parse = function (xml, boardRootElement) {
 };
 
 Game.prototype.parseRules = function (xml) {
-    var turnOrder = xml.firstChild;
-    this.turnOrder = TurnOrder.parse(turnOrder, this);
+    var turnOrder = xml == null ? null : xml.firstChild;
+    var endOfGame = null;
+    if (turnOrder != null && turnOrder.nodeName == 'turnOrder') {
+        this.turnOrder = TurnOrder.parse(turnOrder, this);
+        endOfGame = turnOrder.nextSibling;
+    }
+    else {
+        this.turnOrder = TurnOrder.createDefault(this);
 
-    //var endOfGame = turnOrder.nextSibling;
-};
-
-Game.prototype.checkForEnd = function () {
-    // return the victor, or null if nobody wins. return undefined if the game isn't over yet.
-
-    // if the next player is null, we've reached the end of the turn order
-    var nextPlayer = this.turnOrder.getNextPlayer();
-    if (nextPlayer == null)
-        return null; // todo: this should consider the endOfGame rules, but we ALWAYS want to end the game in this scenario
-    this.turnOrder.stepBackward();
-
-    // for now, just count remaining pieces. Eventually, should look at victory conditions.
-    var playerWithPieces = null;
-    for (var i = 0; i < this.players.length; i++) {
-        var player = this.players[i];
-        if (player.piecesOnBoard.length == 0)
-            continue;
-        else if (playerWithPieces == null)
-            playerWithPieces = player;
-        else
-            return undefined; // multiple players still have pieces, game is not over.
+        if (turnOrder != null)
+            endOfGame = turnOrder;
+        console.log('can\'t find "turnOrder" node within "rules" section of game definition');
     }
 
-    // return null if nobody has pieces left: this is stalemate. Otherwise, only one player has pieces left: they win.
-    return playerWithPieces;
+    if (endOfGame != null && endOfGame.nodeName == 'endOfGame') {
+        this.endOfGame = EndOfGame.parse(endOfGame, this);
+    }
+    else {
+        this.endOfGame = EndOfGame.createDefault(this);
+        console.log('can\'t find "endOfGame" node within "rules" section of game definition');
+    }
 };
 
 Game.prototype.endTurn = function (cannotMove) {
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
         this.currentPlayer.piecesOnBoard[i].cachedMoves = null;
 
-    var victor = this.checkForEnd();
+    var victor = this.endOfGame.check();
     if (cannotMove !== undefined && victor === undefined)
         victor = null;
     if (victor !== undefined) {

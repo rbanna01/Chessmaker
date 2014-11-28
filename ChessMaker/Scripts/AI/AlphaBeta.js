@@ -63,7 +63,7 @@ AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     move.perform(game, false);
 
     var score;
-    var victor = game.checkForEnd();
+    var victor = game.endOfGame.check();
     if (victor !== undefined) {
         if (victor == null)
             score = 0;

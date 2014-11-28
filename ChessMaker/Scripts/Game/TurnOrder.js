@@ -58,6 +58,35 @@ TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
     return repeat;
 };
 
+TurnOrder.createDefault = function (game) {
+    var turnOrder = new TurnOrder();
+
+    var firstP = null; var lastP = null;
+    for (var i = 0; i < game.players.length; i++) {
+        var player = game.players[i];
+        
+        var p = new TurnStep(player);
+        if (i == 0)
+            firstP = p;
+        else {
+            lastP.next = p;
+            p.prev = lastP;
+        }
+        lastP = p;
+    }
+
+    var repeat = new TurnRepeat(null, firstP, lastP);
+
+    firstP.prev = repeat;
+    lastP.next = repeat;
+
+    var fakeStep = new TurnStep(null);
+    fakeStep.next = repeat;
+    turnOrder.currentStep = fakeStep;
+
+    return turnOrder;
+};
+
 TurnOrder.prototype.getNextPlayer = function (xml) {
     if (this.currentStep == null)
         return null;

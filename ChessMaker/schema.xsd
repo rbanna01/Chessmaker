@@ -498,6 +498,15 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="turnOrder" type="turnOrder" />
+							<xs:element name="endOfGame">
+								<xs:complexType>
+									<xs:choice minOccurs="0" maxOccurs="unbounded">
+										<xs:element name="win" type="conditions"/>
+										<xs:element name="lose" type="conditions"/>
+										<xs:element name="draw" type="conditions"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
