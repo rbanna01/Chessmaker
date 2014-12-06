@@ -33,7 +33,7 @@ AI_AlphaBeta.prototype.selectMove = function () {
 };
 
 AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
-    if (depth == 0) // or if this is the end of the game...
+    if (depth == 0)
         return this.evaluateBoard(player);
 
     var anyMoves = false;
@@ -43,7 +43,13 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
         var moves = piece.determinePossibleMoves(game);
 
         for (var j = 0; j < moves.length; j++) {
-            anyMoves = true;
+            if (!anyMoves) {
+                anyMoves = true;
+
+                var resultScore = this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(anyMoves));
+                if (resultScore !== undefined)
+                    return resultScore;
+            }
             var score = this.getMoveScore(moves[j], alpha, beta, depth);
 
             if (score >= beta)
@@ -54,7 +60,7 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
     }
 
     if (!anyMoves)
-        return 0; // stalemate, if nothing can move
+        return this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(anyMoves));
 
     return alpha;
 }
@@ -62,16 +68,11 @@ AI_AlphaBeta.prototype.findBestScore = function (player, alpha, beta, depth) {
 AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     move.perform(game, false);
 
-    var score;
-    var victor = game.endOfGame.check();
-    if (victor !== undefined) {
-        if (victor == null)
-            score = 0;
-        else
-            score = move.player.getRelationship(victor) == Player.Relationship.Enemy ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
-    }
-    else {
+    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn());
+    
+    if (score === undefined) {
         var nextPlayer = game.turnOrder.getNextPlayer();
+
         if (move.player.getRelationship(nextPlayer) == Player.Relationship.Enemy)
             score = -this.findBestScore(nextPlayer, -beta, -alpha, depth - 1);
         else
@@ -82,7 +83,20 @@ AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
 
     move.reverse(game, false);
     return score;
-}
+};
+
+AI_AlphaBeta.prototype.getScoreForEndOfGame = function (result) {
+    switch(result){
+        case EndOfGame.Type.Win:
+            return Number.POSITIVE_INFINITY;
+        case EndOfGame.Type.Lose:
+            return Number.NEGATIVE_INFINITY;
+        case EndOfGame.Type.Draw:
+            return 0;
+        default:
+            return undefined;
+    }
+};
 
 AI_AlphaBeta.prototype.evaluateBoard = function (player) {
     var score = 0;

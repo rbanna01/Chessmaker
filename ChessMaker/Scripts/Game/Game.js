@@ -100,21 +100,13 @@ Game.prototype.parseRules = function (xml) {
     }
 };
 
-Game.prototype.endTurn = function (cannotMove) {
+Game.prototype.endTurn = function () {
     for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
         this.currentPlayer.piecesOnBoard[i].cachedMoves = null;
 
-    var victor = this.endOfGame.check();
-    if (cannotMove !== undefined && victor === undefined)
-        victor = null;
-    if (victor !== undefined) {
-        var text;
-        if (victor == null)
-            text = 'Game finished, stalemate';
-        else
-            text = 'Game finished, ' + victor.name + ' wins';
-        $('#nextMove').text(text);
-        $('#wait').hide();
+    var result = this.endOfGame.checkEndOfTurn();
+    if (result !== undefined) {
+        this.processEndOfGame(result);
         return;
     }
 
@@ -126,8 +118,10 @@ Game.prototype.startNextTurn = function () {
 
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
-    if (!this.ensureUniqueMoveNotation()) {
-        this.endTurn(true); // no available moves (stalemate)
+    var anyPossibleMoves = this.ensureUniqueMoveNotation();
+    var result = this.endOfGame.checkStartOfTurn(anyPossibleMoves);
+    if (result !== undefined) {
+        this.processEndOfGame(result);
         return;
     }
 
@@ -144,6 +138,35 @@ Game.prototype.startNextTurn = function () {
                 game.performMove(move);
             }, 1);
     }
+};
+
+Game.prototype.processEndOfGame = function (result) {
+    if (result == EndOfGame.Type.Win)
+        this.endGame(this.currentPlayer);
+    else if (result == EndOfGame.Type.Draw)
+        this.endGame(null);
+    else if (result == EndOfGame.Type.Lose) {
+        if (game.players.length == 2) {
+            var other = game.players[0];
+            if (other == game.currentPlayer)
+                other = game.players[1];
+            this.endGame(other);
+        }
+        else {
+            // the current player should be removed from the game. If none remain, game is drawn. If one remains, they win. Otherwise, it continues.
+            throw "Can't (yet) handle a player losing in a game that doesn't have two players.";
+        }
+    }
+};
+
+Game.prototype.endGame = function (victor) {
+    var text;
+    if (victor == null)
+        text = 'Game finished, stalemate';
+    else
+        text = 'Game finished, ' + victor.name + ' wins';
+    $('#nextMove').text(text);
+    $('#wait').hide();
 };
 
 Game.prototype.ensureUniqueMoveNotation = function () {

@@ -45,6 +45,13 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="gameEndConditionApplicability">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="startOfTurn" />
+			<xs:enumeration value="endOfTurn" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:complexType name="conditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="and" type="conditions"/>
@@ -199,6 +206,21 @@
   </xs:element>
   -->
 		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="gameEndConditions">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="cannotMove">
+				<xs:complexType>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="threatened">
+				<xs:complexType>
+					<xs:attribute name="type" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="when" type="gameEndConditionApplicability" use="required" />
 	</xs:complexType>
 
 	<xs:simpleType name="when">
@@ -494,22 +516,6 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="rules">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="turnOrder" type="turnOrder" />
-							<xs:element name="endOfGame">
-								<xs:complexType>
-									<xs:choice minOccurs="0" maxOccurs="unbounded">
-										<xs:element name="win" type="conditions"/>
-										<xs:element name="lose" type="conditions"/>
-										<xs:element name="draw" type="conditions"/>
-									</xs:choice>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
 				<xs:element name="setup">
 					<xs:complexType>
 						<xs:sequence>
@@ -530,8 +536,23 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="rules">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="turnOrder" type="turnOrder" />
+							<xs:element name="endOfGame">
+								<xs:complexType>
+									<xs:choice minOccurs="0" maxOccurs="unbounded">
+										<xs:element name="win" type="gameEndConditions"/>
+										<xs:element name="lose" type="gameEndConditions"/>
+										<xs:element name="draw" type="gameEndConditions"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
 </xs:schema>

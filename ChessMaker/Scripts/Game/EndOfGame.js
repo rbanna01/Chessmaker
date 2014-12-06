@@ -1,6 +1,7 @@
 ﻿function EndOfGame(game) {
     this.game = game;
-    this.checks = [];
+    this.startOfTurnChecks = [];
+    this.endOfTurnChecks = [];
 }
 
 EndOfGame.parse = function (xmlNode, game) {
@@ -13,17 +14,20 @@ EndOfGame.parse = function (xmlNode, game) {
         var checkType;
         switch (childNode.nodeName) {
             case 'win':
-                checkType = EndOfGame.CheckType.Win; break;
+                checkType = EndOfGame.Type.Win; break;
             case 'lose':
-                checkType = EndOfGame.CheckType.Lose; break;
+                checkType = EndOfGame.Type.Lose; break;
             case 'draw':
-                checkType = EndOfGame.CheckType.Draw; break;
+                checkType = EndOfGame.Type.Draw; break;
             default:
                 throw 'Unexpected endOfGame node type: ' + childNode.name;
         }
 
-        var conditions = Conditions.parse(childNode);
-        endOfGame.checks.push(new EndOfGameCheck(checkType, conditions));
+        var conditions = EndOfGameConditions.parse(childNode);
+
+        var stage = childNode.getAttribute('when');
+        var checkList = stage == 'startOfTurn' ? endOfGame.startOfTurnChecks : endOfGame.endOfTurnChecks;
+        checkList.push(new EndOfGameCheck(checkType, conditions));
     }
 
     return endOfGame;
@@ -32,61 +36,57 @@ EndOfGame.parse = function (xmlNode, game) {
 EndOfGame.createDefault = function (game) {
     var endOfGame = new EndOfGame(game);
 
-    var condition = new Conditions();
+    var condition = new EndOfGameConditions();
     // add a <pieceCount owner="self" check="equals">0</pieceCount> condition here
-    var outOfPieces = new EndOfGameCheck(EndOfGame.CheckType.Lose, condition);
-    endOfGame.checks.push(outOfPieces);
+    var outOfPieces = new EndOfGameCheck(EndOfGame.Type.Lose, condition);
+    endOfGame.startOfTurnChecks.push(outOfPieces);
 
     condition = new Conditions();
     // add a <cannotMove /> condition here
-    var outOfMoves = new EndOfGameCheck(EndOfGame.CheckType.Draw, condition);
-    endOfGame.checks.push(outOfMoves);
+    var outOfMoves = new EndOfGameCheck(EndOfGame.Type.Draw, condition);
+    endOfGame.startOfTurnChecks.push(outOfMoves);
 
     return endOfGame;
 };
 
-EndOfGame.prototype.check = function () {
-    // return the victor, or null if nobody wins. return undefined if the game isn't over yet.
+EndOfGame.prototype.checkStartOfTurn = function (anyPossibleMoves) {
+    // return Win/Lose/Draw, or undefined if the game isn't over yet
 
-    // if the next player is null, we've reached the end of the turn order
-    var nextPlayer = this.game.turnOrder.getNextPlayer();
-    if (nextPlayer == null)
-        return null; // todo: this should consider the stated conditions, but we ALWAYS want to end the game in this scenario. Save off a special "out of turns" conditions?
-    this.game.turnOrder.stepBackward();
-
-    /*
-    for (var i = 0; i < this.checks.length; i++) {
-        var check = this.checks[i];
-        if (check.conditions.isSatisfied(MOVE_ARGH_DONT_HAVE_A_MOVE, this.game))
-            switch (check.type) {
-                case EndOfGame.CheckType.Win:
-                    return this.game.currentPlayer;
-                case EndOfGame.CheckType.Lose:
-                    ;// argh, somehow remove this player from the runnings, but don't end the game if there's more than one TEAM remaining ... ack
-                    break;
-                case EndOfGame.CheckType.Draw:
-                    return null;
-            }
-    }
-    */
-
-    // for now, just count remaining pieces. Eventually, should look at victory conditions.
-    var playerWithPieces = null;
-    for (var i = 0; i < this.game.players.length; i++) {
-        var player = this.game.players[i];
-        if (player.piecesOnBoard.length == 0)
-            continue;
-        else if (playerWithPieces == null)
-            playerWithPieces = player;
-        else
-            return undefined; // multiple players still have pieces, game is not over.
+    for (var i = 0; i < this.startOfTurnChecks.length; i++) {
+        var check = this.startOfTurnChecks[i];
+        if (check.conditions.isSatisfied(this.game, anyPossibleMoves))
+            return check.type;
     }
 
-    // return null if nobody has pieces left: this is stalemate. Otherwise, only one player has pieces left: they win.
-    return playerWithPieces;
+    if (anyPossibleMoves)
+        return undefined;
+
+    if (this.game.currentPlayer.piecesOnBoard.length == 0)
+        return EndOfGame.Type.Lose; // can't move and have no pieces. lose.
+
+    return EndOfGame.Type.Draw; // can't move, but have pieces. draw.
 };
 
-EndOfGame.CheckType = {
+EndOfGame.prototype.checkEndOfTurn = function () {
+    // return Win/Lose/Draw, or undefined if the game isn't over yet
+
+    var noNextPlayer = this.game.turnOrder.getNextPlayer() == null;
+    this.game.turnOrder.stepBackward();
+
+    for (var i = 0; i < this.endOfTurnChecks.length; i++) {
+        var check = this.endOfTurnChecks[i];
+        if (check.conditions.isSatisfied(this.game, true))
+            return check.type;
+    }
+
+    // if the next player is null, we've reached the end of the turn order
+    if (noNextPlayer)
+        return EndOfGame.Type.Draw;
+
+    return undefined;
+};
+
+EndOfGame.Type = {
     Win: 0,
     Lose: 1,
     Draw: 2
@@ -96,3 +96,65 @@ function EndOfGameCheck(type, conditions) {
     this.type = type;
     this.conditions = conditions;
 }
+
+function EndOfGameConditions() {
+    this.elements = [];
+}
+
+EndOfGameConditions.parse = function (xmlNode) {
+    var conditions = new EndOfGameConditions();
+    xmlNode = xmlNode.firstChild;
+
+    while (xmlNode != null) {
+        switch(xmlNode.nodeName)
+        {
+            case 'cannotMove':
+                conditions.elements.push(EndOfGameConditions_cannotMove.parse(xmlNode));
+                break;
+            case 'threatened':
+                conditions.elements.push(EndOfGameConditions_threatened.parse(xmlNode));
+                break;
+
+            default:
+                console.log("Unrecognised end-of-game condition type: " + xmlNode.nodeName);
+                break;
+        }
+
+        xmlNode = xmlNode.nextSibling;
+    }
+};
+
+function EndOfGameConditions_cannotMove() {
+    
+}
+
+EndOfGameConditions_cannotMove.parse = function (xmlNode) {
+    return new EndOfGameConditions_cannotMove();
+};
+
+EndOfGameConditions_cannotMove.prototype.isSatisfied = function (game, canMove) {
+    return !canMove;
+};
+
+function EndOfGameConditions_threatened(pieceType) {
+    this.pieceType = pieceType;
+}
+
+EndOfGameConditions_threatened.parse = function (xmlNode) {
+    var type = xmlNode.getAttribute('type');
+    return new EndOfGameConditions_threatened(type);
+};
+
+EndOfGameConditions_threatened.prototype.isSatisfied = function (game, canMove) {
+    var pieces = game.currentPlayer.piecesOnBoard;
+    for (var i = 0; i < pieces.length; i++) {
+        var piece = pieces[i];
+        if (piece.pieceType.name != this.pieceType)
+            continue;
+
+        if (piece.isThreatenedAt(piece.position))
+            return true;
+    }
+
+    return false;
+};
