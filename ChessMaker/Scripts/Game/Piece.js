@@ -7,49 +7,9 @@
     this.stateOwner = stateOwner;
     this.moveNumber = 1;      // how is this set, when loaded?
     this.lastMoveTurn = 0; // how is this set, when loaded?
-
-    this.cachedMoves = null;
 }
 
 Piece.nextID = 1;
-
-Piece.prototype.determinePossibleMoves = function (game) {
-    var moves = [];
-
-    if (this.pieceState == Piece.State.OnBoard) {
-        var moveTemplate = new Move(this.ownerPlayer, this, this.position, game.moveNumber);
-
-        /*// get promotion possibilities
-        this.pieceType.promotionOpportunities.each(function (op) {
-            if (!op.mandatory && op.type != PromotionType.EndOfMove && op.isAvailable(moveTemplate, game))
-                op.options.each(function (option) {
-                    piece.possibleMoves.push(new Promotion(piece.ownerPlayer, piece, option, game.moveNumber, op.type == PromotionType.CountsAsMove));
-                });
-        });
-        */
-        // and then get move possibilities
-        for (var i = 0; i < this.pieceType.moves.length; i++) {
-            var move = this.pieceType.moves[i];
-            var possibilities = move.appendValidNextSteps(moveTemplate, this, game, null);
-            for (var j = 0; j < possibilities.length; j++)
-                moves.push(possibilities[j]);
-        }
-    }/*
-    else if (this.pieceState == Piece.State.Held) {
-        game.board.cells.items.each(function (coord, cell) {
-            if (cell.value != Board.CellType.Normal)
-                return;
-
-            var move = new Move(piece.ownerPlayer, piece, null, game.moveNumber, true);
-            move.addStep(MoveStep.CreateDrop(piece, coord, piece.ownerPlayer));
-
-            if (game.rules.dropPiecesWhen == null || game.rules.dropPiecesWhen.isSatisfied(move, game))
-                piece.possibleMoves.push(move);
-        });
-    }*/
-
-    return moves;
-};
 
 Piece.prototype.canCapture = function (targetPiece) {
     return this.ownerPlayer.getRelationship(targetPiece.ownerPlayer) == Player.Relationship.Enemy;

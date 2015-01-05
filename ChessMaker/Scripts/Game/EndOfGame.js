@@ -101,6 +101,10 @@ function EndOfGameConditions() {
     this.elements = [];
 }
 
+EndOfGameConditions.prototype.isSatisfied = function (game, canMove) {
+    return false;
+};
+
 EndOfGameConditions.parse = function (xmlNode) {
     var conditions = new EndOfGameConditions();
     xmlNode = xmlNode.firstChild;

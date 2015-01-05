@@ -324,14 +324,11 @@ Conditions_Threatened.prototype.isThreatened = function (move, game, pos) {
         if (move.player.getRelationship(opponent) != Player.Relationship.Enemy)
             continue;
 
-        for (var i = 0; i < opponent.piecesOnBoard.length; i++) {
-            var piece = opponent.piecesOnBoard[i];
-            var moves = piece.determinePossibleMoves(game);
+        var moves = move.subsequentState.determinePossibleMoves(opponent);
 
-            for (var j = 0; j < moves.length; j++)
-                if (moves[j].threatens(pos))
-                    return true;
-        }
+        for (var i = 0; i < moves.length; i++)
+            if (moves[i].threatens(pos))
+                return true;
     }
     return false;
 };

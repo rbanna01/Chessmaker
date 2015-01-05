@@ -3,6 +3,7 @@
     this.players = [];
     this.currentPlayer = null;
     this.turnOrder = null;
+    this.state = null;
     this.endOfGame = null;
     this.moveNumber = 1;
     this.showCaptured = true;
@@ -100,25 +101,23 @@ Game.prototype.parseRules = function (xml) {
     }
 };
 
-Game.prototype.endTurn = function () {
-    for (var i = 0; i < this.currentPlayer.piecesOnBoard.length; i++)
-        this.currentPlayer.piecesOnBoard[i].cachedMoves = null;
-
+Game.prototype.endTurn = function (newState) {
     var result = this.endOfGame.checkEndOfTurn();
     if (result !== undefined) {
         this.processEndOfGame(result);
         return;
     }
 
+    this.state = newState;
     this.startNextTurn();
 };
 
-Game.prototype.startNextTurn = function () {
+Game.prototype.startNextTurn = function (state) {
     this.currentPlayer = this.turnOrder.getNextPlayer();
 
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
-    var anyPossibleMoves = this.ensureUniqueMoveNotation();
+    var anyPossibleMoves = this.state.prepareMovesForTurn();
     var result = this.endOfGame.checkStartOfTurn(anyPossibleMoves);
     if (result !== undefined) {
         this.processEndOfGame(result);
@@ -169,42 +168,10 @@ Game.prototype.endGame = function (victor) {
     $('#wait').hide();
 };
 
-Game.prototype.ensureUniqueMoveNotation = function () {
-    // calculate all moves, which pieces store internally. this just ensures they all have unique notation, whereas doing it one piece at a time wouldn't.
-    var allMoves = {};
-    var anyMoves = false;
-
-    var pieces = this.currentPlayer.piecesOnBoard.slice();
-    for (var i = 0; i < pieces.length; i++) {
-        var piece = pieces[i];
-        var movesForThisPiece = piece.determinePossibleMoves(this);
-        piece.cachedMoves = movesForThisPiece;
-
-        for (var j = 0; j < movesForThisPiece.length; j++) {
-            var move = movesForThisPiece[j];
-
-            for (var detailLevel = 1; detailLevel <= Move.maxNotationDetail; detailLevel++) {
-                anyMoves = true;
-                var notation = move.determineNotation(detailLevel);
-
-                if (allMoves.hasOwnProperty(notation)) {
-                    // another move uses this notation. Calculate a new, more-specific notation for that other move.
-                    var other = allMoves[notation];
-                    var otherNot = other.determineNotation(detailLevel + 1);
-                    allMoves[otherNot] = other;
-                }
-                else {
-                    allMoves[notation] = move;
-                    break;
-                }
-            }
-        }
-    }
-    return anyMoves;
-};
-
 Game.prototype.showMoveOptions = function (piece) {
-    var moves = piece.cachedMoves;
+    var moves = this.state.possibleMovesByPiece[piece.elementID];
+    if (moves === undefined)
+        return;
     for (var i = 0; i < moves.length; i++) {
         var destCell = moves[i].getEndPos();
         var img = destCell.getImage();
@@ -218,9 +185,10 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
     if (piece.ownerPlayer === undefined)
         console.log('piece.ownerPlayer is undefined');
 
-    var moves = piece.cachedMoves;
+    var moves = this.state.possibleMovesByPiece[piece.elementID];
     for (var i = 0; i < moves.length; i++) {
-        var move = moves[i]
+        var move = moves[i];
+
         var destCell = move.getEndPos();
         if (destCell != cell)
             continue;
@@ -233,7 +201,7 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
 Game.prototype.performMove = function (move) {
     if (move.perform(this, true)) {
         this.logMove(this.currentPlayer, move);
-        this.endTurn();
+        this.endTurn(move.subsequentState);
     }
     else
         console.log('unable to perform move');

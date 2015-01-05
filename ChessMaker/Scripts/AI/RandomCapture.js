@@ -3,15 +3,9 @@
 }
 
 // Picks from all available CAPTURE moves, completely randomly.
-// If there are non, picks from all available moves, completely randomly.
+// If there are none, picks from all available moves, completely randomly.
 AI_RandomCapture.prototype.selectMove = function () {
-    var player = game.currentPlayer;
-
-    var allMoves = [];
-    for (var i = 0; i < player.piecesOnBoard.length; i++) {
-        var piece = player.piecesOnBoard[i];
-        allMoves = allMoves.concat(piece.cachedMoves);
-    }
+    var allMoves = game.state.possibleMoves;
 
     var captures = [];
     for (var i = 0; i < allMoves.length; i++) {

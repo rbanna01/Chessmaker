@@ -1,6 +1,8 @@
 ﻿function Move(player, piece, startPos, moveNum) {
     this.player = player;
     this.piece = piece;
+    this.subsequentState = new GameState(game, this);
+
     this.startPos = startPos;
     this.moveNumber = moveNum;
     this.notation = '';

@@ -2,6 +2,7 @@
 function loadDefinition(xml) {
     game = Game.parse(xml, document.getElementById('main'));
     initializeUI();
+    game.state = new GameState(game, null);
     game.startNextTurn();
 }
 
