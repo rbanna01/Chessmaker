@@ -1,4 +1,5 @@
 ﻿function MoveStep(piece) {
+    this.stepID = MoveStep.nextStepID++;
     this.piece = piece;
     this.fromState = null;
     this.toState = null;
@@ -13,6 +14,8 @@
 
     this.direction = null; // used only for resolving relative directions of subsequent steps
 }
+
+MoveStep.nextStepID = 1;
 
 MoveStep.prototype.perform = function (game, updateDisplay) {
     if (!this.pickup(this.fromState, this.fromStateOwner, this.fromPos, this.fromOwner, this.fromType))

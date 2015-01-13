@@ -286,49 +286,46 @@ Conditions_Threatened.alreadyChecking = false; // when performing moves to check
 Conditions_Threatened.prototype.isSatisfied = function (move, game) {
     if (Conditions_Threatened.alreadyChecking)
         return true;
-    Conditions_Threatened.alreadyChecking = true;
 
+    Conditions_Threatened.alreadyChecking = true;
+    var retVal = this.checkSatisfied(move, game);
+    Conditions_Threatened.alreadyChecking = false;
+
+    return retVal;
+};
+
+Conditions_Threatened.prototype.checkSatisfied = function (move, game) {
     var step = move.steps[move.steps.length - 1]; // all steps except the current one will already have been performed
 
     if (this.start && step.fromState == Piece.State.OnBoard) {
-        var threatened = this.isThreatened(move, game, step.fromPos);
+        var prevStep = move.steps.length > 1 ? move.steps[move.steps.length - 2] : null;
+        var threatened = this.isThreatened(move, prevStep, game, step.fromPos);
         
-        if (threatened != this.value) {
-            Conditions_Threatened.alreadyChecking = false;
+        if (threatened != this.value)
             return false;
-        }
     }
 
     if (this.end && step.toState == Piece.State.OnBoard) {
-        if (!step.perform(game, false)) {
-            Conditions_Threatened.alreadyChecking = false;
+        if (!step.perform(game, false))
             return false;
-        }
-        var threatened = this.isThreatened(move, game, step.toPos);
+
+        var threatened = this.isThreatened(move, step, game, step.toPos);
         step.reverse(game, false);
 
-        if (threatened != this.value) {
-            Conditions_Threatened.alreadyChecking = false;
+        if (threatened != this.value)
             return false;
-        }
     }
 
-    Conditions_Threatened.alreadyChecking = false;
     return true;
 };
 
-Conditions_Threatened.prototype.isThreatened = function (move, game, pos) {
-    for (var p = 0; p < game.players.length; p++) {
-        var opponent = game.players[p];
+Conditions_Threatened.prototype.isThreatened = function (move, step, game, pos) {
 
-        if (move.player.getRelationship(opponent) != Player.Relationship.Enemy)
-            continue;
+    var moves = move.subsequentState.determineThreatMoves(move.player, step);
 
-        var moves = move.subsequentState.determinePossibleMoves(opponent);
+    for (var i = 0; i < moves.length; i++)
+        if (moves[i].wouldCapture(pos))
+            return true;
 
-        for (var i = 0; i < moves.length; i++)
-            if (moves[i].threatens(pos))
-                return true;
-    }
     return false;
 };

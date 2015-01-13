@@ -111,7 +111,7 @@ Move.prototype.isCapture = function () {
     return false;
 };
 
-Move.prototype.threatens = function (pos) {
+Move.prototype.wouldCapture = function (pos) {
     for (var i = 0; i < this.steps.length; i++) {
         var s = this.steps[i];
         if (s.piece != this.piece && s.toState != Piece.State.OnBoard && s.fromState == Piece.State.OnBoard && s.fromPos == pos)
