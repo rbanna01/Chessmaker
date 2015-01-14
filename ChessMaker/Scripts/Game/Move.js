@@ -45,6 +45,7 @@ Move.prototype.perform = function (game, updateDisplay) {
     this.piece.lastMoveTurn = game.moveNumber;
     this.piece.moveNumber++;
     game.moveNumber++;
+    this.subsequentState.currentPlayer = game.turnOrder.getNextPlayer();
     return true;
 };
 
@@ -62,6 +63,7 @@ Move.prototype.reverse = function (game, updateDisplay) {
     this.piece.lastMoveTurn = this.prevPieceMoveTurn;
     this.piece.moveNumber--;
     game.moveNumber--;
+    game.turnOrder.stepBackward();
     return true;
 };
 

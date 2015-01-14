@@ -60,7 +60,7 @@ EndOfGame.prototype.checkStartOfTurn = function (state, anyPossibleMoves) {
     if (anyPossibleMoves)
         return undefined;
 
-    if (state.game.currentPlayer.piecesOnBoard.length == 0)
+    if (state.currentPlayer.piecesOnBoard.length == 0)
         return EndOfGame.Type.Lose; // can't move and have no pieces. lose.
 
     return EndOfGame.Type.Draw; // can't move, but have pieces. draw.
@@ -149,7 +149,7 @@ EndOfGameConditions_threatened.parse = function (xmlNode) {
 };
 
 EndOfGameConditions_threatened.prototype.isSatisfied = function (state, canMove) {
-    var pieces = state.game.currentPlayer.piecesOnBoard;
+    var pieces = state.currentPlayer.piecesOnBoard;
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
         if (piece.pieceType.name != this.pieceType)

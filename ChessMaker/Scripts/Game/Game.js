@@ -1,7 +1,6 @@
 ﻿function Game() {
     this.board = null;
     this.players = [];
-    this.currentPlayer = null;
     this.turnOrder = null;
     this.state = null;
     this.endOfGame = null;
@@ -112,10 +111,8 @@ Game.prototype.endTurn = function (newState) {
     this.startNextTurn();
 };
 
-Game.prototype.startNextTurn = function (state) {
-    this.currentPlayer = this.turnOrder.getNextPlayer();
-
-    $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
+Game.prototype.startNextTurn = function () {
+    $('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
 
     var anyPossibleMoves = this.state.prepareMovesForTurn();
     var result = this.endOfGame.checkStartOfTurn(this.state, anyPossibleMoves);
@@ -124,15 +121,15 @@ Game.prototype.startNextTurn = function (state) {
         return;
     }
 
-    if (this.currentPlayer.type == Player.Type.Local)
+    if (this.state.currentPlayer.type == Player.Type.Local)
         $('#wait').hide();
     else {
         $('#wait').show();
 
-        if (this.currentPlayer.type == Player.Type.AI)
+        if (this.state.currentPlayer.type == Player.Type.AI)
             setTimeout(function () {
                 console.time('ai');
-                var move = game.currentPlayer.AI.selectMove();
+                var move = game.state.currentPlayer.AI.selectMove();
                 console.timeEnd('ai');
                 game.performMove(move);
             }, 1);
@@ -141,14 +138,14 @@ Game.prototype.startNextTurn = function (state) {
 
 Game.prototype.processEndOfGame = function (result) {
     if (result == EndOfGame.Type.Win)
-        this.endGame(this.currentPlayer);
+        this.endGame(this.state.currentPlayer);
     else if (result == EndOfGame.Type.Draw)
         this.endGame(null);
     else if (result == EndOfGame.Type.Lose) {
-        if (game.players.length == 2) {
-            var other = game.players[0];
-            if (other == game.currentPlayer)
-                other = game.players[1];
+        if (this.players.length == 2) {
+            var other = this.players[0];
+            if (other == this.state.currentPlayer)
+                other = this.players[1];
             this.endGame(other);
         }
         else {
@@ -200,7 +197,7 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
 
 Game.prototype.performMove = function (move) {
     if (move.perform(this, true)) {
-        this.logMove(this.currentPlayer, move);
+        this.logMove(this.state.currentPlayer, move);
         this.endTurn(move.subsequentState);
     }
     else

@@ -3,6 +3,7 @@ function loadDefinition(xml) {
     game = Game.parse(xml, document.getElementById('main'));
     initializeUI();
     game.state = new GameState(game, null);
+    game.state.currentPlayer = game.turnOrder.getNextPlayer();
     game.startNextTurn();
 }
 
@@ -51,7 +52,7 @@ function cellClicked(e) {
         addClass($(this), 'selected');
 
         var cell = game.board.cells[this.getAttribute('id')];
-        if (game.currentPlayer.type == Player.Type.Local && cell != null && cell.piece != null && cell.piece.ownerPlayer == game.currentPlayer) {
+        if (game.state.currentPlayer.type == Player.Type.Local && cell != null && cell.piece != null && cell.piece.ownerPlayer == game.state.currentPlayer) {
             console.log('clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in cell ' + cell.name);
             game.showMoveOptions(cell.piece);
         }

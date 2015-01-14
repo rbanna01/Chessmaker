@@ -1,6 +1,7 @@
 ﻿function GameState(game, prevMove) {
     this.game = game;
     this.move = prevMove;
+    this.currentPlayer = null;
 
     this.possibleMoves = null;
     this.possibleMovesByPiece = null;
@@ -89,7 +90,7 @@ GameState.prototype.prepareMovesForTurn = function () {
     this.possibleMovesByPiece = {};
 
     if (this.possibleMoves === null)
-        this.determinePossibleMoves(this.game.currentPlayer);
+        this.determinePossibleMoves(this.currentPlayer);
 
     for (var i = 0; i < this.possibleMoves.length; i++) {
         anyMoves = true;

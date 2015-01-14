@@ -3,7 +3,7 @@
 }
 
 AI_AlphaBeta.prototype.selectMove = function () {
-    var player = game.currentPlayer;
+    var player = game.state.currentPlayer;
 
     var alpha = Number.NEGATIVE_INFINITY;
     var beta = Number.POSITIVE_INFINITY;
@@ -65,14 +65,12 @@ AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.subsequentState));
     
     if (score === undefined) {
-        var nextPlayer = game.turnOrder.getNextPlayer();
+        var nextPlayer = move.subsequentState.currentPlayer;
 
         if (move.player.getRelationship(nextPlayer) == Player.Relationship.Enemy)
             score = -this.findBestScore(move, nextPlayer, -beta, -alpha, depth - 1);
         else
             score = this.findBestScore(move, nextPlayer, alpha, beta, depth - 1);
-
-        game.turnOrder.stepBackward();
     }
 
     move.reverse(game, false);
