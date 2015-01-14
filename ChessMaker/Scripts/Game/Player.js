@@ -2,14 +2,8 @@
 
 function Player(name, forwardDir) {
     this.name = name;
-    this.forwardDir = forwardDir;
-    this.type = Player.Type.Local;
     this.AI = null;
     this.pieceListX = 0;
-    
-    this.piecesOnBoard = [];
-    this.piecesHeld = [];
-    this.piecesCaptured = [];
 }
 
 Player.parseAll = function (xml, game, boardSVG) {
@@ -77,27 +71,6 @@ Player.parseAll = function (xml, game, boardSVG) {
     }
 }
 
-// whether its a global, relative or group name, this should output an array of resultant global directions
-Player.prototype.resolveDirection = function (name, prevDir) {
-    if (name == 'forward')
-        return [this.forwardDir];
-
-    return game.board.resolveDirection(name, prevDir);
-};
-
-Player.Type = {
-    Local: 0,
-    AI: 1,
-    Remote: 2
-};
-
-Player.Relationship = {
-    Any: 0,
-    Self: 1,
-    Enemy: 2,
-    Ally: 3
-};
-
 Player.Relationship.parse = function (val) {
     if (val == null)
         return "any";
@@ -113,11 +86,4 @@ Player.Relationship.parse = function (val) {
         default:
             throw "Unexpected relationship value: " + val;
     }
-};
-
-Player.prototype.getRelationship = function (otherPlayer) {
-    if (this == otherPlayer)
-        return Player.Relationship.Self;
-    else
-        return Player.Relationship.Enemy;
 };

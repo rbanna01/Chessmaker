@@ -1,73 +1,14 @@
 ﻿"use strict";
 
 function Move(player, prevState, piece, startPos) {
-    this.player = player;
-    this.piece = piece;
-
-    this.prevState = prevState;
     this.subsequentState = new GameState(game, this, prevState.moveNumber + 1);
 
-    this.startPos = startPos;
     this.moveNumber = prevState.moveNumber;
     this.notation = '';
     this.prevPieceMoveTurn = null;
 
-    this.steps = [];
     this.references = {};
 }
-
-Move.prototype.addStep = function(step) {
-    this.steps.push(step);
-};
-
-Move.prototype.clone = function() {
-    var move = new Move(this.player, this.prevState, this.piece, this.startPos);
-		
-    for ( var i=0; i<this.steps.length; i++ )
-        move.addStep(this.steps[i]);
-
-    for (var ref in this.references) {
-        move.addPieceReference(ref, this.references[ref]);
-    }
-
-    return move;
-};
-
-Move.prototype.perform = function (game, updateDisplay) {
-    for (var i = 0; i < this.steps.length; i++) {
-        if (!this.steps[i].perform(game, updateDisplay)) // move failed, roll-back
-        {
-            for (var j = i - 1; j >= 0; j--)
-                if (!this.steps[j].reverse(game, updateDisplay))
-                    throw "Move failed on step " + i + "/" + this.steps.length + ", and rolling move back then failed on step " + j + ". Unable to rectify board state.";
-
-            return false;
-        }
-    }
-
-    this.prevPieceMoveTurn = this.piece.lastMoveTurn;
-    this.piece.lastMoveTurn = this.moveNumber;
-    this.piece.moveNumber++;
-    this.subsequentState.currentPlayer = game.turnOrder.getNextPlayer();
-    return true;
-};
-
-Move.prototype.reverse = function (game, updateDisplay) {
-    for (var i = this.steps.length - 1; i >= 0; i--)
-        if (!this.steps[i].reverse(game, updateDisplay)) // move failed, roll-back
-        {
-            for (var j = i + 1; j < this.steps.length; j++)
-                if (!this.steps[j].perform(game, updateDisplay))
-                    throw "Reversing move failed on step " + i + "/" + this.steps.length + " (counting backwards), and rolling move back then failed on step " + j + ". Unable to rectify board state.";
-
-            return false;
-        }
-
-    this.piece.lastMoveTurn = this.prevPieceMoveTurn;
-    this.piece.moveNumber--;
-    game.turnOrder.stepBackward();
-    return true;
-};
 
 Move.prototype.addPieceReference = function(piece, ref) {
     this.references[ref] = piece;

@@ -2,15 +2,10 @@
 
 function PieceType() {
     this.name = null;
-    this.value = 1;
-    this.notation = '?';
-    this.capturedAs = null;
     this.appearances = {};
     this.moves = [];
     //this.promotionOpportunities = [];
 }
-
-PieceType.allTypes = {};
 
 // read definitions from xml
 PieceType.parseAll = function (piecesNode, defs) {

@@ -4,8 +4,6 @@ function Cell(name, links) {
     this.name = name;
     this.coordX = 0;
     this.coordY = 0;
-    this.piece = null;
-    this.links = {};
 
     var cell = this;
     for (var i = 0; i < links.length; i++) {
