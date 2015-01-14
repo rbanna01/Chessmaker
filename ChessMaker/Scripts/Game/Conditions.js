@@ -1,4 +1,6 @@
-﻿function Conditions(type) {
+﻿"use strict";
+
+function Conditions(type) {
     this.type = type;
     this.elements = [];
 }

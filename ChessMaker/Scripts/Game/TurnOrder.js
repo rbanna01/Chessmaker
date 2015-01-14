@@ -1,4 +1,6 @@
-﻿function TurnOrder() {
+﻿"use strict";
+
+function TurnOrder() {
     this.currentStep = null;
 }
 

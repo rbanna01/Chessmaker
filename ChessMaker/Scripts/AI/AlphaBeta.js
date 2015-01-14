@@ -1,4 +1,6 @@
-﻿function AI_AlphaBeta(ply) {
+﻿"use strict";
+
+function AI_AlphaBeta(ply) {
     this.ply = ply;
 }
 

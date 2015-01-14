@@ -1,4 +1,6 @@
-﻿var game;
+﻿"use strict";
+
+var game;
 function loadDefinition(xml) {
     game = Game.parse(xml, document.getElementById('main'));
     initializeUI();

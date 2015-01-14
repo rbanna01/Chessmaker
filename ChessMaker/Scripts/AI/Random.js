@@ -1,4 +1,6 @@
-﻿function AI_Random() {
+﻿"use strict";
+
+function AI_Random() {
 
 }
 

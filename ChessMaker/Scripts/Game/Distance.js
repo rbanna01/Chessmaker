@@ -1,4 +1,6 @@
-﻿function Distance(reference, number) {
+﻿"use strict";
+
+function Distance(reference, number) {
     this.number = number;
     this.reference = reference;
 }

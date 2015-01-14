@@ -1,4 +1,6 @@
-﻿function MoveStep(piece) {
+﻿"use strict";
+
+function MoveStep(piece) {
     this.stepID = MoveStep.nextStepID++;
     this.piece = piece;
     this.fromState = null;

@@ -1,4 +1,6 @@
-﻿function Game() {
+﻿"use strict";
+
+function Game() {
     this.board = null;
     this.players = [];
     this.turnOrder = null;

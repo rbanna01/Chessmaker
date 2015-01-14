@@ -1,4 +1,6 @@
-﻿function Piece(owner, type, pos, state, stateOwner) {
+﻿"use strict";
+
+function Piece(owner, type, pos, state, stateOwner) {
     this.elementID = "p" + (Piece.nextID++);
     this.ownerPlayer = owner;
     this.position = pos;

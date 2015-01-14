@@ -1,4 +1,6 @@
-﻿function EndOfGame() {
+﻿"use strict";
+
+function EndOfGame() {
     this.startOfTurnChecks = [];
     this.endOfTurnChecks = [];
 }

@@ -1,4 +1,6 @@
-﻿function GameState(game, prevMove, moveNum) {
+﻿"use strict";
+
+function GameState(game, prevMove, moveNum) {
     this.game = game;
     this.move = prevMove;
     this.currentPlayer = null;

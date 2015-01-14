@@ -1,4 +1,6 @@
-﻿function AI_RandomCapture() {
+﻿"use strict";
+
+function AI_RandomCapture() {
 
 }
 

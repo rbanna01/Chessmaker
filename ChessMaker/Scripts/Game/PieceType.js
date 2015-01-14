@@ -1,4 +1,6 @@
-﻿function PieceType() {
+﻿"use strict";
+
+function PieceType() {
     this.name = null;
     this.value = 1;
     this.notation = '?';
@@ -23,7 +25,7 @@ PieceType.parseAll = function (piecesNode, defs) {
     }
     
     // resolve references to other types
-    for (key in PieceType.allTypes) {
+    for (var key in PieceType.allTypes) {
         var type = PieceType.allTypes[key];
 
         if (type.capturedAs != null)

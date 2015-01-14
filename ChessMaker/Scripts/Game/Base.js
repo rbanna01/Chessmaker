@@ -1,4 +1,6 @@
-﻿function extend(child, parent) {
+﻿"use strict";
+
+function extend(child, parent) {
     function ctor() { }
     ctor.prototype = parent.prototype;
     child.prototype = new ctor();

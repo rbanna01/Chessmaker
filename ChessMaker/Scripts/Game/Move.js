@@ -1,4 +1,6 @@
-﻿function Move(player, piece, startPos, moveNum) {
+﻿"use strict";
+
+function Move(player, piece, startPos, moveNum) {
     this.player = player;
     this.piece = piece;
     this.subsequentState = new GameState(game, this, moveNum + 1);

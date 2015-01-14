@@ -1,4 +1,6 @@
-﻿function MoveDefinition(pieceRef, dir, when, conditions) {
+﻿"use strict";
+
+function MoveDefinition(pieceRef, dir, when, conditions) {
     this.piece = pieceRef;
     this.dir = dir;
     this.moveWhen = when;

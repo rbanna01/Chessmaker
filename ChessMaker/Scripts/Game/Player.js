@@ -1,4 +1,6 @@
-﻿function Player(name, forwardDir) {
+﻿"use strict";
+
+function Player(name, forwardDir) {
     this.name = name;
     this.forwardDir = forwardDir;
     this.type = Player.Type.Local;

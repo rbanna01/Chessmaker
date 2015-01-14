@@ -1,4 +1,6 @@
-﻿function Cell(name, links) {
+﻿"use strict";
+
+function Cell(name, links) {
     this.name = name;
     this.coordX = 0;
     this.coordY = 0;

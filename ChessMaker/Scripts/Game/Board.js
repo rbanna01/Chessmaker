@@ -1,4 +1,6 @@
-﻿function Board(game) {
+﻿"use strict";
+
+function Board(game) {
     this.game = game;
     this.elementID = 'render';
     this.cells = {};
