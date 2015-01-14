@@ -301,7 +301,7 @@ Conditions_Threatened.prototype.checkSatisfied = function (move, state) {
 
     if (this.start && step.fromState == Piece.State.OnBoard) {
         var prevStep = move.steps.length > 1 ? move.steps[move.steps.length - 2] : null;
-        var threatened = this.isThreatened(move, prevStep, state, step.fromPos);
+        var threatened = Conditions_Threatened.isThreatened(state, prevStep, step.fromPos);
         
         if (threatened != this.value)
             return false;
@@ -311,7 +311,7 @@ Conditions_Threatened.prototype.checkSatisfied = function (move, state) {
         if (!step.perform(state.game, false))
             return false;
 
-        var threatened = this.isThreatened(move, step, state, step.toPos);
+        var threatened = Conditions_Threatened.isThreatened(state, step, step.toPos);
         step.reverse(state.game, false);
 
         if (threatened != this.value)
@@ -321,9 +321,9 @@ Conditions_Threatened.prototype.checkSatisfied = function (move, state) {
     return true;
 };
 
-Conditions_Threatened.prototype.isThreatened = function (move, step, state, pos) {
+Conditions_Threatened.isThreatened = function (state, step, pos) {
 
-    var moves = state.determineThreatMoves(move.player, step);
+    var moves = state.determineThreatMoves(step);
 
     for (var i = 0; i < moves.length; i++)
         if (moves[i].wouldCapture(pos))

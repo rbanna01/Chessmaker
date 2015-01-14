@@ -21,7 +21,7 @@ GameState.prototype.determinePossibleMoves = function (player) {
     return this.possibleMoves;
 };
 
-GameState.prototype.determineThreatMoves = function (player, prevStep) {
+GameState.prototype.determineThreatMoves = function (prevStep) {
     var stepID = prevStep == null ? '' : prevStep.stepID;
 
     if (!this.threatCheckMoves.hasOwnProperty(stepID)) {
@@ -29,7 +29,7 @@ GameState.prototype.determineThreatMoves = function (player, prevStep) {
         for (var p = 0; p < game.players.length; p++) {
             var opponent = game.players[p];
 
-            if (player.getRelationship(opponent) != Player.Relationship.Enemy)
+            if (this.currentPlayer.getRelationship(opponent) != Player.Relationship.Enemy)
                 continue;
 
             var threatMoves = [];
@@ -91,6 +91,7 @@ GameState.prototype.prepareMovesForTurn = function () {
     var allMoves = {};
     var anyMoves = false;
     this.possibleMovesByPiece = {};
+    this.threatCheckMoves = null; // these aren't needed any longer
 
     if (this.possibleMoves === null)
         this.determinePossibleMoves(this.currentPlayer);

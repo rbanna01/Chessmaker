@@ -157,7 +157,14 @@ EndOfGameConditions_threatened.prototype.isSatisfied = function (state, canMove)
         if (piece.pieceType.name != this.pieceType)
             continue;
 
-        if (piece.isThreatenedAt(piece.position))
+        if (Conditions_Threatened.alreadyChecking)
+            return false; // assume NOT threatened
+
+        Conditions_Threatened.alreadyChecking = true;
+        var threatened = Conditions_Threatened.isThreatened(state, null, piece.position);
+        Conditions_Threatened.alreadyChecking = false;
+
+        if (threatened)
             return true;
     }
 

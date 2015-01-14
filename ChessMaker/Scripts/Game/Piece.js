@@ -27,19 +27,6 @@ Piece.prototype.typeMatches = function (strType) {
     return this.pieceType.name == strType;
 };
 
-Piece.prototype.isThreatenedAt = function (game, testPos) {
-    var restorePos = this.position;
-    this.position = testPos;
-
-    /*
-    todo: implement the rest of this function, once game turn numbers, game piece lists and possible moves are implemented
-    */
-
-    this.position = restorePosition;
-    //game.turnNumber = game.actualTurnNumber;
-    return false;
-};
-
 Piece.prototype.createImage = function () {
     var image = SVG('use');
     image.setAttribute('id', this.elementID);
