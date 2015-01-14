@@ -40,7 +40,7 @@ AI_AlphaBeta.prototype.findBestScore = function (move, player, alpha, beta, dept
         if (!anyMoves) {
             anyMoves = true;
 
-            var resultScore = this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(anyMoves));
+            var resultScore = this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(move.subsequentState, anyMoves));
             if (resultScore !== undefined)
                 return resultScore;
         }
@@ -54,7 +54,7 @@ AI_AlphaBeta.prototype.findBestScore = function (move, player, alpha, beta, dept
     }
 
     if (!anyMoves)
-        return this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(anyMoves));
+        return this.getScoreForEndOfGame(game.endOfGame.checkStartOfTurn(move.subsequentState, anyMoves));
 
     return alpha;
 }
@@ -62,7 +62,7 @@ AI_AlphaBeta.prototype.findBestScore = function (move, player, alpha, beta, dept
 AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     move.perform(game, false);
 
-    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn());
+    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.subsequentState));
     
     if (score === undefined) {
         var nextPlayer = game.turnOrder.getNextPlayer();

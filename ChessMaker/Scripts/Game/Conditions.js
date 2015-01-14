@@ -159,32 +159,32 @@ Conditions.parse = function (node, type) {
     return group;
 };
 
-Conditions.prototype.isSatisfied = function (move, game) {
+Conditions.prototype.isSatisfied = function (move, state) {
     switch (this.type) {
         case Conditions.GroupType.And:
             for (var i = 0; i < this.elements.length; i++)
-                if (!this.elements[i].isSatisfied(move, game))
+                if (!this.elements[i].isSatisfied(move, state))
                     return false;
             return true;
         case Conditions.GroupType.Or:
             for (var i = 0; i < this.elements.length; i++)
-                if (this.elements[i].isSatisfied(move, game))
+                if (this.elements[i].isSatisfied(move, state))
                     return true;
             return false;
         case Conditions.GroupType.Nand:
             for (var i = 0; i < this.elements.length; i++)
-                if (!this.elements[i].isSatisfied(move, game))
+                if (!this.elements[i].isSatisfied(move, state))
                     return true;
             return false;
         case Conditions.GroupType.Nor:
             for (var i = 0; i < this.elements.length; i++)
-                if (this.elements[i].isSatisfied(move, game))
+                if (this.elements[i].isSatisfied(move, state))
                     return false;
             return true;
         case Conditions.GroupType.Xor:
             var any = false;
             for (var i = 0; i < this.elements.length; i++)
-                if (this.elements[i].isSatisfied(move, game))
+                if (this.elements[i].isSatisfied(move, state))
                     if (any)
                         return false;
                     else
@@ -200,7 +200,7 @@ function Conditions_Type(of, type) {
     this.type = type;
 }
 
-Conditions_Type.prototype.isSatisfied = function(move, game) {
+Conditions_Type.prototype.isSatisfied = function(move, state) {
     var other = move.getPieceByRef(this.of);
     if (other == null)
         throw "Piece reference not found: " + this.of;
@@ -213,7 +213,7 @@ function Conditions_Owner(of, relationship) {
     this.relationship = relationship;
 }
 
-Conditions_Owner.prototype.isSatisfied = function (move, game) {
+Conditions_Owner.prototype.isSatisfied = function (move, state) {
     var other = move.getPieceByRef(this.of);
     if (other == null)
         throw "Piece reference not found: " + this.of;
@@ -230,7 +230,7 @@ function Conditions_MoveNumber(of, number, comparison) {
     this.comparison = comparison;
 }
 
-Conditions_MoveNumber.prototype.isSatisfied = function (move, game) {
+Conditions_MoveNumber.prototype.isSatisfied = function (move, state) {
     var other = move.getPieceByRef(this.of);
     if (other == null)
         throw "Piece reference not found: " + this.of;
@@ -245,7 +245,7 @@ function Conditions_MaxDist(from, dir, number, comparison) {
     this.comparison = comparison;
 }
 
-Conditions_MaxDist.prototype.isSatisfied = function (move, game) {
+Conditions_MaxDist.prototype.isSatisfied = function (move, state) {
     var other = move.getPieceByRef(this.from);
     if (other == null)
         throw "Piece reference not found: " + this.from;
@@ -254,7 +254,7 @@ Conditions_MaxDist.prototype.isSatisfied = function (move, game) {
     var dirs = move.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : move.player.forwardDir);
 
     for (var i = 0; i < dirs.length; i++) {
-        var maxDist = game.board.getMaxDistance(other.position, dirs[i]);
+        var maxDist = state.game.board.getMaxDistance(other.position, dirs[i]);
         if (Conditions.ResolveComparison(this.comparison, maxDist, this.number))
             return true;
     }
@@ -267,12 +267,12 @@ function Conditions_TurnsSinceLastMove(of, number, comparison) {
     this.comparison = comparison;
 }
 
-Conditions_TurnsSinceLastMove.prototype.isSatisfied = function (move, game) {
+Conditions_TurnsSinceLastMove.prototype.isSatisfied = function (move, state) {
     var other = move.getPieceByRef(this.of);
     if (other == null)
         throw "Piece reference not found: " + this.of;
 
-    return Conditions.ResolveComparison(this.comparison, game.moveNumber - other.lastMoveTurn, this.number);
+    return Conditions.ResolveComparison(this.comparison, state.game.moveNumber - other.lastMoveTurn, this.number);
 };
 
 function Conditions_Threatened(start, end, value) {
@@ -283,34 +283,34 @@ function Conditions_Threatened(start, end, value) {
 
 Conditions_Threatened.alreadyChecking = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
 
-Conditions_Threatened.prototype.isSatisfied = function (move, game) {
+Conditions_Threatened.prototype.isSatisfied = function (move, state) {
     if (Conditions_Threatened.alreadyChecking)
         return true;
 
     Conditions_Threatened.alreadyChecking = true;
-    var retVal = this.checkSatisfied(move, game);
+    var retVal = this.checkSatisfied(move, state);
     Conditions_Threatened.alreadyChecking = false;
 
     return retVal;
 };
 
-Conditions_Threatened.prototype.checkSatisfied = function (move, game) {
+Conditions_Threatened.prototype.checkSatisfied = function (move, state) {
     var step = move.steps[move.steps.length - 1]; // all steps except the current one will already have been performed
 
     if (this.start && step.fromState == Piece.State.OnBoard) {
         var prevStep = move.steps.length > 1 ? move.steps[move.steps.length - 2] : null;
-        var threatened = this.isThreatened(move, prevStep, game, step.fromPos);
+        var threatened = this.isThreatened(move, prevStep, state, step.fromPos);
         
         if (threatened != this.value)
             return false;
     }
 
     if (this.end && step.toState == Piece.State.OnBoard) {
-        if (!step.perform(game, false))
+        if (!step.perform(state.game, false))
             return false;
 
-        var threatened = this.isThreatened(move, step, game, step.toPos);
-        step.reverse(game, false);
+        var threatened = this.isThreatened(move, step, state, step.toPos);
+        step.reverse(state.game, false);
 
         if (threatened != this.value)
             return false;
@@ -319,9 +319,9 @@ Conditions_Threatened.prototype.checkSatisfied = function (move, game) {
     return true;
 };
 
-Conditions_Threatened.prototype.isThreatened = function (move, step, game, pos) {
+Conditions_Threatened.prototype.isThreatened = function (move, step, state, pos) {
 
-    var moves = move.subsequentState.determineThreatMoves(move.player, step);
+    var moves = state.determineThreatMoves(move.player, step);
 
     for (var i = 0; i < moves.length; i++)
         if (moves[i].wouldCapture(pos))

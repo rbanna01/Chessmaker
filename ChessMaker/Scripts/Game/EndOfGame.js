@@ -1,11 +1,10 @@
-﻿function EndOfGame(game) {
-    this.game = game;
+﻿function EndOfGame() {
     this.startOfTurnChecks = [];
     this.endOfTurnChecks = [];
 }
 
-EndOfGame.parse = function (xmlNode, game) {
-    var endOfGame = new EndOfGame(game);
+EndOfGame.parse = function (xmlNode) {
+    var endOfGame = new EndOfGame();
     
     var childNodes = xmlNode.childNodes;
     for (var i = 0; i < childNodes.length; i++) {
@@ -33,8 +32,8 @@ EndOfGame.parse = function (xmlNode, game) {
     return endOfGame;
 };
 
-EndOfGame.createDefault = function (game) {
-    var endOfGame = new EndOfGame(game);
+EndOfGame.createDefault = function () {
+    var endOfGame = new EndOfGame();
 
     var condition = new EndOfGameConditions();
     // add a <pieceCount owner="self" check="equals">0</pieceCount> condition here
@@ -49,33 +48,33 @@ EndOfGame.createDefault = function (game) {
     return endOfGame;
 };
 
-EndOfGame.prototype.checkStartOfTurn = function (anyPossibleMoves) {
+EndOfGame.prototype.checkStartOfTurn = function (state, anyPossibleMoves) {
     // return Win/Lose/Draw, or undefined if the game isn't over yet
 
     for (var i = 0; i < this.startOfTurnChecks.length; i++) {
         var check = this.startOfTurnChecks[i];
-        if (check.conditions.isSatisfied(this.game, anyPossibleMoves))
+        if (check.conditions.isSatisfied(state, anyPossibleMoves))
             return check.type;
     }
 
     if (anyPossibleMoves)
         return undefined;
 
-    if (this.game.currentPlayer.piecesOnBoard.length == 0)
+    if (state.game.currentPlayer.piecesOnBoard.length == 0)
         return EndOfGame.Type.Lose; // can't move and have no pieces. lose.
 
     return EndOfGame.Type.Draw; // can't move, but have pieces. draw.
 };
 
-EndOfGame.prototype.checkEndOfTurn = function () {
+EndOfGame.prototype.checkEndOfTurn = function (state) {
     // return Win/Lose/Draw, or undefined if the game isn't over yet
 
-    var noNextPlayer = this.game.turnOrder.getNextPlayer() == null;
-    this.game.turnOrder.stepBackward();
+    var noNextPlayer = state.game.turnOrder.getNextPlayer() == null;
+    state.game.turnOrder.stepBackward();
 
     for (var i = 0; i < this.endOfTurnChecks.length; i++) {
         var check = this.endOfTurnChecks[i];
-        if (check.conditions.isSatisfied(this.game, true))
+        if (check.conditions.isSatisfied(state, true))
             return check.type;
     }
 
@@ -101,7 +100,7 @@ function EndOfGameConditions() {
     this.elements = [];
 }
 
-EndOfGameConditions.prototype.isSatisfied = function (game, canMove) {
+EndOfGameConditions.prototype.isSatisfied = function (state, canMove) {
     return false;
 };
 
@@ -136,7 +135,7 @@ EndOfGameConditions_cannotMove.parse = function (xmlNode) {
     return new EndOfGameConditions_cannotMove();
 };
 
-EndOfGameConditions_cannotMove.prototype.isSatisfied = function (game, canMove) {
+EndOfGameConditions_cannotMove.prototype.isSatisfied = function (state, canMove) {
     return !canMove;
 };
 
@@ -149,8 +148,8 @@ EndOfGameConditions_threatened.parse = function (xmlNode) {
     return new EndOfGameConditions_threatened(type);
 };
 
-EndOfGameConditions_threatened.prototype.isSatisfied = function (game, canMove) {
-    var pieces = game.currentPlayer.piecesOnBoard;
+EndOfGameConditions_threatened.prototype.isSatisfied = function (state, canMove) {
+    var pieces = state.game.currentPlayer.piecesOnBoard;
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
         if (piece.pieceType.name != this.pieceType)

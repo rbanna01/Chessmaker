@@ -93,16 +93,16 @@ Game.prototype.parseRules = function (xml) {
     }
 
     if (endOfGame != null && endOfGame.nodeName == 'endOfGame') {
-        this.endOfGame = EndOfGame.parse(endOfGame, this);
+        this.endOfGame = EndOfGame.parse(endOfGame);
     }
     else {
-        this.endOfGame = EndOfGame.createDefault(this);
+        this.endOfGame = EndOfGame.createDefault();
         console.log('can\'t find "endOfGame" node within "rules" section of game definition');
     }
 };
 
 Game.prototype.endTurn = function (newState) {
-    var result = this.endOfGame.checkEndOfTurn();
+    var result = this.endOfGame.checkEndOfTurn(this.state);
     if (result !== undefined) {
         this.processEndOfGame(result);
         return;
@@ -118,7 +118,7 @@ Game.prototype.startNextTurn = function (state) {
     $('#nextMove').text(this.currentPlayer.name.substr(0, 1).toUpperCase() + this.currentPlayer.name.substr(1) + ' to move');
 
     var anyPossibleMoves = this.state.prepareMovesForTurn();
-    var result = this.endOfGame.checkStartOfTurn(anyPossibleMoves);
+    var result = this.endOfGame.checkStartOfTurn(this.state, anyPossibleMoves);
     if (result !== undefined) {
         this.processEndOfGame(result);
         return;

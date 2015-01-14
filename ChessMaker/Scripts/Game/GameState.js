@@ -55,7 +55,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
         // and then get move possibilities
         for (var j = 0; j < piece.pieceType.moves.length; j++) {
             var move = piece.pieceType.moves[j];
-            var possibilities = move.appendValidNextSteps(moveTemplate, piece, this.game, null);
+            var possibilities = move.appendValidNextSteps(moveTemplate, piece, this, null);
             for (var k = 0; k < possibilities.length; k++)
                 output.push(possibilities[k]);
         }
@@ -75,7 +75,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
             var move = new Move(piece.ownerPlayer, piece, null, this.game.moveNumber, true);
             move.addStep(MoveStep.CreateDrop(piece, coord, piece.ownerPlayer));
 
-            if (this.game.rules.dropPiecesWhen == null || this.game.rules.dropPiecesWhen.isSatisfied(move, this.game))
+            if (this.game.rules.dropPiecesWhen == null || this.game.rules.dropPiecesWhen.isSatisfied(move, this))
                 output.push(move);
         }
     });
