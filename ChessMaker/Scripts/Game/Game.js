@@ -4,7 +4,6 @@
     this.turnOrder = null;
     this.state = null;
     this.endOfGame = null;
-    this.moveNumber = 1;
     this.showCaptured = true;
     this.showHeld = false;
 

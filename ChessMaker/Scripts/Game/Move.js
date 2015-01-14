@@ -1,7 +1,7 @@
 ﻿function Move(player, piece, startPos, moveNum) {
     this.player = player;
     this.piece = piece;
-    this.subsequentState = new GameState(game, this);
+    this.subsequentState = new GameState(game, this, moveNum + 1);
 
     this.startPos = startPos;
     this.moveNumber = moveNum;
@@ -42,9 +42,8 @@ Move.prototype.perform = function (game, updateDisplay) {
     }
 
     this.prevPieceMoveTurn = this.piece.lastMoveTurn;
-    this.piece.lastMoveTurn = game.moveNumber;
+    this.piece.lastMoveTurn = this.moveNumber;
     this.piece.moveNumber++;
-    game.moveNumber++;
     this.subsequentState.currentPlayer = game.turnOrder.getNextPlayer();
     return true;
 };
@@ -62,7 +61,6 @@ Move.prototype.reverse = function (game, updateDisplay) {
 
     this.piece.lastMoveTurn = this.prevPieceMoveTurn;
     this.piece.moveNumber--;
-    game.moveNumber--;
     game.turnOrder.stepBackward();
     return true;
 };

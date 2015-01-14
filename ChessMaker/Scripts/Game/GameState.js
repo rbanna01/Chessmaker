@@ -1,7 +1,8 @@
-﻿function GameState(game, prevMove) {
+﻿function GameState(game, prevMove, moveNum) {
     this.game = game;
     this.move = prevMove;
     this.currentPlayer = null;
+    this.moveNumber = moveNum;
 
     this.possibleMoves = null;
     this.possibleMovesByPiece = null;
@@ -43,13 +44,13 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
     for (var i = 0; i < pieces.length; i++) {
 
         var piece = pieces[i];
-        var moveTemplate = new Move(piece.ownerPlayer, piece, piece.position, this.game.moveNumber);
+        var moveTemplate = new Move(piece.ownerPlayer, piece, piece.position, this.moveNumber);
 
         /*// get promotion possibilities
         piece.pieceType.promotionOpportunities.each(function (op) {
             if (!op.mandatory && op.type != PromotionType.EndOfMove && op.isAvailable(moveTemplate, this.game))
                 op.options.each(function (option) {
-                    output.push(new Promotion(piece.ownerPlayer, piece, option, this.game.moveNumber, op.type == PromotionType.CountsAsMove));
+                    output.push(new Promotion(piece.ownerPlayer, piece, option, this.moveNumber, op.type == PromotionType.CountsAsMove));
                 });
         });
         */
@@ -73,7 +74,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
             return;
     
         for (var i = 0; i < pieces.length; i++) {
-            var move = new Move(piece.ownerPlayer, piece, null, this.game.moveNumber, true);
+            var move = new Move(piece.ownerPlayer, piece, null, this.moveNumber, true);
             move.addStep(MoveStep.CreateDrop(piece, coord, piece.ownerPlayer));
 
             if (this.game.rules.dropPiecesWhen == null || this.game.rules.dropPiecesWhen.isSatisfied(move, this))

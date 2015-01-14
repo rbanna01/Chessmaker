@@ -272,7 +272,7 @@ Conditions_TurnsSinceLastMove.prototype.isSatisfied = function (move, state) {
     if (other == null)
         throw "Piece reference not found: " + this.of;
 
-    return Conditions.ResolveComparison(this.comparison, state.game.moveNumber - other.lastMoveTurn, this.number);
+    return Conditions.ResolveComparison(this.comparison, state.moveNumber - other.lastMoveTurn, this.number);
 };
 
 function Conditions_Threatened(start, end, value) {
