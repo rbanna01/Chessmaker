@@ -65,13 +65,11 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
 
                 if (this.game.endOfGame.illegalMovesSpecified) {
                     move.perform(this.game, false);
-                    var result = this.game.endOfGame.checkEndOfTurn(this);
+                    var result = this.game.endOfGame.checkEndOfTurn(this, move);
                     move.reverse(this.game, false);
-
                     if (result == EndOfGame.Type.IllegalMove)
                         continue;
                 }
-
 
                 output.push(move);
             }

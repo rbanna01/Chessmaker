@@ -101,8 +101,8 @@ Game.prototype.parseRules = function (xml) {
     }
 };
 
-Game.prototype.endTurn = function (newState) {
-    var result = this.endOfGame.checkEndOfTurn(this.state);
+Game.prototype.endTurn = function (newState, move) {
+    var result = this.endOfGame.checkEndOfTurn(this.state, move);
     if (result !== undefined) {
         this.processEndOfGame(result);
         return;
@@ -199,7 +199,7 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
 Game.prototype.performMove = function (move) {
     if (move.perform(this, true)) {
         this.logMove(this.state.currentPlayer, move);
-        this.endTurn(move.subsequentState);
+        this.endTurn(move.subsequentState, move);
     }
     else
         console.log('unable to perform move');

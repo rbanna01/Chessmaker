@@ -62,7 +62,7 @@ AI_AlphaBeta.prototype.findBestScore = function (move, alpha, beta, depth) {
 AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     move.perform(game, false);
 
-    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.prevState));
+    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.prevState, move));
     
     if (score === undefined) {
         if (move.player.getRelationship(move.subsequentState.currentPlayer) == Player.Relationship.Enemy)
