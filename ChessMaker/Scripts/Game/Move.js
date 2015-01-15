@@ -1,12 +1,14 @@
 ﻿"use strict";
 
-function Move(player, piece, startPos, moveNum) {
+function Move(player, prevState, piece, startPos) {
     this.player = player;
     this.piece = piece;
-    this.subsequentState = new GameState(game, this, moveNum + 1);
+
+    this.prevState = prevState;
+    this.subsequentState = new GameState(game, this, prevState.moveNumber + 1);
 
     this.startPos = startPos;
-    this.moveNumber = moveNum;
+    this.moveNumber = prevState.moveNumber;
     this.notation = '';
     this.prevPieceMoveTurn = null;
 
@@ -19,7 +21,7 @@ Move.prototype.addStep = function(step) {
 };
 
 Move.prototype.clone = function() {
-    var move = new Move(this.player, this.piece, this.startPos, this.moveNumber);
+    var move = new Move(this.player, this.prevState, this.piece, this.startPos);
 		
     for ( var i=0; i<this.steps.length; i++ )
         move.addStep(this.steps[i]);

@@ -3,6 +3,7 @@
 function EndOfGame() {
     this.startOfTurnChecks = [];
     this.endOfTurnChecks = [];
+    this.illegalMovesSpecified = false;
 }
 
 EndOfGame.parse = function (xmlNode) {
@@ -20,6 +21,9 @@ EndOfGame.parse = function (xmlNode) {
                 checkType = EndOfGame.Type.Lose; break;
             case 'draw':
                 checkType = EndOfGame.Type.Draw; break;
+            case 'illegal':
+                endOfGame.illegalMovesSpecified = true;
+                checkType = EndOfGame.Type.IllegalMove; break;
             default:
                 throw 'Unexpected endOfGame node type: ' + childNode.name;
         }
@@ -42,8 +46,8 @@ EndOfGame.createDefault = function () {
     var outOfPieces = new EndOfGameCheck(EndOfGame.Type.Lose, condition);
     endOfGame.startOfTurnChecks.push(outOfPieces);
 
-    condition = new Conditions();
-    // add a <cannotMove /> condition here
+    condition = new EndOfGameConditions();
+    condition.elements.push[new EndOfGameConditions_cannotMove()];
     var outOfMoves = new EndOfGameCheck(EndOfGame.Type.Draw, condition);
     endOfGame.startOfTurnChecks.push(outOfMoves);
 
@@ -69,7 +73,7 @@ EndOfGame.prototype.checkStartOfTurn = function (state, anyPossibleMoves) {
 };
 
 EndOfGame.prototype.checkEndOfTurn = function (state) {
-    // return Win/Lose/Draw, or undefined if the game isn't over yet
+    // return Win/Lose/Draw/IllegalMove, or undefined if the game isn't over yet
 
     var noNextPlayer = state.game.turnOrder.getNextPlayer() == null;
     state.game.turnOrder.stepBackward();
@@ -90,7 +94,8 @@ EndOfGame.prototype.checkEndOfTurn = function (state) {
 EndOfGame.Type = {
     Win: 0,
     Lose: 1,
-    Draw: 2
+    Draw: 2,
+    IllegalMove: 3
 };
 
 function EndOfGameCheck(type, conditions) {
@@ -127,6 +132,7 @@ EndOfGameConditions.parse = function (xmlNode) {
 
         xmlNode = xmlNode.nextSibling;
     }
+    return conditions;
 };
 
 function EndOfGameConditions_cannotMove() {
@@ -151,17 +157,17 @@ EndOfGameConditions_threatened.parse = function (xmlNode) {
 };
 
 EndOfGameConditions_threatened.prototype.isSatisfied = function (state, canMove) {
+    if (Conditions_Threatened.alreadyChecking)
+        return false; // assume NOT threatened
+
     var pieces = state.currentPlayer.piecesOnBoard;
     for (var i = 0; i < pieces.length; i++) {
         var piece = pieces[i];
-        if (piece.pieceType.name != this.pieceType)
+        if (!piece.typeMatches(this.pieceType))
             continue;
 
-        if (Conditions_Threatened.alreadyChecking)
-            return false; // assume NOT threatened
-
         Conditions_Threatened.alreadyChecking = true;
-        var threatened = Conditions_Threatened.isThreatened(state, null, piece.position);
+        var threatened = Conditions_Threatened.isThreatened(state, null, piece.position); // passing null is fine for the START of turn, but not the END of turn. That needs to pass in the last step!
         Conditions_Threatened.alreadyChecking = false;
 
         if (threatened)

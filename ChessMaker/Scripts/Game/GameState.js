@@ -11,12 +11,12 @@ function GameState(game, prevMove, moveNum) {
     this.threatCheckMoves = {}; // these are never actually performed or followed up on, but are used in calculating whether moves would be disallowed due to check. e.g. the king's forward "attack" in xiangqui.
 }
 
-GameState.prototype.determinePossibleMoves = function (player) {
+GameState.prototype.determinePossibleMoves = function () {
     if (this.possibleMoves === null) {
         this.possibleMoves = [];
 
         MoveStep.nextStepID = 1;
-        this.calculateMovesForPlayer(player, this.possibleMoves);
+        this.calculateMovesForPlayer(this.currentPlayer, this.possibleMoves);
     }
     return this.possibleMoves;
 };
@@ -46,7 +46,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
     for (var i = 0; i < pieces.length; i++) {
 
         var piece = pieces[i];
-        var moveTemplate = new Move(piece.ownerPlayer, piece, piece.position, this.moveNumber);
+        var moveTemplate = new Move(piece.ownerPlayer, this, piece, piece.position);
 
         /*// get promotion possibilities
         piece.pieceType.promotionOpportunities.each(function (op) {
@@ -58,10 +58,23 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
         */
         // and then get move possibilities
         for (var j = 0; j < piece.pieceType.moves.length; j++) {
-            var move = piece.pieceType.moves[j];
-            var possibilities = move.appendValidNextSteps(moveTemplate, piece, this, null);
-            for (var k = 0; k < possibilities.length; k++)
-                output.push(possibilities[k]);
+            var moveDef = piece.pieceType.moves[j];
+            var possibilities = moveDef.appendValidNextSteps(moveTemplate, piece, this, null);
+            for (var k = 0; k < possibilities.length; k++) {
+                var move = possibilities[k];
+
+                if (this.game.endOfGame.illegalMovesSpecified) {
+                    move.perform(this.game, false);
+                    var result = this.game.endOfGame.checkEndOfTurn(this);
+                    move.reverse(this.game, false);
+
+                    if (result == EndOfGame.Type.IllegalMove)
+                        continue;
+                }
+
+
+                output.push(move);
+            }
         }
     }
 
@@ -76,7 +89,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
             return;
     
         for (var i = 0; i < pieces.length; i++) {
-            var move = new Move(piece.ownerPlayer, piece, null, this.moveNumber, true);
+            var move = new Move(piece.ownerPlayer, this, piece, null);
             move.addStep(MoveStep.CreateDrop(piece, coord, piece.ownerPlayer));
 
             if (this.game.rules.dropPiecesWhen == null || this.game.rules.dropPiecesWhen.isSatisfied(move, this))
@@ -91,10 +104,10 @@ GameState.prototype.prepareMovesForTurn = function () {
     var allMoves = {};
     var anyMoves = false;
     this.possibleMovesByPiece = {};
-    this.threatCheckMoves = null; // these aren't needed any longer
+    this.threatCheckMoves = {}; // these aren't needed any longer
 
     if (this.possibleMoves === null)
-        this.determinePossibleMoves(this.currentPlayer);
+        this.determinePossibleMoves();
 
     for (var i = 0; i < this.possibleMoves.length; i++) {
         anyMoves = true;

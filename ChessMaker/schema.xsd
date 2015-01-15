@@ -52,14 +52,14 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:complexType name="conditions">
+	<xs:complexType name="moveConditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
-			<xs:element name="and" type="conditions"/>
-			<xs:element name="or" type="conditions"/>
-			<xs:element name="not" type="conditions"/>
-			<xs:element name="nand" type="conditions"/>
-			<xs:element name="nor" type="conditions"/>
-			<xs:element name="xor" type="conditions"/>
+			<xs:element name="and" type="moveConditions"/>
+			<xs:element name="or" type="moveConditions"/>
+			<xs:element name="not" type="moveConditions"/>
+			<xs:element name="nand" type="moveConditions"/>
+			<xs:element name="nor" type="moveConditions"/>
+			<xs:element name="xor" type="moveConditions"/>
 
 			<xs:element name="type">
 				<xs:complexType>
@@ -208,7 +208,7 @@
 		</xs:choice>
 	</xs:complexType>
 
-	<xs:complexType name="gameEndConditions">
+	<xs:complexType name="turnConditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="cannotMove">
 				<xs:complexType>
@@ -219,9 +219,24 @@
 					<xs:attribute name="type" type="xs:string" use="required"/>
 				</xs:complexType>
 			</xs:element>
-		</xs:choice>
-		<xs:attribute name="when" type="gameEndConditionApplicability" use="required" />
+		</xs:choice>		
 	</xs:complexType>
+
+  <xs:complexType name="gameEndConditions">
+    <xs:complexContent>
+      <xs:extension base="turnConditions">
+        <xs:attribute name="when" type="gameEndConditionApplicability" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="illegalMoveConditions">
+    <xs:complexContent>
+      <xs:extension base="turnConditions">
+        <xs:attribute name="when" fixed="endOfTurn" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
 	<xs:simpleType name="when">
 		<xs:restriction base="xs:string">
@@ -286,7 +301,7 @@
 
 	<xs:complexType name="slide">
 		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
@@ -298,7 +313,7 @@
 
 	<xs:complexType name="leap">
 		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
@@ -311,7 +326,7 @@
 
 	<xs:complexType name="hop">
 		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
@@ -325,7 +340,7 @@
 
 	<xs:complexType name="shoot">
 		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="dir" type="direction" use="required"/>
@@ -338,7 +353,7 @@
 
 	<xs:complexType name="moveLike">
 		<xs:sequence>
-			<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="other" type="xs:string" use="required"/>
 		<xs:attribute name="when" type="when" default="any"/>
@@ -482,7 +497,7 @@
 														<xs:element name="immobilize">
 															<xs:complexType>
 																<xs:sequence>
-																	<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+																	<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 																</xs:sequence>
 																<xs:attribute name="dir" type="direction" use="required"/>
 																<xs:attribute name="dist" type="distance" use="required"/>
@@ -498,7 +513,7 @@
 										<xs:element name="promotion" minOccurs="0" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+													<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 													<xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
 												</xs:sequence>
 												<xs:attribute name="mandatory" type="xs:boolean" default="true"/>
@@ -546,9 +561,10 @@
 										<xs:element name="win" type="gameEndConditions"/>
 										<xs:element name="lose" type="gameEndConditions"/>
 										<xs:element name="draw" type="gameEndConditions"/>
+										<xs:element name="illegal" type="illegalMoveConditions"/>
 									</xs:choice>
 								</xs:complexType>
-							</xs:element>
+              </xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

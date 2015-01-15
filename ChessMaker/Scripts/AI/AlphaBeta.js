@@ -5,15 +5,13 @@ function AI_AlphaBeta(ply) {
 }
 
 AI_AlphaBeta.prototype.selectMove = function () {
-    var player = game.state.currentPlayer;
-
     var alpha = Number.NEGATIVE_INFINITY;
     var beta = Number.POSITIVE_INFINITY;
 
     var bestScore = Number.NEGATIVE_INFINITY;
     var bestMoves = [];
 
-    var moves = game.state.determinePossibleMoves(player);
+    var moves = game.state.determinePossibleMoves();
 
     for (var i = 0; i < moves.length; i++) {
         var move = moves[i];
@@ -31,12 +29,12 @@ AI_AlphaBeta.prototype.selectMove = function () {
     return bestMoves[i];
 };
 
-AI_AlphaBeta.prototype.findBestScore = function (move, player, alpha, beta, depth) {
+AI_AlphaBeta.prototype.findBestScore = function (move, alpha, beta, depth) {
     if (depth == 0)
-        return this.evaluateBoard(player);
+        return this.evaluateBoard(move.subsequentState);
 
     var anyMoves = false;
-    var moves = move.subsequentState.determinePossibleMoves(player);
+    var moves = move.subsequentState.determinePossibleMoves();
 
     for (var i = 0; i < moves.length; i++) {
         if (!anyMoves) {
@@ -64,15 +62,13 @@ AI_AlphaBeta.prototype.findBestScore = function (move, player, alpha, beta, dept
 AI_AlphaBeta.prototype.getMoveScore = function (move, alpha, beta, depth) {
     move.perform(game, false);
 
-    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.subsequentState));
+    var score = this.getScoreForEndOfGame(game.endOfGame.checkEndOfTurn(move.prevState));
     
     if (score === undefined) {
-        var nextPlayer = move.subsequentState.currentPlayer;
-
-        if (move.player.getRelationship(nextPlayer) == Player.Relationship.Enemy)
-            score = -this.findBestScore(move, nextPlayer, -beta, -alpha, depth - 1);
+        if (move.player.getRelationship(move.subsequentState.currentPlayer) == Player.Relationship.Enemy)
+            score = -this.findBestScore(move, -beta, -alpha, depth - 1);
         else
-            score = this.findBestScore(move, nextPlayer, alpha, beta, depth - 1);
+            score = this.findBestScore(move, alpha, beta, depth - 1);
     }
 
     move.reverse(game, false);
