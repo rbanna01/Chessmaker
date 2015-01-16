@@ -6,28 +6,39 @@ function GameState(game, prevMove, moveNum) {
     this.currentPlayer = null;
     this.moveNumber = moveNum;
 
+    this.possibleMoves = null;
     this.possibleMovesByPiece = null;
+    this.threatCheckMoves = {}; // these are never actually performed or followed up on, but are used in calculating whether moves would be disallowed due to check. e.g. the king's forward "attack" in xiangqui.
 }
 
 GameState.prototype.determinePossibleMoves = function () {
-    var moves = [];
-    this.calculateMovesForPlayer(this.currentPlayer, moves);
-    return moves;
+    if (this.possibleMoves === null) {
+        this.possibleMoves = [];
+
+        MoveStep.nextStepID = 1;
+        this.calculateMovesForPlayer(this.currentPlayer, this.possibleMoves);
+    }
+    return this.possibleMoves;
 };
 
-GameState.prototype.determineThreatMoves = function () {
-    var threatMoves = [];
+GameState.prototype.determineThreatMoves = function (prevStep) {
+    var stepID = prevStep == null ? '' : prevStep.stepID;
 
-    for (var p = 0; p < game.players.length; p++) {
-        var opponent = game.players[p];
+    if (!this.threatCheckMoves.hasOwnProperty(stepID)) {
 
-        if (this.currentPlayer.getRelationship(opponent) != Player.Relationship.Enemy)
-            continue;
+        for (var p = 0; p < game.players.length; p++) {
+            var opponent = game.players[p];
 
-        this.calculateMovesForPlayer(opponent, threatMoves);
+            if (this.currentPlayer.getRelationship(opponent) != Player.Relationship.Enemy)
+                continue;
+
+            var threatMoves = [];
+            this.calculateMovesForPlayer(opponent, threatMoves);
+            this.threatCheckMoves[stepID] = threatMoves;
+        }
     }
 
-    return threatMoves;
+    return this.threatCheckMoves[stepID];
 };
 
 GameState.prototype.calculateMovesForPlayer = function (player, output) {
@@ -48,7 +59,7 @@ GameState.prototype.calculateMovesForPlayer = function (player, output) {
         // and then get move possibilities
         for (var j = 0; j < piece.pieceType.moves.length; j++) {
             var moveDef = piece.pieceType.moves[j];
-            var possibilities = moveDef.appendValidNextSteps(moveTemplate, piece, null);
+            var possibilities = moveDef.appendValidNextSteps(moveTemplate, piece, this, null);
             for (var k = 0; k < possibilities.length; k++) {
                 var move = possibilities[k];
 
@@ -91,12 +102,14 @@ GameState.prototype.prepareMovesForTurn = function () {
     var allMoves = {};
     var anyMoves = false;
     this.possibleMovesByPiece = {};
+    this.threatCheckMoves = {}; // these aren't needed any longer
 
-    var moves = this.determinePossibleMoves();
+    if (this.possibleMoves === null)
+        this.determinePossibleMoves();
 
-    for (var i = 0; i < moves.length; i++) {
+    for (var i = 0; i < this.possibleMoves.length; i++) {
         anyMoves = true;
-        var move = moves[i];
+        var move = this.possibleMoves[i];
 
         // sort moves by piece, for ease of access in the UI
         if (!this.possibleMovesByPiece.hasOwnProperty(move.piece.elementID))
