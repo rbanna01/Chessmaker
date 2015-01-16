@@ -69,7 +69,7 @@ function Slide(pieceRef, dir, dist, distMax, when, conditions) {
 
 extend(Slide, MoveDefinition);
 
-Slide.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+Slide.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
     if (this.piece != 'self')
@@ -86,7 +86,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
     for (var i = 0; i < dirs.length; i++) {
         var dir = dirs[i];
 
-        var boardMaxDist = state.game.board.getMaxDistance(piece.position, dir);
+        var boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, dir);
         var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
         var cell = piece.position;
@@ -103,7 +103,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
                     if (target == null)
                         continue; // needs to be a capture for this slide to be valid, and there is no piece here. But there might be pieces beyond this one.
                     else if (piece.canCapture(target))
-                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                     else
                         break; // cannot capture this piece. Slides cannot pass over pieces, so there can be no more valid slides in this direction.
                 }
@@ -111,7 +111,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
                     break;
                 else if (target != null) {
                     if (piece.canCapture(target))
-                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                        captureStep = MoveStep.CreateCapture(target, cell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                     else
                         break; // cannot capture this piece (probably own it)
                 }
@@ -124,7 +124,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
 
                 move.addStep(MoveStep.CreateMove(piece, piece.position, cell, dir));
 
-                if (this.conditions.isSatisfied(move, state))
+                if (this.conditions.isSatisfied(move))
                     moves.push(move);
             }
 
@@ -163,7 +163,7 @@ function Leap(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditi
 
 extend(Leap, MoveDefinition);
 
-Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+Leap.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
     if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
@@ -179,7 +179,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previous
     for (var i = 0; i < dirs.length; i++) {
         var firstDir = dirs[i];
 
-        var boardMaxDist = state.game.board.getMaxDistance(piece.position, firstDir);
+        var boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, firstDir);
         var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
@@ -187,7 +187,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previous
         for (var j = 0; j < secondDirs.length; j++) {
             var secondDir = secondDirs[j];
 
-            boardMaxDist = state.game.board.getMaxDistance(piece.position, secondDir);
+            boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, secondDir);
             distances = this.secondDist.getRange(null, previousStep, boardMaxDist);
             var minDist2 = distances[0]; var maxDist2 = distances[1];
 
@@ -214,7 +214,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previous
                             if (target == null)
                                 continue; // needs to be a capture for this leap to be valid, and there is no piece here. But there might be pieces beyond this one.
                             else if (piece.canCapture(target))
-                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                             else
                                 continue; // cannot capture this piece
                         }
@@ -222,7 +222,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previous
                             break;
                         else if (target != null) {
                             if (piece.canCapture(target))
-                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                                captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                             else
                                 continue; // cannot capture this piece
                         }
@@ -235,7 +235,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, state, previous
 
                         move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, secondDir));
 
-                        if (this.conditions.isSatisfied(move, state))
+                        if (this.conditions.isSatisfied(move))
                             moves.push(move);
                     }
                 }
@@ -281,7 +281,7 @@ function Hop(pieceRef, dir, distToHurdle, distToHurdleMax, distAfterHurdle, dist
 
 extend(Hop, MoveDefinition);
 
-Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+Hop.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
     if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
@@ -298,7 +298,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousS
     for (var i = 0; i < dirs.length; i++) {
         var dir = dirs[i];
 
-        var boardMaxDist = state.game.board.getMaxDistance(piece.position, dir);
+        var boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, dir);
         var distances = this.distToHurdle.getRange(this.distToHurdleMax, previousStep, boardMaxDist);
         var minDistTo = distances[0]; var maxDistTo = distances[1];
         distances = this.distAfterHurdle.getRange(this.distAfterHurdleMax, previousStep, boardMaxDist); /* doesn't the 'board max' need recalculated based on hurdle position? */
@@ -335,7 +335,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousS
                         if (target == null)
                             continue; // needs to be a capture for this hop to be valid, and there is no piece here. But there might be pieces beyond this one.
                         else if (piece.canCapture(target))
-                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                         else
                             break; // cannot capture this piece. Cannot hop over a second piece, so there can be no more valid hops in this direction.
                     }
@@ -343,7 +343,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousS
                         break;
                     else if (target != null) {
                         if (piece.canCapture(target))
-                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                         else
                             break; // cannot capture this piece (probably own it)
                     }
@@ -352,7 +352,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousS
                     move.addPieceReference(hurdle, 'hurdle');
 
                     if (this.captureHurdle) {
-                        var hurdleCaptureStep = MoveStep.CreateCapture(hurdle, hurdle.position, piece.ownerPlayer, state.game.holdCapturedPieces);
+                        var hurdleCaptureStep = MoveStep.CreateCapture(hurdle, hurdle.position, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                         move.addStep(hurdleCaptureStep);
                     }
 
@@ -363,7 +363,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, state, previousS
 
                     move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, dir));
 
-                    if (this.conditions.isSatisfied(move, state))
+                    if (this.conditions.isSatisfied(move))
                         moves.push(move);
                 }
 
@@ -410,7 +410,7 @@ function Shoot(pieceRef, dir, dist, distMax, secondDir, secondDist, when, condit
 
 extend(Shoot, MoveDefinition);
 
-Shoot.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+Shoot.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
     if (this.piece != 'self') {// some steps will specify a different piece to act upon, rather than the piece being moved
@@ -426,7 +426,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
     for (var i = 0; i < dirs.length; i++) {
         var firstDir = dirs[i];
 
-        var boardMaxDist = state.game.board.getMaxDistance(piece.position, firstDir);
+        var boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, firstDir);
         var distances = this.dist.getRange(this.distMax, previousStep, boardMaxDist);
         var minDist = distances[0]; var maxDist = distances[1];
 
@@ -437,7 +437,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
         for (var j = 0; j < secondDirs.length; j++) {
             var secondDir = secondDirs[j];
 
-            boardMaxDist = state.game.board.getMaxDistance(piece.position, secondDir);
+            boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, secondDir);
             distances = this.secondDist.getRange(null, previousStep, boardMaxDist);
             var minDist2 = distances[0]; var maxDist2 = distances[1];
 
@@ -465,7 +465,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
                         if (target == null)
                             continue; // needs to be a capture for this shoot to be valid, and there is no piece here. But there might be pieces beyond this one.
                         else if (piece.canCapture(target))
-                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, state.game.holdCapturedPieces);
+                            captureStep = MoveStep.CreateCapture(target, destCell, piece.ownerPlayer, baseMove.prevState.game.holdCapturedPieces);
                         else
                             break; // cannot capture this piece
 
@@ -473,7 +473,7 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, state, previou
                         move.addStep(captureStep);
                         move.addPieceReference(target, 'target');
 
-                        if (this.conditions.isSatisfied(move, state))
+                        if (this.conditions.isSatisfied(move))
                             moves.push(move);
                     }
                 }
@@ -514,10 +514,10 @@ function MoveLike(other, when, conditions) {
 
 extend(MoveLike, MoveDefinition);
 
-MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     if (this.pieceref == 'target') {
         // difficult special case - we don't know what piece we're to move like until we've already made the move
-        return this.appendMoveLikeTarget(baseMove, piece, state, previousStep);
+        return this.appendMoveLikeTarget(baseMove, piece, previousStep);
     }
 
     var moves = [];
@@ -531,7 +531,7 @@ MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, state, prev
     // iterate over all possible moves of the specific piece being referenced, but *for* the piece being moved
     for (var i = 0; i < other.pieceType.moves; i++) {
         var moveDef = other.pieceType.moves[i];
-        var possibilities = moveDef.appendValidNextSteps(baseMove, piece, state, previousStep);
+        var possibilities = moveDef.appendValidNextSteps(baseMove, piece, previousStep);
         for (var j = 0; j < possibilities.length; j++)
             moves.push(possibilities[j]);
     }
@@ -541,7 +541,7 @@ MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, state, prev
 
 MoveLike.AllowMoveLikeTarget = true;
 
-MoveLike.prototype.appendMoveLikeTarget = function (baseMove, piece, state, previousStep) {
+MoveLike.prototype.appendMoveLikeTarget = function (baseMove, piece, previousStep) {
     var moves = [];
 
     if (!MoveLike.AllowMoveLikeTarget)
@@ -557,7 +557,7 @@ MoveLike.prototype.appendMoveLikeTarget = function (baseMove, piece, state, prev
 		var pieceType = state.game.pieceTypes[i];
 		for ( var j=0; j<pieceType.allMoves.length; j++ )
 		{
-			var possibilities = pieceType.allMoves[j].appendValidNextSteps(move, piece, state, previousStep);
+			var possibilities = pieceType.allMoves[j].appendValidNextSteps(move, piece, previousStep);
 			for ( var k=0; k<possibilities.length; k++ )
 			{
 				var newMove = possibilities[k];
@@ -612,7 +612,7 @@ function ReferencePiece(name, type, relationship, dir, dist) {
 
 extend(ReferencePiece, MoveDefinition);
 
-ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
     var other = null;
 
@@ -621,7 +621,7 @@ ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, state
         for (var i = 0; i < dirs.length; i++) {
             var dir = dirs[i];
 
-            var boardMaxDist = state.game.board.getMaxDistance(piece.position, dir);
+            var boardMaxDist = baseMove.prevState.game.board.getMaxDistance(piece.position, dir);
             var distances = this.distance.getRange(null, previousStep, boardMaxDist);
             var minDist = distances[0]; var maxDist = distances[1];
 
@@ -652,7 +652,7 @@ ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, state
     }
 	else
     {
-        for (var i = 0; i < state.game.players.length; i++) {
+        for (var i = 0; i < baseMove.prevState.game.players.length; i++) {
             var player = this.players[i];
 
             if (this.otherRelationship != Player.Relationship.Any && piece.ownerPlayer.getRelationship(player) != this.otherRelationship)
@@ -703,7 +703,7 @@ function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
 
 extend(MoveGroup, MoveDefinition);
 
-MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, state, previousStep) {
+MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var results = [];
     var prevStepMoves = [baseMove];
 	for (var rep = 1; rep <= this.maxOccurs; rep++) {
@@ -717,14 +717,14 @@ MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, state, pre
 			    var prevMove = prevStepMoves[j];
 			    
 			    for (var doStep = 0; doStep < prevMove.steps.length; doStep++)
-			        prevMove.steps[doStep].perform(state.game);
+			        prevMove.steps[doStep].perform(baseMove.prevState.game);
 			    
-			    var nextMovesForStep = stepDef.appendValidNextSteps(prevMove, piece, state, prevMove.steps.length > 0 ? prevMove.steps[prevMove.steps.length - 1] : previousStep);
+			    var nextMovesForStep = stepDef.appendValidNextSteps(prevMove, piece, prevMove.steps.length > 0 ? prevMove.steps[prevMove.steps.length - 1] : previousStep);
 					
 				stepMoves = stepMoves.concat(nextMovesForStep);
 				
 				for (var undoStep = prevMove.steps.length - 1; undoStep >= 0; undoStep--)
-				    prevMove.steps[undoStep].reverse(state.game);
+				    prevMove.steps[undoStep].reverse(baseMove.prevState.game);
 			}
 
 			prevStepMoves = stepMoves;

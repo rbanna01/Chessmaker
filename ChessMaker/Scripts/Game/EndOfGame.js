@@ -58,7 +58,7 @@ EndOfGame.prototype.checkStartOfTurn = function (state, anyPossibleMoves) {
     // return Win/Lose/Draw, or undefined if the game isn't over yet
     for (var i = 0; i < this.startOfTurnChecks.length; i++) {
         var check = this.startOfTurnChecks[i];
-        if (check.conditions.isSatisfied(state, null, anyPossibleMoves))
+        if (check.conditions.isSatisfied(state, anyPossibleMoves))
             return check.type;
     }
 
@@ -73,14 +73,13 @@ EndOfGame.prototype.checkStartOfTurn = function (state, anyPossibleMoves) {
 
 EndOfGame.prototype.checkEndOfTurn = function (state, move) {
     // return Win/Lose/Draw/IllegalMove, or undefined if the game isn't over yet
-    var lastStep = move.steps[move.steps.length - 1];
 
     var noNextPlayer = state.game.turnOrder.getNextPlayer() == null;
     state.game.turnOrder.stepBackward();
 
     for (var i = 0; i < this.endOfTurnChecks.length; i++) {
         var check = this.endOfTurnChecks[i];
-        if (check.conditions.isSatisfied(state, lastStep, true))
+        if (check.conditions.isSatisfied(state, true))
             return check.type;
     }
 
@@ -107,9 +106,9 @@ function EndOfGameConditions() {
     this.elements = [];
 }
 
-EndOfGameConditions.prototype.isSatisfied = function (state, lastStep, canMove) {
+EndOfGameConditions.prototype.isSatisfied = function (state, canMove) {
     for (var i = 0; i < this.elements.length; i++)
-        if (!this.elements[i].isSatisfied(state, lastStep, canMove))
+        if (!this.elements[i].isSatisfied(state, canMove))
             return false;
     return true;
 };
@@ -146,7 +145,7 @@ EndOfGameConditions_cannotMove.parse = function (xmlNode) {
     return new EndOfGameConditions_cannotMove();
 };
 
-EndOfGameConditions_cannotMove.prototype.isSatisfied = function (state, lastStep, canMove) {
+EndOfGameConditions_cannotMove.prototype.isSatisfied = function (state, canMove) {
     return !canMove;
 };
 
@@ -159,7 +158,7 @@ EndOfGameConditions_threatened.parse = function (xmlNode) {
     return new EndOfGameConditions_threatened(type);
 };
 
-EndOfGameConditions_threatened.prototype.isSatisfied = function (state, lastStep, canMove) {
+EndOfGameConditions_threatened.prototype.isSatisfied = function (state, canMove) {
     if (Conditions_Threatened.alreadyChecking)
         return false; // assume NOT threatened
 
@@ -170,7 +169,7 @@ EndOfGameConditions_threatened.prototype.isSatisfied = function (state, lastStep
             continue;
 
         Conditions_Threatened.alreadyChecking = true;
-        var threatened = Conditions_Threatened.isThreatened(state, lastStep, piece.position);
+        var threatened = Conditions_Threatened.isThreatened(state, piece.position);
         Conditions_Threatened.alreadyChecking = false;
 
         if (threatened)
