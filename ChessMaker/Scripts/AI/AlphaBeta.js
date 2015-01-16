@@ -88,7 +88,7 @@ AI_AlphaBeta.prototype.getScoreForEndOfGame = function (result) {
     }
 };
 
-AI_AlphaBeta.prototype.evaluateBoard = function (player) {
+AI_AlphaBeta.prototype.evaluateBoard = function (state) {
     var score = 0;
 
     for (var i = 0; i < game.players.length; i++) {
@@ -113,7 +113,7 @@ AI_AlphaBeta.prototype.evaluateBoard = function (player) {
                 playerScore += moves[k].isCapture() ? 0.2 : 0.1;*/
         }
 
-        if (player.getRelationship(other) == Player.Relationship.Enemy)
+        if (state.currentPlayer.getRelationship(other) == Player.Relationship.Enemy)
             score -= playerScore;
         else
             score += playerScore;
