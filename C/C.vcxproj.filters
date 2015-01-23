@@ -66,6 +66,9 @@
     <ClInclude Include="TurnOrder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MoveStep.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

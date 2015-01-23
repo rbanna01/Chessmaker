@@ -3,6 +3,8 @@
 
 class Piece;
 
+#define CELL_REF_LENGTH 10
+
 class Cell
 {
 public:
@@ -12,12 +14,12 @@ public:
 	void AddLink(int dir, Cell* destination);
 	Cell* FollowLink(int dir);
 private:
-	static int nextID;
-	int uniqueID;
+	char reference[CELL_REF_LENGTH];
 
 	Piece *piece;
 	std::map<int, Cell*> links;
 	
 	friend class MoveStep;
+	friend class GameParser;
 };
 

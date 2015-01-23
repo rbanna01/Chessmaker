@@ -1,23 +1,35 @@
 #include <stdio.h>
+#include <utility>
 #include <string.h>
 #include "Game.h"
+#include "GameParser.h"
 
 Game *game = 0;
+std::string *boardSVG = 0;
 
 extern "C" __declspec(dllexport)
-void Initialize(const char* definition)
+bool Initialize(char* definition, int svgBufferLength)
 {
 	if (game != 0)
 		delete game;
+	if (boardSVG != 0)
+		delete boardSVG;
 
-	game = new Game();
-	printf("Got a new game definition:\n");
-	printf(definition);
-	printf("\n");
+	boardSVG = new std::string();
+	game = GameParser::Parse(definition, boardSVG);
+
+	if (game != 0)
+	{
+		printf("Definition parsed successfully\n");
+		return true;
+	}
+	return false;
 }
 
 extern "C" __declspec(dllexport)
 void GetBoardSVG(char *buffer, int maxLen)
 {
-	strncpy_s(buffer, maxLen, "this should be an SVG", maxLen);
+	strncpy_s(buffer, maxLen, boardSVG->c_str(), maxLen);
+	delete boardSVG;
+	boardSVG = 0;
 }

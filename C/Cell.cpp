@@ -1,10 +1,7 @@
 #include "Cell.h"
 
-int Cell::nextID = 1;
-
 Cell::Cell()
 {
-	uniqueID = Cell::nextID++;
 }
 
 

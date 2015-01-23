@@ -9,61 +9,6 @@ function Board(game) {
     this.allDirections = [];
 }
 
-Board.prototype.loadSVG = function (xml, defs) {
-    var boardSVG = SVG('svg');
-    
-    boardSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    boardSVG.setAttribute('id', this.elementID);
-    boardSVG.setAttribute('viewBox', xml.getAttribute('viewBox'));
-    
-    boardSVG.appendChild(defs);
-    
-    // create cells & board lines
-    var board = this;
-
-    var childNodes = xml.childNodes;
-    for (var i = 0; i < childNodes.length; i++) {
-        var child = childNodes[i];
-
-        if (child.tagName == 'cell') {
-            var cell = new Cell(child.getAttribute('id'), child.childNodes);
-            board.cells[cell.name] = cell;
-            boardSVG.appendChild(cell.loadSVG(child));
-        }
-        else if (child.tagName == 'line') {
-            var line = SVG('line');
-            line.setAttribute('x1', child.getAttribute('x1'));
-            line.setAttribute('x2', child.getAttribute('x2'));
-            line.setAttribute('y1', child.getAttribute('y1'));
-            line.setAttribute('y2', child.getAttribute('y2'));
-            line.setAttribute('class', 'detail ' + child.getAttribute('color') + 'Stroke');
-            boardSVG.appendChild(line);
-        }
-    }
-
-    var allDirs = {};
-
-    for (var sourceRef in this.cells) {
-        var cell = this.cells[sourceRef];
-        for (var dir in cell.links) {
-            if (!allDirs.hasOwnProperty(dir))
-                allDirs[dir] = dir;
-
-            var ref = cell.links[dir];
-
-            if (this.cells.hasOwnProperty(ref))
-                cell.links[dir] = this.cells[ref];
-            else
-                throw 'Cell ' + cell.name + ' has link to unrecognised cell: ' + ref;
-        }
-    }
-
-    for (var dir in allDirs)
-        this.allDirections.push(dir);
-
-    return boardSVG;
-}
-
 Board.prototype.parseDirections = function (dirsNode) {
     var board = this;
     var children = dirsNode.childNodes;

@@ -81,6 +81,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="EndOfGame.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameParser.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveStep.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="EndOfGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameParser.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="MoveStep.cpp" />
