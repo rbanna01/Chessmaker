@@ -87,6 +87,11 @@
     <ClInclude Include="Piece.h" />
     <ClInclude Include="PieceType.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="TurnOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
