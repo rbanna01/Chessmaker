@@ -15,6 +15,10 @@
 
 using namespace rapidxml;
 
+unsigned int GameParser::maxDirection = 2;
+unsigned int GameParser::allDirections = 0;
+dirLookup_t GameParser::directionLookups;
+
 Game* GameParser::Parse(char *definition, std::string *svgOutput)
 {
 	xml_document<> doc;
@@ -22,6 +26,10 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 
 	Game *game = new Game();
 	game->board = new Board(game);
+
+	maxDirection = 2;
+	allDirections = 0;
+	directionLookups.clear();
 
 	xml_node<> *node = doc.first_node()->first_node("board");
 	if (node == 0)
@@ -46,13 +54,13 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		printf("Can't find \"dirs\" node in game definition\n");
 		delete game;
 		return 0;
-	}/*
+	}
 	if (!ParseDirections(game->board, node))
 	{
 		delete game;
 		return 0;
 	}
-
+	/*
 	node = node->next_sibling("pieces");
 	if (node == 0)
 	{
@@ -277,21 +285,66 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		cell->AddLink(dir, dest);
 	}
 
-	/* todo: implement this, along with dir-name-to-int setup
-	int maxDir = getThisSomehow; // if they're all ints, this should be easy, right?
-	board->allDirections = new int[maxDir];
-	for (int i = 1; i <= maxDir; i++)
-		board->allDirections[i - 1] = i;
-	*/
+	board->allAbsoluteDirections = allDirections;
 	return true;
 }
 
 
 bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 {
-	printf("ParseDirections is not implemented\n");
-	// todo: implement this
-	return false;
+	board->firstRelativeDirection = maxDirection << 1;
+
+	xml_node<> *node = dirsNode->first_node();
+	while (node != 0)
+	{
+		if (strcmp(node->name(), "relative") == 0)
+		{
+			char *name = node->first_attribute("name")->value();
+			unsigned int id = LookupDirection(name); // this should always be new
+			relativeDir_t values;
+
+			xml_node<> *child = node->first_node();
+			while (child != 0)
+			{
+				char *from = child->first_attribute("from")->value();
+				char *to = child->first_attribute("to")->value();
+				
+				unsigned int fromID = LookupDirection(from); // this should never be new, and also < firstRelativeDirection
+				unsigned int toID = LookupDirection(to); // this should never be new, and also < firstRelativeDirection
+
+				values.insert(relativeDirValue_t(fromID, toID));
+
+				child = child->next_sibling();
+			}
+
+			board->relativeDirections.insert(std::pair<unsigned int, relativeDir_t>(id, values));
+		}
+		else if (strcmp(node->name(), "group") == 0)
+		{
+			char *name = node->first_attribute("name")->value();
+			int dirMask = 0;
+
+			xml_node<> *child = node->first_node();
+			while (child != 0)
+			{
+				char *dir = child->first_attribute("dir")->value();
+				dirMask |= LookupDirection(dir); // this should never be new
+
+				child = child->next_sibling();
+			}
+
+			directionLookups.insert(dirLookupEntry_t(name, dirMask));
+		}
+
+		node = node->next_sibling();
+	}
+
+	board->lastRelativeDirection = maxDirection;
+
+	if (board->firstRelativeDirection == board->lastRelativeDirection)
+		board->lastRelativeDirection = board->lastRelativeDirection >> 1; // there are none, so ensure they don't get looped over
+
+	return true;
 }
 
 
@@ -318,8 +371,19 @@ bool GameParser::ParseRules(xml_node<> *rulesNode, Game *game)
 	return false;
 }
 
-int GameParser::LookupDirection(char *dirName)
+
+unsigned int GameParser::LookupDirection(char *dirName)
 {
-	// todo: implement some sort of direction-name-to-id lookup here
-	return 1;
+	dirLookup_t::iterator it = directionLookups.find(dirName);
+
+	if (it == directionLookups.end())
+	{// a new direction, add it
+		maxDirection = maxDirection << 1;
+		allDirections |= maxDirection;
+		directionLookups.insert(dirLookupEntry_t(dirName, maxDirection));
+
+		return maxDirection;
+	}
+
+	return it->second;
 }

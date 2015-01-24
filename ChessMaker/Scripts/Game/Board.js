@@ -9,43 +9,6 @@ function Board(game) {
     this.allDirections = [];
 }
 
-Board.prototype.parseDirections = function (dirsNode) {
-    var board = this;
-    var children = dirsNode.childNodes;
-
-    for (var i = 0; i < children.length; i++) {
-        var dir = children[i];
-
-        if (dir.tagName == 'relative') {
-
-            var name = dir.getAttribute('name');
-            var relDir = {};
-
-            var links = dir.childNodes;
-
-            for (var j = 0; j < links.length; j++) {
-                var link = links[j];
-                relDir[link.getAttribute('from')] = link.getAttribute('to');
-            }
-
-            board.relativeDirections[name] = relDir;
-        }
-
-        if (dir.tagName == 'group') {
-            var name = dir.getAttribute('name');
-            var group = [];
-
-            var links = dir.childNodes;
-            for (var j = 0; j < links.length; j++) {
-                var link = links[j];
-                group.push(link.getAttribute('dir'));
-            }
-
-            board.directionGroups[name] = group;
-        }
-    }
-};
-
 // whether its a global, relative or group name, this should output an array of resultant global directions
 Board.prototype.resolveDirection = function (name, prevDir) {
     if (name == 'same')

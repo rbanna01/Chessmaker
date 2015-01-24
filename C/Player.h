@@ -13,7 +13,7 @@ public:
 	Player(Game *game, int id, PlayerType_t type, int forwardDir);
 	~Player();
 
-	int ResolveDirection(int dir, int prevDir);
+	unsigned int ResolveDirections(unsigned int dir, unsigned int prevDir);
 	PlayerRelationship_t GetRelationship(Player *other);
 
 private:

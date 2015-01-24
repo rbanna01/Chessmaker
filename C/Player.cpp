@@ -18,12 +18,12 @@ Player::~Player()
 }
 
 
-int Player::ResolveDirection(int dir, int prevDir)
+unsigned int Player::ResolveDirections(unsigned int dir, unsigned int prevDir)
 {
 	if (dir == DIRECTION_FORWARD)
-		return /*[*/forwardDir/*]*/;
+		return forwardDir;
 
-	return game->GetBoard()->ResolveDirection(dir, prevDir);
+	return game->GetBoard()->ResolveDirections(dir, prevDir);
 }
 
 
