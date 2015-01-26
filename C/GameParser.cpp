@@ -15,10 +15,6 @@
 
 using namespace rapidxml;
 
-unsigned int GameParser::maxDirection = 2;
-unsigned int GameParser::allDirections = 0;
-dirLookup_t GameParser::directionLookups;
-
 Game* GameParser::Parse(char *definition, std::string *svgOutput)
 {
 	xml_document<> doc;
@@ -218,13 +214,11 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			attr = svgDoc->allocate_attribute("d", val);
 			cellSVG->append_attribute(attr); // !
 
-			/*
-			todo: save off each cell's position
-			var seg = cell.pathSegList.getItem(0);
+			// todo: save off each cell's position. Get the first two numbers from the path.
+			// "M100 60 m-20 -20" should become "100" and "60"
+			/*var seg = cell.pathSegList.getItem(0);
 			cell.coordX = seg.x;
-			cell.coordY = seg.y;
-			return cell;
-			*/
+			cell.coordY = seg.y;*/
 
 			iCell++;
 		}

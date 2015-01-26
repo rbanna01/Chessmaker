@@ -16,7 +16,9 @@ bool Initialize(char* definition, int svgBufferLength)
 		delete boardSVG;
 
 	boardSVG = new std::string();
-	game = GameParser::Parse(definition, boardSVG);
+	GameParser *parser = new GameParser();
+	game = parser->Parse(definition, boardSVG);
+	delete parser;
 
 	if (game != 0)
 	{

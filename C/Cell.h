@@ -20,6 +20,8 @@ private:
 	Piece *piece;
 	std::map<int, Cell*> links;
 	
+	int coordX, coordY;
+
 	friend class MoveStep;
 	friend class GameParser;
 };
