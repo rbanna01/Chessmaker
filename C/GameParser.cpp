@@ -214,11 +214,11 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			attr = svgDoc->allocate_attribute("d", val);
 			cellSVG->append_attribute(attr); // !
 
-			// todo: save off each cell's position. Get the first two numbers from the path.
+			// save off each cell's position. Get the first two numbers from the path.
 			// "M100 60 m-20 -20" should become "100" and "60"
-			/*var seg = cell.pathSegList.getItem(0);
-			cell.coordX = seg.x;
-			cell.coordY = seg.y;*/
+			char *firstSpace = strchr(val, ' ');
+			cell.coordX = atoi(val + 1);
+			cell.coordY = atoi(firstSpace + 1);
 
 			iCell++;
 		}
