@@ -56,7 +56,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	/*
+	
 	node = node->next_sibling("pieces");
 	if (node == 0)
 	{
@@ -64,12 +64,12 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	if (!ParsePieceTypes(node))
+	if (!ParsePieceTypes(node, defsNodes))
 	{
 		delete game;
 		return 0;
 	}
-
+	/*
 	node = node->next_sibling("setup");
 	if (node == 0)
 	{
@@ -353,13 +353,41 @@ bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 }
 
 
-bool GameParser::ParsePieceTypes(xml_node<> *piecesNode)
+struct TempPieceTypeInfo
 {
-	printf("ParsePieceTypes is not implemented\n");
-	// todo: implement this
-	return false;
+public:
+	TempPieceTypeInfo(PieceType *t, char *as) { type = t; capturedAsType = as; }
+	PieceType *type;
+	char *capturedAsType;
+};
+
+
+bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode)
+{
+	std::map<char*, TempPieceTypeInfo, char_cmp> pieceTypesByName;
+
+	xml_node<> *node = piecesNode->first_node("piece");
+	while (node != 0)
+	{
+		PieceType *type = new PieceType();
+		char *capturedAs = ParsePieceType(node, svgDefsNode, type);
+		
+		TempPieceTypeInfo info = TempPieceTypeInfo(type, capturedAs);
+		pieceTypesByName.insert(std::pair<char*, TempPieceTypeInfo>(capturedAs, info));
+
+		node = node->next_sibling("piece");
+	}
+
+	// todo: implement "captured as" resolving of types
+	
+	return true;
 }
 
+char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode, PieceType *type)
+{
+	// todo: implement this
+	return "Dunno";
+}
 
 bool GameParser::ParsePlayers(xml_node<> *setupNode, Game *game, xml_document<> *svgDoc)
 {
