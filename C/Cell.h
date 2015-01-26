@@ -12,13 +12,13 @@ public:
 	Cell();
 	~Cell();
 
-	void AddLink(int dir, Cell* destination);
-	Cell* FollowLink(int dir);
+	void AddLink(unsigned int dir, Cell* destination);
+	Cell* FollowLink(unsigned int dir);
 private:
 	char reference[CELL_REF_LENGTH];
 
 	Piece *piece;
-	std::map<int, Cell*> links;
+	std::map<unsigned int, Cell*> links;
 	
 	int coordX, coordY;
 

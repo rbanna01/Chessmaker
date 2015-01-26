@@ -121,6 +121,22 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 }
 
 
+struct TempCellLink
+{
+public:
+	TempCellLink(Cell *c, unsigned int d, char *r)
+	{
+		fromCell = c;
+		direction = d;
+		destinationCellRef = r;
+	}
+
+	Cell *fromCell;
+	unsigned int direction;
+	char* destinationCellRef;
+};
+
+
 bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, xml_document<> *svgDoc)
 {
 	// create SVG root node
@@ -155,8 +171,8 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 	Cell *cells = new Cell[iCell];
 	iCell = 0;
 
-	std::map<char*, Cell*> cellsByRef;
-	std::list<std::tuple<Cell*, int, char*>> links;
+	std::map<char*, Cell*, char_cmp> cellsByRef;
+	std::list<TempCellLink> links;
 
 	node = boardNode->first_node();
 	while (node != 0)
@@ -164,11 +180,11 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		if (strcmp(node->name(), "cell") == 0)
 		{
 			attr = node->first_attribute("id");
-			Cell cell = cells[iCell];
+			Cell *cell = &cells[iCell++];
 
 			char *ref = attr->value();
-			strncpy_s(cell.reference, CELL_REF_LENGTH, ref, CELL_REF_LENGTH);
-			cellsByRef.insert(std::pair<char*, Cell*>(ref, &cell));
+			strncpy_s(cell->reference, CELL_REF_LENGTH, ref, CELL_REF_LENGTH);
+			cellsByRef.insert(std::pair<char*, Cell*>(ref, cell));
 			
 			// parse cell links, and store them until all cells have been loaded, so we can resolve the names
 			xml_node<> *link = node->first_node("link");
@@ -180,7 +196,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 				attr = link->first_attribute("to");
 				ref = attr->value();
 
-				links.insert(links.end(), std::tuple<Cell*, int, char*>(&cell, LookupDirection(dir), ref));
+				links.push_back(TempCellLink(cell, LookupDirection(dir), ref));
 
 				link = link->next_sibling("link");
 			}
@@ -189,7 +205,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			xml_node<> *cellSVG = svgDoc->allocate_node(node_element, "path");
 			svgRoot->append_node(cellSVG);
 
-			ref = svgDoc->allocate_string(cell.reference);
+			ref = svgDoc->allocate_string(cell->reference);
 			attr = svgDoc->allocate_attribute("id", ref);
 			cellSVG->append_attribute(attr);
 
@@ -217,10 +233,8 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			// save off each cell's position. Get the first two numbers from the path.
 			// "M100 60 m-20 -20" should become "100" and "60"
 			char *firstSpace = strchr(val, ' ');
-			cell.coordX = atoi(val + 1);
-			cell.coordY = atoi(firstSpace + 1);
-
-			iCell++;
+			cell->coordX = atoi(val + 1);
+			cell->coordY = atoi(firstSpace + 1);
 		}
 		else if (strcmp(node->name(), "line") == 0)
 		{
@@ -262,23 +276,20 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 	// look through links, resolve the named cell for each, and then call cell.AddLink() for each.
 	while (!links.empty())
 	{
-		std::tuple<Cell*, int, char*> link = links.front();
+		TempCellLink link = links.front();
 		links.pop_front();
-
-		char *ref = std::get<2>(link);
-		std::map<char*, Cell*>::iterator it = cellsByRef.find(ref);
+		
+		std::map<char*, Cell*>::iterator it = cellsByRef.find(link.destinationCellRef);
 		if (it == cellsByRef.end())
 		{
 			// todo: report invalid link destination cell error somehow
 			continue;
 		}
 
-		Cell *cell = std::get<0>(link);
 		Cell *dest = it->second;
-		int dir = std::get<1>(link);
-		cell->AddLink(dir, dest);
+		link.fromCell->AddLink(link.direction, dest);
 	}
-
+	
 	board->allAbsoluteDirections = allDirections;
 	return true;
 }

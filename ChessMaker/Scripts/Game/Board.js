@@ -9,42 +9,6 @@ function Board(game) {
     this.allDirections = [];
 }
 
-// whether its a global, relative or group name, this should output an array of resultant global directions
-Board.prototype.resolveDirection = function (name, prevDir) {
-    if (name == 'same')
-        return [prevDir];
-    else if (name == 'any')
-        return this.allDirections;
-
-    if (this.directionGroups.hasOwnProperty(name)) {
-        var group = this.directionGroups[name];
-        var output = [];
-        for (var i = 0; i < group.length; i++) {
-            var dir = this.resolveSingleDirection(group[i], prevDir);
-            if (dir != null)
-                output.push(dir);
-        }
-        return output;
-    }
-
-    var dir = this.resolveSingleDirection(name, prevDir);
-    if (dir == null)
-        return [];
-    return [dir];
-};
-
-Board.prototype.resolveSingleDirection = function (name, prevDir) {
-    if (this.relativeDirections.hasOwnProperty(name)) {
-        var relDir = this.relativeDirections[name];
-        if (relDir.hasOwnProperty(prevDir))
-            return relDir[prevDir];
-        else
-            return null;
-    }
-
-    return name;
-};
-
 Board.prototype.getMaxDistance = function (cell, dir) {
     var num = 0;
 
