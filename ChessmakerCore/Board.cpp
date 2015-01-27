@@ -28,7 +28,7 @@ unsigned int Board::ResolveDirections(unsigned int dir, unsigned int prevDir)
 
 	// must resolve at least one relative direction
 	unsigned int absoluteOnly = dir & allAbsoluteDirections;
-	for (unsigned int rel = firstRelativeDirection; rel <= lastRelativeDirection; rel << 1)
+	for (unsigned int rel = firstRelativeDirection; rel <= lastRelativeDirection; rel = rel << 1)
 		if ((dir & rel) == rel)
 			absoluteOnly |= ResolveRelativeDirection(rel, prevDir);
 	
