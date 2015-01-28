@@ -8,7 +8,7 @@ Game *game = 0;
 std::string *boardSVG = 0;
 
 extern "C" __declspec(dllexport)
-bool Initialize(char* definition, int svgBufferLength)
+bool Initialize(char* definition)
 {
 	if (game != 0)
 		delete game;
@@ -29,9 +29,7 @@ bool Initialize(char* definition, int svgBufferLength)
 }
 
 extern "C" __declspec(dllexport)
-void GetBoardSVG(char *buffer, int maxLen)
+std::string *GetBoardSVG()
 {
-	strncpy(buffer, boardSVG->c_str(), maxLen);
-	delete boardSVG;
-	boardSVG = 0;
+	return boardSVG;
 }

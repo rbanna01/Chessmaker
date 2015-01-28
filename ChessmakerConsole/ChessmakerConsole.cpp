@@ -1,14 +1,15 @@
 #include <tchar.h>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 
 #pragma comment(lib, "..\\Debug\\ChessmakerCore.lib")
 
 extern "C" __declspec(dllimport)
-bool Initialize(char* definition, int svgBufferLength);
+bool Initialize(char* definition);
 
 extern "C" __declspec(dllimport)
-void GetBoardSVG(char *buffer, int maxLen);
+std::string *GetBoardSVG();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -28,22 +29,23 @@ int _tmain(int argc, _TCHAR* argv[])
 	def.close();
 	
 	// initialize game engine
-	if (!Initialize(definition, 32768))
+	if (!Initialize(definition))
 	{
 		printf("error");
 		return 1;
 	}
 	
 	// retrieve and then save the board SVG file
-	char svg[32768];
-	GetBoardSVG(svg, 32768);
-	printf("received: %s", svg);
+	std::string *svg = GetBoardSVG();
+	printf("received %i bytes:\n%s", svg->size(), svg->c_str());
 
 	std::ofstream ofs("Render.svg", std::ofstream::out);
-	ofs << svg;
+	ofs << svg->c_str();
 	ofs.close();
 
+	delete svg;
 	delete definition;
+	
 	getchar();
 	return 0;
 }
