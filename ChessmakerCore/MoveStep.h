@@ -19,8 +19,8 @@ public:
 	static MoveStep *CreateSteal(Piece *piece, Player *fromOwner, Player *toOwner);
 
 private:
-	bool Pickup(PieceState_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
-	void Place(PieceState_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
+	bool Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
+	void Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
 	void UpdateDisplay();
 
 	static int nextID;
@@ -28,7 +28,7 @@ private:
 
 	Piece *piece;
 	int direction;
-	PieceState_t fromState, toState;
+	Piece::State_t fromState, toState;
 	Cell *fromPos, *toPos;
 	Player *fromOwner, *toOwner;
 	Player *fromStateOwner, *toStateOwner;

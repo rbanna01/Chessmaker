@@ -3,12 +3,12 @@
 #include "PieceType.h"
 #include "Player.h"
 
-typedef enum { OnBoard, Captured, Held } PieceState_t;
-
 class Piece
 {
 public:
-	Piece(Player *owner, PieceType *type, Cell *position, PieceState_t state, Player *stateOwner);
+	typedef enum { OnBoard, Captured, Held } State_t;
+
+	Piece(Player *owner, PieceType *type, Cell *position, State_t state, Player *stateOwner);
 	~Piece();
 
 	bool CanCapture(Piece *target);
@@ -18,7 +18,7 @@ public:
 	Player *GetStateOwner() { return stateOwner; }
 	PieceType *GetType() { return pieceType; }
 	Cell *GetPosition() { return position; }
-	PieceState_t GetState() { return pieceState; }
+	State_t GetState() { return pieceState; }
 private:
 	static int nextID;
 	int uniqueID, moveNumber, lastMoveTurn;
@@ -26,7 +26,7 @@ private:
 	Player *stateOwner;
 	PieceType *pieceType;
 	Cell *position;
-	PieceState_t pieceState;
+	State_t pieceState;
 
 	friend class Move;
 	friend class MoveStep;

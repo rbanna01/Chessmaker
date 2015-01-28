@@ -49,7 +49,7 @@ bool MoveStep::Reverse(bool updateDisplay)
 }
 
 
-bool MoveStep::Pickup(PieceState_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
+bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
 {
 	if (piece->GetState() != state) // piece isn't in the expected state, quit
 	{
@@ -68,7 +68,7 @@ bool MoveStep::Pickup(PieceState_t state, Player *stateOwner, Cell *pos, Player 
 	}
 
 	switch (state) {
-	case PieceState_t::OnBoard:
+	case Piece::State_t::OnBoard:
 		if (piece->GetPosition() != pos) {
 			//console.log('position is wrong: got ' + this.piece.position.name + ', expected ' + pos.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
 			return false;
@@ -78,12 +78,12 @@ bool MoveStep::Pickup(PieceState_t state, Player *stateOwner, Cell *pos, Player 
 		pos->piece = 0;
 		return true;
 
-	case PieceState_t::Captured:
+	case Piece::State_t::Captured:
 		if (stateOwner == 0 || owner->piecesCaptured.erase(piece->uniqueID) == 0)
 			return false; // wasn't captured by that player after all ... can't perform this action
 		return true;
 
-	case PieceState_t::Held:
+	case Piece::State_t::Held:
 		if (stateOwner == 0 || owner->piecesHeld.erase(piece->uniqueID) == 0)
 			return false; // wasn't held by that player after all ... can't perform this action
 		return true;
@@ -93,7 +93,7 @@ bool MoveStep::Pickup(PieceState_t state, Player *stateOwner, Cell *pos, Player 
 }
 
 
-void MoveStep::Place(PieceState_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
+void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
 {
     piece->pieceState = state;
 	piece->stateOwner = stateOwner;
@@ -102,15 +102,15 @@ void MoveStep::Place(PieceState_t state, Player *stateOwner, Cell *pos, Player *
 	piece->pieceType = type;
     
 	switch (state) {
-	case PieceState_t::OnBoard:
+	case Piece::State_t::OnBoard:
 		pos->piece = piece;
 		if (toState != fromState || fromOwner != toOwner)
 			owner->piecesOnBoard.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
 		break;
-	case PieceState_t::Captured:
+	case Piece::State_t::Captured:
 		stateOwner->piecesCaptured.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
 		break;
-	case PieceState_t::Held:
+	case Piece::State_t::Held:
 		stateOwner->piecesHeld.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
 	default:
 		return; //throw 'Unexpected piece state in MoveStep.place: ' + state;
@@ -127,7 +127,7 @@ void MoveStep::UpdateDisplay()
 MoveStep* MoveStep::CreateMove(Piece *piece, Cell *from, Cell *to, int dir)
 {
 	MoveStep *step = new MoveStep(piece);
-	step->fromState = step->toState = PieceState_t::OnBoard;
+	step->fromState = step->toState = Piece::State_t::OnBoard;
 	step->fromPos = from;
 	step->toPos = to;
 	step->direction = dir;
@@ -138,8 +138,8 @@ MoveStep* MoveStep::CreateMove(Piece *piece, Cell *from, Cell *to, int dir)
 MoveStep* MoveStep::CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld)
 {
 	MoveStep *step = new MoveStep(piece);
-	step->fromState = PieceState_t::OnBoard;
-	step->toState = toHeld ? PieceState_t::Held : PieceState_t::Captured;
+	step->fromState = Piece::State_t::OnBoard;
+	step->toState = toHeld ? Piece::State_t::Held : Piece::State_t::Captured;
 	step->fromPos = from;
 	step->toStateOwner = capturedBy;
 	return step;
@@ -149,8 +149,8 @@ MoveStep* MoveStep::CreateCapture(Piece *piece, Cell *from, Player *capturedBy, 
 MoveStep* MoveStep::CreateDrop(Piece *piece, Cell *to, Player *droppedBy)
 {
 	MoveStep *step = new MoveStep(piece);
-	step->fromState = PieceState_t::Held;
-	step->toState = PieceState_t::OnBoard;
+	step->fromState = Piece::State_t::Held;
+	step->toState = Piece::State_t::OnBoard;
 	step->fromStateOwner = droppedBy;
 	step->toPos = to;
 	return step;

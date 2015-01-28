@@ -2,7 +2,7 @@
 
 int Piece::nextID = 1;
 
-Piece::Piece(Player *owner, PieceType *type, Cell *position, PieceState_t state, Player *stateOwner)
+Piece::Piece(Player *owner, PieceType *type, Cell *position, State_t state, Player *stateOwner)
 {
 	uniqueID = Piece::nextID++; // prefix this with a "p" in the DOM, i guess
 	owner = owner;
@@ -22,7 +22,7 @@ Piece::~Piece()
 
 bool Piece::CanCapture(Piece *target)
 {
-	return owner->GetRelationship(target->owner) == Enemy;
+	return owner->GetRelationship(target->owner) == Player::Enemy;
 }
 
 bool Piece::TypeMatches(PieceType *type)

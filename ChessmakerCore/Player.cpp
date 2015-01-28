@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Board.h"
 
-Player::Player(Game *game, int id, PlayerType_t type, int forwardDir)
+Player::Player(Game *game, int id, Type_t type, int forwardDir)
 {
 	this->game = game;
 	this->id = id;
@@ -27,7 +27,7 @@ unsigned int Player::ResolveDirections(unsigned int dir, unsigned int prevDir)
 }
 
 
-PlayerRelationship_t Player::GetRelationship(Player *other)
+Player::Relationship_t Player::GetRelationship(Player *other)
 {
 	if (this == other)
 		return Self;
