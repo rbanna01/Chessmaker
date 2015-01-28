@@ -63,6 +63,9 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp">
       <Filter>Header Files\rapidxml</Filter>
     </ClInclude>
+    <ClInclude Include="MoveDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TurnOrder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

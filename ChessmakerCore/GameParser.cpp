@@ -8,6 +8,7 @@
 #include "EndOfGame.h"
 #include "Game.h"
 #include "GameState.h"
+#include "MoveDefinition.h"
 #include "PieceType.h"
 #include "Player.h"
 #include "TurnOrder.h"
@@ -434,12 +435,18 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 		}
 		else if (strcmp(node->name(), "moves") == 0)
 		{
-			/* todo: implement this
-			var moves = childNode.childNodes;
-			for (var j=0; j<moves.length; j++)
-			type.moves.push(MoveDefinition.parse(moves[j], true));
-			break;
-			*/
+			xml_node<> *moveNode = node->first_node();
+			while (moveNode != 0)
+			{
+				MoveDefinition *move = ParseMove(moveNode, true);
+				if (move == 0)
+				{
+					// todo: report invalid link destination cell error somehow
+				}
+				else
+					type->moves.push_back(move);
+				moveNode = moveNode->next_sibling();
+			}
 		}/*
 		else if (strcmp(node->name(), "special") == 0)
 		{
@@ -507,6 +514,12 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 	}
 
 	return capturedAs;
+}
+
+MoveDefinition *GameParser::ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel)
+{
+	// todo: implement this
+	return 0;
 }
 
 bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)

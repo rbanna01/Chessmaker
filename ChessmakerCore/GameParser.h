@@ -5,6 +5,7 @@
 
 class Board;
 class Game;
+class MoveDefinition;
 class PieceType;
 
 namespace rapidxml {
@@ -34,6 +35,7 @@ private:
 	bool ParseDirections(Board *board, rapidxml::xml_node<char> *dirsNode);
 	bool ParsePieceTypes(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode);
 	char *ParsePieceType(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode, PieceType *type);
+	MoveDefinition *ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel);
 	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	unsigned int LookupDirection(char *dirName);

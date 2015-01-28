@@ -1,5 +1,5 @@
 #include "PieceType.h"
-
+#include "MoveDefinition.h"
 
 PieceType::PieceType()
 {
@@ -9,4 +9,6 @@ PieceType::PieceType()
 
 PieceType::~PieceType()
 {
+	while (!moves.empty())
+		delete moves.front(), moves.pop_front();
 }
