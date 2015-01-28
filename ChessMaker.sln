@@ -1,13 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chessmaker", "ChessMaker\Chessmaker.csproj", "{3FB97AEC-FA8D-4A68-893A-AE9DC86B8455}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChessmakerCore", "ChessmakerCore\ChessmakerCore.vcxproj", "{5F1E91D3-84A9-407A-918E-E0ED382BD491}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChessmakerConsole", "ChessmakerConsole\ChessmakerConsole.vcxproj", "{2CD9FAAB-EFE1-49B5-9049-DDD54BAA1C74}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5F1E91D3-84A9-407A-918E-E0ED382BD491} = {5F1E91D3-84A9-407A-918E-E0ED382BD491}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

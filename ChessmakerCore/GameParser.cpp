@@ -184,7 +184,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			Cell *cell = &cells[iCell++];
 
 			char *ref = attr->value();
-			strncpy_s(cell->reference, CELL_REF_LENGTH, ref, CELL_REF_LENGTH);
+			strncpy(cell->reference, ref, CELL_REF_LENGTH);
 			cellsByRef.insert(std::pair<char*, Cell*>(ref, cell));
 			
 			// parse cell links, and store them until all cells have been loaded, so we can resolve the names
@@ -213,14 +213,14 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			// determine css class
 			char *val = svgDoc->allocate_string("cell ", 28);
 			attr = node->first_attribute("fill");
-			strcat_s(val, 28, attr->value());
+			strcat(val, attr->value());
 
 			attr = node->first_attribute("border");
 			if (attr != 0)
 			{
-				strcat_s(val, 28, " ");
-				strcat_s(val, 28, attr->value());
-				strcat_s(val, 28, "Stroke");
+				strcat(val, " ");
+				strcat(val, attr->value());
+				strcat(val, "Stroke");
 			}
 			attr = svgDoc->allocate_attribute("class", val);
 			cellSVG->append_attribute(attr); // !
@@ -264,8 +264,8 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 
 			val = svgDoc->allocate_string("detail ", 20);
 			attr = node->first_attribute("color");
-			strcat_s(val, 20, attr->value());
-			strcat_s(val, 20, "Stroke");
+			strcat(val, attr->value());
+			strcat(val, "Stroke");
 			attr = svgDoc->allocate_attribute("class", val);
 			lineSVG->append_attribute(attr);
         }
@@ -412,11 +412,11 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode, PieceType *type)
 {
 	xml_attribute<> *attr = pieceNode->first_attribute("name");
-	strncpy_s(type->name, TYPE_NAME_LENGTH, attr->value(), TYPE_NAME_LENGTH);
+	strncpy(type->name, attr->value(), TYPE_NAME_LENGTH);
 
 	attr = pieceNode->first_attribute("notation");
 	if (attr != 0)
-		strncpy_s(type->notation, TYPE_NOTATION_LENGTH, attr->value(), TYPE_NOTATION_LENGTH);
+		strncpy(type->notation, attr->value(), TYPE_NOTATION_LENGTH);
 
 	attr = pieceNode->first_attribute("value");
 	if (attr != 0)

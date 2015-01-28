@@ -31,7 +31,7 @@ bool Initialize(char* definition, int svgBufferLength)
 extern "C" __declspec(dllexport)
 void GetBoardSVG(char *buffer, int maxLen)
 {
-	strncpy_s(buffer, maxLen, boardSVG->c_str(), maxLen);
+	strncpy(buffer, boardSVG->c_str(), maxLen);
 	delete boardSVG;
 	boardSVG = 0;
 }
