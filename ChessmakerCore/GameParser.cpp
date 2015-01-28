@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "PieceType.h"
+#include "Player.h"
 #include "TurnOrder.h"
 #include "rapidxml\rapidxml.hpp"
 #include "rapidxml\rapidxml_print.hpp"
@@ -20,7 +21,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	xml_document<> doc;
 	doc.parse<0>(definition); // 0 means default parse flags
 
-	Game *game = new Game();
+	game = new Game();
 	game->board = new Board(game);
 
 	maxDirection = 2;
@@ -279,7 +280,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		TempCellLink link = links.front();
 		links.pop_front();
 		
-		std::map<char*, Cell*>::iterator it = cellsByRef.find(link.destinationCellRef);
+		auto it = cellsByRef.find(link.destinationCellRef);
 		if (it == cellsByRef.end())
 		{
 			// todo: report invalid link destination cell error somehow
@@ -366,6 +367,7 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 {
 	std::map<char*, TempPieceTypeInfo, char_cmp> pieceTypesByName;
 
+	// parse each piece type
 	xml_node<> *node = piecesNode->first_node("piece");
 	while (node != 0)
 	{
@@ -373,23 +375,141 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		char *capturedAs = ParsePieceType(node, svgDefsNode, type);
 		
 		TempPieceTypeInfo info = TempPieceTypeInfo(type, capturedAs);
-		pieceTypesByName.insert(std::pair<char*, TempPieceTypeInfo>(capturedAs, info));
-
+		pieceTypesByName.insert(std::pair<char*, TempPieceTypeInfo>(type->name, info));
+		
 		node = node->next_sibling("piece");
 	}
 
-	// todo: implement "captured as" resolving of types
+	// resolve references to other types, also populate piece type list
+	for (auto it = pieceTypesByName.begin(); it != pieceTypesByName.end(); it++)
+	{
+		PieceType *type = it->second.type;
+		game->allPieceTypes.push_back(*type);
+
+		char *capturedAs = it->second.capturedAsType;
+		if (capturedAs != 0)
+		{
+			auto it2 = pieceTypesByName.find(capturedAs);
+			if (it2 == pieceTypesByName.end())
+			{
+				// todo: report error somehow - captured as type is not defined
+			}
+			else
+				type->capturedAs = it2->second.type;
+		}
+
+		/*
+		todo: resolve promotion opportunity options
+		for (var i = 0; i < type.promotionOpportunities.length; i++)
+			type.promotionOpportunities[i].resolveOptions(definitions);
+		*/
+	}
 	
+	game->allPieceTypes.shrink_to_fit();
 	return true;
 }
 
 char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode, PieceType *type)
 {
-	// todo: implement this
-	return "Dunno";
+	xml_attribute<> *attr = pieceNode->first_attribute("name");
+	strncpy_s(type->name, TYPE_NAME_LENGTH, attr->value(), TYPE_NAME_LENGTH);
+
+	attr = pieceNode->first_attribute("notation");
+	if (attr != 0)
+		strncpy_s(type->notation, TYPE_NOTATION_LENGTH, attr->value(), TYPE_NOTATION_LENGTH);
+
+	attr = pieceNode->first_attribute("value");
+	if (attr != 0)
+		type->value = atoi(attr->value());
+
+	xml_document<> *svgDoc = svgDefsNode->document();
+	char *capturedAs = 0;
+
+	xml_node<> *node = pieceNode->first_node();
+	while (node != 0)
+	{
+		if (strcmp(node->name(), "capturedAs") == 0)
+		{
+			capturedAs = node->value();
+		}
+		else if (strcmp(node->name(), "moves") == 0)
+		{
+			/* todo: implement this
+			var moves = childNode.childNodes;
+			for (var j=0; j<moves.length; j++)
+			type.moves.push(MoveDefinition.parse(moves[j], true));
+			break;
+			*/
+		}/*
+		else if (strcmp(node->name(), "special") == 0)
+		{
+			var specials = childNode.childNodes;
+			for (var j = 0; j<specials.length; j++)
+				var special = specials[j];
+
+			if (special.tagName == "royal") // consider: while these properties should remain on pieces IN CODE (for game logic's sake) - shouldn't royalty in the DEFINITION be handled via victory conditions? lose when any/all pieces of given type are checkmated/captured/are in check/aren't in check? loading code could then apply royal / antiroyal values
+				type.royalty = PieceType.RoyalState.Royal;
+			else if (special.tagName == "anti_royal")
+				type.royalty = PieceType.RoyalState.AntiRoyal;
+			else if (special.tagName == "immobilize")
+				type.immobilizations.push(Immobilization.parse(this));
+			else // consider: other special types: blocks (as per immobilize, but instead prevents pieces entering a square), kills (kills pieces in target squares without expending a move)
+				throw "Unexpected node name in piece's \"special\" tag: " + this.tagName;;
+		}
+		else if (strcmp(node->name(), "promotion") == 0)
+		{
+			var promos = childNode.childNodes;
+			for (var j = 0; j<promos.length; j++)
+				type.promotionOpportunities.push(PromotionOpportunity.parse(promos[j]);
+		}*/
+		else if (strcmp(node->name(), "appearance") == 0)
+		{
+			char *playerName = node->first_attribute("player")->value();
+
+			char *defID = svgDoc->allocate_string(type->name, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 1);
+			strcat(defID, "_");
+			strcat(defID, playerName);
+
+			xml_node<> *def = svgDoc->allocate_node(node_element, "g");
+			svgDefsNode->append_node(def);
+
+			attr = svgDoc->allocate_attribute("class", "piece");
+			def->append_attribute(attr);
+			
+			attr = svgDoc->allocate_attribute("id", defID);
+			def->append_attribute(attr);
+
+			attr = node->first_attribute("transform");
+			if (attr != 0)
+			{
+				char *trans = attr->value();
+				attr = svgDoc->allocate_attribute("transform", trans);
+				def->append_attribute(attr);
+			}
+			
+			// move the piece appearance SVG into the def node
+			xml_node<> *appNode = node->first_node();
+			while (appNode != 0)
+			{
+				xml_node<> *moveNode = appNode;
+				appNode = appNode->next_sibling();
+				node->remove_node(moveNode);
+
+				def->append_node(moveNode);
+			}
+			
+			/* todo: implement this
+			type.appearances[playerName] = '#' + defID;
+			*/
+		}
+
+		node = node->next_sibling();
+	}
+
+	return capturedAs;
 }
 
-bool GameParser::ParsePlayers(xml_node<> *setupNode, Game *game, xml_document<> *svgDoc)
+bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 {
 	printf("ParsePlayers is not implemented\n");
 	// todo: implement this
@@ -397,7 +517,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, Game *game, xml_document<> 
 }
 
 
-bool GameParser::ParseRules(xml_node<> *rulesNode, Game *game)
+bool GameParser::ParseRules(xml_node<> *rulesNode)
 {
 	printf("ParseRules is not implemented\n");
 	// todo: implement this

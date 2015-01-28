@@ -28,15 +28,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	def.close();
 	
 	// initialize game engine
-	if (!Initialize(definition, 8192))
+	if (!Initialize(definition, 32768))
 	{
 		printf("error");
 		return 1;
 	}
 	
 	// retrieve and then save the board SVG file
-	char svg[8192];
-	GetBoardSVG(svg, 8192);
+	char svg[32768];
+	GetBoardSVG(svg, 32768);
 	printf("received: %s", svg);
 
 	std::ofstream ofs("Render.svg", std::ofstream::out);

@@ -4,6 +4,8 @@
 class Game;
 class Piece;
 
+#define PLAYER_NAME_LENGTH 16
+
 typedef enum { Local, AI, Remote } PlayerType_t;
 typedef enum { Any, Self, Enemy, Ally } PlayerRelationship_t;
 
@@ -18,6 +20,7 @@ public:
 
 private:
 	Game *game;
+	char name[PLAYER_NAME_LENGTH];
 	int id, forwardDir;
 	PlayerType_t type;
 

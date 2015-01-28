@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include "PieceType.h"
+
 class Board;
 class EndOfGame;
 class GameState;
@@ -21,6 +24,7 @@ private:
 	GameState *currentState;
 	TurnOrder *turnOrder;
 	EndOfGame *endOfGame;
+	std::vector<PieceType> allPieceTypes;
 	
 	friend class GameParser;
 };

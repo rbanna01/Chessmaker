@@ -3,6 +3,7 @@
 
 PieceType::PieceType()
 {
+	capturedAs = this;
 }
 
 

@@ -34,11 +34,13 @@ private:
 	bool ParseDirections(Board *board, rapidxml::xml_node<char> *dirsNode);
 	bool ParsePieceTypes(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode);
 	char *ParsePieceType(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode, PieceType *type);
-	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, Game *game, rapidxml::xml_document<char> *svgDoc);
-	bool ParseRules(rapidxml::xml_node<char> *rulesNode, Game *game);
+	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
+	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	unsigned int LookupDirection(char *dirName);
 
 	unsigned int maxDirection, allDirections;
 	dirLookup_t directionLookups;
+
+	Game *game;
 };
 

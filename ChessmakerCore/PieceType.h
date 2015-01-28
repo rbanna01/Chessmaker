@@ -1,6 +1,9 @@
 #pragma once
 #include <list>
 
+#define TYPE_NAME_LENGTH 32
+#define TYPE_NOTATION_LENGTH 3
+
 class PieceType
 {
 public:
@@ -8,8 +11,8 @@ public:
 	~PieceType();
 private:
 	int value = 1;
-	char notation[3];
-	char name[32];
+	char name[TYPE_NAME_LENGTH];
+	char notation[TYPE_NOTATION_LENGTH];
 	PieceType *capturedAs;
 
 	friend class GameParser;
