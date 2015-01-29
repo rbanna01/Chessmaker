@@ -16,6 +16,7 @@ private:
 	char name[TYPE_NAME_LENGTH];
 	char notation[TYPE_NOTATION_LENGTH];
 	std::list<MoveDefinition*> moves;
+	//std::list<PromotionOpportunity*> promotionOpportunities;
 	PieceType *capturedAs;
 
 	friend class GameParser;

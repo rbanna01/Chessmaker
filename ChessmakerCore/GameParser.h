@@ -36,6 +36,17 @@ private:
 	bool ParsePieceTypes(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode);
 	char *ParsePieceType(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode, PieceType *type);
 	MoveDefinition *ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel);
+
+	MoveDefinition *ParseMove_Slide(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Leap(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Hop(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Shoot(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_MoveLike(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Sequence(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
+	
 	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	unsigned int LookupDirection(char *dirName);

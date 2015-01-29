@@ -406,9 +406,9 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		*/
 	}
 	
-	game->allPieceTypes.shrink_to_fit();
 	return true;
 }
+
 
 char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode, PieceType *type)
 {
@@ -439,12 +439,9 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 			while (moveNode != 0)
 			{
 				MoveDefinition *move = ParseMove(moveNode, true);
-				if (move == 0)
-				{
-					// todo: report invalid link destination cell error somehow
-				}
-				else
+				if (move != 0)
 					type->moves.push_back(move);
+
 				moveNode = moveNode->next_sibling();
 			}
 		}/*
@@ -516,11 +513,101 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 	return capturedAs;
 }
 
+
 MoveDefinition *GameParser::ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel)
+{
+	if (strcmp(moveNode->name(), "slide") == 0)
+		return ParseMove_Slide(moveNode);
+	if (strcmp(moveNode->name(), "leap") == 0)
+		return ParseMove_Leap(moveNode);
+	if (strcmp(moveNode->name(), "hop") == 0)
+		return ParseMove_Hop(moveNode);
+	if (strcmp(moveNode->name(), "shoot") == 0)
+		return ParseMove_Shoot(moveNode);
+	if (strcmp(moveNode->name(), "moveLike") == 0)
+		return ParseMove_MoveLike(moveNode);
+	if (isTopLevel)
+	{
+		if (strcmp(moveNode->name(), "sequence") == 0)
+			return ParseMove_Sequence(moveNode);
+	}
+	else
+	{
+		if (strcmp(moveNode->name(), "repeat") == 0)
+			return ParseMove_Repeat(moveNode);
+		if (strcmp(moveNode->name(), "whenPossible") == 0)
+			return ParseMove_WhenPossible(moveNode);
+		if (strcmp(moveNode->name(), "referencePiece") == 0)
+			return ParseMove_ReferencePiece(moveNode);
+	}
+
+	// todo: report unexpected move type error
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Slide(rapidxml::xml_node<char> *moveNode)
 {
 	// todo: implement this
 	return 0;
 }
+
+
+MoveDefinition *GameParser::ParseMove_Leap(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Hop(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Shoot(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_MoveLike(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Sequence(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Repeat(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
+
+MoveDefinition *GameParser::ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode)
+{
+	// todo: implement this
+	return 0;
+}
+
 
 bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 {

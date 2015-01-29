@@ -1,9 +1,6 @@
 ﻿"use strict";
 
 function MoveDefinition(pieceRef, dir, when, conditions) {
-    this.piece = pieceRef;
-    this.dir = dir;
-    this.moveWhen = when;
     this.conditions = Conditions.parse(conditions);
 }
 
@@ -38,12 +35,6 @@ MoveDefinition.parse = function (xmlNode, isTopLevel) {
         default:
             throw 'Unexpected move type: ' + xmlNode.nodeName;
     }
-};
-
-MoveDefinition.When = {
-    Any: 0,
-    Move: 1,
-    Capture: 2
 };
 
 MoveDefinition.When.parse = function (val) {
