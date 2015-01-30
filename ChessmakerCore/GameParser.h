@@ -3,10 +3,14 @@
 #include <map>
 #include <string>
 
+#include "MoveDefinition.h"
+
 class Board;
+class Conditions;
+class Distance;
 class Game;
-class MoveDefinition;
 class PieceType;
+
 
 namespace rapidxml {
 	template<class Ch> class xml_node;
@@ -46,6 +50,10 @@ private:
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
+	Conditions *ParseConditions(rapidxml::xml_node<char> *node);
+	Distance *ParseDistance(char *val);
+	MoveDefinition::When_t ParseWhen(char *val);
+	Player::Relationship_t ParseRelationship(char *val);
 	
 	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);

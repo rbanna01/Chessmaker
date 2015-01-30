@@ -77,6 +77,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Conditions.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Distance.h" />
     <ClInclude Include="EndOfGame.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameParser.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Conditions.cpp" />
+    <ClCompile Include="Distance.cpp" />
     <ClCompile Include="EndOfGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameParser.cpp" />

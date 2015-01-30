@@ -25,3 +25,51 @@ std::list<Move> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSt
 	std::list<Move> moves;
 	return moves;
 }
+
+
+std::list<Move> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}
+
+
+std::list<Move> Hop::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}
+
+
+std::list<Move> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}
+
+
+std::list<Move> MoveLike::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}
+
+
+std::list<Move> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}
+
+
+std::list<Move> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	// todo: implement this
+	std::list<Move> moves;
+	return moves;
+}

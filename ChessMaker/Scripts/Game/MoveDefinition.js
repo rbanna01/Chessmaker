@@ -1,65 +1,5 @@
 ﻿"use strict";
 
-function MoveDefinition(pieceRef, dir, when, conditions) {
-    this.conditions = Conditions.parse(conditions);
-}
-
-MoveDefinition.parse = function (xmlNode, isTopLevel) {
-    switch (xmlNode.tagName) {
-        case 'slide':
-            return Slide.parse(xmlNode);
-        case 'leap':
-            return Leap.parse(xmlNode);
-        case 'hop':
-            return Hop.parse(xmlNode);
-        case 'shoot':
-            return Shoot.parse(xmlNode);
-        case 'moveLike':
-            return MoveLike.parse(xmlNode);
-        case 'sequence':
-            if (!isTopLevel)
-                throw xmlNode.Name + ' only allowed at top level!';
-            return Sequence.parse(xmlNode);
-        case 'repeat':
-            if (isTopLevel)
-                throw xmlNode.Name + ' not allowed at top level!';
-            return Repeat.parse(xmlNode);
-        case 'whenPossible':
-            if (isTopLevel)
-                throw xmlNode.Name + ' not allowed at top level!';
-            return WhenPossible.parse(xmlNode);
-        case 'referencePiece':
-            if (isTopLevel)
-                throw xmlNode.Name + ' not allowed at top level!';
-            return ReferencePiece.parse(xmlNode);
-        default:
-            throw 'Unexpected move type: ' + xmlNode.nodeName;
-    }
-};
-
-MoveDefinition.When.parse = function (val) {
-    if (val == null)
-        return MoveDefinition.When.Any;
-
-    if (val == 'capture')
-        return MoveDefinition.When.Capture;
-    else if(val == 'move')
-        return MoveDefinition.When.Move;
-    else if (val == 'any')
-        return MoveDefinition.When.Any;
-    else
-        throw 'Unexpected when value: ' + val;
-};
-
-
-function Slide(pieceRef, dir, dist, distMax, when, conditions) {
-    MoveDefinition.call(this, pieceRef, dir, when, conditions);
-    this.dist = dist;
-    this.distMax = distMax;
-}
-
-extend(Slide, MoveDefinition);
-
 Slide.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
@@ -127,32 +67,6 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) 
     return moves;
 };
 
-Slide.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var pieceRef = xmlNode.getAttribute('piece');
-    if (pieceRef == null)
-        pieceRef = 'self';
-
-    var dir = xmlNode.getAttribute('dir');
-
-    var dist = Distance.parse(xmlNode.getAttribute('dist'));
-    var distMax = Distance.parse(xmlNode.getAttribute('distMax'));
-    var when = MoveDefinition.When.parse(xmlNode.getAttribute('when'));
-
-	return new Slide(pieceRef, dir, dist, distMax, when, conditions);
-}
-
-
-function Leap(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions) {
-    MoveDefinition.call(this, pieceRef, dir, when, conditions);
-    this.dist = dist;
-    this.distMax = distMax;
-    this.secondDir = secondDir;
-    this.secondDist = secondDist;
-}
-
-extend(Leap, MoveDefinition);
 
 Leap.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
@@ -236,41 +150,6 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
 
     return moves;
 };
-
-Leap.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var pieceRef = xmlNode.getAttribute('piece');
-    if (pieceRef == null)
-        pieceRef = 'self';
-
-    var dir = xmlNode.getAttribute('dir');
-
-    var dist = Distance.parse(xmlNode.getAttribute('dist'));
-    var distMax = Distance.parse(xmlNode.getAttribute('distMax'));
-
-    var secondDist = Distance.parse(xmlNode.getAttribute('secondDist'));
-    if (secondDist == null)
-        secondDist = Distance.Zero;
-
-    var secondDir = xmlNode.getAttribute('secondDir');
-
-    var when = MoveDefinition.When.parse(xmlNode.getAttribute('when'));
-
-    return new Leap(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions);
-}
-
-
-function Hop(pieceRef, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, when, captureHurdle, conditions) {
-    MoveDefinition.call(this, pieceRef, dir, when, conditions);
-    this.distToHurdle = distToHurdle;
-    this.distToHurdleMax = distToHurdleMax;
-    this.distAfterHurdle = distAfterHurdle;
-    this.distAfterHurdleMax = distAfterHurdleMax;
-    this.captureHurdle = captureHurdle;
-}
-
-extend(Hop, MoveDefinition);
 
 Hop.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
@@ -369,38 +248,6 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     return moves;
 };
 
-Hop.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var pieceRef = xmlNode.getAttribute('piece');
-    if (pieceRef == null)
-        pieceRef = 'self';
-
-    var dir = xmlNode.getAttribute('dir');
-
-    var distToHurdle = Distance.parse(xmlNode.getAttribute('distToHurdle'));
-    var distToHurdleMax = Distance.parse(xmlNode.getAttribute('distToHurdleMax'));
-
-    var distAfterHurdle = Distance.parse(xmlNode.getAttribute('distAfterHurdle'));
-    var distAfterHurdleMax = Distance.parse(xmlNode.getAttribute('distAfterHurdleMax'));
-
-    var when = MoveDefinition.When.parse(xmlNode.getAttribute('when'));
-    var captureHurdle = xmlNode.getAttribute('captureHurdle') == 'true';
-
-    return new Hop(pieceRef, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, when, captureHurdle, conditions);
-}
-
-
-function Shoot(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions) {
-    MoveDefinition.call(this, pieceRef, dir, when, conditions);
-    this.dist = dist;
-    this.distMax = distMax;
-    this.secondDir = secondDir;
-    this.secondDist = secondDist;
-}
-
-extend(Shoot, MoveDefinition);
-
 Shoot.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
 
@@ -474,36 +321,6 @@ Shoot.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) 
 
     return moves;
 };
-
-Shoot.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var pieceRef = xmlNode.getAttribute('piece');
-    if (pieceRef == null)
-        pieceRef = 'self';
-
-    var dir = xmlNode.getAttribute('dir');
-
-    var dist = Distance.parse(xmlNode.getAttribute('dist'));
-    var distMax = Distance.parse(xmlNode.getAttribute('distMax'));
-
-    var secondDist = Distance.parse(xmlNode.getAttribute('secondDist'));
-    if (secondDist == null)
-        secondDist = Distance.Zero;
-
-    var secondDir = xmlNode.getAttribute('secondDir');
-
-    var when = null;/*XmlHelper.readWhen(xmlNode, 'when');*/
-
-    return new Shoot(pieceRef, dir, dist, distMax, secondDir, secondDist, when, conditions);
-}
-
-
-function MoveLike(other, when, conditions) {
-    MoveDefinition.call(this, pieceRef, undefined, when, conditions);
-}
-
-extend(MoveLike, MoveDefinition);
 
 MoveLike.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     if (this.pieceref == 'target') {
@@ -582,27 +399,6 @@ MoveLike.prototype.appendMoveLikeTarget = function (baseMove, piece, previousSte
     return moves;
 };
 
-MoveLike.parse = function (xmlNode) {
-    var conditions = Conditions.findNode(xmlNode);
-
-    var pieceRef = xmlNode.getAttribute('other');
-    var when = MoveDefinition.When.parse(xmlNode.getAttribute('when'));
-
-    return new MoveLike(pieceRef, when, conditions);
-}
-
-
-function ReferencePiece(name, type, relationship, dir, dist) {
-    MoveDefinition.call(this, undefined, undefined, undefined, undefined);
-    this.refName = name;
-    this.otherType = type;
-    this.otherRelationship = relationship;
-    this.direction = dir;
-    this.distance = dist;
-}
-
-extend(ReferencePiece, MoveDefinition);
-
 ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var moves = [];
     var other = null;
@@ -665,35 +461,6 @@ ReferencePiece.prototype.appendValidNextSteps = function (baseMove, piece, previ
     return moves;
 };
 
-ReferencePiece.parse = function (xmlNode) {
-    var name = xmlNode.getAttribute('name');
-
-    var dir = xmlNode.getAttribute('dir');
-    //if (dir != null && game.board.directionGroups.hasOwnProperty(dir))
-        //throw 'ReferencePiece requires a discreet direction, not a compound one!';
-
-    var dist = Distance.parse(xmlNode.getAttribute('dist'));
-
-    var type = xmlNode.getAttribute('type');
-    if (type == undefined)
-        type = 'any';
-
-    var relationship = Player.Relationship.parse(xmlNode.getAttribute('owner'));
-
-    return new ReferencePiece(name, type, relationship, dir, dist);
-}
-
-
-function MoveGroup(minOccurs, maxOccurs, stepOutIfFail) {
-    MoveDefinition.call(this, undefined, undefined, undefined, undefined);
-    this.contents = [];
-    this.minOccurs = minOccurs;
-    this.maxOccurs = maxOccurs;
-    this.StepOutIfFail = stepOutIfFail; // true for whenPossible, false otherwise - makes a group obligatory unless it fails.
-}
-
-extend(MoveGroup, MoveDefinition);
-
 MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
     var results = [];
     var prevStepMoves = [baseMove];
@@ -736,64 +503,3 @@ MoveGroup.prototype.appendValidNextSteps = function (baseMove, piece, previousSt
 
 	return results;
 };
-
-
-function Sequence() {
-    MoveGroup.call(this, 1, 1, false);
-}
-
-extend(Sequence, MoveGroup);
-
-Sequence.parse = function (xmlNode) {
-    var children = xmlNode.childNodes;
-
-    var s = new Sequence();
-    for (var i = 0; i < children.length; i++)  {
-        var child = children[i];
-        s.contents.push(MoveDefinition.parse(child, false));
-    }
-    return s;
-}
-
-
-function Repeat(minOccurs, maxOccurs) {
-    MoveGroup.call(this, minOccurs, maxOccurs, false);
-}
-
-extend(Repeat, MoveGroup);
-
-Repeat.parse = function (xmlNode) {
-    var min = parseInt(xmlNode.getAttribute('min'));
-	var max = xmlNode.getAttribute('max');
-	if(max == 'unbounded')
-		max = -1;
-	else
-		max = parseInt(max);
-    
-	var children = xmlNode.childNodes;
-
-	var r = new Repeat();
-	for (var i = 0; i < children.length; i++) {
-	    var child = children[i];
-        r.contents.push(MoveDefinition.parse(child, false));
-    }
-    return r;
-}
-
-
-function WhenPossible() {
-    MoveGroup.call(this, 1, 1, true);
-}
-
-extend(WhenPossible, MoveGroup);
-
-WhenPossible.parse = function (xmlNode) {
-    var children = xmlNode.childNodes;
-
-    var w = new WhenPossible();
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        w.contents.push(MoveDefinition.parse(child, false));
-    }
-    return w;
-}

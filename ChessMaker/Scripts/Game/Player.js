@@ -70,20 +70,3 @@ Player.parseAll = function (xml, game, boardSVG) {
         }
     }
 }
-
-Player.Relationship.parse = function (val) {
-    if (val == null)
-        return "any";
-    switch (val) {
-        case "any":
-            return Player.Relationship.Any;
-        case "self":
-            return Player.Relationship.Self;
-        case "enemy":
-            return Player.Relationship.Enemy;
-        case "ally":
-            return Player.Relationship.Ally;
-        default:
-            throw "Unexpected relationship value: " + val;
-    }
-};

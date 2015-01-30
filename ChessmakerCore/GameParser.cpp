@@ -5,6 +5,8 @@
 #include "GameParser.h"
 #include "Board.h"
 #include "Cell.h"
+#include "Conditions.h"
+#include "Distance.h"
 #include "EndOfGame.h"
 #include "Game.h"
 #include "GameState.h"
@@ -514,7 +516,7 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 }
 
 
-MoveDefinition *GameParser::ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel)
+MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 {
 	if (strcmp(moveNode->name(), "slide") == 0)
 		return ParseMove_Slide(moveNode);
@@ -545,67 +547,253 @@ MoveDefinition *GameParser::ParseMove(rapidxml::xml_node<char> *moveNode, bool i
 	return 0;
 }
 
-
-MoveDefinition *GameParser::ParseMove_Slide(rapidxml::xml_node<char> *moveNode)
+MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 {
+	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	char *pieceRef = attr == 0 ? "self" : attr->value();
+
+	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+
+	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
+
+	attr = moveNode->first_attribute("distMax");
+	Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("when");
+	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
+
+	return new Slide(pieceRef, conditions, when, dir, dist, distMax);
+}
+
+
+MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
+{
+	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	char *pieceRef = attr == 0 ? "self" : attr->value();
+
+	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+
+	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
+
+	attr = moveNode->first_attribute("distMax");
+	Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("secondDist");
+	Distance *secondDist = attr == 0 ? &Distance::Zero : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("secondDir");
+	unsigned int secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
+
+	attr = moveNode->first_attribute("when");
+	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
+
+	return new Leap(pieceRef, conditions, when, dir, dist, distMax, secondDir, secondDist);
+}
+
+
+MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
+{
+	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	char *pieceRef = attr == 0 ? "self" : attr->value();
+
+	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+
+	Distance *distToHurdle = ParseDistance(moveNode->first_attribute("distToHurdle")->value());
+
+	attr = moveNode->first_attribute("distToHurdleMax");
+	Distance *distToHurdleMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	Distance *distAfterHurdle = ParseDistance(moveNode->first_attribute("distAfterHurdle")->value());
+
+	attr = moveNode->first_attribute("distAfterHurdleMax");
+	Distance *distAfterHurdleMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("when");
+	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
+
+	attr = moveNode->first_attribute("captureHurdle");
+	bool captureHurdle = attr == 0 || (strcmp(attr->value(), "true") == 0);
+
+	return new Hop(pieceRef, conditions, when, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, captureHurdle);
+}
+
+
+MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
+{
+	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	char *pieceRef = attr == 0 ? "self" : attr->value();
+
+	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+
+	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
+
+	attr = moveNode->first_attribute("distMax");
+	Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("secondDist");
+	Distance *secondDist = attr == 0 ? &Distance::Zero : ParseDistance(attr->value());
+
+	attr = moveNode->first_attribute("secondDir");
+	unsigned int secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
+
+	return new Shoot(pieceRef, conditions, MoveDefinition::Capturing, dir, dist, distMax, secondDir, secondDist);
+}
+
+
+MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
+{
+	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+
+	char *pieceRef = moveNode->first_attribute("other")->value();
+	
+	xml_attribute<> *attr = moveNode->first_attribute("when");
+	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
+	
+	return new MoveLike(pieceRef, conditions, when);
+}
+
+
+MoveDefinition *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
+{
+	Sequence *move = new Sequence();
+
+	xml_node<> *node = moveNode->first_node();
+	while (node != 0)
+	{
+		MoveDefinition *child = ParseMove(node, false);
+		move->contents.push_back(child);
+
+		node = node->next_sibling();
+	}
+
+	return move;
+}
+
+
+MoveDefinition *GameParser::ParseMove_Repeat(xml_node<char> *moveNode)
+{
+	int min = atoi(moveNode->first_attribute("min")->value());
+	int max = atoi(moveNode->first_attribute("max")->value());
+
+	Repeat *move = new Repeat(min, max);
+
+	xml_node<> *node = moveNode->first_node();
+	while (node != 0)
+	{
+		MoveDefinition *child = ParseMove(node, false);
+		move->contents.push_back(child);
+
+		node = node->next_sibling();
+	}
+
+	return move;
+}
+
+
+MoveDefinition *GameParser::ParseMove_WhenPossible(xml_node<char> *moveNode)
+{
+	WhenPossible *move = new WhenPossible();
+
+	xml_node<> *node = moveNode->first_node();
+	while (node != 0)
+	{
+		MoveDefinition *child = ParseMove(node, false);
+		move->contents.push_back(child);
+
+		node = node->next_sibling();
+	}
+
+	return move;
+}
+
+
+MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
+{
+	xml_attribute<> *attr = moveNode->first_attribute("name");
+	char *name = attr == 0 ? 0 : attr->value();
+
+	attr = moveNode->first_attribute("type");
+	char *type = attr == 0 ? "any" : attr->value();
+
+	attr = moveNode->first_attribute("owner");
+	Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
+
+	attr = moveNode->first_attribute("dir");
+	unsigned int dir = attr == 0 ? 0 : LookupDirection(attr->value());
+
+	moveNode->first_attribute("dist");
+	Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
+
+	return new ReferencePiece(name, type, relat, dir, dist);
+}
+
+
+Conditions *GameParser::ParseConditions(xml_node<char> *node)
+{
+	if (node == 0)
+		return 0;
+
 	// todo: implement this
 	return 0;
 }
 
-
-MoveDefinition *GameParser::ParseMove_Leap(rapidxml::xml_node<char> *moveNode)
+Distance *GameParser::ParseDistance(char *val)
 {
-	// todo: implement this
-	return 0;
+	if (val == 0)
+		return 0;
+
+	if (strcmp(val, "any") == 0)
+		return &Distance::Any;
+
+	int len = strlen(val);
+	if (len >= 3 && val[0] == 'm' && val[1] == 'a' && val[2] == 'x')
+		return new Distance(Distance::Max, atoi(val+3));
+	else if (len >= 4 && val[0] == 'p' && val[1] == 'r' && val[2] == 'e' && val[3] == 'v')
+		return new Distance(Distance::Prev, atoi(val + 4));
+	else
+		return new Distance(Distance::None, atoi(val));
 }
 
 
-MoveDefinition *GameParser::ParseMove_Hop(rapidxml::xml_node<char> *moveNode)
+MoveDefinition::When_t GameParser::ParseWhen(char *val)
 {
-	// todo: implement this
-	return 0;
+	if (val == 0)
+		return MoveDefinition::Any;
+
+	if (strcmp(val, "any") == 0)
+		MoveDefinition::Any;
+	if (strcmp(val, "move") == 0)
+		MoveDefinition::Moving;
+	if (strcmp(val, "capture") == 0)
+		MoveDefinition::Capturing;
+
+	// todo: report unexpected value
+	return MoveDefinition::Any;
 }
 
 
-MoveDefinition *GameParser::ParseMove_Shoot(rapidxml::xml_node<char> *moveNode)
+Player::Relationship_t GameParser::ParseRelationship(char *val)
 {
-	// todo: implement this
-	return 0;
-}
+	if (val == 0)
+		return Player::Any;
 
+	if (strcmp(val, "self") == 0)
+		Player::Self;
+	if (strcmp(val, "enemy") == 0)
+		Player::Enemy;
+	if (strcmp(val, "ally") == 0)
+		Player::Ally;
 
-MoveDefinition *GameParser::ParseMove_MoveLike(rapidxml::xml_node<char> *moveNode)
-{
-	// todo: implement this
-	return 0;
-}
-
-
-MoveDefinition *GameParser::ParseMove_Sequence(rapidxml::xml_node<char> *moveNode)
-{
-	// todo: implement this
-	return 0;
-}
-
-
-MoveDefinition *GameParser::ParseMove_Repeat(rapidxml::xml_node<char> *moveNode)
-{
-	// todo: implement this
-	return 0;
-}
-
-
-MoveDefinition *GameParser::ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode)
-{
-	// todo: implement this
-	return 0;
-}
-
-
-MoveDefinition *GameParser::ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode)
-{
-	// todo: implement this
-	return 0;
+	// todo: report unexpected value
+	return Player::Any;
 }
 
 
