@@ -2,6 +2,7 @@
 
 #include <list>
 #include "PieceType.h"
+#include "Player.h"
 
 class Board;
 class EndOfGame;
@@ -24,7 +25,8 @@ private:
 	GameState *currentState;
 	TurnOrder *turnOrder;
 	EndOfGame *endOfGame;
-	std::list<PieceType> allPieceTypes;
+	std::list<PieceType*> allPieceTypes;
+	std::list<Player*> players;
 	
 	friend class GameParser;
 };

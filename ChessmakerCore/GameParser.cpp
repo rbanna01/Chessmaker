@@ -11,6 +11,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "MoveDefinition.h"
+#include "Piece.h"
 #include "PieceType.h"
 #include "Player.h"
 #include "TurnOrder.h"
@@ -73,7 +74,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	/*
+	
 	node = node->next_sibling("setup");
 	if (node == 0)
 	{
@@ -81,12 +82,12 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	if (!ParsePlayers(node, game, &svgDoc))
+	if (!ParsePlayers(node, &svgDoc))
 	{
 		delete game;
 		return 0;
 	}
-
+	/*
 	node = node->next_sibling("rules");
 	if (node == 0)
 	{
@@ -175,7 +176,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 	Cell *cells = new Cell[iCell];
 	iCell = 0;
 
-	std::map<char*, Cell*, char_cmp> cellsByRef;
+	cellsByRef.clear();
 	std::list<TempCellLink> links;
 
 	node = boardNode->first_node();
@@ -356,19 +357,9 @@ bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 	return true;
 }
 
-
-struct TempPieceTypeInfo
-{
-public:
-	TempPieceTypeInfo(PieceType *t, char *as) { type = t; capturedAsType = as; }
-	PieceType *type;
-	char *capturedAsType;
-};
-
-
 bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode)
 {
-	std::map<char*, TempPieceTypeInfo, char_cmp> pieceTypesByName;
+	pieceTypesByName.clear();
 
 	// parse each piece type
 	xml_node<> *node = piecesNode->first_node("piece");
@@ -377,8 +368,8 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		PieceType *type = new PieceType();
 		char *capturedAs = ParsePieceType(node, svgDefsNode, type);
 		
-		TempPieceTypeInfo info = TempPieceTypeInfo(type, capturedAs);
-		pieceTypesByName.insert(std::pair<char*, TempPieceTypeInfo>(type->name, info));
+		auto info = std::make_tuple(type, capturedAs);
+		pieceTypesByName.insert(std::make_pair(type->name, info));
 		
 		node = node->next_sibling("piece");
 	}
@@ -386,10 +377,10 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 	// resolve references to other types, also populate piece type list
 	for (auto it = pieceTypesByName.begin(); it != pieceTypesByName.end(); it++)
 	{
-		PieceType *type = it->second.type;
-		game->allPieceTypes.push_back(*type);
+		PieceType *type = std::get<0>(it->second);
+		game->allPieceTypes.push_back(type);
 
-		char *capturedAs = it->second.capturedAsType;
+		char *capturedAs = std::get<1>(it->second);
 		if (capturedAs != 0)
 		{
 			auto it2 = pieceTypesByName.find(capturedAs);
@@ -398,7 +389,7 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 				// todo: report error somehow - captured as type is not defined
 			}
 			else
-				type->capturedAs = it2->second.type;
+				type->capturedAs = std::get<0>(it2->second); 
 		}
 
 		/*
@@ -504,9 +495,8 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 				def->append_node(moveNode);
 			}
 			
-			/* todo: implement this
-			type.appearances[playerName] = '#' + defID;
-			*/
+			// save off this appearance, to store later once players are imported
+			pieceAppearances.push_back(std::make_tuple(type, playerName, defID));
 		}
 
 		node = node->next_sibling();
@@ -799,9 +789,114 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 
 bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 {
-	printf("ParsePlayers is not implemented\n");
-	// todo: implement this
-	return false;
+	xml_node<> *svgRoot = svgDoc->first_node();
+
+	xml_node<> *playerNode = setupNode->first_node();
+	while (playerNode != 0)
+	{
+		char *playerName = playerNode->first_attribute("name")->value();
+		char *forwardDir = playerNode->first_attribute("forwardDirection")->value();
+
+		Player *player = new Player(game, playerName, LookupDirection(forwardDir));
+		game->players.push_back(player);
+
+		// link piece appearances up to actual player now that this exists
+		for (auto it = pieceAppearances.begin(); it != pieceAppearances.end(); it++)
+		{
+			auto tuple = *it;
+
+			if (strcmp(std::get<1>(tuple), playerName) != 0)
+				continue;
+
+			PieceType *type = std::get<0>(tuple);
+			char *defID = std::get<2>(tuple);
+
+			char *defRef = new char[TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2];
+			strncpy(defRef, "#", TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
+			strcat(defRef, defID);
+
+			type->appearances.insert(std::make_pair(player->id, defRef));
+
+			//pieceAppearances.erase(it++);
+		}
+
+		xml_node<> *pieceNode = playerNode->first_node();
+		while (pieceNode != 0)
+		{
+			char *position = pieceNode->first_attribute("location")->value();
+			Piece::State_t state = Piece::OnBoard;
+
+			char *typeName = pieceNode->first_attribute("type")->value();
+			auto it = pieceTypesByName.find(typeName);
+			if (it == pieceTypesByName.end())
+			{
+				// todo: report error somehow
+				return false;
+			}
+			PieceType *type = std::get<0>(it->second);
+
+			if (strcmp(position, "held") == 0)
+			{
+				Piece *piece = new Piece(player, type, 0, Piece::Held, player);
+				player->piecesHeld.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+			}
+			else
+			{
+				auto it = cellsByRef.find(position);
+				if (it == cellsByRef.end())
+				{
+					// todo: report error somehow
+					return false;
+				}
+				Cell *cell = it->second;
+
+				Piece *piece = new Piece(player, type, cell, Piece::OnBoard, 0);
+				player->piecesOnBoard.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+
+				if (cell->piece == 0)
+					cell->piece = piece;
+				else
+					; // todo: report multiple-pieces-in-one-cell
+
+				// generate piece image
+				xml_node<> *image = svgDoc->allocate_node(node_element, "use");
+
+				char *val = svgDoc->allocate_string(0, 8);
+				sprintf(val, "p%d", piece->uniqueID);
+				image->append_attribute(svgDoc->allocate_attribute("id", val));
+
+				val = svgDoc->allocate_string("piece ", PLAYER_NAME_LENGTH + 6);
+				strcat(val, player->name);
+				image->append_attribute(svgDoc->allocate_attribute("class", val));
+
+				val = svgDoc->allocate_string(0, 8);
+				sprintf(val, "%d", cell->coordX);
+				image->append_attribute(svgDoc->allocate_attribute("x", val));
+
+				val = svgDoc->allocate_string(0, 8);
+				sprintf(val, "%d", cell->coordY);
+				image->append_attribute(svgDoc->allocate_attribute("y", val));
+
+				// assign correct piece appearance to this element
+				auto it2 = piece->pieceType->appearances.find(player->id);
+				if (it2 == piece->pieceType->appearances.end())
+				{
+					// todo: report error, piece has no appearance for this player
+					return false;
+				}
+				val = svgDoc->allocate_string(it2->second, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
+				image->append_attribute(svgDoc->allocate_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink"));
+				image->append_attribute(svgDoc->allocate_attribute("xlink:href", val));
+
+				svgRoot->append_node(image);
+			}
+
+			pieceNode = pieceNode->next_sibling();
+		}
+
+		playerNode = playerNode->next_sibling();
+	}
+	return true;
 }
 
 

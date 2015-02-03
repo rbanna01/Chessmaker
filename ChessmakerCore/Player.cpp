@@ -3,13 +3,15 @@
 #include "Game.h"
 #include "Board.h"
 
-Player::Player(Game *game, int id, Type_t type, int forwardDir)
+int Player::nextID = 1;
+
+Player::Player(Game *game, char *name, unsigned int forwardDir)
 {
 	this->game = game;
-	this->id = id;
-	this->type = type;
+	this->type = Local;
 	this->forwardDir = forwardDir;
-	
+	strncpy(this->name, name, PLAYER_NAME_LENGTH);
+	this->id = Player::nextID++;
 }
 
 

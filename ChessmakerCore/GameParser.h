@@ -61,6 +61,9 @@ private:
 
 	unsigned int maxDirection, allDirections;
 	dirLookup_t directionLookups;
+	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
+	std::map<char*, Cell*, char_cmp> cellsByRef;
+	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;
 
 	Game *game;
 };

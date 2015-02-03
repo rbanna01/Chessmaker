@@ -12,7 +12,7 @@ public:
 	typedef enum { Local, AI, Remote } Type_t;
 	typedef enum { Any, Self, Enemy, Ally } Relationship_t;
 
-	Player(Game *game, int id, Type_t type, int forwardDir);
+	Player(Game *game, char *name, unsigned int forwardDir);
 	~Player();
 
 	unsigned int ResolveDirections(unsigned int dir, unsigned int prevDir);
@@ -26,6 +26,9 @@ private:
 
 	std::map<int, Piece*> piecesOnBoard, piecesHeld, piecesCaptured;
 
+	static int nextID;
+
 	friend class MoveStep;
+	friend class GameParser;
 };
 

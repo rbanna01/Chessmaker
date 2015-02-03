@@ -24,5 +24,19 @@ Game::~Game()
 		delete endOfGame;
 	if (turnOrder != 0)
 		delete turnOrder;
+
+	auto it = players.begin();
+	while (it != players.end())
+	{
+		delete (*it);
+		it++;
+	}
+
+	auto it2 = allPieceTypes.begin();
+	while (it2 != allPieceTypes.end())
+	{
+		delete (*it2);
+		it2++;
+	}
 }
 

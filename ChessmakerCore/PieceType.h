@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <map>
 
 class MoveDefinition;
 
@@ -16,6 +17,7 @@ private:
 	char name[TYPE_NAME_LENGTH];
 	char notation[TYPE_NOTATION_LENGTH];
 	std::list<MoveDefinition*> moves;
+	std::map<int, char*> appearances;
 	//std::list<PromotionOpportunity*> promotionOpportunities;
 	PieceType *capturedAs;
 
