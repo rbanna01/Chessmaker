@@ -15,6 +15,7 @@ public:
 	Player(Game *game, char *name, unsigned int forwardDir);
 	~Player();
 
+	char *GetName() { return name; }
 	unsigned int ResolveDirections(unsigned int dir, unsigned int prevDir);
 	Relationship_t GetRelationship(Player *other);
 

@@ -10,3 +10,10 @@ EndOfGame::~EndOfGame()
 {
 	
 }
+
+
+EndOfGame *EndOfGame::CreateDefault()
+{
+	// todo: implement this
+	return 0;
+}

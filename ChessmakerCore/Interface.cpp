@@ -3,6 +3,7 @@
 #include <string.h>
 #include "Game.h"
 #include "GameParser.h"
+#include "TurnOrder.h"
 
 Game *game = 0;
 std::string *boardSVG = 0;
@@ -20,12 +21,11 @@ bool Initialize(char* definition)
 	game = parser->Parse(definition, boardSVG);
 	delete parser;
 
-	if (game != 0)
-	{
-		printf("Definition parsed successfully\n");
-		return true;
-	}
-	return false;
+	if (game == 0)
+		return false;
+
+	printf("Definition parsed successfully\n");
+	return true;
 }
 
 extern "C" __declspec(dllexport)

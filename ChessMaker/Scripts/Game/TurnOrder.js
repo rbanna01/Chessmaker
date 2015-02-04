@@ -1,22 +1,8 @@
 ﻿"use strict";
 
 function TurnOrder() {
-    this.currentStep = null;
+    
 }
-
-TurnOrder.parse = function (xmlNode, game) {
-    var turnOrder = new TurnOrder();
-    var players = {};
-    for (var i = 0; i < game.players.length; i++) {
-        var p = game.players[i]
-        players[p.name] = p;
-    }
-
-    var fakeStep = new TurnStep(null);
-    fakeStep.next = TurnOrder.parseRepeat(xmlNode, players, true);
-    turnOrder.currentStep = fakeStep;
-    return turnOrder;
-};
 
 TurnOrder.parseRepeat = function (xmlNode, players, topLevel) {
     var count = xmlNode.getAttribute('count');
@@ -114,10 +100,6 @@ TurnOrder.prototype.stepBackward = function () {
 };
 
 function TurnRepeat(count, firstChild, lastChild) {
-    this.currentIteration = 0;
-    this.count = count;
-    this.firstChild = firstChild;
-    this.lastChild = lastChild;
     this.next = null;
     this.prev = null;
     this.isGroup = true;

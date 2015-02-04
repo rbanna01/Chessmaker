@@ -8,8 +8,11 @@
 class Board;
 class Conditions;
 class Distance;
+class EndOfGame;
 class Game;
 class PieceType;
+class TurnOrder;
+class TurnRepeat;
 
 
 namespace rapidxml {
@@ -57,6 +60,10 @@ private:
 	
 	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
+	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
+	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
+	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *node);
+
 	unsigned int LookupDirection(char *dirName);
 
 	unsigned int maxDirection, allDirections;

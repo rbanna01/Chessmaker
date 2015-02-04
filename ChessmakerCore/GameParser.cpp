@@ -87,7 +87,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	/*
+	
 	node = node->next_sibling("rules");
 	if (node == 0)
 	{
@@ -95,12 +95,12 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	if (!ParseRules(node, game))
+	if (!ParseRules(node))
 	{
 		delete game;
 		return 0;
 	}
-	*/
+	
 	// todo: implement this player type stuff. AIs was an array of AI objects in the view.
 	/*
 	// this needs enhanced to also allow for remote players
@@ -902,11 +902,60 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 
 bool GameParser::ParseRules(xml_node<> *rulesNode)
 {
-	printf("ParseRules is not implemented\n");
+	xml_node<> *node = rulesNode->first_node("turnOrder");
+	TurnOrder *order = node == 0 ? TurnOrder::CreateDefault(game->players) : ParseTurnOrder(node);
+
+	if (order == 0)
+	{
+		// report error parsing turn order
+		return false;
+	}
+	else
+		game->turnOrder = order;
+
+	node = rulesNode->first_node("endOfGame");
+	EndOfGame *end = node == 0 ? EndOfGame::CreateDefault() : ParseEndOfGame(node);
+
+	if (end == 0)
+	{
+		// report error parsing end of game
+		return false;
+	}
+	else
+		game->endOfGame = end;
+
+	return true;
+}
+
+TurnOrder *GameParser::ParseTurnOrder(xml_node<> *node)
+{
+	TurnOrder *turnOrder = new TurnOrder();
+
+	ParseTurnRepeat(turnOrder, node);
+
+	return turnOrder;
+}
+
+bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
+{
+	xml_node<> *node = repeatNode->first_node();
+	while (node != 0)
+	{
+
+
+		node = node->next_sibling();
+	}
+
 	// todo: implement this
 	return false;
 }
 
+
+EndOfGame *GameParser::ParseEndOfGame(xml_node<> *node)
+{
+	// todo: implement this
+	return 0;
+}
 
 unsigned int GameParser::LookupDirection(char *dirName)
 {
