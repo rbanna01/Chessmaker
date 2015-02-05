@@ -19,6 +19,9 @@ bool Initialize(char* definition)
 	boardSVG = new std::string();
 	GameParser *parser = new GameParser();
 	game = parser->Parse(definition, boardSVG);
+
+	parser->TestTurnOrder();
+
 	delete parser;
 
 	if (game == 0)

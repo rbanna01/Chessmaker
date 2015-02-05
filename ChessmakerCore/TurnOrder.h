@@ -32,7 +32,7 @@ public:
 	~TurnRepeat();
 
 	virtual bool IsStep() { return false; }
-
+	int id; bool neverUsed;
 protected:
 	TurnStep* GetNext(bool forwards);
 	std::list<BaseTurnStep*> steps;
@@ -57,7 +57,7 @@ public:
 	~TurnOrder();
 
 	Player *GetNextPlayer();
-	void StepBackward();
+	Player *StepBackward();
 
 	static TurnOrder *CreateDefault(std::list<Player*> players);
 

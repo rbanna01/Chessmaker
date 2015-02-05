@@ -37,6 +37,8 @@ public:
 	GameParser() {}
 	~GameParser() {}
 	
+	void TestTurnOrder();
+
 private:
 	bool ParseCellsAndGenerateSVG(Board *board, rapidxml::xml_node<char> *boardNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseDirections(Board *board, rapidxml::xml_node<char> *dirsNode);

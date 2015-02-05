@@ -912,7 +912,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 	}
 	else
 		game->turnOrder = order;
-
+	return true;
 	node = rulesNode->first_node("endOfGame");
 	EndOfGame *end = node == 0 ? EndOfGame::CreateDefault() : ParseEndOfGame(node);
 
@@ -971,4 +971,121 @@ unsigned int GameParser::LookupDirection(char *dirName)
 	}
 
 	return it->second;
+}
+
+void GameParser::TestTurnOrder()
+{
+	printf("Test 1\n");
+	TurnOrder *order = new TurnOrder();
+
+	TurnRepeat *repeat = new TurnRepeat(2);
+	order->steps.push_back(repeat);
+
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+		repeat->steps.push_back(new TurnStep(*it));
+	
+	Player *player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // black
+	
+	player = order->StepBackward();
+	printf("back %s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->StepBackward();
+	printf("back %s\n", player == 0 ? "???" : player->GetName()); // black
+
+	player = order->StepBackward();
+	printf("back %s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->StepBackward();
+	printf("back %s\n", player == 0 ? "???" : player->GetName()); // black
+
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // black
+
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // black
+
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // ???
+	player = order->StepBackward();
+	printf("back %s\n", player == 0 ? "???" : player->GetName()); // black
+
+	delete order;
+	printf("\n\nTest 2\n");
+
+	order = new TurnOrder();
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+		order->steps.push_back(new TurnStep(*it));
+
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // black
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // ???
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // ???
+
+	player = order->StepBackward();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // black
+	player = order->StepBackward();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+	player = order->StepBackward();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // ???
+	player = order->GetNextPlayer();
+	printf("%s\n", player == 0 ? "???" : player->GetName()); // white
+
+
+	delete order;
+	printf("\n\nTest 3\n");
+
+	order = new TurnOrder();
+
+	repeat = new TurnRepeat(0);
+	order->steps.push_back(repeat);
+
+	TurnRepeat *repeat2 = new TurnRepeat(2);
+	repeat->steps.push_back(repeat2);
+
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+	{
+		repeat2->steps.push_back(new TurnStep(*it));
+		repeat2->steps.push_back(new TurnStep(*it));
+	}
+
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+	{
+		repeat->steps.push_back(new TurnStep(*it));
+		repeat->steps.push_back(new TurnStep(*it));
+		repeat->steps.push_back(new TurnStep(*it));
+	}
+
+	repeat2 = new TurnRepeat(2);
+	repeat->steps.push_back(repeat2);
+
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+		repeat2->steps.push_back(new TurnStep(*it));
+
+	for (int i = 1; i <= 20; i++)
+	{
+		Player *player = order->GetNextPlayer(); // steps 19 & 20 give ??? instead of continuing back to the beginning of repeat
+		printf("Turn %i: %s\n", i, player == 0 ? "???" : player->GetName());
+	}
+
+	player = order->StepBackward(); // then we somehow end up in the first nested repeat?
+	printf("Step back: %s\n", player == 0 ? "???" : player->GetName());
+	player = order->StepBackward();
+	printf("Step back: %s\n", player == 0 ? "???" : player->GetName());
+	player = order->StepBackward();
+	printf("Step back: %s\n", player == 0 ? "???" : player->GetName());
+	player = order->StepBackward();
+	printf("Step back: %s\n", player == 0 ? "???" : player->GetName());
+	player = order->StepBackward();
+	printf("Step back: %s\n", player == 0 ? "???" : player->GetName());
+
+	getchar();
 }

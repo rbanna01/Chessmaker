@@ -1,11 +1,13 @@
 #include "TurnOrder.h"
 #include "Player.h"
 
+int nextID = 1;
 TurnRepeat::TurnRepeat(int count)
 {
 	maxRepeats = count;
 	currentIteration = 0;
 	state = AtStart;
+	id = nextID++; neverUsed = true;
 }
 
 
@@ -18,6 +20,10 @@ TurnRepeat::~TurnRepeat()
 
 TurnStep* TurnRepeat::GetNext(bool forwards)
 {
+	/*if (neverUsed)
+		printf("repeat %i is in state %i\n", id, (int)state);
+	else
+		printf("repeat %i is at position %i, in state %i\n", id, std::distance(steps.begin(), it), (int)state);*/
 	if (state == AtStart)
 	{
 		if (!forwards)
@@ -28,15 +34,17 @@ TurnStep* TurnRepeat::GetNext(bool forwards)
 	else if (state == AtEnd)
 	{
 		if (forwards)
-			return 0;
+			return 0; // if already used up ALL my loops, 
 
 		it = steps.end();
 		it--;
 	}
 
+	neverUsed = false;
 	if (state != AtEnd && !(*it)->IsStep())
 	{
 		TurnRepeat *repeat = (TurnRepeat*)*it;
+		//printf("path 1   ");
 		TurnStep *step = repeat->GetNext(forwards);
 		if (step != 0)
 		{
@@ -86,18 +94,8 @@ TurnStep* TurnRepeat::GetNext(bool forwards)
 		return step;
 	}
 
-	// arriving into a repeat for the first time, so reset it
+	//printf("path 2   ");
 	TurnRepeat *repeat = (TurnRepeat*)*it;
-	if (forwards)
-	{
-		repeat->currentIteration = 0;
-		repeat->state = AtStart;
-	}
-	else
-	{
-		repeat->currentIteration = repeat->maxRepeats - 1;
-		repeat->state = AtEnd;
-	}
 	return repeat->GetNext(forwards);
 }
 
@@ -137,7 +135,10 @@ Player *TurnOrder::GetNextPlayer()
 }
 
 
-void TurnOrder::StepBackward()
+Player *TurnOrder::StepBackward()
 {
 	currentStep = GetNext(false);
+	if (currentStep == 0)
+		return 0;
+	return currentStep->GetPlayer();
 }
