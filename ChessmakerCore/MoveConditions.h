@@ -1,10 +1,10 @@
 #pragma once
 
-class Conditions
+class MoveConditions
 {
 public:
-	Conditions();
-	~Conditions();
+	MoveConditions();
+	~MoveConditions();
 
 private:
 	friend class GameParser;

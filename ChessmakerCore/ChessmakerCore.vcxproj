@@ -75,7 +75,7 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="Conditions.h" />
+    <ClInclude Include="MoveConditions.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Distance.h" />
     <ClInclude Include="EndOfGame.h" />
@@ -95,7 +95,7 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cell.cpp" />
-    <ClCompile Include="Conditions.cpp" />
+    <ClCompile Include="MoveConditions.cpp" />
     <ClCompile Include="Distance.cpp" />
     <ClCompile Include="EndOfGame.cpp" />
     <ClCompile Include="Game.cpp" />

@@ -6,7 +6,7 @@
 #include "MoveDefinition.h"
 
 class Board;
-class Conditions;
+class MoveConditions;
 class Distance;
 class EndOfGame;
 class Game;
@@ -54,7 +54,7 @@ private:
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
-	Conditions *ParseConditions(rapidxml::xml_node<char> *node);
+	MoveConditions *ParseMoveConditions(rapidxml::xml_node<char> *node);
 	Distance *ParseDistance(char *val);
 	MoveDefinition::When_t ParseWhen(char *val);
 	Player::Relationship_t ParseRelationship(char *val);

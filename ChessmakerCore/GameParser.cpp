@@ -5,7 +5,7 @@
 #include "GameParser.h"
 #include "Board.h"
 #include "Cell.h"
-#include "Conditions.h"
+#include "MoveConditions.h"
 #include "Distance.h"
 #include "EndOfGame.h"
 #include "Game.h"
@@ -539,7 +539,7 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 
 MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 {
-	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -560,7 +560,7 @@ MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 {
-	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -587,7 +587,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 {
-	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -616,7 +616,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 {
-	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -640,7 +640,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
 {
-	Conditions *conditions = ParseConditions(moveNode->first_node("conditions"));
+	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
 
 	char *pieceRef = moveNode->first_attribute("other")->value();
 	
@@ -726,7 +726,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 }
 
 
-Conditions *GameParser::ParseConditions(xml_node<char> *node)
+MoveConditions *GameParser::ParseMoveConditions(xml_node<char> *node)
 {
 	if (node == 0)
 		return 0;

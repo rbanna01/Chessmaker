@@ -6,7 +6,7 @@
 #include "PieceType.h"
 #include "Player.h"
 
-class Conditions;
+class MoveConditions;
 class MoveStep;
 class Piece;
 
@@ -17,14 +17,14 @@ class MoveDefinition
 public:
 	typedef enum { Any, Moving, Capturing } When_t;
 
-	MoveDefinition(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction);
+	MoveDefinition(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction);
 	~MoveDefinition();
 
 	virtual std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 
 protected:
 	char pieceRef[PIECE_REF_LENGTH];
-	Conditions *conditions;
+	MoveConditions *conditions;
 	When_t when;
 	unsigned int direction;
 
@@ -35,7 +35,7 @@ protected:
 class Slide : public MoveDefinition
 {
 public:
-	Slide(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax)
+	Slide(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax)
 		: MoveDefinition(pieceRef, conditions, when, direction)
 	{
 		this->distance = distance; this->distanceMax = distanceMax;
@@ -55,7 +55,7 @@ private:
 class Leap : public MoveDefinition
 {
 public:
-	Leap(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax, unsigned int secondDir, Distance *secondDist)
+	Leap(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax, unsigned int secondDir, Distance *secondDist)
 		: MoveDefinition(pieceRef, conditions, when, direction)
 	{
 		this->distance = distance; this->distanceMax = distanceMax;
@@ -77,7 +77,7 @@ private:
 class Hop : public MoveDefinition
 {
 public:
-	Hop(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction, Distance *distToHurdle, Distance *distToHurdleMax, Distance *distAfterHurdle, Distance *distAfterHurdleMax, bool captureHurdle)
+	Hop(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction, Distance *distToHurdle, Distance *distToHurdleMax, Distance *distAfterHurdle, Distance *distAfterHurdleMax, bool captureHurdle)
 		: MoveDefinition(pieceRef, conditions, when, direction)
 	{
 		this->distToHurdle = distToHurdle; this->distToHurdleMax = distToHurdleMax;
@@ -100,7 +100,7 @@ private:
 class Shoot : public MoveDefinition
 {
 public:
-	Shoot(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax, unsigned int secondDir, Distance *secondDist)
+	Shoot(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction, Distance *distance, Distance *distanceMax, unsigned int secondDir, Distance *secondDist)
 		: MoveDefinition(pieceRef, conditions, when, direction)
 	{
 		this->distance = distance; this->distanceMax = distanceMax;
@@ -122,7 +122,7 @@ private:
 class MoveLike : public MoveDefinition
 {
 public:
-	MoveLike(char *pieceRef, Conditions *conditions, When_t when)
+	MoveLike(char *pieceRef, MoveConditions *conditions, When_t when)
 		: MoveDefinition("", conditions, when, 0)
 	{
 		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);

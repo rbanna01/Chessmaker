@@ -1,9 +1,9 @@
 #include <utility>
 #include "Constants.h"
 #include "MoveDefinition.h"
-#include "Conditions.h"
+#include "MoveConditions.h"
 
-MoveDefinition::MoveDefinition(char *pieceRef, Conditions *conditions, When_t when, unsigned int direction)
+MoveDefinition::MoveDefinition(char *pieceRef, MoveConditions *conditions, When_t when, unsigned int direction)
 {
 	strncpy(this->pieceRef, pieceRef, PIECE_REF_LENGTH);
 	this->conditions = conditions;

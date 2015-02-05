@@ -66,10 +66,10 @@
     <ClInclude Include="MoveDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Conditions.h">
+    <ClInclude Include="Distance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Distance.h">
+    <ClInclude Include="MoveConditions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,10 +116,10 @@
     <ClCompile Include="MoveDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Conditions.cpp">
+    <ClCompile Include="Distance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Distance.cpp">
+    <ClCompile Include="MoveConditions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
