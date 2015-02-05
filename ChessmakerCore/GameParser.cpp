@@ -735,6 +735,17 @@ MoveConditions *GameParser::ParseMoveConditions(xml_node<char> *node)
 	return 0;
 }
 
+
+StateConditions *GameParser::ParseStateConditions(xml_node<char> *node)
+{
+	if (node == 0)
+		return 0;
+
+	// todo: implement this
+	return 0;
+}
+
+
 Distance *GameParser::ParseDistance(char *val)
 {
 	if (val == 0)
@@ -982,10 +993,41 @@ Player *GameParser::GetPlayerByName(char *name)
 	return 0;
 }
 
-EndOfGame *GameParser::ParseEndOfGame(xml_node<> *node)
+EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 {
-	// todo: implement this
-	return 0;
+	EndOfGame *endOfGame = new EndOfGame();
+
+	xml_node<> *node = rootNode->first_node();
+	while (node != 0)
+	{
+		EndOfGame::CheckType_t checkType;
+		if (strcmp(node->name(), "win") == 0)
+			checkType = EndOfGame::Win;
+		else if (strcmp(node->name(), "lose") == 0)
+			checkType = EndOfGame::Lose;
+		else if (strcmp(node->name(), "draw") == 0)
+			checkType = EndOfGame::Draw;
+		else if (strcmp(node->name(), "illegal") == 0)
+		{
+			checkType = EndOfGame::IllegalMove;
+			endOfGame->illegalMovesSpecified = true;
+		}
+		else
+		{
+			// todo: report unexpected check type
+			continue;
+		}
+
+		xml_attribute<> *attr = node->first_attribute("when");
+		auto checkList = strcmp(attr->value(), "startOfTurn") == 0 ? endOfGame->startOfTurnChecks : endOfGame->endOfTurnChecks;
+
+		StateConditions *conditions = ParseStateConditions(node);
+		checkList.push_back(new EndOfGameCheck(checkType, conditions));
+
+		node = node->next_sibling();
+	}
+	
+	return endOfGame;
 }
 
 unsigned int GameParser::LookupDirection(char *dirName)

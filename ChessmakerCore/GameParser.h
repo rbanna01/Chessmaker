@@ -12,6 +12,7 @@ class EndOfGame;
 class Game;
 class PieceType;
 class Player;
+class StateConditions;
 class TurnOrder;
 class TurnRepeat;
 
@@ -55,6 +56,8 @@ private:
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
 	MoveConditions *ParseMoveConditions(rapidxml::xml_node<char> *node);
+	StateConditions *ParseStateConditions(rapidxml::xml_node<char> *node);
+
 	Distance *ParseDistance(char *val);
 	MoveDefinition::When_t ParseWhen(char *val);
 	Player::Relationship_t ParseRelationship(char *val);
@@ -63,7 +66,7 @@ private:
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
 	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
-	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *node);
+	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *rootNode);
 	Player *GetPlayerByName(char *name);
 
 	unsigned int LookupDirection(char *dirName);

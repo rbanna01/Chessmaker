@@ -90,13 +90,6 @@ EndOfGame.prototype.checkEndOfTurn = function (state, move) {
     return undefined;
 };
 
-EndOfGame.Type = {
-    Win: 0,
-    Lose: 1,
-    Draw: 2,
-    IllegalMove: 3
-};
-
 function EndOfGameCheck(type, conditions) {
     this.type = type;
     this.conditions = conditions;

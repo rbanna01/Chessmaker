@@ -90,6 +90,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="StateConditions.h" />
     <ClInclude Include="TurnOrder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +109,7 @@
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="PieceType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="StateConditions.cpp" />
     <ClCompile Include="TurnOrder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
