@@ -11,6 +11,7 @@ class Distance;
 class EndOfGame;
 class Game;
 class PieceType;
+class Player;
 class TurnOrder;
 class TurnRepeat;
 
@@ -63,6 +64,7 @@ private:
 	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
 	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
 	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *node);
+	Player *GetPlayerByName(char *name);
 
 	unsigned int LookupDirection(char *dirName);
 

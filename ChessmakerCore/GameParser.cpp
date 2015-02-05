@@ -941,7 +941,26 @@ bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
 	xml_node<> *node = repeatNode->first_node();
 	while (node != 0)
 	{
-
+		if (strcmp(node->name(), "turn") == 0)
+		{
+			char *playerName = node->first_attribute("player")->value();
+			Player *player = GetPlayerByName(playerName);
+			if (player != 0)
+			{
+				TurnStep *step = new TurnStep(player);
+				repeat->steps.push_back(step);
+			}
+		}
+		else if (strcmp(node->name(), "repeat") == 0)
+		{
+			xml_attribute<> *attr = node->first_attribute("count");
+			int count = attr == 0 ? 0 : atoi(attr->value());
+			TurnRepeat *child = new TurnRepeat(count);
+			repeat->steps.push_back(child);
+			ParseTurnRepeat(child, node);
+		}
+		else
+			; // todo: report unexpected node name
 
 		node = node->next_sibling();
 	}
@@ -950,6 +969,18 @@ bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
 	return false;
 }
 
+Player *GameParser::GetPlayerByName(char *name)
+{
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
+	{
+		Player *player = *it;
+		if (strcmp(player->GetName(), name) == 0)
+			return player;
+	}
+
+	// todo: report invalid player name
+	return 0;
+}
 
 EndOfGame *GameParser::ParseEndOfGame(xml_node<> *node)
 {
