@@ -24,7 +24,6 @@ bool Initialize(char* definition)
 	if (game == 0)
 		return false;
 
-	printf("Definition parsed successfully\n");
 	return true;
 }
 

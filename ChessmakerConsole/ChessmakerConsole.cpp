@@ -31,10 +31,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialize game engine
 	if (!Initialize(definition))
 	{
-		printf("error");
+		printf("Error parsing definition\n");
 		return 1;
 	}
-	
+	else
+		printf("Definition parsed successfully\n");
+
 	// retrieve and then save the board SVG file
 	std::string *svg = GetBoardSVG();
 	printf("received %i bytes:\n%s", svg->size(), svg->c_str());

@@ -917,10 +917,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 	TurnOrder *order = node == 0 ? TurnOrder::CreateDefault(game->players) : ParseTurnOrder(node);
 
 	if (order == 0)
-	{
-		// report error parsing turn order
 		return false;
-	}
 	else
 		game->turnOrder = order;
 
@@ -942,7 +939,11 @@ TurnOrder *GameParser::ParseTurnOrder(xml_node<> *node)
 {
 	TurnOrder *turnOrder = new TurnOrder();
 
-	ParseTurnRepeat(turnOrder, node);
+	if (!ParseTurnRepeat(turnOrder, node))
+	{
+		delete turnOrder;
+		return 0;
+	}
 
 	return turnOrder;
 }
@@ -968,7 +969,8 @@ bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
 			int count = attr == 0 ? 0 : atoi(attr->value());
 			TurnRepeat *child = new TurnRepeat(count);
 			repeat->steps.push_back(child);
-			ParseTurnRepeat(child, node);
+			if (!ParseTurnRepeat(child, node))
+				return false;
 		}
 		else
 			; // todo: report unexpected node name
@@ -976,8 +978,7 @@ bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
 		node = node->next_sibling();
 	}
 
-	// todo: implement this
-	return false;
+	return true;
 }
 
 Player *GameParser::GetPlayerByName(char *name)
