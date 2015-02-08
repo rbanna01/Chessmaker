@@ -17,6 +17,14 @@ Player::Player(Game *game, char *name, unsigned int forwardDir)
 
 Player::~Player()
 {
+	for (auto it = piecesOnBoard.begin(); it != piecesOnBoard.end(); it++)
+		delete it->second;
+
+	for (auto it = piecesHeld.begin(); it != piecesHeld.end(); it++)
+		delete it->second;
+
+	for (auto it = piecesCaptured.begin(); it != piecesCaptured.end(); it++)
+		delete it->second;
 }
 
 

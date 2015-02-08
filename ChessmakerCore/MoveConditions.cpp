@@ -1,12 +1,17 @@
 #include "MoveConditions.h"
 
-MoveConditions::MoveConditions()
+MoveConditionGroup::MoveConditionGroup(GroupType_t type)
 {
-
+	this->type = type;
 }
 
 
-MoveConditions::~MoveConditions()
+MoveConditionGroup::~MoveConditionGroup()
 {
-
+	std::list<MoveCondition*>::iterator it = elements.begin();
+	while (it != elements.end())
+	{
+		delete (*it);
+		it++;
+	}
 }

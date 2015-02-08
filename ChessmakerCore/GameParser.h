@@ -3,10 +3,10 @@
 #include <map>
 #include <string>
 
+#include "MoveConditions.h"
 #include "MoveDefinition.h"
 
 class Board;
-class MoveConditions;
 class Distance;
 class EndOfGame;
 class Game;
@@ -55,8 +55,9 @@ private:
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
-	MoveConditions *ParseMoveConditions(rapidxml::xml_node<char> *node);
+	MoveConditionGroup *ParseMoveConditions(rapidxml::xml_node<char> *node, MoveConditionGroup::GroupType_t type);
 	StateConditions *ParseStateConditions(rapidxml::xml_node<char> *node);
+	MoveCondition::NumericComparison_t ParseNumericComparison(char *value);
 
 	Distance *ParseDistance(char *val);
 	MoveDefinition::When_t ParseWhen(char *val);

@@ -21,7 +21,6 @@ Move::~Move()
 		delete (*it);
 		it++;
 	}
-	steps.clear();
 }
 
 

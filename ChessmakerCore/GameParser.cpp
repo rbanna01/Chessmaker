@@ -539,7 +539,7 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 
 MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 {
-	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -560,7 +560,7 @@ MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 {
-	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -587,7 +587,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 {
-	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -616,7 +616,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 {
-	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -640,7 +640,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
 {
-	MoveConditions *conditions = ParseMoveConditions(moveNode->first_node("conditions"));
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
 
 	char *pieceRef = moveNode->first_attribute("other")->value();
 	
@@ -726,13 +726,98 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 }
 
 
-MoveConditions *GameParser::ParseMoveConditions(xml_node<char> *node)
+MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveConditionGroup::GroupType_t type)
 {
 	if (node == 0)
 		return 0;
 
-	// todo: implement this
-	return 0;
+	MoveConditionGroup *conditions = new MoveConditionGroup(type);
+	
+	xml_node<> *child = node->first_node();
+
+	while (child != 0)
+	{
+		if (strcmp(child->name(), "and") == 0)
+			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::And));
+		else if (strcmp(child->name(), "or") == 0)
+			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Or));
+		else if (strcmp(child->name(), "nand") == 0)
+			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Nand));
+		else if (strcmp(child->name(), "nor") == 0 || strcmp(child->name(), "not") == 0)
+			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Nor));
+		else if (strcmp(child->name(), "xor") == 0)
+			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Xor));
+
+		/*
+		case 'type':
+			var of = child.getAttribute('of');
+			var type = child.textContent;
+			group.elements.push(new Conditions_Type(of, type));
+			break;
+		case 'owner':
+			var of = child.getAttribute('of');
+			var relationship = Player.Relationship.parse(child.textContent);
+			group.elements.push(new Conditions_Owner(of, relationship));
+			break;
+		case 'moveNumber':
+			var of = child.getAttribute('of');
+			if (of == null)
+				of = 'self';
+			var number = parseInt(child.textContent);
+			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+			group.elements.push(new Conditions_MoveNumber(of, number, comparison));
+			break;
+		case 'maxDist':
+			var from = child.getAttribute('from');
+			if (from == null)
+				from = 'self';
+
+			var dir = child.getAttribute('dir');
+			var number = parseInt(child.textContent);
+			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+			group.elements.push(new Conditions_MaxDist(from, dir, number, comparison));
+			break;
+
+		case 'turnsSinceLastMove':
+			var of = child.getAttribute('of');
+			if (of == null)
+				of = 'self';
+			var number = parseInt(child.textContent);
+			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
+			group.elements.push(new Conditions_TurnsSinceLastMove(of, number, comparison));
+			break;
+
+		case 'threatened':
+			var value = child.textContent == 'true';
+			var where = child.getAttribute('where');
+			var start = where != 'end';
+			var end = where != 'start';
+			group.elements.push(new Conditions_Threatened(start, end, value));
+			break;
+
+		case 'num_pieces_in_range':
+		case 'move_causes_check':
+		case 'move_causes_checkmate':
+		case 'checkmate':
+		case 'pieces_threatened':
+		case 'repeated_check':
+		case 'no_moves_possible':
+		case 'repetition_of_position':
+		case 'turns_since_last_capture':
+		case 'turns_since_last_move':
+		default:
+			console.log("Unrecognised condition type: " + name);
+			break;
+		*/
+		else
+		{
+			// todo: report unexpected move condition type
+		}
+
+		child = child->next_sibling();
+	}
+
+	return conditions;
 }
 
 
@@ -743,6 +828,24 @@ StateConditions *GameParser::ParseStateConditions(xml_node<char> *node)
 
 	// todo: implement this
 	return 0;
+}
+
+
+MoveCondition::NumericComparison_t GameParser::ParseNumericComparison(char *value)
+{
+	if (strcmp(value, "equals") == 0)
+		return MoveCondition::Equals;
+	if (strcmp(value, "less than") == 0)
+		return MoveCondition::LessThan;
+	if (strcmp(value, "less than or equals") == 0)
+		return MoveCondition::LessThanOrEquals;
+	if (strcmp(value, "greater than") == 0)
+		return MoveCondition::GreaterThan;
+	if (strcmp(value, "greater than or equals") == 0)
+		return MoveCondition::GreaterThanOrEquals;
+	
+	// todo: report invalid comparison type
+	return MoveCondition::Equals;
 }
 
 
