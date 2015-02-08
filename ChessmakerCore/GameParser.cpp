@@ -20,7 +20,11 @@
 
 using namespace rapidxml;
 
+#ifdef NO_SVG
+Game* GameParser::Parse(char *definition)
+#else
 Game* GameParser::Parse(char *definition, std::string *svgOutput)
+#endif
 {
 	xml_document<> doc;
 	doc.parse<0>(definition); // 0 means default parse flags
@@ -40,14 +44,16 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		return 0;
 	}
 	
+#ifdef NO_SVG
+	if (!ParseCells(game->board, node))
+#else
 	xml_document<char> svgDoc;
 	if (!ParseCellsAndGenerateSVG(game->board, node, &svgDoc))
+#endif
 	{
 		delete game;
 		return 0;
 	}
-	
-	xml_node<> *defsNodes = svgDoc.first_node()->first_node("defs");
 	
 	node = node->next_sibling("dirs");
 	if (node == 0)
@@ -69,7 +75,13 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
+
+#ifdef NO_SVG
+	if (!ParsePieceTypes(node))
+#else
+	xml_node<> *defsNodes = svgDoc.first_node()->first_node("defs");
 	if (!ParsePieceTypes(node, defsNodes))
+#endif
 	{
 		delete game;
 		return 0;
@@ -82,7 +94,12 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
+
+#ifdef NO_SVG
+	if (!ParsePlayers(node))
+#else
 	if (!ParsePlayers(node, &svgDoc))
+#endif
 	{
 		delete game;
 		return 0;
@@ -119,8 +136,10 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	}
 	*/
 	
+#ifndef NO_SVG
 	// write svgDoc into svgOutput
 	print(std::back_inserter(*svgOutput), svgDoc, print_no_indenting);
+#endif
 
 	return game;
 }
@@ -142,30 +161,35 @@ public:
 };
 
 
+#ifdef NO_SVG
+bool GameParser::ParseCells(Board *board, xml_node<> *boardNode)
+#else
 bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, xml_document<> *svgDoc)
+#endif
 {
+#ifndef NO_SVG
 	// create SVG root node
 	xml_node<> *svgRoot = svgDoc->allocate_node(node_element, "svg");
 	svgDoc->append_node(svgRoot);
 	
-	xml_attribute<> *attr = svgDoc->allocate_attribute("xmlns", "http://www.w3.org/2000/svg");
-	svgRoot->append_attribute(attr);
+	xml_attribute<> *svgAttr = svgDoc->allocate_attribute("xmlns", "http://www.w3.org/2000/svg");
+	svgRoot->append_attribute(svgAttr);
 
-	attr = svgDoc->allocate_attribute("id", "render");
-	svgRoot->append_attribute(attr);
+	svgAttr = svgDoc->allocate_attribute("id", "render");
+	svgRoot->append_attribute(svgAttr);
 
-	attr = boardNode->first_attribute("viewBox");
-	char *value = svgDoc->allocate_string(attr->value());
+	svgAttr = boardNode->first_attribute("viewBox");
+	char *value = svgDoc->allocate_string(svgAttr->value());
 
-	attr = svgDoc->allocate_attribute("viewBox", value);
-	svgRoot->append_attribute(attr);
+	svgAttr = svgDoc->allocate_attribute("viewBox", value);
+	svgRoot->append_attribute(svgAttr);
 
-	xml_node<> *node = svgDoc->allocate_node(node_element, "defs");
-	svgRoot->append_node(node);
-
+	xml_node<> *svgNode = svgDoc->allocate_node(node_element, "defs");
+	svgRoot->append_node(svgNode);
+#endif
 	// loop through all the cell nodes
 	int iCell = 0;
-	node = boardNode->first_node();
+	xml_node<> *node = boardNode->first_node();
 	while (node != 0)
 	{
 		if (strcmp(node->name(), "cell") == 0)
@@ -180,6 +204,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 	std::list<TempCellLink> links;
 
 	node = boardNode->first_node();
+	xml_attribute<> *attr;
 	while (node != 0)
 	{
 		if (strcmp(node->name(), "cell") == 0)
@@ -206,6 +231,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 				link = link->next_sibling("link");
 			}
 
+#ifndef NO_SVG
 			// load cell into SVG
 			xml_node<> *cellSVG = svgDoc->allocate_node(node_element, "path");
 			svgRoot->append_node(cellSVG);
@@ -240,7 +266,9 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			char *firstSpace = strchr(val, ' ');
 			cell->coordX = atoi(val + 1);
 			cell->coordY = atoi(firstSpace + 1);
+#endif
 		}
+#ifndef NO_SVG
 		else if (strcmp(node->name(), "line") == 0)
 		{
 			xml_node<> *lineSVG = svgDoc->allocate_node(node_element, "line");
@@ -273,7 +301,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			attr = svgDoc->allocate_attribute("class", val);
 			lineSVG->append_attribute(attr);
         }
-
+#endif
 		node = node->next_sibling();
 	}
 	board->cells = cells;
@@ -357,7 +385,11 @@ bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 	return true;
 }
 
+#ifdef NO_SVG
+bool GameParser::ParsePieceTypes(xml_node<> *piecesNode)
+#else
 bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode)
+#endif
 {
 	pieceTypesByName.clear();
 
@@ -366,8 +398,12 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 	while (node != 0)
 	{
 		PieceType *type = new PieceType();
+#ifdef NO_SVG
+		char *capturedAs = ParsePieceType(node, type);
+#else
 		char *capturedAs = ParsePieceType(node, svgDefsNode, type);
-		
+#endif
+
 		auto info = std::make_tuple(type, capturedAs);
 		pieceTypesByName.insert(std::make_pair(type->name, info));
 		
@@ -402,8 +438,11 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 	return true;
 }
 
-
+#ifdef NO_SVG
+char *GameParser::ParsePieceType(xml_node<> *pieceNode, PieceType *type)
+#else
 char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode, PieceType *type)
+#endif
 {
 	xml_attribute<> *attr = pieceNode->first_attribute("name");
 	strncpy(type->name, attr->value(), TYPE_NAME_LENGTH);
@@ -416,7 +455,9 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 	if (attr != 0)
 		type->value = atoi(attr->value());
 
+#ifndef NO_SVG
 	xml_document<> *svgDoc = svgDefsNode->document();
+#endif
 	char *capturedAs = 0;
 
 	xml_node<> *node = pieceNode->first_node();
@@ -459,6 +500,7 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 			for (var j = 0; j<promos.length; j++)
 				type.promotionOpportunities.push(PromotionOpportunity.parse(promos[j]);
 		}*/
+#ifndef NO_SVG
 		else if (strcmp(node->name(), "appearance") == 0)
 		{
 			char *playerName = node->first_attribute("player")->value();
@@ -498,6 +540,7 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 			// save off this appearance, to store later once players are imported
 			pieceAppearances.push_back(std::make_tuple(type, playerName, defID));
 		}
+#endif
 
 		node = node->next_sibling();
 	}
@@ -900,10 +943,15 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 	return Player::Any;
 }
 
-
+#ifdef NO_SVG
+bool GameParser::ParsePlayers(xml_node<> *setupNode)
+#else
 bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
+#endif
 {
+#ifndef NO_SVG
 	xml_node<> *svgRoot = svgDoc->first_node();
+#endif
 
 	xml_node<> *playerNode = setupNode->first_node();
 	while (playerNode != 0)
@@ -914,6 +962,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 		Player *player = new Player(game, playerName, LookupDirection(forwardDir));
 		game->players.push_back(player);
 
+#ifndef NO_SVG
 		// link piece appearances up to actual player now that this exists
 		for (auto it = pieceAppearances.begin(); it != pieceAppearances.end(); it++)
 		{
@@ -933,6 +982,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 
 			//pieceAppearances.erase(it++);
 		}
+#endif
 
 		xml_node<> *pieceNode = playerNode->first_node();
 		while (pieceNode != 0)
@@ -972,6 +1022,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				else
 					; // todo: report multiple-pieces-in-one-cell
 
+#ifndef NO_SVG
 				// generate piece image
 				xml_node<> *image = svgDoc->allocate_node(node_element, "use");
 
@@ -1003,6 +1054,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				image->append_attribute(svgDoc->allocate_attribute("xlink:href", val));
 
 				svgRoot->append_node(image);
+#endif
 			}
 
 			pieceNode = pieceNode->next_sibling();

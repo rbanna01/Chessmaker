@@ -35,15 +35,27 @@ typedef std::pair<char*, unsigned int> dirLookupEntry_t;
 class GameParser
 {
 public:
+#ifdef NO_SVG
+	Game* Parse(char *definition);
+#else
 	Game* Parse(char *definition, std::string *svgOutput);
+#endif
 	GameParser() {}
 	~GameParser() {}
 	
 private:
+#ifdef NO_SVG
+	bool ParseCells(Board *board, rapidxml::xml_node<char> *boardNode);
+	bool ParsePieceTypes(rapidxml::xml_node<char> *piecesNode);
+	char *ParsePieceType(rapidxml::xml_node<char> *piecesNode, PieceType *type);
+	bool ParsePlayers(rapidxml::xml_node<char> *playersNode);
+#else
 	bool ParseCellsAndGenerateSVG(Board *board, rapidxml::xml_node<char> *boardNode, rapidxml::xml_document<char> *svgDoc);
-	bool ParseDirections(Board *board, rapidxml::xml_node<char> *dirsNode);
 	bool ParsePieceTypes(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode);
 	char *ParsePieceType(rapidxml::xml_node<char> *piecesNode, rapidxml::xml_node<char> *svgDefsNode, PieceType *type);
+	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
+#endif
+	bool ParseDirections(Board *board, rapidxml::xml_node<char> *dirsNode);
 	MoveDefinition *ParseMove(rapidxml::xml_node<char> *moveNode, bool isTopLevel);
 
 	MoveDefinition *ParseMove_Slide(rapidxml::xml_node<char> *moveNode);
@@ -63,7 +75,6 @@ private:
 	MoveDefinition::When_t ParseWhen(char *val);
 	Player::Relationship_t ParseRelationship(char *val);
 	
-	bool ParsePlayers(rapidxml::xml_node<char> *playersNode, rapidxml::xml_document<char> *svgDoc);
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
 	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
@@ -76,7 +87,9 @@ private:
 	dirLookup_t directionLookups;
 	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
 	std::map<char*, Cell*, char_cmp> cellsByRef;
+#ifndef NO_SVG
 	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;
+#endif
 
 	Game *game;
 };

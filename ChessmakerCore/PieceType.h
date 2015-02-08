@@ -17,7 +17,10 @@ private:
 	char name[TYPE_NAME_LENGTH];
 	char notation[TYPE_NOTATION_LENGTH];
 	std::list<MoveDefinition*> moves;
+
+#ifndef NO_SVG
 	std::map<int, char*> appearances;
+#endif
 	//std::list<PromotionOpportunity*> promotionOpportunities;
 	PieceType *capturedAs;
 
