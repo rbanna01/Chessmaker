@@ -790,68 +790,100 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Nor));
 		else if (strcmp(child->name(), "xor") == 0)
 			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Xor));
+		else if (strcmp(child->name(), "type") == 0)
+		{
+			char *of = child->first_attribute("of")->value();
 
-		/*
-		case 'type':
-			var of = child.getAttribute('of');
-			var type = child.textContent;
-			group.elements.push(new Conditions_Type(of, type));
-			break;
-		case 'owner':
-			var of = child.getAttribute('of');
-			var relationship = Player.Relationship.parse(child.textContent);
-			group.elements.push(new Conditions_Owner(of, relationship));
-			break;
-		case 'moveNumber':
-			var of = child.getAttribute('of');
-			if (of == null)
-				of = 'self';
-			var number = parseInt(child.textContent);
-			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
-			group.elements.push(new Conditions_MoveNumber(of, number, comparison));
-			break;
-		case 'maxDist':
-			var from = child.getAttribute('from');
-			if (from == null)
-				from = 'self';
+			auto it = pieceTypesByName.find(child->value());
+			if (it == pieceTypesByName.end())
+			{
+				// todo: report error somehow
+				child = child->next_sibling();
+				continue;
+			}
+			PieceType *type = std::get<0>(it->second);
 
-			var dir = child.getAttribute('dir');
-			var number = parseInt(child.textContent);
-			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
-			group.elements.push(new Conditions_MaxDist(from, dir, number, comparison));
-			break;
+			conditions->elements.push_back(new MoveCondition_Type(of, type));
+		}
+		else if (strcmp(child->name(), "owner") == 0)
+		{
+			char *of = child->first_attribute("of")->value();
+			Player::Relationship_t relationship = ParseRelationship(child->value());
+			conditions->elements.push_back(new MoveCondition_Owner(of, relationship));
+		}
+		else if (strcmp(child->name(), "moveNumber") == 0)
+		{
+			xml_attribute<> *attr = child->first_attribute("of");
+			char *of = attr == 0 ? "self" : attr->value();
+			int number = atoi(child->value());
+			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			conditions->elements.push_back(new MoveCondition_MoveNumber(of, number, comparison));
+		}
+		else if (strcmp(child->name(), "maxDist") == 0)
+		{
+			xml_attribute<> *attr = child->first_attribute("from"); // not present in the schema
+			char *from = attr == 0 ? "self" : attr->value();
+			unsigned int dir = LookupDirection(child->first_attribute("dir")->value());
+			int number = atoi(child->value());
+			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			conditions->elements.push_back(new MoveCondition_MaxDist(from, dir, number, comparison));
+		}
+		else if (strcmp(child->name(), "turnsSinceLastMove") == 0)
+		{
+			xml_attribute<> *attr = child->first_attribute("of");
+			char *of = attr == 0 ? "self" : attr->value();
+			int number = atoi(child->value());
+			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			conditions->elements.push_back(new MoveCondition_TurnsSinceLastMove(of, number, comparison));
+		}
+		else if (strcmp(child->name(), "threatened") == 0)
+		{
+			bool value = strcmp(child->value(), "true") == 0;
+			char *partOfMove = child->first_attribute("where")->value();
+			bool start = strcmp(partOfMove, "end") != 0;
+			bool end = strcmp(partOfMove, "start") != 0;
+			conditions->elements.push_back(new MoveCondition_Threatened(start, end, value));
+		}
+		/*else if (strcmp(child->name(), "num_pieces_in_range") == 0)
+		{
 
-		case 'turnsSinceLastMove':
-			var of = child.getAttribute('of');
-			if (of == null)
-				of = 'self';
-			var number = parseInt(child.textContent);
-			var comparison = Conditions.NumericComparison.parse(child.getAttribute('comparison'));
-			group.elements.push(new Conditions_TurnsSinceLastMove(of, number, comparison));
-			break;
+		}
+		else if (strcmp(child->name(), "move_causes_check") == 0)
+		{
 
-		case 'threatened':
-			var value = child.textContent == 'true';
-			var where = child.getAttribute('where');
-			var start = where != 'end';
-			var end = where != 'start';
-			group.elements.push(new Conditions_Threatened(start, end, value));
-			break;
+		}
+		else if (strcmp(child->name(), "move_causes_checkmate") == 0)
+		{
 
-		case 'num_pieces_in_range':
-		case 'move_causes_check':
-		case 'move_causes_checkmate':
-		case 'checkmate':
-		case 'pieces_threatened':
-		case 'repeated_check':
-		case 'no_moves_possible':
-		case 'repetition_of_position':
-		case 'turns_since_last_capture':
-		case 'turns_since_last_move':
-		default:
-			console.log("Unrecognised condition type: " + name);
-			break;
-		*/
+		}
+		else if (strcmp(child->name(), "checkmate") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "pieces_threatened") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "repeated_check") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "no_moves_possible") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "repetition_of_position") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "turns_since_last_capture") == 0)
+		{
+
+		}
+		else if (strcmp(child->name(), "turns_since_last_move") == 0)
+		{
+
+		}*/
 		else
 		{
 			// todo: report unexpected move condition type

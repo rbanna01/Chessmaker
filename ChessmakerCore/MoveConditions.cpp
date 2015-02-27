@@ -15,3 +15,45 @@ MoveConditionGroup::~MoveConditionGroup()
 		it++;
 	}
 }
+
+
+bool MoveConditionGroup::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_Type::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_Owner::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_MoveNumber::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_MaxDist::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
+
+
+bool MoveCondition_Threatened::IsSatisfied(Move *move)
+{
+	return false; // todo: implement this
+}
