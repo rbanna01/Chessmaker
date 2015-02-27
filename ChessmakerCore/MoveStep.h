@@ -12,7 +12,7 @@ public:
 	bool Perform(bool updateDisplay);
 	bool Reverse(bool updateDisplay);
 
-	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, int dir);
+	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance);
 	static MoveStep *CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld);
 	static MoveStep *CreateDrop(Piece *piece, Cell *to, Player *droppedBy);
 	static MoveStep *CreatePromotion(Piece *piece, PieceType *fromType, PieceType *toType);
@@ -27,11 +27,14 @@ private:
 	int uniqueID;
 
 	Piece *piece;
-	int direction;
+	direction_t direction;
+	int distance;
 	Piece::State_t fromState, toState;
 	Cell *fromPos, *toPos;
 	Player *fromOwner, *toOwner;
 	Player *fromStateOwner, *toStateOwner;
 	PieceType *fromType, *toType;
+
+	friend class Distance;
 };
 

@@ -53,7 +53,7 @@ Slide.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) 
                     move.addPieceReference(target, 'target');
                 }
 
-                move.addStep(MoveStep.CreateMove(piece, piece.position, cell, dir));
+                move.addStep(MoveStep.CreateMove(piece, piece.position, cell, dir, dist));
 
                 if (this.conditions.isSatisfied(move))
                     moves.push(move);
@@ -138,7 +138,7 @@ Leap.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
                             move.addPieceReference(target, 'target');
                         }
 
-                        move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, secondDir));
+                        move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, secondDir, secondDist > 0 ? secondDist : dist));
 
                         if (this.conditions.isSatisfied(move))
                             moves.push(move);
@@ -231,7 +231,7 @@ Hop.prototype.appendValidNextSteps = function (baseMove, piece, previousStep) {
                         move.addStep(captureStep);
                     }
 
-                    move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, dir));
+                    move.addStep(MoveStep.CreateMove(piece, piece.position, destCell, dir, distTo + distAfter));
 
                     if (this.conditions.isSatisfied(move))
                         moves.push(move);

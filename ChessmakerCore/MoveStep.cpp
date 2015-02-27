@@ -124,13 +124,14 @@ void MoveStep::UpdateDisplay()
 }
 
 
-MoveStep* MoveStep::CreateMove(Piece *piece, Cell *from, Cell *to, int dir)
+MoveStep* MoveStep::CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance)
 {
 	MoveStep *step = new MoveStep(piece);
 	step->fromState = step->toState = Piece::State_t::OnBoard;
 	step->fromPos = from;
 	step->toPos = to;
 	step->direction = dir;
+	step->distance = distance;
 	return step;
 };
 
@@ -142,6 +143,7 @@ MoveStep* MoveStep::CreateCapture(Piece *piece, Cell *from, Player *capturedBy, 
 	step->toState = toHeld ? Piece::State_t::Held : Piece::State_t::Captured;
 	step->fromPos = from;
 	step->toStateOwner = capturedBy;
+	step->distance = 0;
 	return step;
 };
 
@@ -153,6 +155,7 @@ MoveStep* MoveStep::CreateDrop(Piece *piece, Cell *to, Player *droppedBy)
 	step->toState = Piece::State_t::OnBoard;
 	step->fromStateOwner = droppedBy;
 	step->toPos = to;
+	step->distance = 0;
 	return step;
 };
 
@@ -165,6 +168,7 @@ MoveStep* MoveStep::CreatePromotion(Piece *piece, PieceType *fromType, PieceType
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->fromType = fromType;
 	step->toType = toType;
+	step->distance = 0;
 	return step;
 };
 
@@ -177,5 +181,6 @@ MoveStep* MoveStep::CreateSteal(Piece *piece, Player *fromOwner, Player *toOwner
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->fromOwner = fromOwner;
 	step->toOwner = toOwner;
+	step->distance = 0;
 	return step;
 };
