@@ -5,7 +5,7 @@
 
 int Player::nextID = 1;
 
-Player::Player(Game *game, char *name, unsigned int forwardDir)
+Player::Player(Game *game, char *name, direction_t forwardDir)
 {
 	this->game = game;
 	this->type = Local;
@@ -28,7 +28,7 @@ Player::~Player()
 }
 
 
-unsigned int Player::ResolveDirections(unsigned int dir, unsigned int prevDir)
+direction_t Player::ResolveDirections(direction_t dir, direction_t prevDir)
 {
 	if (dir == DIRECTION_FORWARD)
 		return forwardDir;

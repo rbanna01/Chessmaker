@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include "Constants.h"
 
 class Piece;
 
@@ -12,13 +13,13 @@ public:
 	Cell();
 	~Cell();
 
-	void AddLink(unsigned int dir, Cell* destination);
-	Cell* FollowLink(unsigned int dir);
+	void AddLink(direction_t dir, Cell* destination);
+	Cell* FollowLink(direction_t dir);
 private:
 	char reference[CELL_REF_LENGTH];
 
 	Piece *piece;
-	std::map<unsigned int, Cell*> links;
+	std::map<direction_t, Cell*> links;
 	
 	int coordX, coordY;
 

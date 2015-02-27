@@ -10,14 +10,14 @@ Cell::~Cell()
 }
 
 
-void Cell::AddLink(unsigned int dir, Cell* destination)
+void Cell::AddLink(direction_t dir, Cell* destination)
 {
-	links.insert(std::pair<unsigned int, Cell*>(dir, destination));
+	links.insert(std::pair<direction_t, Cell*>(dir, destination));
 }
 
 
-Cell* Cell::FollowLink(unsigned int dir)
+Cell* Cell::FollowLink(direction_t dir)
 {
-	std::map<unsigned int, Cell*>::iterator it = links.find(dir);
+	std::map<direction_t, Cell*>::iterator it = links.find(dir);
 	return it == links.end() ? 0 : it->second;
 }

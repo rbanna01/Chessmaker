@@ -18,7 +18,7 @@ Board::~Board()
 		delete [] cells;
 }
 
-unsigned int Board::ResolveDirections(unsigned int dir, unsigned int prevDir)
+direction_t Board::ResolveDirections(direction_t dir, direction_t prevDir)
 {
 	if (dir == DIRECTION_SAME)
 		return prevDir;
@@ -27,17 +27,17 @@ unsigned int Board::ResolveDirections(unsigned int dir, unsigned int prevDir)
 		return dir; // a single absolute dir, or a group of them.
 
 	// must resolve at least one relative direction
-	unsigned int absoluteOnly = dir & allAbsoluteDirections;
-	for (unsigned int rel = firstRelativeDirection; rel <= lastRelativeDirection; rel = rel << 1)
+	direction_t absoluteOnly = dir & allAbsoluteDirections;
+	for (direction_t rel = firstRelativeDirection; rel <= lastRelativeDirection; rel = rel << 1)
 		if ((dir & rel) == rel)
 			absoluteOnly |= ResolveRelativeDirection(rel, prevDir);
 	
 	return absoluteOnly;
 }
 
-unsigned int Board::ResolveRelativeDirection(unsigned int id, unsigned int relativeTo)
+direction_t Board::ResolveRelativeDirection(direction_t id, direction_t relativeTo)
 {
-	std::map<unsigned int, relativeDir_t>::iterator it = relativeDirections.find(id);
+	std::map<direction_t, relativeDir_t>::iterator it = relativeDirections.find(id);
 
 	if (it == relativeDirections.end())
 		return 0; // this isn't a relative direction

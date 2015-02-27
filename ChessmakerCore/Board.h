@@ -1,12 +1,13 @@
 #pragma once
 
 #include <map>
+#include "Constants.h"
 
 class Cell;
 class Game;
 
-typedef std::map<unsigned int, unsigned int> relativeDir_t;
-typedef std::pair<unsigned int, unsigned int> relativeDirValue_t;
+typedef std::map<direction_t, direction_t> relativeDir_t;
+typedef std::pair<direction_t, direction_t> relativeDirValue_t;
 
 class Board
 {
@@ -14,15 +15,15 @@ public:
 	Board(Game *game);
 	~Board();
 
-	unsigned int ResolveDirections(unsigned int dir, unsigned int prevDir);
+	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
 
 private:
-	unsigned int ResolveRelativeDirection(unsigned int id, unsigned int relativeTo);
+	direction_t ResolveRelativeDirection(direction_t id, direction_t relativeTo);
 
 	Game *game;
 	Cell *cells;
-	unsigned int allAbsoluteDirections, firstRelativeDirection, lastRelativeDirection;
-	std::map<unsigned int, relativeDir_t> relativeDirections;
+	direction_t allAbsoluteDirections, firstRelativeDirection, lastRelativeDirection;
+	std::map<direction_t, relativeDir_t> relativeDirections;
 
 	friend class GameParser;
 };

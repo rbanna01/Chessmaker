@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include "Constants.h"
 
 class Game;
 class Piece;
@@ -12,11 +13,11 @@ public:
 	typedef enum { Local, AI, Remote } Type_t;
 	typedef enum { Any, Self, Enemy, Ally } Relationship_t;
 
-	Player(Game *game, char *name, unsigned int forwardDir);
+	Player(Game *game, char *name, direction_t forwardDir);
 	~Player();
 
 	char *GetName() { return name; }
-	unsigned int ResolveDirections(unsigned int dir, unsigned int prevDir);
+	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
 	Relationship_t GetRelationship(Player *other);
 
 private:
