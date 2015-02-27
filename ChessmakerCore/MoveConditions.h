@@ -9,23 +9,27 @@ class GameState;
 class Move;
 class PieceType;
 
-class MoveCondition
+class Condition
 {
 public:
 	typedef enum { Equals, LessThan, GreaterThan, LessThanOrEquals, GreaterThanOrEquals } NumericComparison_t;
-
-	virtual bool IsSatisfied(Move *move) = 0;
+	typedef enum { And, Or, Nand, Nor, Xor } GroupType_t;
 
 protected:
 	bool ResolveComparison(NumericComparison_t type, int val1, int val2);
 };
 
 
+class MoveCondition : public Condition
+{
+public:
+	virtual bool IsSatisfied(Move *move) = 0;
+};
+
+
 class MoveConditionGroup : public MoveCondition
 {
 public:
-	typedef enum { And, Or, Nand, Nor, Xor } GroupType_t;
-
 	MoveConditionGroup(GroupType_t type);
 	~MoveConditionGroup();
 
@@ -143,4 +147,6 @@ private:
 
 	bool start, end, value;
 	static bool alreadyChecking;
+
+	friend class StateCondition_Threatened;
 };

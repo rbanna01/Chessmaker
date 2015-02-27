@@ -5,15 +5,16 @@
 #include "GameParser.h"
 #include "Board.h"
 #include "Cell.h"
-#include "MoveConditions.h"
 #include "Distance.h"
 #include "EndOfGame.h"
 #include "Game.h"
 #include "GameState.h"
+#include "MoveConditions.h"
 #include "MoveDefinition.h"
 #include "Piece.h"
 #include "PieceType.h"
 #include "Player.h"
+#include "StateConditions.h"
 #include "TurnOrder.h"
 #include "rapidxml\rapidxml.hpp"
 #include "rapidxml\rapidxml_print.hpp"
@@ -582,7 +583,7 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 
 MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 {
-	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -603,7 +604,7 @@ MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 {
-	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -630,7 +631,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 {
-	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -659,7 +660,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 {
-	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	char *pieceRef = attr == 0 ? "self" : attr->value();
@@ -683,7 +684,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
 {
-	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), MoveConditionGroup::And);
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	char *pieceRef = moveNode->first_attribute("other")->value();
 	
@@ -769,7 +770,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 }
 
 
-MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveConditionGroup::GroupType_t type)
+MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condition::GroupType_t type)
 {
 	if (node == 0)
 		return 0;
@@ -781,28 +782,20 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 	while (child != 0)
 	{
 		if (strcmp(child->name(), "and") == 0)
-			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::And));
+			conditions->elements.push_back(ParseMoveConditions(child, Condition::And));
 		else if (strcmp(child->name(), "or") == 0)
-			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Or));
+			conditions->elements.push_back(ParseMoveConditions(child, Condition::Or));
 		else if (strcmp(child->name(), "nand") == 0)
-			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Nand));
+			conditions->elements.push_back(ParseMoveConditions(child, Condition::Nand));
 		else if (strcmp(child->name(), "nor") == 0 || strcmp(child->name(), "not") == 0)
-			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Nor));
+			conditions->elements.push_back(ParseMoveConditions(child, Condition::Nor));
 		else if (strcmp(child->name(), "xor") == 0)
-			conditions->elements.push_back(ParseMoveConditions(child, MoveConditionGroup::Xor));
+			conditions->elements.push_back(ParseMoveConditions(child, Condition::Xor));
 		else if (strcmp(child->name(), "type") == 0)
 		{
 			char *of = child->first_attribute("of")->value();
-
 			auto it = pieceTypesByName.find(child->value());
-			if (it == pieceTypesByName.end())
-			{
-				// todo: report error somehow
-				child = child->next_sibling();
-				continue;
-			}
-			PieceType *type = std::get<0>(it->second);
-
+			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
 			conditions->elements.push_back(new MoveCondition_Type(of, type));
 		}
 		else if (strcmp(child->name(), "owner") == 0)
@@ -816,7 +809,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 			xml_attribute<> *attr = child->first_attribute("of");
 			char *of = attr == 0 ? "self" : attr->value();
 			int number = atoi(child->value());
-			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_MoveNumber(of, number, comparison));
 		}
 		else if (strcmp(child->name(), "maxDist") == 0)
@@ -825,7 +818,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 			char *from = attr == 0 ? "self" : attr->value();
 			unsigned int dir = LookupDirection(child->first_attribute("dir")->value());
 			int number = atoi(child->value());
-			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_MaxDist(from, dir, number, comparison));
 		}
 		else if (strcmp(child->name(), "turnsSinceLastMove") == 0)
@@ -833,7 +826,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 			xml_attribute<> *attr = child->first_attribute("of");
 			char *of = attr == 0 ? "self" : attr->value();
 			int number = atoi(child->value());
-			MoveCondition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_TurnsSinceLastMove(of, number, comparison));
 		}
 		else if (strcmp(child->name(), "threatened") == 0)
@@ -896,31 +889,65 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, MoveCo
 }
 
 
-StateConditions *GameParser::ParseStateConditions(xml_node<char> *node)
+StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Condition::GroupType_t type)
 {
 	if (node == 0)
 		return 0;
 
-	// todo: implement this
-	return 0;
+
+	StateConditionGroup *conditions = new StateConditionGroup(type);
+
+	xml_node<> *child = node->first_node();
+
+	while (child != 0)
+	{
+		if (strcmp(child->name(), "and") == 0)
+			conditions->elements.push_back(ParseStateConditions(child, Condition::And));
+		else if (strcmp(child->name(), "or") == 0)
+			conditions->elements.push_back(ParseStateConditions(child, Condition::Or));
+		else if (strcmp(child->name(), "nand") == 0)
+			conditions->elements.push_back(ParseStateConditions(child, Condition::Nand));
+		else if (strcmp(child->name(), "nor") == 0 || strcmp(child->name(), "not") == 0)
+			conditions->elements.push_back(ParseStateConditions(child, Condition::Nor));
+		else if (strcmp(child->name(), "xor") == 0)
+			conditions->elements.push_back(ParseStateConditions(child, Condition::Xor));
+		else if (strcmp(child->name(), "cannotMove") == 0)
+		{
+			conditions->elements.push_back(new StateCondition_CannotMove());
+		}
+		else if (strcmp(child->name(), "threatened") == 0)
+		{
+			auto it = pieceTypesByName.find(child->value());
+			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+			conditions->elements.push_back(new StateCondition_Threatened(type));
+		}
+		else
+		{
+			// todo: report unexpected state condition type
+		}
+
+		child = child->next_sibling();
+	}
+
+	return conditions;
 }
 
 
-MoveCondition::NumericComparison_t GameParser::ParseNumericComparison(char *value)
+Condition::NumericComparison_t GameParser::ParseNumericComparison(char *value)
 {
 	if (strcmp(value, "equals") == 0)
-		return MoveCondition::Equals;
+		return Condition::Equals;
 	if (strcmp(value, "less than") == 0)
-		return MoveCondition::LessThan;
+		return Condition::LessThan;
 	if (strcmp(value, "less than or equals") == 0)
-		return MoveCondition::LessThanOrEquals;
+		return Condition::LessThanOrEquals;
 	if (strcmp(value, "greater than") == 0)
-		return MoveCondition::GreaterThan;
+		return Condition::GreaterThan;
 	if (strcmp(value, "greater than or equals") == 0)
-		return MoveCondition::GreaterThanOrEquals;
+		return Condition::GreaterThanOrEquals;
 	
 	// todo: report invalid comparison type
-	return MoveCondition::Equals;
+	return Condition::Equals;
 }
 
 
@@ -1209,7 +1236,7 @@ EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 		xml_attribute<> *attr = node->first_attribute("when");
 		auto checkList = strcmp(attr->value(), "startOfTurn") == 0 ? endOfGame->startOfTurnChecks : endOfGame->endOfTurnChecks;
 
-		StateConditions *conditions = ParseStateConditions(node);
+		StateConditionGroup *conditions = ParseStateConditions(node, Condition::And);
 		checkList.push_back(new EndOfGameCheck(checkType, conditions));
 
 		node = node->next_sibling();

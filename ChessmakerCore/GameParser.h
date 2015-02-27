@@ -12,7 +12,7 @@ class EndOfGame;
 class Game;
 class PieceType;
 class Player;
-class StateConditions;
+class StateConditionGroup;
 class TurnOrder;
 class TurnRepeat;
 
@@ -67,9 +67,9 @@ private:
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
-	MoveConditionGroup *ParseMoveConditions(rapidxml::xml_node<char> *node, MoveConditionGroup::GroupType_t type);
-	StateConditions *ParseStateConditions(rapidxml::xml_node<char> *node);
-	MoveCondition::NumericComparison_t ParseNumericComparison(char *value);
+	MoveConditionGroup *ParseMoveConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
+	StateConditionGroup *ParseStateConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
+	Condition::NumericComparison_t ParseNumericComparison(char *value);
 
 	Distance *ParseDistance(char *val);
 	MoveDefinition::When_t ParseWhen(char *val);

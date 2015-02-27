@@ -1,6 +1,6 @@
 #include "MoveConditions.h"
 
-bool MoveCondition::ResolveComparison(NumericComparison_t type, int val1, int val2)
+bool Condition::ResolveComparison(NumericComparison_t type, int val1, int val2)
 {
 	switch (type) {
 	case NumericComparison_t::Equals:
