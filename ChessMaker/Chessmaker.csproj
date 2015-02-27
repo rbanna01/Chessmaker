@@ -353,7 +353,6 @@
     <Content Include="Scripts\Game\Player.js" />
     <Content Include="Scripts\Game\Piece.js" />
     <Content Include="Scripts\Game\Startup.js" />
-    <Content Include="Scripts\Game\Conditions.js" />
     <Content Include="Scripts\Game\Distance.js" />
     <Content Include="Scripts\Designer\Pieces.js" />
     <Content Include="Scripts\Designer\References.js" />

@@ -4,6 +4,8 @@
 #include "MoveDefinition.h"
 #include "Player.h"
 
+class Cell;
+class GameState;
 class Move;
 class PieceType;
 
@@ -13,6 +15,9 @@ public:
 	typedef enum { Equals, LessThan, GreaterThan, LessThanOrEquals, GreaterThanOrEquals } NumericComparison_t;
 
 	virtual bool IsSatisfied(Move *move) = 0;
+
+protected:
+	bool ResolveComparison(NumericComparison_t type, int val1, int val2);
 };
 
 
@@ -68,7 +73,7 @@ private:
 class MoveCondition_MoveNumber : public MoveCondition
 {
 public:
-	MoveCondition_MoveNumber(char *of, int number, MoveCondition::NumericComparison_t comparison)
+	MoveCondition_MoveNumber(char *of, int number, NumericComparison_t comparison)
 	{
 		strncpy(pieceRef, of, PIECE_REF_LENGTH);
 		this->number = number;
@@ -86,7 +91,7 @@ private:
 class MoveCondition_MaxDist : public MoveCondition
 {
 public:
-	MoveCondition_MaxDist(char *from, unsigned int dir, int number, MoveCondition::NumericComparison_t comparison)
+	MoveCondition_MaxDist(char *from, unsigned int dir, int number, NumericComparison_t comparison)
 	{
 		strncpy(pieceRef, from, PIECE_REF_LENGTH);
 		this->dir = dir;
@@ -106,7 +111,7 @@ private:
 class MoveCondition_TurnsSinceLastMove : public MoveCondition
 {
 public:
-	MoveCondition_TurnsSinceLastMove(char *of, int number, MoveCondition::NumericComparison_t comparison)
+	MoveCondition_TurnsSinceLastMove(char *of, int number, NumericComparison_t comparison)
 	{
 		strncpy(pieceRef, of, PIECE_REF_LENGTH);
 		this->number = number;
@@ -133,5 +138,9 @@ public:
 
 	virtual bool IsSatisfied(Move *move);
 private:
+	bool CheckSatisfied(Move *move);
+	bool IsThreatened(GameState *state, Cell *position);
+
 	bool start, end, value;
+	static bool alreadyChecking;
 };
