@@ -14,7 +14,7 @@ public:
 	EndOfGame();
 	~EndOfGame();
 
-	typedef enum { Win, Lose, Draw, IllegalMove } CheckType_t;
+	typedef enum { None, Win, Lose, Draw, IllegalMove } CheckType_t;
 
 	static EndOfGame *CreateDefault();
 

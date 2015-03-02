@@ -1,4 +1,8 @@
 #include "EndOfGame.h"
+#include "Game.h"
+#include "GameState.h"
+#include "StateConditions.h"
+#include "TurnOrder.h"
 
 EndOfGame::EndOfGame()
 {
@@ -18,65 +22,63 @@ EndOfGame::~EndOfGame()
 
 EndOfGame *EndOfGame::CreateDefault()
 {
-	/*var endOfGame = new EndOfGame();
+	EndOfGame *endOfGame = new EndOfGame();
 
-    var condition = new EndOfGameConditions();
-    // add a <pieceCount owner="self" check="equals">0</pieceCount> condition here
-    var outOfPieces = new EndOfGameCheck(EndOfGame.Type.Lose, condition);
-    endOfGame.startOfTurnChecks.push(outOfPieces);
+	StateConditionGroup *conditions = new StateConditionGroup(Condition::And);
+	// conditions->elements.push_back(new StateCondition_PieceCount("self", 0, Condition::Equals)); todo: add this in, once it exists
+	EndOfGameCheck *outOfPieces = new EndOfGameCheck(Lose, conditions);
+    endOfGame->startOfTurnChecks.push_back(outOfPieces);
 
-    condition = new EndOfGameConditions();
-    condition.elements.push[new EndOfGameConditions_cannotMove()];
-    var outOfMoves = new EndOfGameCheck(EndOfGame.Type.Draw, condition);
-    endOfGame.startOfTurnChecks.push(outOfMoves);
+	conditions = new StateConditionGroup(Condition::And);
+    conditions->elements.push_back(new StateCondition_CannotMove());
+	EndOfGameCheck *outOfMoves = new EndOfGameCheck(Draw, conditions);
+	endOfGame->startOfTurnChecks.push_back(outOfMoves);
 
-    return endOfGame;*/
-
-	// todo: implement this
-	return 0;
+    return endOfGame;
 }
 
 
 EndOfGame::CheckType_t EndOfGame::CheckStartOfTurn(GameState *state, bool canMove)
 {
-	/*// return Win/Lose/Draw, or undefined if the game isn't over yet
-    for (var i = 0; i < this.startOfTurnChecks.length; i++) {
-        var check = this.startOfTurnChecks[i];
-        if (check.conditions.isSatisfied(state, anyPossibleMoves))
-            return check.type;
-    }
+	// return Win/Lose/Draw, or None if the game isn't over yet
+	auto it = startOfTurnChecks.begin();
+	while (it != startOfTurnChecks.end())
+	{
+		EndOfGameCheck *check = *it;
+		if (check->conditions->IsSatisfied(state, canMove))
+			return check->type;
+		it++;
+	}
 
-    if (anyPossibleMoves)
-        return undefined;
+    if (canMove)
+        return None;
 
-    if (state.currentPlayer.piecesOnBoard.length == 0)
+    if (state->currentPlayer->piecesOnBoard.size() == 0)
         return EndOfGame::Lose; // can't move and have no pieces. lose.
 
 	return EndOfGame::Draw; // can't move, but have pieces. draw.
-	*/
-
-    return EndOfGame::Draw; // todo: implement this
 }
 
 
 EndOfGame::CheckType_t EndOfGame::CheckEndOfTurn(GameState *state, Move *move)
 {
-	/*// return Win/Lose/Draw/IllegalMove, or undefined if the game isn't over yet
+	// return Win/Lose/Draw/IllegalMove, or None if the game isn't over yet
 
-    var noNextPlayer = state.game.turnOrder.getNextPlayer() == null;
-    state.game.turnOrder.stepBackward();
+	bool noNextPlayer = state->game->GetTurnOrder()->GetNextPlayer() == 0;
+	state->game->GetTurnOrder()->StepBackward();
 
-    for (var i = 0; i < this.endOfTurnChecks.length; i++) {
-        var check = this.endOfTurnChecks[i];
-        if (check.conditions.isSatisfied(state, true))
-            return check.type;
-    }
+	auto it = endOfTurnChecks.begin();
+	while (it != endOfTurnChecks.end())
+	{
+		EndOfGameCheck *check = *it;
+		if (check->conditions->IsSatisfied(state, true))
+			return check->type;
+		it++;
+	}
 
     // if the next player is null, we've reached the end of the turn order
     if (noNextPlayer)
         return Draw;
 
-    return undefined;*/
-
-	return Draw; // todo: implement this
+    return None;
 }

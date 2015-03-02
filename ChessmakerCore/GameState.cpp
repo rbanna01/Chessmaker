@@ -12,3 +12,10 @@ GameState::~GameState()
 {
 	
 }
+
+
+bool GameState::PrepareMovesForTurn()
+{
+	// todo: implement this
+	return false;
+}

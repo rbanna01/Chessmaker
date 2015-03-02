@@ -1,12 +1,13 @@
 #pragma once
 
 #include <list>
+#include "EndOfGame.h"
 #include "PieceType.h"
 #include "Player.h"
 
 class Board;
-class EndOfGame;
 class GameState;
+class Move;
 class TurnOrder;
 
 class Game
@@ -21,6 +22,11 @@ public:
 	EndOfGame *GetEndOfGame() { return endOfGame; }
 
 private:
+	void StartNextTurn();
+	void EndTurn(GameState *newState, Move *move);
+	void ProcessEndOfGame(EndOfGame::CheckType_t);
+	void EndGame(Player *victor);
+
 	Board *board;
 	GameState *currentState;
 	TurnOrder *turnOrder;
