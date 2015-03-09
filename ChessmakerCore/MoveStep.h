@@ -12,6 +12,8 @@ public:
 	bool Perform(bool updateDisplay);
 	bool Reverse(bool updateDisplay);
 
+	Piece *GetPiece() { return piece; }
+
 	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance);
 	static MoveStep *CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld);
 	static MoveStep *CreateDrop(Piece *piece, Cell *to, Player *droppedBy);
@@ -36,5 +38,6 @@ private:
 	PieceType *fromType, *toType;
 
 	friend class Distance;
+	friend class Move;
 };
 

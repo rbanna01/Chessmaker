@@ -34,5 +34,6 @@ private:
 	friend class Game;
 	friend class MoveStep;
 	friend class GameParser;
+	friend class GameState;
 };
 

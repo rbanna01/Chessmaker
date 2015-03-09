@@ -345,10 +345,8 @@
     <Content Include="Scripts\AI\RandomCapture.js" />
     <Content Include="Scripts\AI\Random.js" />
     <Content Include="Scripts\Game\Cell.js" />
-    <Content Include="Scripts\Game\GameState.js" />
     <Content Include="Scripts\Game\Game.js" />
     <Content Include="Scripts\Game\Board.js" />
-    <Content Include="Scripts\Game\Move.js" />
     <Content Include="Scripts\Game\MoveStep.js" />
     <Content Include="Scripts\Game\Player.js" />
     <Content Include="Scripts\Game\Piece.js" />

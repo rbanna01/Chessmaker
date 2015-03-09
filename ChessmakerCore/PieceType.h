@@ -25,5 +25,6 @@ private:
 	PieceType *capturedAs;
 
 	friend class GameParser;
+	friend class Move;
 };
 
