@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "Definitions.h"
 #include "EndOfGame.h"
 #include "PieceType.h"
 #include "Player.h"
@@ -35,5 +35,6 @@ private:
 	std::list<Player*> players;
 	
 	friend class GameParser;
+	friend class GameState;
 };
 

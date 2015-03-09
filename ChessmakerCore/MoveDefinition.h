@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "Definitions.h"
 #include "Distance.h"
 #include "Move.h"
 #include "PieceType.h"

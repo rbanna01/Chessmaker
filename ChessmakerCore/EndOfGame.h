@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "Definitions.h"
 
 class EndOfGameCheck;
 class GameState;
@@ -34,7 +34,7 @@ class EndOfGameCheck
 {
 public:
 	EndOfGameCheck(EndOfGame::CheckType_t type, StateConditionGroup *conditions) { this->type = type; this->conditions = conditions; }
-	~EndOfGameCheck() { delete conditions; }
+	~EndOfGameCheck();
 
 	EndOfGame::CheckType_t type;
 	StateConditionGroup *conditions;

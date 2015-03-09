@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "Constants.h"
+#include "Definitions.h"
 
 class Cell;
 class Game;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "Definitions.h"
 
 class Cell;
 class GameState;

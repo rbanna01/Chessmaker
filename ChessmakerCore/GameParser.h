@@ -1,8 +1,5 @@
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "MoveConditions.h"
 #include "MoveDefinition.h"
 
@@ -21,13 +18,6 @@ namespace rapidxml {
 	template<class Ch> class xml_node;
 	template<class Ch> class xml_document;
 }
-
-struct char_cmp {
-	bool operator () (const char *a, const char *b) const
-	{
-		return strcmp(a, b) < 0;
-	}
-};
 
 typedef std::map<char*, unsigned int, char_cmp> dirLookup_t;
 typedef std::pair<char*, unsigned int> dirLookupEntry_t;

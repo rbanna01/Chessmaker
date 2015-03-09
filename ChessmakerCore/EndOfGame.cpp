@@ -82,3 +82,9 @@ EndOfGame::CheckType_t EndOfGame::CheckEndOfTurn(GameState *state, Move *move)
 
     return None;
 }
+
+
+EndOfGameCheck::~EndOfGameCheck()
+{
+	delete conditions;
+}

@@ -1,6 +1,6 @@
 #pragma once
-#include <list>
-#include <map>
+
+#include "Definitions.h"
 
 class MoveDefinition;
 

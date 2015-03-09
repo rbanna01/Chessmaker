@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "Definitions.h"
 #include "MoveDefinition.h"
 #include "Player.h"
 

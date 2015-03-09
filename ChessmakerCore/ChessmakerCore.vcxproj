@@ -76,7 +76,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="MoveConditions.h" />
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Definitions.h" />
     <ClInclude Include="Distance.h" />
     <ClInclude Include="EndOfGame.h" />
     <ClInclude Include="Game.h" />

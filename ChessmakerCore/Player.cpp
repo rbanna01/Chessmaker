@@ -1,4 +1,5 @@
-#include "Constants.h"
+#include "Definitions.h"
+#include "Piece.h"
 #include "Player.h"
 #include "Game.h"
 #include "Board.h"
