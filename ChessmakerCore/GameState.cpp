@@ -103,11 +103,11 @@ bool GameState::PrepareMovesForTurn()
 
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> output)
 {
-	std::map<int, Piece*> pieces(player->piecesOnBoard);
+	std::set<Piece*> pieces(player->piecesOnBoard);
 	auto it = pieces.begin();
 	while (it != pieces.end())
 	{
-		Piece *piece = it->second;
+		Piece *piece = *it;
 		Move *moveTemplate = new Move(piece->GetOwner(), this, piece, piece->GetPosition());
 
         // get promotion possibilities

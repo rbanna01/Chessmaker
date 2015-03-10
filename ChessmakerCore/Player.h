@@ -26,7 +26,7 @@ private:
 	int id, forwardDir;
 	Type_t type;
 
-	std::map<int, Piece*> piecesOnBoard, piecesHeld, piecesCaptured;
+	std::set<Piece*> piecesOnBoard, piecesHeld, piecesCaptured;
 
 	static int nextID;
 

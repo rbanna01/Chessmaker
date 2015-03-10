@@ -19,13 +19,13 @@ Player::Player(Game *game, char *name, direction_t forwardDir)
 Player::~Player()
 {
 	for (auto it = piecesOnBoard.begin(); it != piecesOnBoard.end(); it++)
-		delete it->second;
+		delete *it;
 
 	for (auto it = piecesHeld.begin(); it != piecesHeld.end(); it++)
-		delete it->second;
+		delete *it;
 
 	for (auto it = piecesCaptured.begin(); it != piecesCaptured.end(); it++)
-		delete it->second;
+		delete *it;
 }
 
 

@@ -1061,7 +1061,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 			if (strcmp(position, "held") == 0)
 			{
 				Piece *piece = new Piece(player, type, 0, Piece::Held, player);
-				player->piecesHeld.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+				player->piecesHeld.insert(piece);
 			}
 			else
 			{
@@ -1074,7 +1074,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				Cell *cell = it->second;
 
 				Piece *piece = new Piece(player, type, cell, Piece::OnBoard, 0);
-				player->piecesOnBoard.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+				player->piecesOnBoard.insert(piece);
 
 				if (cell->piece == 0)
 					cell->piece = piece;

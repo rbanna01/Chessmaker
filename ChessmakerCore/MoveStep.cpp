@@ -74,17 +74,17 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 			return false;
 		}
 		if (toState != fromState || fromOwner != toOwner)
-			owner->piecesOnBoard.erase(piece->uniqueID);
+			owner->piecesOnBoard.erase(piece);
 		pos->piece = 0;
 		return true;
 
 	case Piece::State_t::Captured:
-		if (stateOwner == 0 || owner->piecesCaptured.erase(piece->uniqueID) == 0)
+		if (stateOwner == 0 || owner->piecesCaptured.erase(piece) == 0)
 			return false; // wasn't captured by that player after all ... can't perform this action
 		return true;
 
 	case Piece::State_t::Held:
-		if (stateOwner == 0 || owner->piecesHeld.erase(piece->uniqueID) == 0)
+		if (stateOwner == 0 || owner->piecesHeld.erase(piece) == 0)
 			return false; // wasn't held by that player after all ... can't perform this action
 		return true;
 	default:
@@ -105,13 +105,13 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 	case Piece::State_t::OnBoard:
 		pos->piece = piece;
 		if (toState != fromState || fromOwner != toOwner)
-			owner->piecesOnBoard.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+			owner->piecesOnBoard.insert(piece);
 		break;
 	case Piece::State_t::Captured:
-		stateOwner->piecesCaptured.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+		stateOwner->piecesCaptured.insert(piece);
 		break;
 	case Piece::State_t::Held:
-		stateOwner->piecesHeld.insert(std::pair<int, Piece*>(piece->uniqueID, piece));
+		stateOwner->piecesHeld.insert(piece);
 	default:
 		return; //throw 'Unexpected piece state in MoveStep.place: ' + state;
 	}
