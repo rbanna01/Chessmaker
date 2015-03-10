@@ -2,6 +2,7 @@
 
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 
 struct char_cmp {

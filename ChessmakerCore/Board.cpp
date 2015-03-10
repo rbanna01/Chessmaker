@@ -18,6 +18,7 @@ Board::~Board()
 		delete [] cells;
 }
 
+
 direction_t Board::ResolveDirections(direction_t dir, direction_t prevDir)
 {
 	if (dir == DIRECTION_SAME)
@@ -35,6 +36,7 @@ direction_t Board::ResolveDirections(direction_t dir, direction_t prevDir)
 	return absoluteOnly;
 }
 
+
 direction_t Board::ResolveRelativeDirection(direction_t id, direction_t relativeTo)
 {
 	std::map<direction_t, relativeDir_t>::iterator it = relativeDirections.find(id);
@@ -48,4 +50,28 @@ direction_t Board::ResolveRelativeDirection(direction_t id, direction_t relative
 		return 0; // this relative direction has no entry for this "from" value
 
 	return it2->second;
+}
+
+
+int Board::GetMaxDistance(Cell *cell, direction_t direction)
+{
+	int num = 0;
+	
+	std::set<Cell*> alreadyVisited;
+	alreadyVisited.insert(cell);
+	
+	cell = cell->FollowLink(direction);
+	while (cell != 0)
+	{
+		num++;
+
+		// without this bit, circular boards would infinite loop
+		if (alreadyVisited.find(cell) != alreadyVisited.end())
+			break;
+
+		alreadyVisited.insert(cell);
+		cell = cell->FollowLink(direction);
+	}
+
+	return num;
 }

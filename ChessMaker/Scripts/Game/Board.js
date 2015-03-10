@@ -6,28 +6,7 @@ function Board(game) {
     this.cells = {};
     this.relativeDirections = {};
     this.directionGroups = {};
-    this.allDirections = [];
 }
-
-Board.prototype.getMaxDistance = function (cell, dir) {
-    var num = 0;
-
-    var alreadyVisited = {};
-    alreadyVisited[cell.name] = cell;
-
-    while (cell.links.hasOwnProperty(dir)) {
-        cell = cell.links[dir];
-
-        // without this bit, circular boards would infinite loop
-        if (alreadyVisited.hasOwnProperty(cell.name))
-            break;
-        alreadyVisited[cell.name] = cell;
-
-        num++;
-    }
-
-    return num;
-};
 
 Board.prototype.getCellBySelector = function (selector) {
     var cellImage = $('#render path.cell' + selector);
