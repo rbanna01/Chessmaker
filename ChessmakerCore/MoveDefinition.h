@@ -20,13 +20,13 @@ public:
 	MoveDefinition(char *pieceRef, MoveConditionGroup *conditions, When_t when, unsigned int direction);
 	~MoveDefinition();
 
-	virtual std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
-
+	virtual std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 protected:
 	char pieceRef[PIECE_REF_LENGTH];
 	MoveConditionGroup *conditions;
 	When_t when;
 	unsigned int direction;
+	bool moveSelf;
 
 	friend class GameParser;
 };
@@ -42,7 +42,7 @@ public:
 	}
 	~Slide() { delete distance; if (distanceMax != 0) delete distanceMax; }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance;
@@ -63,7 +63,7 @@ public:
 	}
 	~Leap() { delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0) delete secondDist; }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance, *distanceMax;
@@ -86,7 +86,7 @@ public:
 	}
 	~Hop() { delete distToHurdle; if (distToHurdleMax != 0) delete distToHurdleMax; delete distAfterHurdle; if (distAfterHurdleMax != 0) delete distAfterHurdleMax; }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distToHurdle, *distToHurdleMax;
@@ -108,7 +108,7 @@ public:
 	}
 	~Shoot() { delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0) delete secondDist; }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance, *distanceMax;
@@ -126,12 +126,17 @@ public:
 		: MoveDefinition("", conditions, when, 0)
 	{
 		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);
+		likeTarget = strcmp(pieceRef, "target") == 0;
 	}
 	~MoveLike() { }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
+	std::list<Move*> AppendMoveLikeTarget(Move *baseMove, Piece *piece, MoveStep *previousStep);
+
+	static bool AllowMoveLikeTarget;
+	bool likeTarget;
 	char otherPieceRef[PIECE_REF_LENGTH];
 
 	friend class GameParser;
@@ -141,22 +146,21 @@ private:
 class ReferencePiece : public MoveDefinition
 {
 public:
-	ReferencePiece(char *pieceRef, char *type, Player::Relationship_t relationship, unsigned int dir, Distance *distance)
+	ReferencePiece(char *pieceRef, PieceType *type, Player::Relationship_t relationship, unsigned int dir, Distance *distance)
 		: MoveDefinition("", 0, Any, 0)
 	{
 		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);
-		strncpy(this->otherPieceType, type, TYPE_NAME_LENGTH);
 		this->relationship = relationship;
 		this->distance = distance;
 		this->otherPieceDirection = dir;
 	}
 	~ReferencePiece() { if (distance != 0) delete distance; }
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	char otherPieceRef[PIECE_REF_LENGTH];
-	char otherPieceType[TYPE_NAME_LENGTH];
+	PieceType *otherPieceType;
 	Player::Relationship_t relationship;
 	Distance *distance;
 	unsigned int otherPieceDirection;
@@ -186,7 +190,7 @@ public:
 		contents.clear();
 	}
 
-	std::list<Move> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	int minOccurs, maxOccurs;

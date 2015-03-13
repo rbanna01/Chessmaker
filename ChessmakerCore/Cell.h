@@ -16,6 +16,7 @@ public:
 	void AddLink(direction_t dir, Cell* destination);
 	Cell* FollowLink(direction_t dir);
 	char *GetName() { return reference; }
+	Piece *GetPiece() { return piece; }
 private:
 	char reference[CELL_REF_LENGTH];
 

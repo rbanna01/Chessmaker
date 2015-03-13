@@ -17,13 +17,18 @@ public:
 	~Player();
 
 	char *GetName() { return name; }
+	Game *GetGame() { return game; }
 	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
 	Relationship_t GetRelationship(Player *other);
+	direction_t GetForwardDirection() { return forwardDir; }
+	
+	std::set<Piece*> GetPiecesOnBoard() { return piecesOnBoard; }
 
 private:
 	Game *game;
 	char name[PLAYER_NAME_LENGTH];
-	int id, forwardDir;
+	int id;
+	direction_t forwardDir;
 	Type_t type;
 
 	std::set<Piece*> piecesOnBoard, piecesHeld, piecesCaptured;

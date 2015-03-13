@@ -8,8 +8,6 @@ function Game() {
     this.endOfGame = null;
     this.showCaptured = true;
     this.showHeld = false;
-
-    this.holdCapturedPieces = false;
 }
 
 Game.parse = function (xml, boardRootElement) {

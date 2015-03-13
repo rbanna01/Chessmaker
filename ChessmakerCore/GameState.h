@@ -15,7 +15,7 @@ public:
 	bool PrepareMovesForTurn();
 	std::list<Move*> DeterminePossibleMoves();
 	std::list<Move*> DetermineThreatMoves();
-
+	Game *GetGame() { return game; }
 private:
 	Game *game;
 	Player *currentPlayer;

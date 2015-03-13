@@ -12,6 +12,7 @@ class PieceType
 public:
 	PieceType();
 	~PieceType();
+	std::list<MoveDefinition*> GetMoves() { return moves; }
 private:
 	int value = 1;
 	char name[TYPE_NAME_LENGTH];

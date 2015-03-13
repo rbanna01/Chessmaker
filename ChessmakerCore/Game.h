@@ -21,6 +21,10 @@ public:
 	TurnOrder *GetTurnOrder() { return turnOrder; }
 	EndOfGame *GetEndOfGame() { return endOfGame; }
 
+	bool GetHoldCapturedPieces() { return holdCapturedPieces; }
+
+	std::list<PieceType*> GetAllPieceTypes() { return allPieceTypes; }
+	std::list<Player*> GetPlayers() { return players; }
 private:
 	void StartNextTurn();
 	void EndTurn(GameState *newState, Move *move);
@@ -33,6 +37,8 @@ private:
 	EndOfGame *endOfGame;
 	std::list<PieceType*> allPieceTypes;
 	std::list<Player*> players;
+
+	bool holdCapturedPieces;
 	
 	friend class GameParser;
 	friend class GameState;

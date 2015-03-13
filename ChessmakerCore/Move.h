@@ -33,7 +33,9 @@ public:
 	bool IsCapture();
 	bool WouldCapture(Cell* target);
 	PieceType *GetPromotionType();
-
+	Player *GetPlayer() { return player; }
+	GameState *GetPrevState() { return prevState; }
+	std::list<MoveStep*> GetSteps() { return steps; }
 private:
 	Player *player;
 	GameState *prevState, *subsequentState;

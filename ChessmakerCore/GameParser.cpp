@@ -33,7 +33,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	game = new Game();
 	game->board = new Board(game);
 
-	maxDirection = 2;
+	maxDirection = FIRST_ABSOLUTE_DIRECTION >> 1;
 	allDirections = 0;
 	directionLookups.clear();
 
@@ -434,6 +434,22 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		for (var i = 0; i < type.promotionOpportunities.length; i++)
 			type.promotionOpportunities[i].resolveOptions(definitions);
 		*/
+
+		// resolve piece type pointers from the ReferencePiece move definition
+		while (!referencePieceTypeQueue.empty())
+		{
+			auto item = referencePieceTypeQueue.begin();
+			ReferencePiece *moveDef = item->first;
+			char *typeName = item->second;
+
+			auto it = pieceTypesByName.find(typeName);
+			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+			if (type != 0)
+				moveDef->otherPieceType = type;
+
+			delete[] typeName;
+			referencePieceTypeQueue.erase(item);
+		}
 	}
 	
 	return true;
@@ -755,7 +771,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 	char *name = attr == 0 ? 0 : attr->value();
 
 	attr = moveNode->first_attribute("type");
-	char *type = attr == 0 ? "any" : attr->value();
+	char *typeName = attr == 0 ? 0 : attr->value();
 
 	attr = moveNode->first_attribute("owner");
 	Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
@@ -766,7 +782,17 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 	moveNode->first_attribute("dist");
 	Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
 
-	return new ReferencePiece(name, type, relat, dir, dist);
+	ReferencePiece *moveDef = new ReferencePiece(name, 0, relat, dir, dist);
+
+	if (typeName != 0)
+	{
+		// queue up setting the OtherPieceType of this moveDef once all the piece types have been loaded. Set it by typeName.
+		char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+		strcpy(typeNameCopy, typeName);
+		referencePieceTypeQueue.insert(std::make_pair(moveDef, typeNameCopy));
+	}
+
+	return moveDef;
 }
 
 

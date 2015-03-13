@@ -14,5 +14,6 @@ struct char_cmp {
 
 #define DIRECTION_FORWARD 1
 #define DIRECTION_SAME 2
+#define FIRST_ABSOLUTE_DIRECTION 4
 
 typedef unsigned int direction_t;

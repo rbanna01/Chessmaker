@@ -13,6 +13,9 @@ public:
 	bool Reverse(bool updateDisplay);
 
 	Piece *GetPiece() { return piece; }
+	direction_t GetDirection() { return direction; }
+	Piece::State_t GetFromState() { return fromState; }
+	Piece::State_t GetToState() { return toState; }
 
 	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance);
 	static MoveStep *CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld);
