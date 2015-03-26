@@ -20,7 +20,7 @@ public:
 	void AddStep(MoveStep *step) { steps.push_back(step); }
 
 	Move *Clone();
-	bool Perform(bool updateDisplay);
+	GameState *Perform(bool updateDisplay);
 	bool Reverse(bool updateDisplay);
 
 	char *DetermineNotation(int detailLevel);
@@ -38,7 +38,7 @@ public:
 	std::list<MoveStep*> GetSteps() { return steps; }
 private:
 	Player *player;
-	GameState *prevState, *subsequentState;
+	GameState *prevState;
 	Piece *piece;
 	Cell *startPos;
 	char notation[10];

@@ -13,7 +13,8 @@ GameState::GameState(Game *game, Player *currentPlayer, int turnNumber)
 
 GameState::~GameState()
 {
-	
+	if (!movesByPiece.empty())
+		ClearTurnMoves(0);
 }
 
 
@@ -46,7 +47,6 @@ std::list<Move*> GameState::DetermineThreatMoves()
 // sort possible states (moves) by piece, determine notation for each move (done all at once to ensure they are unique), and return whether any moves are possible or not
 bool GameState::PrepareMovesForTurn()
 {
-	movesByPiece.clear(); // urgh, i guess these need deleted? don't really want to do this tbh
 	bool anyMoves = false;
 
 	std::map<char*, Move*, char_cmp> movesByNotation;
@@ -100,6 +100,23 @@ bool GameState::PrepareMovesForTurn()
     return anyMoves;
 }
 
+void GameState::ClearTurnMoves(Move *movePerformed)
+{
+	for (auto it = movesByPiece.begin(); it != movesByPiece.end(); it++)
+	{
+		auto list = it->second;
+		while (!list.empty())
+		{
+			Move *test = list.front();
+			list.pop_front();
+
+			if (test != movePerformed)
+				delete test;
+		}
+	}
+
+	movesByPiece.clear();
+}
 
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> output)
 {
@@ -126,7 +143,7 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> output)
                 var move = possibilities[k];
 
                 if (this.game.endOfGame.illegalMovesSpecified) {
-                    move.perform(this.game, false);
+                    var subsequentState = move.perform(this.game, false);
                     var result = this.game.endOfGame.checkEndOfTurn(this, move);
                     move.reverse(this.game, false);
                     if (result == EndOfGame.Type.IllegalMove)

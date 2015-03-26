@@ -13,6 +13,7 @@ public:
 	~GameState();
 
 	bool PrepareMovesForTurn();
+	void ClearTurnMoves(Move *movePerformed);
 	std::list<Move*> DeterminePossibleMoves();
 	std::list<Move*> DetermineThreatMoves();
 	Game *GetGame() { return game; }

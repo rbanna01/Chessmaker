@@ -10,8 +10,6 @@ Move::Move(Player *player, GameState *prevState, Piece *piece, Cell *startPos)
 	this->prevState = prevState;
 	this->piece = piece;
 	this->startPos = startPos;
-
-	subsequentState = new GameState(prevState->game, 0, prevState->turnNumber + 1);
 }
 
 
@@ -42,7 +40,7 @@ Move *Move::Clone()
 }
 
 
-bool Move::Perform(bool updateDisplay)
+GameState *Move::Perform(bool updateDisplay)
 {
 	std::list<MoveStep*>::iterator it = steps.begin();
 	while (it != steps.end())
@@ -52,7 +50,7 @@ bool Move::Perform(bool updateDisplay)
 		if (!step->Perform(updateDisplay)) // move failed, roll back
 		{
 			if (it == steps.begin())
-				return false;
+				return 0;
 
 			bool reversing = true;
 			do
@@ -68,7 +66,7 @@ bool Move::Perform(bool updateDisplay)
 				}
 			} while (reversing);
 			
-			return false;
+			return 0;
 		}
 
 		it++;
@@ -77,8 +75,8 @@ bool Move::Perform(bool updateDisplay)
 	prevPieceMoveTurn = piece->lastMoveTurn;
 	piece->lastMoveTurn = prevState->turnNumber;
 	piece->moveNumber++;
-	subsequentState->currentPlayer = prevState->game->GetTurnOrder()->GetNextPlayer(); // while this function ought to be called here, it isn't a sensible place to set the state's player. That should surely be done on creation?
-	return true;
+
+	return new GameState(prevState->game, prevState->game->GetTurnOrder()->GetNextPlayer(), prevState->turnNumber + 1);
 }
 
 

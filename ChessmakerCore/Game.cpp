@@ -96,6 +96,8 @@ void Game::StartNextTurn()
 void Game::EndTurn(GameState *newState, Move *move)
 {
 	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState, move);
+	currentState->ClearTurnMoves(move);
+
 	if (result != EndOfGame::None) {
 		ProcessEndOfGame(result);
 		return;

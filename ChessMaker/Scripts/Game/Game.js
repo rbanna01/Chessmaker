@@ -61,9 +61,10 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
 };
 
 Game.prototype.performMove = function (move) {
-    if (move.perform(this, true)) {
+    var subsequentState = move.perform(this, true);
+    if (subsequentState != null) {
         this.logMove(this.state.currentPlayer, move);
-        this.endTurn(move.subsequentState, move);
+        this.endTurn(subsequentState, move);
     }
     else
         console.log('unable to perform move');
