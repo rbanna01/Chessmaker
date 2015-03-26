@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Definitions.h"
 #include "Piece.h"
 
 class Game;

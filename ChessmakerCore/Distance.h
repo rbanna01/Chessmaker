@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Definitions.h"
+
 class MoveStep;
 
 class Distance

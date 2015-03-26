@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Definitions.h"
 #include "Cell.h"
 #include "PieceType.h"
 #include "Player.h"

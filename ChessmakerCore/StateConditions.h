@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Definitions.h"
 #include "MoveConditions.h"
 
 class StateCondition : public Condition
