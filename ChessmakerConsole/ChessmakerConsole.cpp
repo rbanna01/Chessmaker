@@ -1,3 +1,11 @@
+#if _DEBUG
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
+	#include <crtdbg.h>
+	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+	#define new DEBUG_NEW
+#endif
+
 #include <tchar.h>
 #include <string.h>
 #include <iostream>
@@ -10,6 +18,9 @@ bool Initialize(char* definition);
 
 extern "C" __declspec(dllimport)
 std::string *GetBoardSVG();
+
+extern "C" __declspec(dllimport)
+void Shutdown();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -32,10 +43,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (!Initialize(definition))
 	{
 		printf("Error parsing definition\n");
+		delete definition;
 		return 1;
 	}
 	else
 		printf("Definition parsed successfully\n");
+
+	delete definition;
 
 	// retrieve and then save the board SVG file
 	std::string *svg = GetBoardSVG();
@@ -46,9 +60,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	ofs.close();
 
 	delete svg;
-	delete definition;
-	
+	Shutdown();
+
+	_CrtDumpMemoryLeaks();
 	getchar();
+
 	return 0;
 }
 

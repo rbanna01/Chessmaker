@@ -47,3 +47,10 @@ std::string *GetBoardSVG()
 	return boardSVG;
 }
 #endif
+
+extern "C" __declspec(dllexport)
+void Shutdown()
+{
+	delete game;
+	game = 0;
+}

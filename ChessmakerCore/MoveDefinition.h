@@ -18,7 +18,7 @@ public:
 	typedef enum { Any, Moving, Capturing } When_t;
 
 	MoveDefinition(char *pieceRef, MoveConditionGroup *conditions, When_t when, unsigned int direction);
-	~MoveDefinition();
+	virtual ~MoveDefinition();
 
 	virtual std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 protected:
@@ -40,7 +40,7 @@ public:
 	{
 		this->distance = distance; this->distanceMax = distanceMax;
 	}
-	~Slide() { delete distance; if (distanceMax != 0) delete distanceMax; }
+	virtual ~Slide() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -61,7 +61,7 @@ public:
 		this->distance = distance; this->distanceMax = distanceMax;
 		this->secondDir = secondDir; this->secondDist = secondDist;
 	}
-	~Leap() { delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0) delete secondDist; }
+	virtual ~Leap() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != &Distance::Any) delete secondDist; }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -84,7 +84,7 @@ public:
 		this->distAfterHurdle = distAfterHurdle; this->distAfterHurdleMax = distAfterHurdleMax;
 		this->captureHurdle = captureHurdle;
 	}
-	~Hop() { delete distToHurdle; if (distToHurdleMax != 0) delete distToHurdleMax; delete distAfterHurdle; if (distAfterHurdleMax != 0) delete distAfterHurdleMax; }
+	virtual ~Hop() { if (distToHurdle != &Distance::Any) delete distToHurdle; if (distToHurdleMax != 0) delete distToHurdleMax; delete distAfterHurdle; if (distAfterHurdleMax != 0 && distAfterHurdleMax != &Distance::Any) delete distAfterHurdleMax; }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -106,7 +106,7 @@ public:
 		this->distance = distance; this->distanceMax = distanceMax;
 		this->secondDir = secondDir; this->secondDist = secondDist;
 	}
-	~Shoot() { delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0) delete secondDist; }
+	virtual ~Shoot() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0 && secondDist != &Distance::Any) delete secondDist; }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -128,7 +128,7 @@ public:
 		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);
 		likeTarget = strcmp(pieceRef, "target") == 0;
 	}
-	~MoveLike() { }
+	virtual ~MoveLike() { }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -154,7 +154,7 @@ public:
 		this->distance = distance;
 		this->otherPieceDirection = dir;
 	}
-	~ReferencePiece() { if (distance != 0) delete distance; }
+	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -179,15 +179,10 @@ public:
 		this->maxOccurs = maxOccurs;
 		this->stepOutIfFail = stepOutIfFail;
 	}
-	~MoveGroup()
+	virtual ~MoveGroup()
 	{
-		std::list<MoveDefinition*>::iterator it = contents.begin();
-		while (it != contents.end())
-		{
-			delete (*it);
-			it++;
-		}
-		contents.clear();
+		while (!contents.empty())
+			delete contents.front(), contents.pop_front();
 	}
 
 	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
@@ -208,7 +203,7 @@ public:
 	Sequence()
 		: MoveGroup(1, 1, false)
 	{ }
-	~Sequence() { }
+	virtual ~Sequence() { }
 
 private:
 	friend class GameParser;
@@ -221,7 +216,7 @@ public:
 	Repeat(int minOccurs, int maxOccurs)
 		: MoveGroup(minOccurs, maxOccurs, false)
 	{ }
-	~Repeat() { }
+	virtual ~Repeat() { }
 
 private:
 	friend class GameParser;
@@ -234,7 +229,7 @@ public:
 	WhenPossible()
 		: MoveGroup(1, 1, true)
 	{ }
-	~WhenPossible() { }
+	virtual ~WhenPossible() { }
 
 private:
 	friend class GameParser;

@@ -9,6 +9,7 @@ class BaseTurnStep
 {
 public:
 	virtual bool IsStep() = 0;
+	virtual ~BaseTurnStep() { };
 protected:
 	BaseTurnStep() { };
 };
@@ -29,7 +30,7 @@ class TurnRepeat : public BaseTurnStep
 {
 public:
 	TurnRepeat(int count);
-	~TurnRepeat();
+	virtual ~TurnRepeat();
 
 	virtual bool IsStep() { return false; }
 
@@ -49,12 +50,11 @@ private:
 };
 
 
-
 class TurnOrder : public TurnRepeat
 {
 public:
 	TurnOrder();
-	~TurnOrder();
+	virtual ~TurnOrder();
 
 	Player *GetNextPlayer();
 	void StepBackward();

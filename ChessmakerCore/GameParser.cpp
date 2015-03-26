@@ -1,5 +1,7 @@
+#include "rapidxml\rapidxml.hpp"
+#include "rapidxml\rapidxml_print.hpp"
+
 #include <stdio.h>
-#include <map>
 #include <utility>
 
 #include "GameParser.h"
@@ -16,8 +18,6 @@
 #include "Player.h"
 #include "StateConditions.h"
 #include "TurnOrder.h"
-#include "rapidxml\rapidxml.hpp"
-#include "rapidxml\rapidxml_print.hpp"
 
 using namespace rapidxml;
 
@@ -1260,10 +1260,10 @@ EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 		}
 
 		xml_attribute<> *attr = node->first_attribute("when");
-		auto checkList = strcmp(attr->value(), "startOfTurn") == 0 ? endOfGame->startOfTurnChecks : endOfGame->endOfTurnChecks;
+		auto checkList = strcmp(attr->value(), "startOfTurn") == 0 ? &endOfGame->startOfTurnChecks : &endOfGame->endOfTurnChecks;
 
 		StateConditionGroup *conditions = ParseStateConditions(node, Condition::And);
-		checkList.push_back(new EndOfGameCheck(checkType, conditions));
+		checkList->push_back(new EndOfGameCheck(checkType, conditions));
 
 		node = node->next_sibling();
 	}
