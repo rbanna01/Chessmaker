@@ -40,6 +40,18 @@ Game::~Game()
 	}
 }
 
+void Game::Start()
+{
+	if (currentState != 0)
+	{
+		// todo: report error, game has already started
+		return;
+	}
+
+	currentState = new GameState(this, turnOrder->GetNextPlayer(), 1);
+	StartNextTurn();
+}
+
 
 void Game::StartNextTurn()
 {

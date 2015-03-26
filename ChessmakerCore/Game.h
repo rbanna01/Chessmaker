@@ -16,6 +16,8 @@ public:
 	Game();
 	~Game();
 
+	void Start();
+
 	Board *GetBoard() { return board; }
 	GameState *GetCurrentState() { return currentState; }
 	TurnOrder *GetTurnOrder() { return turnOrder; }

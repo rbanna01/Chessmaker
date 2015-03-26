@@ -16,6 +16,8 @@ public:
 	std::list<Move*> DeterminePossibleMoves();
 	std::list<Move*> DetermineThreatMoves();
 	Game *GetGame() { return game; }
+	Player *GetCurrentPlayer() { return currentPlayer; }
+
 private:
 	Game *game;
 	Player *currentPlayer;

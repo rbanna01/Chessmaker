@@ -138,6 +138,7 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> output)
 		}*/ // todo:implement this
 
 		delete moveTemplate;
+		it++;
 	}
 	
     // now look at each held piece

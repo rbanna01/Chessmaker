@@ -2,11 +2,8 @@
 
 var game;
 function loadDefinition(xml) {
-    game = Game.parse(xml, document.getElementById('main'));
+    // game-creating code was here
     initializeUI();
-    game.state = new GameState(game, null, 1);
-    game.state.currentPlayer = game.turnOrder.getNextPlayer();
-    game.startNextTurn();
 }
 
 function initializeUI() {

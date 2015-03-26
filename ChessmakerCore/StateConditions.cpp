@@ -25,31 +25,46 @@ bool StateConditionGroup::IsSatisfied(GameState *state, bool canMove)
 	switch (type) {
 	case GroupType_t::And:
 		while (it != elements.end())
-		if (!(*it)->IsSatisfied(state, canMove))
-			return false;
+		{
+			if (!(*it)->IsSatisfied(state, canMove))
+				return false;
+			it++;
+		}
 		return true;
 	case GroupType_t::Or:
 		while (it != elements.end())
-		if ((*it)->IsSatisfied(state, canMove))
-			return true;
+		{
+			if ((*it)->IsSatisfied(state, canMove))
+				return true;
+			it++;
+		}
 		return false;
 	case GroupType_t::Nand:
 		while (it != elements.end())
-		if (!(*it)->IsSatisfied(state, canMove))
-			return true;
+		{
+			if (!(*it)->IsSatisfied(state, canMove))
+				return true;
+			it++;
+		}
 		return false;
 	case GroupType_t::Nor:
 		while (it != elements.end())
-		if ((*it)->IsSatisfied(state, canMove))
-			return false;
+		{
+			if ((*it)->IsSatisfied(state, canMove))
+				return false;
+			it++;
+		}
 		return true;
 	case GroupType_t::Xor:
 		while (it != elements.end())
-		if ((*it)->IsSatisfied(state, canMove))
-		if (any)
-			return false;
-		else
-			any = true;
+		{
+			if ((*it)->IsSatisfied(state, canMove))
+				if (any)
+					return false;
+				else
+					any = true;
+			it++;
+		}
 		return any;
 	default: // there are no other types!
 		return false;

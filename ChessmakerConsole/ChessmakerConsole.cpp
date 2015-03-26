@@ -7,7 +7,7 @@
 #endif
 
 #include <tchar.h>
-#include <string.h>
+#include <string>
 #include <iostream>
 #include <fstream>
 
@@ -18,6 +18,12 @@ bool Initialize(char* definition);
 
 extern "C" __declspec(dllimport)
 std::string *GetBoardSVG();
+
+extern "C" __declspec(dllimport)
+const char *GetCurrentPlayer();
+
+extern "C" __declspec(dllimport)
+int PerformMove(const char *notation);
 
 extern "C" __declspec(dllimport)
 void Shutdown();
@@ -53,13 +59,35 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// retrieve and then save the board SVG file
 	std::string *svg = GetBoardSVG();
-	printf("received %i bytes:\n%s", svg->size(), svg->c_str());
+	printf("received %i bytes:\n%s\n", svg->size(), svg->c_str());
 
 	std::ofstream ofs("Render.svg", std::ofstream::out);
 	ofs << svg->c_str();
 	ofs.close();
 
 	delete svg;
+
+	int retVal = 0;
+	std::string input;
+	do
+	{
+		if (retVal == -1)
+			printf("Invalid input, please retry\n");
+		else
+			printf("%s to move\n", GetCurrentPlayer());
+
+		std::getline(std::cin, input);
+		if (input.length() == 0)
+		{
+			printf("Aborting...\n");
+			break;
+		}
+
+		retVal = PerformMove(input.c_str());
+	} while (retVal != 0);
+
+	printf("Game over\n");
+
 	Shutdown();
 
 	_CrtDumpMemoryLeaks();

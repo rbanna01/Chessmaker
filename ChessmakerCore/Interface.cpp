@@ -5,6 +5,7 @@
 #include <string.h>
 #include "Game.h"
 #include "GameParser.h"
+#include "GameState.h"
 #include "TurnOrder.h"
 
 Game *game = 0;
@@ -37,6 +38,8 @@ bool Initialize(char* definition)
 	if (game == 0)
 		return false;
 
+	game->Start();
+
 	return true;
 }
 
@@ -53,4 +56,18 @@ void Shutdown()
 {
 	delete game;
 	game = 0;
+}
+
+extern "C" __declspec(dllexport)
+const char *GetCurrentPlayer()
+{
+	return game->GetCurrentState()->GetCurrentPlayer()->GetName();
+}
+
+extern "C" __declspec(dllexport)
+int PerformMove(const char *notation)
+{
+	// todo: See if this is a valid move, and if so, perform it. If not, return -1.
+	// If the game has finished, return 0, otherwise, return 1.
+	return 1;
 }
