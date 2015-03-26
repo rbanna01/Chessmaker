@@ -20,7 +20,7 @@ extern "C" __declspec(dllimport)
 std::string *GetBoardSVG();
 
 extern "C" __declspec(dllimport)
-const char *GetCurrentPlayer();
+std::string *ListPossibleMoves();
 
 extern "C" __declspec(dllimport)
 int PerformMove(const char *notation);
@@ -74,7 +74,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		if (retVal == -1)
 			printf("Invalid input, please retry\n");
 		else
-			printf("%s to move\n", GetCurrentPlayer());
+		{
+			std::string *output = ListPossibleMoves();
+			printf(output->c_str());
+			delete output;
+		}
 
 		std::getline(std::cin, input);
 		if (input.length() == 0)

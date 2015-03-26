@@ -13,22 +13,21 @@ GameState::GameState(Game *game, Player *currentPlayer, int turnNumber)
 
 GameState::~GameState()
 {
-	if (!movesByPiece.empty())
-		ClearTurnMoves(0);
+	
 }
 
 
-std::list<Move*> GameState::DeterminePossibleMoves()
+std::list<Move*> *GameState::DeterminePossibleMoves()
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 	CalculateMovesForPlayer(currentPlayer, moves);
 	return moves;
 }
 
 
-std::list<Move*> GameState::DetermineThreatMoves()
+std::list<Move*> *GameState::DetermineThreatMoves()
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 
 	auto it = game->players.begin();
 	while (it != game->players.end())
@@ -44,34 +43,15 @@ std::list<Move*> GameState::DetermineThreatMoves()
 }
 
 
-// sort possible states (moves) by piece, determine notation for each move (done all at once to ensure they are unique), and return whether any moves are possible or not
-bool GameState::PrepareMovesForTurn()
+// determine notation for each move (done all at once to ensure they are unique)
+std::list<Move*> *GameState::PrepareMovesForTurn()
 {
-	bool anyMoves = false;
-
 	std::map<char*, Move*, char_cmp> movesByNotation;
-	std::list<Move*> allMoves = DeterminePossibleMoves();
+	std::list<Move*> *possibleMoves = DeterminePossibleMoves();
 
-	auto it = allMoves.begin();
-	while (it != allMoves.end())
+	for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
 	{
-		anyMoves = true;
 		Move *move = *it;
-
-		// sort moves by piece, for ease of access in the UI
-		auto pieceIt = movesByPiece.find(move->piece->GetID());
-		if (pieceIt == movesByPiece.end())
-		{
-			// add a new one
-			std::list<Move*> pieceMoves;
-			pieceMoves.push_back(move);
-			movesByPiece.insert(std::pair<int, std::list<Move*>>(move->piece->GetID(), pieceMoves));
-		}
-		else
-		{
-			std::list<Move*> pieceMoves = pieceIt->second;
-			pieceMoves.push_back(move);
-		}
 
         // ensure unique notation
 		for (int detailLevel = 1; detailLevel <= MAX_NOTATION_DETAIL; detailLevel++)
@@ -97,28 +77,11 @@ bool GameState::PrepareMovesForTurn()
         }
 	}
 
-    return anyMoves;
+    return possibleMoves;
 }
 
-void GameState::ClearTurnMoves(Move *movePerformed)
-{
-	for (auto it = movesByPiece.begin(); it != movesByPiece.end(); it++)
-	{
-		auto list = it->second;
-		while (!list.empty())
-		{
-			Move *test = list.front();
-			list.pop_front();
 
-			if (test != movePerformed)
-				delete test;
-		}
-	}
-
-	movesByPiece.clear();
-}
-
-void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> output)
+void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output)
 {
 	std::set<Piece*> pieces(player->piecesOnBoard);
 	auto it = pieces.begin();

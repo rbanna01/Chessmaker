@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "EndOfGame.h"
 #include "GameState.h"
+#include "Move.h"
 #include "TurnOrder.h"
 
 
@@ -24,6 +25,8 @@ Game::~Game()
 		delete endOfGame;
 	if (turnOrder != 0)
 		delete turnOrder;
+
+	ClearPossibleMoves();
 
 	auto it = players.begin();
 	while (it != players.end())
@@ -53,19 +56,19 @@ void Game::Start()
 }
 
 
-void Game::StartNextTurn()
+bool Game::StartNextTurn()
 {
 #ifndef NO_SVG
 	//$('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
 	// todo: implement this
 #endif
 
-	bool anyPossibleMoves = currentState->PrepareMovesForTurn();
-	EndOfGame::CheckType_t result = endOfGame->CheckStartOfTurn(currentState, anyPossibleMoves);
+	possibleMoves = currentState->PrepareMovesForTurn();
+	EndOfGame::CheckType_t result = endOfGame->CheckStartOfTurn(currentState, !possibleMoves->empty());
 	if (result != EndOfGame::None)
 	{
 		ProcessEndOfGame(result);
-		return;
+		return false;
 	}
 
 	if (currentState->currentPlayer->type != Player::Local)
@@ -90,21 +93,38 @@ void Game::StartNextTurn()
 		// todo: implement this
 #endif
 	}
+	return true;
 }
 
+Game::MoveResult_t Game::PerformMove(Move *move)
+{
+	GameState *subsequentState = move->Perform(true);
+	if (subsequentState != 0)
+	{
+		LogMove(currentState->currentPlayer, move);
+		if (EndTurn(subsequentState, move))
+			return MoveComplete;
+		else
+			return GameComplete;
+	}
+	else
+	{
+		return MoveError;
+	}
+}
 
-void Game::EndTurn(GameState *newState, Move *move)
+bool Game::EndTurn(GameState *newState, Move *move)
 {
 	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState, move);
-	currentState->ClearTurnMoves(move);
+	ClearPossibleMoves();
 
 	if (result != EndOfGame::None) {
 		ProcessEndOfGame(result);
-		return;
+		return false;
 	}
 
 	currentState = newState;
-	StartNextTurn();
+	return StartNextTurn();
 }
 
 
@@ -119,13 +139,15 @@ void Game::ProcessEndOfGame(EndOfGame::CheckType_t result)
 		EndGame(0);
 		break;
 	case EndOfGame::Lose:
-		if (players.size() == 2) {
+		if (players.size() == 2)
+		{
 			Player *other = players.front();
 			if (other == currentState->currentPlayer)
 				other = players.back();
 			EndGame(other);
 		}
-		else {
+		else
+		{
 			// the current player should be removed from the game. If none remain, game is drawn. If one remains, they win. Otherwise, it continues.
 			// todo: report error, can't (yet) handle a player losing in a game that doesn't have two players.
 		}
@@ -144,4 +166,31 @@ void Game::EndGame(Player *victor)
 	$('#nextMove').text(text);
 	$('#wait').hide();*/
 	// todo: implement this
+}
+
+void Game::LogMove(Player *player, Move *move)
+{
+	/*
+	var historyDiv = $('#moveHistory');
+
+    $('<div/>', {
+        class: 'move ' + player.name,
+        number: move.moveNumber,
+        html: move.notation
+    }).appendTo(historyDiv);
+
+    historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
+	*/
+	// todo: implement this
+}
+
+void Game::ClearPossibleMoves()
+{
+	if (possibleMoves == 0)
+		return;
+
+	while (!possibleMoves->empty())
+		delete possibleMoves->front(), possibleMoves->pop_front();
+	delete possibleMoves;
+	possibleMoves = 0;
 }

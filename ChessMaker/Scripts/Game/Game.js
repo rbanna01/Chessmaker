@@ -59,25 +59,3 @@ Game.prototype.selectMoveByCell = function (piece, cell) {
         break;
     }
 };
-
-Game.prototype.performMove = function (move) {
-    var subsequentState = move.perform(this, true);
-    if (subsequentState != null) {
-        this.logMove(this.state.currentPlayer, move);
-        this.endTurn(subsequentState, move);
-    }
-    else
-        console.log('unable to perform move');
-}
-
-Game.prototype.logMove = function (player, move) {
-    var historyDiv = $('#moveHistory');
-
-    $('<div/>', {
-        class: 'move ' + player.name,
-        number: move.moveNumber,
-        html: move.notation
-    }).appendTo(historyDiv);
-
-    historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
-};

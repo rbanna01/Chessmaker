@@ -59,15 +59,45 @@ void Shutdown()
 }
 
 extern "C" __declspec(dllexport)
-const char *GetCurrentPlayer()
+std::string *ListPossibleMoves()
 {
-	return game->GetCurrentState()->GetCurrentPlayer()->GetName();
+	std::string *output = new std::string(game->GetCurrentState()->GetCurrentPlayer()->GetName());
+	output->append(" to move.\nPossible moves:\n");
+
+	auto moves = game->GetPossibleMoves();
+	for (auto it = moves->begin(); it != moves->end(); it++)
+	{
+		Move *move = *it;
+		output->append(move->GetNotation());
+		output->append("\n");
+	}
+
+	return output;
 }
 
 extern "C" __declspec(dllexport)
 int PerformMove(const char *notation)
 {
-	// todo: See if this is a valid move, and if so, perform it. If not, return -1.
+	// See if this is a valid move, and if so, perform it. If not, return -1.
 	// If the game has finished, return 0, otherwise, return 1.
-	return 1;
+
+	auto moves = game->GetPossibleMoves();
+	for (auto it = moves->begin(); it != moves->end(); it++)
+	{
+		Move *move = *it;
+		if (strcmp(notation, move->GetNotation()) == 0)
+		{
+			auto result = game->PerformMove(move);
+			switch (result)
+			{
+			case Game::GameComplete:
+				return 0;
+			case Game::MoveComplete:
+				return 1;
+			default:
+				return -1;
+			}
+		}
+	}
+	return -1;
 }

@@ -4,6 +4,7 @@
 
 class Game;
 class Move;
+class Piece;
 class Player;
 
 class GameState
@@ -12,10 +13,9 @@ public:
 	GameState(Game *game, Player *currentPlayer, int turnNumber);
 	~GameState();
 
-	bool PrepareMovesForTurn();
-	void ClearTurnMoves(Move *movePerformed);
-	std::list<Move*> DeterminePossibleMoves();
-	std::list<Move*> DetermineThreatMoves();
+	std::list<Move*> *PrepareMovesForTurn();
+	std::list<Move*> *DeterminePossibleMoves();
+	std::list<Move*> *DetermineThreatMoves();
 	Game *GetGame() { return game; }
 	Player *GetCurrentPlayer() { return currentPlayer; }
 
@@ -24,8 +24,7 @@ private:
 	Player *currentPlayer;
 	int turnNumber;
 
-	void CalculateMovesForPlayer(Player *player, std::list<Move*> output);
-	std::map<int, std::list<Move*>> movesByPiece;
+	void CalculateMovesForPlayer(Player *player, std::list<Move*> *output);
 
 	friend class EndOfGame;
 	friend class Game;

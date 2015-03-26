@@ -24,6 +24,7 @@ public:
 	bool Reverse(bool updateDisplay);
 
 	char *DetermineNotation(int detailLevel);
+	char *GetNotation() { return notation; }
 
 	void AddPieceReference(Piece *piece, char *ref);
 	Piece *GetPieceByReference(char *ref);
