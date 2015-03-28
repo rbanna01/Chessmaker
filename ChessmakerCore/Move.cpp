@@ -15,23 +15,18 @@ Move::Move(Player *player, GameState *prevState, Piece *piece, Cell *startPos)
 
 Move::~Move()
 {
-	std::list<MoveStep*>::iterator it = steps.begin();
-	while (it != steps.end())
-	{
-		delete (*it);
-		it++;
-	}
+	while (!steps.empty())
+		delete steps.front(), steps.pop_front();
 }
 
 
 Move *Move::Clone()
 {
 	Move *move = new Move(player, prevState, piece, startPos);
-	std::list<MoveStep*>::iterator it = steps.begin();
-	while (it != steps.end())
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
-		move->AddStep(*it);
-		it++;
+		MoveStep *step = *it;
+		move->AddStep(new MoveStep(*step));
 	}
 
 	move->references = references;

@@ -2,6 +2,7 @@
 
 Cell::Cell()
 {
+	piece = 0;
 }
 
 

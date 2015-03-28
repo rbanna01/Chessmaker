@@ -20,6 +20,7 @@ public:
 
 	CheckType_t CheckStartOfTurn(GameState *state, bool canMove);
 	CheckType_t CheckEndOfTurn(GameState *state, Move *move);
+	bool AnyIllegalMovesSpecified() { return illegalMovesSpecified; }
 
 private:
 	bool illegalMovesSpecified;

@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include "Game.h"
 #include "Move.h"
+#include "MoveDefinition.h"
 #include "Piece.h"
 
 GameState::GameState(Game *game, Player *currentPlayer, int turnNumber)
@@ -84,8 +85,7 @@ std::list<Move*> *GameState::PrepareMovesForTurn()
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output)
 {
 	std::set<Piece*> pieces(player->piecesOnBoard);
-	auto it = pieces.begin();
-	while (it != pieces.end())
+	for (auto it = pieces.begin(); it != pieces.end(); it++)
 	{
 		Piece *piece = *it;
 		Move *moveTemplate = new Move(piece->GetOwner(), this, piece, piece->GetPosition());
@@ -99,26 +99,33 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
         //});
 
         // and then get move possibilities
-        /*for (var j = 0; j < piece.pieceType.moves.length; j++) {
-            var moveDef = piece.pieceType.moves[j];
-            var possibilities = moveDef.appendValidNextSteps(moveTemplate, piece, null);
-            for (var k = 0; k < possibilities.length; k++) {
-                var move = possibilities[k];
-
-                if (this.game.endOfGame.illegalMovesSpecified) {
-                    var subsequentState = move.perform(this.game, false);
-                    var result = this.game.endOfGame.checkEndOfTurn(this, move);
-                    move.reverse(this.game, false);
-                    if (result == EndOfGame.Type.IllegalMove)
-                        continue;
+		auto moves = piece->GetType()->GetMoves();
+		for (auto it = moves.begin(); it != moves.end(); it++)
+		{
+			MoveDefinition *moveDef = *it;
+			auto possibilities = moveDef->AppendValidNextSteps(moveTemplate, piece, 0);
+			for (auto it2 = possibilities.begin(); it2 != possibilities.end(); it2++)
+			{
+				Move *move = *it2;
+        
+				if (game->GetEndOfGame()->AnyIllegalMovesSpecified())
+				{
+                    GameState *subsequentState = move->Perform(false);
+					EndOfGame::CheckType_t result = game->GetEndOfGame()->CheckEndOfTurn(this, move);
+                    move->Reverse(false);
+					if (result == EndOfGame::IllegalMove)
+					{
+						delete move;
+						continue;
+					}
                 }
 
-                output.push(move);
+                output->push_back(move);
             }
-		}*/ // todo:implement this
+			//delete possibilities;
+		}
 
 		delete moveTemplate;
-		it++;
 	}
 	
     // now look at each held piece
