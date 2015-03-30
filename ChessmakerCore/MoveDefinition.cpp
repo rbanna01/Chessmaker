@@ -556,7 +556,7 @@ std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, M
 	std::list<Move*> moves;
 
 	std::list<Move*> *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();
-	prevStepMoves->push_back(baseMove);
+	prevStepMoves->push_back(baseMove->Clone());
 
 	
 	for (int rep = 1; rep <= maxOccurs; rep++)
