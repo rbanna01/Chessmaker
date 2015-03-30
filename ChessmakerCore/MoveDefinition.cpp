@@ -553,11 +553,9 @@ std::list<Move*> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *pie
 
 std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
-
-	std::list<Move*> *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();
+	std::list<Move*> moves, a, b;
+	std::list<Move*> *prevStepMoves = &a, *currentStepMoves = &b;
 	prevStepMoves->push_back(baseMove->Clone());
-
 	
 	for (int rep = 1; rep <= maxOccurs; rep++)
 	{
@@ -598,9 +596,10 @@ std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, M
 			moves.splice(moves.end(), *prevStepMoves);
 	}
 
-	while (!prevStepMoves->empty())
-		delete prevStepMoves->front(), prevStepMoves->pop_front();
-	delete prevStepMoves, currentStepMoves;
+	while (!a.empty())
+		delete a.front(), a.pop_front();
+	while (!b.empty())
+		delete b.front(), b.pop_front();
 
 	// this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
 	if (stepOutIfFail && moves.size() == 0 && baseMove->GetSteps().size() > 0)
