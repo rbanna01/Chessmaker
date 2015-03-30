@@ -125,7 +125,7 @@ public:
 	MoveLike(char *pieceRef, MoveConditionGroup *conditions, When_t when)
 		: MoveDefinition("", conditions, when, 0)
 	{
-		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);
+		strcpy(this->otherPieceRef, pieceRef);
 		likeTarget = strcmp(pieceRef, "target") == 0;
 	}
 	virtual ~MoveLike() { }
@@ -149,7 +149,7 @@ public:
 	ReferencePiece(char *pieceRef, PieceType *type, Player::Relationship_t relationship, unsigned int dir, Distance *distance)
 		: MoveDefinition("", 0, Any, 0)
 	{
-		strncpy(this->otherPieceRef, pieceRef, PIECE_REF_LENGTH);
+		strcpy(this->otherPieceRef, pieceRef);
 		this->relationship = relationship;
 		this->distance = distance;
 		this->otherPieceDirection = dir;

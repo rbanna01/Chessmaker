@@ -214,7 +214,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			Cell *cell = &cells[iCell++];
 
 			char *ref = attr->value();
-			strncpy(cell->reference, ref, CELL_REF_LENGTH);
+			strcpy(cell->reference, ref);
 			cellsByRef.insert(std::pair<char*, Cell*>(ref, cell));
 			
 			// parse cell links, and store them until all cells have been loaded, so we can resolve the names
@@ -462,11 +462,11 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 #endif
 {
 	xml_attribute<> *attr = pieceNode->first_attribute("name");
-	strncpy(type->name, attr->value(), TYPE_NAME_LENGTH);
+	strcpy(type->name, attr->value());
 
 	attr = pieceNode->first_attribute("notation");
 	if (attr != 0)
-		strncpy(type->notation, attr->value(), TYPE_NOTATION_LENGTH);
+		strcpy(type->notation, attr->value());
 
 	attr = pieceNode->first_attribute("value");
 	if (attr != 0)
@@ -1060,7 +1060,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 			char *defID = std::get<2>(tuple);
 
 			char *defRef = new char[TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2];
-			strncpy(defRef, "#", TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
+			strcpy(defRef, "#");
 			strcat(defRef, defID);
 
 			type->appearances.insert(std::make_pair(player->id, defRef));

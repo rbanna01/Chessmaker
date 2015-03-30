@@ -47,7 +47,7 @@ class MoveCondition_Type : public MoveCondition
 public:
 	MoveCondition_Type(char *of, PieceType *type)
 	{
-		strncpy(pieceRef, of, PIECE_REF_LENGTH);
+		strcpy(pieceRef, of);
 		this->type = type;
 	}
 
@@ -63,7 +63,7 @@ class MoveCondition_Owner : public MoveCondition
 public:
 	MoveCondition_Owner(char *of, Player::Relationship_t relationship)
 	{
-		strncpy(pieceRef, of, PIECE_REF_LENGTH);
+		strcpy(pieceRef, of);
 		this->relationship = relationship;
 	}
 
@@ -79,7 +79,7 @@ class MoveCondition_MoveNumber : public MoveCondition
 public:
 	MoveCondition_MoveNumber(char *of, int number, NumericComparison_t comparison)
 	{
-		strncpy(pieceRef, of, PIECE_REF_LENGTH);
+		strcpy(pieceRef, of);
 		this->number = number;
 		this->comparison = comparison;
 	}
@@ -97,7 +97,7 @@ class MoveCondition_MaxDist : public MoveCondition
 public:
 	MoveCondition_MaxDist(char *from, unsigned int dir, int number, NumericComparison_t comparison)
 	{
-		strncpy(pieceRef, from, PIECE_REF_LENGTH);
+		strcpy(pieceRef, from);
 		this->dir = dir;
 		this->number = number;
 		this->comparison = comparison;
@@ -117,7 +117,7 @@ class MoveCondition_TurnsSinceLastMove : public MoveCondition
 public:
 	MoveCondition_TurnsSinceLastMove(char *of, int number, NumericComparison_t comparison)
 	{
-		strncpy(pieceRef, of, PIECE_REF_LENGTH);
+		strcpy(pieceRef, of);
 		this->number = number;
 		this->comparison = comparison;
 	}

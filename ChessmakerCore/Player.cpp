@@ -10,7 +10,7 @@ Player::Player(Game *game, char *name, direction_t forwardDir)
 	this->game = game;
 	this->type = Local;
 	this->forwardDir = forwardDir;
-	strncpy(this->name, name, PLAYER_NAME_LENGTH);
+	strcpy(this->name, name);
 	this->id = Player::nextID++;
 }
 

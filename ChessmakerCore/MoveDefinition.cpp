@@ -9,7 +9,7 @@
 
 MoveDefinition::MoveDefinition(char *pieceRef, MoveConditionGroup *conditions, When_t when, direction_t direction)
 {
-	strncpy(this->pieceRef, pieceRef, PIECE_REF_LENGTH);
+	strcpy(this->pieceRef, pieceRef);
 	this->conditions = conditions;
 	this->direction = direction;
 	this->when = when;

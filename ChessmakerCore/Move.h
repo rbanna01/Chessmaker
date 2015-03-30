@@ -10,6 +10,7 @@ class Piece;
 class PieceType;
 
 #define MAX_NOTATION_DETAIL 3
+#define NOTATION_LENGTH 10
 
 class Move
 {
@@ -42,7 +43,7 @@ private:
 	GameState *prevState;
 	Piece *piece;
 	Cell *startPos;
-	char notation[10];
+	char notation[NOTATION_LENGTH];
 
 	std::list<MoveStep*> steps;
 	std::map<char*, Piece*, char_cmp> references;
