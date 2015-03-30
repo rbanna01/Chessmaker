@@ -85,7 +85,7 @@ std::list<Move*> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 
                 move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), cell, dir, dist));
 
-                if (conditions != 0 && conditions->IsSatisfied(move))
+                if (conditions == 0 || conditions->IsSatisfied(move))
                     moves.push_back(move);
             }
 
@@ -180,7 +180,7 @@ std::list<Move*> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSt
 
 						move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, secondDir, secondDist > 0 ? secondDist : dist));
 
-						if (conditions != 0 && conditions->IsSatisfied(move))
+						if (conditions == 0 || conditions->IsSatisfied(move))
 							moves.push_back(move);
                     }
                 }
@@ -281,7 +281,7 @@ std::list<Move*> Hop::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSte
 
                     move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, dir, distTo + distAfter));
 
-                    if (conditions != 0 && conditions->IsSatisfied(move))
+                    if (conditions == 0 || conditions->IsSatisfied(move))
                         moves.push_back(move);
                 }
 
@@ -368,7 +368,7 @@ std::list<Move*> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 						move->AddStep(captureStep);
 						move->AddPieceReference(target, "target");
 
-						if (conditions != 0 && conditions->IsSatisfied(move))
+						if (conditions == 0 || conditions->IsSatisfied(move))
 							moves.push_back(move);
 					}
 				}
