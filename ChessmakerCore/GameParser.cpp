@@ -1001,11 +1001,11 @@ MoveDefinition::When_t GameParser::ParseWhen(char *val)
 		return MoveDefinition::Any;
 
 	if (strcmp(val, "any") == 0)
-		MoveDefinition::Any;
+		return MoveDefinition::Any;
 	if (strcmp(val, "move") == 0)
-		MoveDefinition::Moving;
+		return MoveDefinition::Moving;
 	if (strcmp(val, "capture") == 0)
-		MoveDefinition::Capturing;
+		return MoveDefinition::Capturing;
 
 	// todo: report unexpected value
 	return MoveDefinition::Any;
@@ -1018,11 +1018,11 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 		return Player::Any;
 
 	if (strcmp(val, "self") == 0)
-		Player::Self;
+		return Player::Self;
 	if (strcmp(val, "enemy") == 0)
-		Player::Enemy;
+		return Player::Enemy;
 	if (strcmp(val, "ally") == 0)
-		Player::Ally;
+		return Player::Ally;
 
 	// todo: report unexpected value
 	return Player::Any;
@@ -1273,6 +1273,11 @@ EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 
 unsigned int GameParser::LookupDirection(char *dirName)
 {
+	if (strcmp(dirName, "forward") == 0)
+		return DIRECTION_FORWARD;
+	else if (strcmp(dirName, "same") == 0)
+		return DIRECTION_SAME;
+
 	dirLookup_t::iterator it = directionLookups.find(dirName);
 
 	if (it == directionLookups.end())
