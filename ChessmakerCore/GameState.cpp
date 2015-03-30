@@ -30,8 +30,7 @@ std::list<Move*> *GameState::DetermineThreatMoves()
 {
 	std::list<Move*> *moves = new std::list<Move*>();
 
-	auto it = game->players.begin();
-	while (it != game->players.end())
+	for (auto it = game->players.begin(); it != game->players.end(); it++)
 	{
 		Player *opponent = *it;
 		if (currentPlayer->GetRelationship(opponent) != Player::Enemy)

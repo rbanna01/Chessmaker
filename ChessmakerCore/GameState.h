@@ -18,6 +18,7 @@ public:
 	std::list<Move*> *DetermineThreatMoves();
 	Game *GetGame() { return game; }
 	Player *GetCurrentPlayer() { return currentPlayer; }
+	int GetTurnNumber() { return turnNumber; }
 
 private:
 	Game *game;

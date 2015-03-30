@@ -23,7 +23,6 @@ MoveDefinition::~MoveDefinition()
 		delete conditions;
 }
 
-#define FOR_EACH_DIR_IN_SET(dirs, i) for (direction_t i = FIRST_ABSOLUTE_DIRECTION; i <= dirs; i*=2) if ((dirs & i) != 0)
 
 std::list<Move*> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {

@@ -143,7 +143,7 @@ public:
 	virtual bool IsSatisfied(Move *move);
 private:
 	bool CheckSatisfied(Move *move);
-	bool IsThreatened(GameState *state, Cell *position);
+	static bool IsThreatened(GameState *state, Cell *position);
 
 	bool start, end, value;
 	static bool alreadyChecking;

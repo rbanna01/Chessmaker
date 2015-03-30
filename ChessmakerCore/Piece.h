@@ -21,6 +21,8 @@ public:
 	PieceType *GetType() { return pieceType; }
 	Cell *GetPosition() { return position; }
 	State_t GetState() { return pieceState; }
+	int GetMoveNumber() { return moveNumber; }
+	int GetLastMoveTurn() { return lastMoveTurn; }
 
 	int GetID() { return uniqueID; }
 private:

@@ -1,4 +1,7 @@
 #include "StateConditions.h"
+#include "GameState.h"
+#include "MoveConditions.h"
+#include "Piece.h"
 
 StateConditionGroup::StateConditionGroup(GroupType_t type)
 {
@@ -83,20 +86,20 @@ bool StateCondition_Threatened::IsSatisfied(GameState *state, bool canMove)
 	if (MoveCondition_Threatened::alreadyChecking)
         return false; // assume NOT threatened
 
-	/*var pieces = state.currentPlayer.piecesOnBoard;
-    for (var i = 0; i < pieces.length; i++) {
-        var piece = pieces[i];
-        if (!piece.typeMatches(this.pieceType))
+	auto pieces = state->GetCurrentPlayer()->GetPiecesOnBoard();
+	for (auto it = pieces.begin(); it != pieces.end(); it++)
+	{
+		Piece *piece = *it;
+		if (!piece->TypeMatches(type))
             continue;
-
+		
         MoveCondition_Threatened::alreadyChecking = true;
-        var threatened = MoveCondition_Threatened.IsThreatened(state, piece.position);
+        bool threatened = MoveCondition_Threatened::IsThreatened(state, piece->GetPosition());
         MoveCondition_Threatened::alreadyChecking = false;
-
+		
         if (threatened)
             return true;
     }
 
-    return false;*/
-	return false; // todo: implement this
+	return false;
 }

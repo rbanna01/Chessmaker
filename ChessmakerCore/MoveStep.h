@@ -18,6 +18,8 @@ public:
 	direction_t GetDirection() { return direction; }
 	Piece::State_t GetFromState() { return fromState; }
 	Piece::State_t GetToState() { return toState; }
+	Cell *GetFromPosition() { return fromPos; }
+	Cell *GetToPosition() { return toPos; }
 
 	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance);
 	static MoveStep *CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld);

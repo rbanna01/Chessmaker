@@ -1,4 +1,9 @@
 #include "MoveConditions.h"
+#include "Board.h"
+#include "Game.h"
+#include "GameState.h"
+#include "Move.h"
+#include "MoveStep.h"
 
 bool Condition::ResolveComparison(NumericComparison_t type, int val1, int val2)
 {
@@ -38,32 +43,31 @@ MoveConditionGroup::~MoveConditionGroup()
 
 bool MoveConditionGroup::IsSatisfied(Move *move)
 {
-	std::list<MoveCondition*>::iterator it = elements.begin();
 	bool any = false;
 
 	switch (type) {
 	case GroupType_t::And:
-		while (it != elements.end())
+		for (auto it = elements.begin(); it != elements.end(); it++)
             if (!(*it)->IsSatisfied(move))
                 return false;
         return true;
     case GroupType_t::Or:
-		while (it != elements.end())
+		for (auto it = elements.begin(); it != elements.end(); it++)
 			if ((*it)->IsSatisfied(move))
                 return true;
         return false;
     case GroupType_t::Nand:
-		while (it != elements.end())
+		for (auto it = elements.begin(); it != elements.end(); it++)
 			if (!(*it)->IsSatisfied(move))
                 return true;
         return false;
     case GroupType_t::Nor:
-		while (it != elements.end())
+		for (auto it = elements.begin(); it != elements.end(); it++)
 			if ((*it)->IsSatisfied(move))
                 return false;
         return true;
     case GroupType_t::Xor:
-		while (it != elements.end())
+		for (auto it = elements.begin(); it != elements.end(); it++)
 			if ((*it)->IsSatisfied(move))
                 if (any)
                     return false;
@@ -78,67 +82,79 @@ bool MoveConditionGroup::IsSatisfied(Move *move)
 
 bool MoveCondition_Type::IsSatisfied(Move *move)
 {
-	/*var other = move.getPieceByRef(this.of);
-    if (other == null)
-        throw "Piece reference not found: " + this.of;
-
-    return other.pieceType.name == this.type;*/
-	return false; // todo: implement this
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		// todo: report piece reference not found: pieceRef
+		return false;
+	}
+	return other->TypeMatches(type);
 }
 
 
 bool MoveCondition_Owner::IsSatisfied(Move *move)
 {
-	/*var other = move.getPieceByRef(this.of);
-    if (other == null)
-        throw "Piece reference not found: " + this.of;
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		// todo: report piece reference not found: pieceRef
+		return false;
+	}
 
-    if (this.relationship == Player.Relationship.Any)
-        return true;
+	if (relationship == Player::Any)
+		return true;
 
-    return this.relationship == move.player.getRelationship(other.ownerPlayer);*/
-	return false; // todo: implement this
+	return relationship == move->GetPlayer()->GetRelationship(other->GetOwner());
 }
 
 
 bool MoveCondition_MoveNumber::IsSatisfied(Move *move)
 {
-	/*var other = move.getPieceByRef(this.of);
-    if (other == null)
-        throw "Piece reference not found: " + this.of;
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		// todo: report piece reference not found: pieceRef
+		return false;
+	}
 
-    return Conditions.ResolveComparison(this.comparison, other.moveNumber, this.number);*/
-	return false; // todo: implement this
+    return ResolveComparison(comparison, other->GetMoveNumber(), number);
 }
 
 
 bool MoveCondition_MaxDist::IsSatisfied(Move *move)
 {
-	/*var other = move.getPieceByRef(this.from);
-    if (other == null)
-        throw "Piece reference not found: " + this.from;
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		// todo: report piece reference not found: pieceRef
+		return false;
+	}
 
-    var previousStep = move.steps.length > 0 ? move.steps[move.steps.length - 1] : null;
-    var dirs = move.player.resolveDirection(this.dir, previousStep != null && previousStep.direction != null ? previousStep.direction : move.player.forwardDir);
+	auto steps = move->GetSteps();
+	MoveStep *previousStep = steps.empty() ? 0 : *steps.rbegin();
+	direction_t dirs = move->GetPlayer()->ResolveDirections(dir, previousStep != 0 && previousStep->GetDirection() != 0 ? previousStep->GetDirection() : move->GetPlayer()->GetForwardDirection());
+	Board *board = move->GetPrevState()->GetGame()->GetBoard();
 
-    for (int i = 0; i < dirs.length; i++) {
-        var maxDist = move.prevState.game.board.getMaxDistance(other.position, dirs[i]);
-        if (Conditions.ResolveComparison(this.comparison, maxDist, this.number))
+	FOR_EACH_DIR_IN_SET(dirs, dir)
+	{
+        int maxDist = board->GetMaxDistance(other->GetPosition(), dir);
+        if (ResolveComparison(comparison, maxDist, number))
             return true;
     }
-    return false;*/
-	return false; // todo: implement this
+    return false;
 }
 
 
 bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
 {
-	/*var other = move.getPieceByRef(this.of);
-    if (other == null)
-        throw "Piece reference not found: " + this.of;
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		// todo: report piece reference not found: pieceRef
+		return false;
+	}
 
-    return Conditions.ResolveComparison(this.comparison, move.prevState.moveNumber - other.lastMoveTurn, this.number);*/
-	return false; // todo: implement this
+    return ResolveComparison(comparison, move->GetPrevState()->GetTurnNumber() - other->GetLastMoveTurn(), number);
 }
 
 
@@ -157,38 +173,48 @@ bool MoveCondition_Threatened::IsSatisfied(Move *move)
 
 bool MoveCondition_Threatened::CheckSatisfied(Move *move)
 {
-	/*var step = move.steps[move.steps.length - 1]; // all steps except the current one will already have been performed
+	MoveStep *step = *move->GetSteps().rbegin(); // all steps except the current one will already have been performed
 
-    if (this.start && step.fromState == Piece.State.OnBoard) {
-        var threatened = Conditions_Threatened.isThreatened(move.prevState, step.fromPos);
-        
-        if (threatened != this.value)
-            return false;
-    }
+	if (start && step->GetFromState() == Piece::OnBoard)
+	{
+		bool threatened = IsThreatened(move->GetPrevState(), step->GetFromPosition());
+		if (threatened != value)
+			return false;
+	}
 
-    if (this.end && step.toState == Piece.State.OnBoard) {
-        if (!step.perform(move.prevState.game, false))
-            return false;
+	if (end && step->GetToState() == Piece::OnBoard)
+	{
+		if (!step->Perform(false))
+			return false;
 
-        var threatened = Conditions_Threatened.isThreatened(move.prevState, step.toPos);
-        step.reverse(move.prevState.game, false);
+		bool threatened = IsThreatened(move->GetPrevState(), step->GetToPosition());
+		step->Reverse(false);
 
-        if (threatened != this.value)
-            return false;
-    }
+		if (threatened != value)
+			return false;
+	}
 
-    return true;*/
-	return false; // todo: implement this
+	return true;
 }
 
 bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)
 {
-	/*var moves = state.determineThreatMoves();
+	auto moves = state->DetermineThreatMoves();
+	
+	bool retVal = false;
+	for (auto it = moves->begin(); it != moves->end(); it++)
+	{
+		Move *move = *it;
+		if (move->WouldCapture(position))
+		{
+			retVal = true;
+			break;
+		}
+	}
 
-    for (int i = 0; i < moves.length; i++)
-        if (moves[i].wouldCapture(pos))
-            return true;
-
-    return false;*/
-	return false; // todo: implement this
+	while (!moves->empty())
+		delete moves->front(), moves->pop_front();
+	delete moves;
+	
+	return retVal;
 }
