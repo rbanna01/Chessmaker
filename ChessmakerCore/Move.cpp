@@ -111,7 +111,7 @@ bool Move::Reverse(bool updateDisplay)
 char *Move::DetermineNotation(int detailLevel)
 {
 	int numPlayers = prevState->game->players.size();
-	int displayNumber = (prevState->turnNumber + numPlayers + 1) / numPlayers;
+	int displayNumber = (prevState->turnNumber + numPlayers + 1) / numPlayers - 1;
 	sprintf(notation, "%i", displayNumber);
 
 	if (prevState->turnNumber % numPlayers == 1) // first player's move
