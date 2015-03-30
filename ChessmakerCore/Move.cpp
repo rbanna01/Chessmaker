@@ -37,8 +37,7 @@ Move *Move::Clone()
 
 GameState *Move::Perform(bool updateDisplay)
 {
-	std::list<MoveStep*>::iterator it = steps.begin();
-	while (it != steps.end())
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
 
@@ -57,14 +56,12 @@ GameState *Move::Perform(bool updateDisplay)
 				if (!step->Reverse(updateDisplay))
 				{
 					// todo: report cockup somehow
-					return false;
+					return 0;
 				}
 			} while (reversing);
 			
 			return 0;
 		}
-
-		it++;
 	}
 
 	prevPieceMoveTurn = piece->lastMoveTurn;
@@ -77,8 +74,7 @@ GameState *Move::Perform(bool updateDisplay)
 
 bool Move::Reverse(bool updateDisplay)
 {
-	std::list<MoveStep*>::reverse_iterator it = steps.rbegin();
-	while (it != steps.rend())
+	for (auto it = steps.rbegin(); it != steps.rend(); it++)
 	{
 		MoveStep *step = *it;
 
@@ -103,8 +99,6 @@ bool Move::Reverse(bool updateDisplay)
 
 			return false;
 		}
-
-		it++;
 	}
 
 	piece->lastMoveTurn = prevPieceMoveTurn;
@@ -191,8 +185,7 @@ Piece *Move::GetPieceByReference(char *ref)
 
 Cell *Move::GetEndPos()
 {
-	auto it = steps.rbegin();
-	while (it != steps.rend())
+	for (auto it = steps.rbegin(); it != steps.rend(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->GetPiece() == piece && step->toState == Piece::OnBoard)
@@ -200,8 +193,7 @@ Cell *Move::GetEndPos()
 	}
 
 	// if this piece doesn't move, consider other pieces that it might move or capture
-	it = steps.rbegin();
-	while (it != steps.rend())
+	for (auto it = steps.rbegin(); it != steps.rend(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->toState == Piece::OnBoard)
@@ -218,8 +210,7 @@ std::list<Cell*> Move::GetAllPositions()
 {
 	std::list<Cell*> allPositions;
 
-	auto it = steps.begin();
-	while (it != steps.end())
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->GetPiece() == piece && step->toState == Piece::OnBoard)
@@ -232,8 +223,7 @@ std::list<Cell*> Move::GetAllPositions()
 
 bool Move::IsCapture()
 {
-	auto it = steps.begin();
-	while (it != steps.end())
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->GetPiece() != piece && step->toState != Piece::OnBoard)
@@ -245,8 +235,7 @@ bool Move::IsCapture()
 
 bool Move::WouldCapture(Cell* target)
 {
-	auto it = steps.begin();
-	while (it != steps.end())
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->GetPiece() != piece && step->toState != Piece::OnBoard && step->fromState == Piece::OnBoard && step->fromPos == target)
@@ -258,8 +247,7 @@ bool Move::WouldCapture(Cell* target)
 
 PieceType *Move::GetPromotionType()
 {
-	auto it = steps.rbegin();
-	while (it != steps.rend())
+	for (auto it = steps.rbegin(); it != steps.rend(); it++)
 	{
 		MoveStep *step = *it;
 		if (step->GetPiece() == piece && step->toType != step->fromType)
