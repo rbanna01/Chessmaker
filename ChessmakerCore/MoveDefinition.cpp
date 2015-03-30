@@ -126,24 +126,25 @@ std::list<Move*> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSt
 		// may not have a second dir, but we need one to function here
 		bool hasSecondDir = secondDir != 0;
 		direction_t secondDirs = hasSecondDir ? player->ResolveDirections(secondDir, firstDir) : firstDir;
-		FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
+		
+		Cell *straightCell = piece->GetPosition();
+
+        for (int dist = 1; dist <= maxDist; dist++)
 		{
-			boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), secondDir);
-			int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
-			int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
+			straightCell = straightCell->FollowLink(firstDir);
+            if (straightCell == 0)
+                break;
 
-			Cell *straightCell = piece->GetPosition();
+            if (dist < minDist)
+                continue; // not yet reached minimum straight distance, so don't turn
 
-            for (int dist = 1; dist <= maxDist; dist++)
+			FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
 			{
-				straightCell = straightCell->FollowLink(firstDir);
-                if (straightCell == 0)
-                    break;
+				Cell *destCell = straightCell;
+				boardMaxDist = game->GetBoard()->GetMaxDistance(destCell, secondDir);
+				int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
+				int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
 
-                if (dist < minDist)
-                    continue; // not yet reached minimum straight distance, so don't turn
-
-                Cell *destCell = straightCell;
 				for (int secondDist = hasSecondDir ? 1 : 0; secondDist <= maxDist2; secondDist++)
 				{
 					if (secondDist > 0)
@@ -325,24 +326,25 @@ std::list<Move*> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 		// may not have a second dir, but we need one to function here
 		bool hasSecondDir = secondDir != 0;
 		direction_t secondDirs = hasSecondDir ? player->ResolveDirections(secondDir, firstDir) : firstDir;
-		FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
+		
+		Cell *straightCell = piece->GetPosition();
+
+		for (int dist = 1; dist <= maxDist; dist++)
 		{
-			boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), secondDir);
-			int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
-			int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
+			straightCell = straightCell->FollowLink(firstDir);
+			if (straightCell == 0)
+				break;
 
-			Cell *straightCell = piece->GetPosition();
+			if (dist < minDist)
+				continue; // not yet reached minimum straight distance, so don't turn
 
-			for (int dist = 1; dist <= maxDist; dist++)
+			FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
 			{
-				straightCell = straightCell->FollowLink(firstDir);
-				if (straightCell == 0)
-					break;
-
-				if (dist < minDist)
-					continue; // not yet reached minimum straight distance, so don't turn
-
 				Cell *destCell = straightCell;
+				boardMaxDist = game->GetBoard()->GetMaxDistance(destCell, secondDir);
+				int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
+				int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
+
 				for (int secondDist = hasSecondDir ? 1 : 0; secondDist <= maxDist2; secondDist++)
 				{
 					if (secondDist > 0)
