@@ -102,8 +102,8 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 		for (auto it = moves.begin(); it != moves.end(); it++)
 		{
 			MoveDefinition *moveDef = *it;
-			auto possibilities = moveDef->AppendValidNextSteps(moveTemplate, piece, 0);
-			for (auto it2 = possibilities.begin(); it2 != possibilities.end(); it2++)
+			std::list<Move*> *possibilities = moveDef->DetermineNextSteps(moveTemplate, piece, 0);
+			for (auto it2 = possibilities->begin(); it2 != possibilities->end(); it2++)
 			{
 				Move *move = *it2;
         
@@ -121,7 +121,7 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 
                 output->push_back(move);
             }
-			//delete possibilities;
+			delete possibilities;
 		}
 
 		delete moveTemplate;

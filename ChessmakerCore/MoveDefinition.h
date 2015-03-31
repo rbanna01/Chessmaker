@@ -20,7 +20,7 @@ public:
 	MoveDefinition(char *pieceRef, MoveConditionGroup *conditions, When_t when, unsigned int direction);
 	virtual ~MoveDefinition();
 
-	virtual std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
+	virtual std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 protected:
 	char pieceRef[PIECE_REF_LENGTH];
 	MoveConditionGroup *conditions;
@@ -42,7 +42,7 @@ public:
 	}
 	virtual ~Slide() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance;
@@ -63,7 +63,7 @@ public:
 	}
 	virtual ~Leap() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != &Distance::Any) delete secondDist; }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance, *distanceMax;
@@ -86,7 +86,7 @@ public:
 	}
 	virtual ~Hop() { if (distToHurdle != &Distance::Any) delete distToHurdle; if (distToHurdleMax != 0) delete distToHurdleMax; delete distAfterHurdle; if (distAfterHurdleMax != 0 && distAfterHurdleMax != &Distance::Any) delete distAfterHurdleMax; }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distToHurdle, *distToHurdleMax;
@@ -108,7 +108,7 @@ public:
 	}
 	virtual ~Shoot() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0 && secondDist != &Distance::Any) delete secondDist; }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	Distance *distance, *distanceMax;
@@ -130,10 +130,10 @@ public:
 	}
 	virtual ~MoveLike() { }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
-	std::list<Move*> AppendMoveLikeTarget(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *AppendMoveLikeTarget(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 	static bool AllowMoveLikeTarget;
 	bool likeTarget;
@@ -156,7 +156,7 @@ public:
 	}
 	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	char otherPieceRef[PIECE_REF_LENGTH];
@@ -185,7 +185,7 @@ public:
 			delete contents.front(), contents.pop_front();
 	}
 
-	std::list<Move*> AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	int minOccurs, maxOccurs;

@@ -24,9 +24,9 @@ MoveDefinition::~MoveDefinition()
 }
 
 
-std::list<Move*> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
@@ -85,7 +85,7 @@ std::list<Move*> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
                 move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), cell, dir, dist));
 
                 if (conditions == 0 || conditions->IsSatisfied(move))
-                    moves.push_back(move);
+                    moves->push_back(move);
             }
 
             if (target != 0)
@@ -97,9 +97,9 @@ std::list<Move*> Slide::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 }
 
 
-std::list<Move*> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
@@ -181,7 +181,7 @@ std::list<Move*> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSt
 						move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, secondDir, secondDist > 0 ? secondDist : dist));
 
 						if (conditions == 0 || conditions->IsSatisfied(move))
-							moves.push_back(move);
+							moves->push_back(move);
                     }
                 }
             }
@@ -192,9 +192,9 @@ std::list<Move*> Leap::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSt
 }
 
 
-std::list<Move*> Hop::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
@@ -282,7 +282,7 @@ std::list<Move*> Hop::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSte
                     move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, dir, distTo + distAfter));
 
                     if (conditions == 0 || conditions->IsSatisfied(move))
-                        moves.push_back(move);
+                        moves->push_back(move);
                 }
 
                 if (target != 0)
@@ -297,9 +297,9 @@ std::list<Move*> Hop::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveSte
 }
 
 
-std::list<Move*> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 	
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
@@ -370,7 +370,7 @@ std::list<Move*> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 						move->AddPieceReference(target, "target");
 
 						if (conditions == 0 || conditions->IsSatisfied(move))
-							moves.push_back(move);
+							moves->push_back(move);
 					}
 				}
 			}
@@ -382,7 +382,7 @@ std::list<Move*> Shoot::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveS
 }
 
 
-std::list<Move*> MoveLike::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *MoveLike::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	if (likeTarget)
 	{
@@ -390,7 +390,7 @@ std::list<Move*> MoveLike::AppendValidNextSteps(Move *baseMove, Piece *piece, Mo
         return AppendMoveLikeTarget(baseMove, piece, previousStep);
     }
 
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	Piece *other = baseMove->GetPieceByReference(pieceRef);
@@ -405,10 +405,12 @@ std::list<Move*> MoveLike::AppendValidNextSteps(Move *baseMove, Piece *piece, Mo
 	for (auto it = otherMoves.begin(); it != otherMoves.end(); it++)
 	{
 		MoveDefinition *moveDef = *it;
-		std::list<Move*> possibilities = moveDef->AppendValidNextSteps(baseMove, piece, previousStep);
+		std::list<Move*> *possibilities = moveDef->DetermineNextSteps(baseMove, piece, previousStep);
 
-		for (auto it2 = possibilities.begin(); it2 != possibilities.end(); it2++)
-            moves.push_back(*it2);
+		for (auto it2 = possibilities->begin(); it2 != possibilities->end(); it2++)
+            moves->push_back(*it2);
+
+		delete possibilities;
     }
 
 	return moves;
@@ -416,9 +418,9 @@ std::list<Move*> MoveLike::AppendValidNextSteps(Move *baseMove, Piece *piece, Mo
 
 
 bool MoveLike::AllowMoveLikeTarget = true;
-std::list<Move*> MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 	if (!AllowMoveLikeTarget)
         return moves; // 'move like target' shouldn't try to capture other pieces using 'move like target' - that's nonsense
 
@@ -437,9 +439,9 @@ std::list<Move*> MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, Mo
 		for (auto it2 = typeMoves.begin(); it2 != typeMoves.end(); it2++)
 		{
 			MoveDefinition *moveDef = *it2;
-			std::list<Move*> possibilities = moveDef->AppendValidNextSteps(baseMove, piece, previousStep);
+			std::list<Move*> *possibilities = moveDef->DetermineNextSteps(baseMove, piece, previousStep);
 
-			for (auto it3 = possibilities.begin(); it3 != possibilities.end(); it3++)
+			for (auto it3 = possibilities->begin(); it3 != possibilities->end(); it3++)
 			{
 				Move *newMove = *it3;
 				bool moveIsOk = false;
@@ -469,8 +471,12 @@ std::list<Move*> MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, Mo
 				}
 
 				if (moveIsOk) // must be a capture, and every piece captured must be of pieceType (or be this same piece, for kamikaze purposes)
-					moves.push_back(newMove);
+					moves->push_back(newMove);
+				else
+					delete newMove;
 			}
+
+			delete possibilities;
 		}
 	}
 
@@ -479,9 +485,9 @@ std::list<Move*> MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, Mo
 }
 
 
-std::list<Move*> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves;
+	std::list<Move*> *moves = new std::list<Move*>();
 	
 	Piece *other = 0;
 	Player *player = baseMove->GetPlayer();
@@ -519,7 +525,7 @@ std::list<Move*> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *pie
 
 				Move *move = baseMove->Clone();
 				move->AddPieceReference(other, otherPieceRef);
-				moves.push_back(move);
+				moves->push_back(move);
             }
         }
     }
@@ -543,7 +549,7 @@ std::list<Move*> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *pie
 
 				Move *move = baseMove->Clone();
 				move->AddPieceReference(other, otherPieceRef);
-				moves.push_back(move);
+				moves->push_back(move);
             }
         }
 	}
@@ -552,10 +558,9 @@ std::list<Move*> ReferencePiece::AppendValidNextSteps(Move *baseMove, Piece *pie
 }
 
 
-std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> moves, a, b;
-	std::list<Move*> *prevStepMoves = &a, *currentStepMoves = &b;
+	std::list<Move*> *moves = new std::list<Move*>(), *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();
 	prevStepMoves->push_back(baseMove->Clone());
 	
 	for (int rep = 1; rep <= maxOccurs; rep++)
@@ -572,9 +577,10 @@ std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, M
 				for (auto itDoStep = steps.begin(); itDoStep != steps.end(); itDoStep++)
 					(*itDoStep)->Perform(false);
 				
-				std::list<Move*> nextMovesForStep = stepDef->AppendValidNextSteps(prevMove, piece, steps.size() > 0 ? *(steps.end()--) : previousStep);
-				currentStepMoves->splice(currentStepMoves->end(), nextMovesForStep);
-				
+				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, steps.size() > 0 ? *(steps.end()--) : previousStep);
+				currentStepMoves->splice(currentStepMoves->end(), *nextMovesForStep);
+				delete nextMovesForStep;
+
 				for (auto itUndoStep = steps.rbegin(); itUndoStep != steps.rend(); itUndoStep++)
 					(*itUndoStep)->Reverse(false);
 			}
@@ -594,17 +600,18 @@ std::list<Move*> MoveGroup::AppendValidNextSteps(Move *baseMove, Piece *piece, M
 			break;
            
 		if (rep >= minOccurs)
-			moves.splice(moves.end(), *prevStepMoves);
+			moves->splice(moves->end(), *prevStepMoves);
 	}
 
-	while (!a.empty())
-		delete a.front(), a.pop_front();
-	while (!b.empty())
-		delete b.front(), b.pop_front();
+
+	while (!prevStepMoves->empty())
+		delete prevStepMoves->front(), prevStepMoves->pop_front();
+	delete prevStepMoves;
+	delete currentStepMoves;
 
 	// this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
-	if (stepOutIfFail && moves.size() == 0 && baseMove->GetSteps().size() > 0)
-		moves.push_back(baseMove->Clone());
+	if (stepOutIfFail && moves->size() == 0 && baseMove->GetSteps().size() > 0)
+		moves->push_back(baseMove->Clone());
 
 	return moves;
 }
