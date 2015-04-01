@@ -84,8 +84,10 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
                 move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), cell, dir, dist));
 
-                if (conditions == 0 || conditions->IsSatisfied(move))
-                    moves->push_back(move);
+				if (conditions == 0 || conditions->IsSatisfied(move))
+					moves->push_back(move);
+				else
+					delete move;
             }
 
             if (target != 0)
@@ -182,6 +184,8 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 
 						if (conditions == 0 || conditions->IsSatisfied(move))
 							moves->push_back(move);
+						else
+							delete move;
                     }
                 }
             }
@@ -282,7 +286,9 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
                     move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, dir, distTo + distAfter));
 
                     if (conditions == 0 || conditions->IsSatisfied(move))
-                        moves->push_back(move);
+						moves->push_back(move);
+					else
+						delete move;
                 }
 
                 if (target != 0)
@@ -371,6 +377,8 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
 						if (conditions == 0 || conditions->IsSatisfied(move))
 							moves->push_back(move);
+						else
+							delete move;
 					}
 				}
 			}
@@ -576,8 +584,8 @@ std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 				std::list<MoveStep*> steps = prevMove->GetSteps();
 				for (auto itDoStep = steps.begin(); itDoStep != steps.end(); itDoStep++)
 					(*itDoStep)->Perform(false);
-				
-				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, steps.size() > 0 ? *(steps.end()--) : previousStep);
+
+				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, steps.size() > 0 ? *steps.rbegin() : previousStep);
 				currentStepMoves->splice(currentStepMoves->end(), *nextMovesForStep);
 				delete nextMovesForStep;
 
