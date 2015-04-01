@@ -117,6 +117,7 @@ bool Game::EndTurn(GameState *newState, Move *move)
 {
 	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState, move);
 	ClearPossibleMoves();
+	delete currentState;
 
 	if (result != EndOfGame::None) {
 		ProcessEndOfGame(result);
