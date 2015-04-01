@@ -57,19 +57,23 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 		return false;
 	}
 
-	if (piece->GetOwner() != owner) {
+	if (piece->GetOwner() != owner)
+	{
 		//console.log('owner is wrong: got ' + this.piece.ownerPlayer.name + ', expected ' + owner.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
 		return false;
 	}
 
-	if (piece->GetStateOwner() != stateOwner) {
+	if (piece->GetStateOwner() != stateOwner)
+	{
 		//console.log('state owner is wrong: got ' + (this.piece.stateOwner == null ? '[null]' : this.piece.stateOwner.name) + ', expected ' + (stateOwner == null ? '[null]' : stateOwner.name) + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
 		return false;
 	}
 
-	switch (state) {
-	case Piece::State_t::OnBoard:
-		if (piece->GetPosition() != pos) {
+	switch (state)
+	{
+	case Piece::OnBoard:
+		if (piece->GetPosition() != pos)
+		{
 			//console.log('position is wrong: got ' + this.piece.position.name + ', expected ' + pos.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
 			return false;
 		}
@@ -78,13 +82,13 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 		pos->piece = 0;
 		return true;
 
-	case Piece::State_t::Captured:
-		if (stateOwner == 0 || owner->piecesCaptured.erase(piece) == 0)
+	case Piece::Captured:
+		if (stateOwner == 0 || stateOwner->piecesCaptured.erase(piece) == 0)
 			return false; // wasn't captured by that player after all ... can't perform this action
 		return true;
 
-	case Piece::State_t::Held:
-		if (stateOwner == 0 || owner->piecesHeld.erase(piece) == 0)
+	case Piece::Held:
+		if (stateOwner == 0 || stateOwner->piecesHeld.erase(piece) == 0)
 			return false; // wasn't held by that player after all ... can't perform this action
 		return true;
 	default:
@@ -112,6 +116,7 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 		break;
 	case Piece::State_t::Held:
 		stateOwner->piecesHeld.insert(piece);
+		break;
 	default:
 		return; //throw 'Unexpected piece state in MoveStep.place: ' + state;
 	}
