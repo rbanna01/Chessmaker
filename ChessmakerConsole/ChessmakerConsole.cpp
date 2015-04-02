@@ -20,13 +20,24 @@ extern "C" __declspec(dllimport)
 std::string *GetBoardSVG();
 
 extern "C" __declspec(dllimport)
+bool SetPlayerLocal(const char *playerName);
+
+extern "C" __declspec(dllimport)
+bool SetPlayerRemote(const char *playerName);
+
+extern "C" __declspec(dllimport)
+bool SetPlayerAI(const char *playerName, const char *aiName);
+
+extern "C" __declspec(dllimport)
+void Shutdown();
+
+extern "C" __declspec(dllimport)
 std::string *ListPossibleMoves();
 
 extern "C" __declspec(dllimport)
 int PerformMove(const char *notation);
 
-extern "C" __declspec(dllimport)
-void Shutdown();
+void RunGameLoop();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -67,6 +78,23 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	delete svg;
 
+	if (!SetPlayerLocal("white"))
+		printf("Error setting player to LOCAL\n");
+	else if (!SetPlayerAI("black", "random capture"))
+		printf("Error setting player to AI\n");
+	else
+		RunGameLoop();
+
+	Shutdown();
+
+	_CrtDumpMemoryLeaks();
+	getchar();
+
+	return 0;
+}
+
+void RunGameLoop()
+{
 	int retVal = 0;
 	std::string input;
 	do
@@ -91,12 +119,4 @@ int _tmain(int argc, _TCHAR* argv[])
 	} while (retVal != 0);
 
 	printf("Game over\n");
-
-	Shutdown();
-
-	_CrtDumpMemoryLeaks();
-	getchar();
-
-	return 0;
 }
-

@@ -11,7 +11,8 @@ Player::Player(Game *game, char *name, direction_t forwardDir)
 	this->type = Local;
 	this->forwardDir = forwardDir;
 	strcpy(this->name, name);
-	this->id = Player::nextID++;
+	id = Player::nextID++;
+	ai = 0;
 }
 
 
@@ -25,8 +26,21 @@ Player::~Player()
 
 	for (auto it = piecesCaptured.begin(); it != piecesCaptured.end(); it++)
 		delete *it;
+
+	if (ai != 0)
+		delete ai;
 }
 
+
+void Player::SetAI(PlayerAI* ai)
+{
+	if (ai != this->ai && this->ai != 0)
+		delete this->ai;
+	this->ai = ai;
+
+	if (ai != 0)
+		SetType(AI);
+}
 
 direction_t Player::ResolveDirections(direction_t dir, direction_t prevDir)
 {

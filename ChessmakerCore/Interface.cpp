@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <utility>
 #include <string.h>
+#include "ai.h"
 #include "Game.h"
 #include "GameParser.h"
 #include "GameState.h"
@@ -52,6 +53,66 @@ std::string *GetBoardSVG()
 #endif
 
 extern "C" __declspec(dllexport)
+bool SetPlayerLocal(const char *playerName)
+{
+	auto players = game->GetPlayers();
+	for (auto it = players.begin(); it != players.end(); it++)
+	{
+		Player *p = *it;
+		if (strcmp(p->GetName(), playerName) == 0)
+		{
+			p->SetType(Player::Local);
+			return true;
+		}
+	}
+	return false;
+}
+
+extern "C" __declspec(dllexport)
+bool SetPlayerRemote(const char *playerName)
+{
+	auto players = game->GetPlayers();
+	for (auto it = players.begin(); it != players.end(); it++)
+	{
+		Player *p = *it;
+		if (strcmp(p->GetName(), playerName) == 0)
+		{
+			p->SetType(Player::Remote);
+			return true;
+		}
+	}
+	return false;
+}
+
+extern "C" __declspec(dllexport)
+bool SetPlayerAI(const char *playerName, const char *aiName)
+{
+	PlayerAI *ai;
+	if (strcmp(aiName, "random") == 0)
+		ai = new AI_Random(game);
+	else if (strcmp(aiName, "random capture") == 0)
+		ai = new AI_Random(game);
+	else if (strcmp(aiName, "alpha beta") == 0)
+		ai = new AI_AlphaBeta(game, 3);
+	else
+		return false;
+
+	auto players = game->GetPlayers();
+	for (auto it = players.begin(); it != players.end(); it++)
+	{
+		Player *p = *it;
+		if (strcmp(p->GetName(), playerName) == 0)
+		{
+			p->SetAI(ai);
+			return true;
+		}
+	}
+
+	delete ai;
+	return false;
+}
+
+extern "C" __declspec(dllexport)
 void Shutdown()
 {
 	delete game;
@@ -87,16 +148,27 @@ int PerformMove(const char *notation)
 		Move *move = *it;
 		if (strcmp(notation, move->GetNotation()) == 0)
 		{
-			auto result = game->PerformMove(move);
-			switch (result)
+			do
 			{
-			case Game::GameComplete:
-				return 0;
-			case Game::MoveComplete:
-				return 1;
-			default:
-				return -1;
-			}
+				auto result = game->PerformMove(move);
+				switch (result)
+				{
+				case Game::GameComplete:
+					return 0;
+				case Game::MoveComplete:
+					if (game->GetCurrentState()->GetCurrentPlayer()->GetType() == Player::AI)
+					{
+						move = game->GetCurrentState()->GetCurrentPlayer()->GetAI()->SelectMove();
+						if (move == 0)
+							return -1;
+						continue;
+					}
+					else
+						return 1;
+				default:
+					return -1;
+				}
+			} while (true);
 		}
 	}
 	return -1;

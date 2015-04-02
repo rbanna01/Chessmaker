@@ -341,9 +341,6 @@
     </EmbeddedResource>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="robots.txt" />
-    <Content Include="Scripts\AI\AlphaBeta.js" />
-    <Content Include="Scripts\AI\RandomCapture.js" />
-    <Content Include="Scripts\AI\Random.js" />
     <Content Include="Scripts\Game\Cell.js" />
     <Content Include="Scripts\Game\Game.js" />
     <Content Include="Scripts\Game\Board.js" />

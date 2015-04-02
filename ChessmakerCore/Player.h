@@ -2,6 +2,7 @@
 
 #include "Definitions.h"
 
+class PlayerAI;
 class Game;
 class Piece;
 
@@ -18,6 +19,11 @@ public:
 
 	char *GetName() { return name; }
 	Game *GetGame() { return game; }
+	Type_t GetType() { return type; }
+	void SetType(Type_t t) { type = t; }
+	PlayerAI *GetAI() { return ai; }
+	void SetAI(PlayerAI* ai);
+
 	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
 	Relationship_t GetRelationship(Player *other);
 	direction_t GetForwardDirection() { return forwardDir; }
@@ -26,6 +32,7 @@ public:
 
 private:
 	Game *game;
+	PlayerAI *ai;
 	char name[PLAYER_NAME_LENGTH];
 	int id;
 	direction_t forwardDir;

@@ -13,6 +13,8 @@ public:
 	PieceType();
 	~PieceType();
 	std::list<MoveDefinition*> &GetMoves() { return moves; }
+	int GetValue() { return value; }
+
 private:
 	int value = 1;
 	char name[TYPE_NAME_LENGTH];
