@@ -47,7 +47,7 @@ void Game::Start()
 {
 	if (currentState != 0)
 	{
-		// todo: report error, game has already started
+		ReportError("Cannot start game, it has already started\n");
 		return;
 	}
 
@@ -58,7 +58,9 @@ void Game::Start()
 
 bool Game::StartNextTurn()
 {
-#ifndef NO_SVG
+#ifdef NO_SVG
+	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
+#else
 	//$('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
 	// todo: implement this
 #endif
@@ -150,7 +152,8 @@ void Game::ProcessEndOfGame(EndOfGame::CheckType_t result)
 		else
 		{
 			// the current player should be removed from the game. If none remain, game is drawn. If one remains, they win. Otherwise, it continues.
-			// todo: report error, can't (yet) handle a player losing in a game that doesn't have two players.
+			// todo: implement this, somehow
+			ReportError("Unfortunately, chessmaker can't (yet) handle a player losing in a game that doesn't have two players.\n");
 		}
 		break;
 	}
@@ -159,18 +162,26 @@ void Game::ProcessEndOfGame(EndOfGame::CheckType_t result)
 
 void Game::EndGame(Player *victor)
 {
-	/*var text;
-	if (victor == null)
-		text = 'Game finished, stalemate';
+	char text[PLAYER_NAME_LENGTH + 32];
+	if (victor == 0)
+		sprintf(text, "Game finished, stalemate\n");
 	else
-		text = 'Game finished, ' + victor.name + ' wins';
+		sprintf(text, "Game finished, %s wins\n", victor->GetName());
+		
+#ifdef NO_SVG
+	printf(text);
+#else
+	/* todo: implement this
 	$('#nextMove').text(text);
 	$('#wait').hide();*/
-	// todo: implement this
+#endif
 }
 
 void Game::LogMove(Player *player, Move *move)
 {
+#ifdef NO_SVG
+	printf("%s\n", move->GetNotation());
+#else
 	/*
 	var historyDiv = $('#moveHistory');
 
@@ -183,6 +194,7 @@ void Game::LogMove(Player *player, Move *move)
     historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
 	*/
 	// todo: implement this
+#endif
 }
 
 void Game::ClearPossibleMoves()

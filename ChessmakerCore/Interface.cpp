@@ -1,5 +1,6 @@
 #include "Definitions.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <utility>
 #include <string.h>
@@ -65,6 +66,8 @@ bool SetPlayerLocal(const char *playerName)
 			return true;
 		}
 	}
+
+	ReportError("Player \"%s\" not found, cannot set as local\n", playerName);
 	return false;
 }
 
@@ -81,6 +84,8 @@ bool SetPlayerRemote(const char *playerName)
 			return true;
 		}
 	}
+
+	ReportError("Player \"%s\" not found, cannot set as remote\n", playerName);
 	return false;
 }
 
@@ -95,7 +100,10 @@ bool SetPlayerAI(const char *playerName, const char *aiName)
 	else if (strcmp(aiName, "alpha beta") == 0)
 		ai = new AI_AlphaBeta(game, 3);
 	else
+	{
+		ReportError("AI \"%s\" not found, cannot set player \"%s\" as AI\n", aiName, playerName);
 		return false;
+	}
 
 	auto players = game->GetPlayers();
 	for (auto it = players.begin(); it != players.end(); it++)
@@ -109,6 +117,7 @@ bool SetPlayerAI(const char *playerName, const char *aiName)
 	}
 
 	delete ai;
+	ReportError("Player \"%s\" not found, cannot set as AI\n", playerName);
 	return false;
 }
 
@@ -122,8 +131,7 @@ void Shutdown()
 extern "C" __declspec(dllexport)
 std::string *ListPossibleMoves()
 {
-	std::string *output = new std::string(game->GetCurrentState()->GetCurrentPlayer()->GetName());
-	output->append(" to move.\nPossible moves:\n");
+	std::string *output = new std::string("Possible moves:\n");
 
 	auto moves = game->GetPossibleMoves();
 	for (auto it = moves->begin(); it != moves->end(); it++)
@@ -160,16 +168,33 @@ int PerformMove(const char *notation)
 					{
 						move = game->GetCurrentState()->GetCurrentPlayer()->GetAI()->SelectMove();
 						if (move == 0)
+						{
+							ReportError("AI failed to select a move\n");
 							return -1;
+						}
 						continue;
 					}
 					else
 						return 1;
 				default:
+					ReportError("An error occurred performing a move\n");
 					return -1;
 				}
 			} while (true);
 		}
 	}
 	return -1;
+}
+
+
+void ReportError(const char *msg, ...)
+{
+	printf("Error: ");
+
+	va_list args;
+	va_start(args, msg);
+	vprintf(msg, args);
+	va_end(args);
+
+	// todo: if using emscripten, show a popup dialog to indicate that the game has encountered an error
 }

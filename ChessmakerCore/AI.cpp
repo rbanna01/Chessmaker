@@ -12,7 +12,6 @@ Move *AI_Random::SelectMove()
 {
 	auto moves = game->GetPossibleMoves();
 	int selectedIndex = rand() % moves->size(), index = 0;
-	Move *selectedMove;
 	
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -22,7 +21,7 @@ Move *AI_Random::SelectMove()
 		index++;
 	}
 
-	// todo: log error - failed to select a move
+	ReportError("Random AI failed to select a move\n");
 	return 0;
 }
 
@@ -42,7 +41,6 @@ Move *AI_RandomCapture::SelectMove()
 		return AI_Random::SelectMove();
 
 	int selectedIndex = rand() % numCaptures, index = 0;
-	Move *selectedMove;
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -56,7 +54,7 @@ Move *AI_RandomCapture::SelectMove()
 		index++;
 	}
 
-	// todo: log error - failed to select a move
+	ReportError("Random Capture AI failed to select a move\n");
 	return 0;
 }
 
@@ -94,7 +92,7 @@ Move *AI_AlphaBeta::SelectMove()
 		index++;
 	}
 
-	// todo: log error - failed to select a move
+	ReportError("Alpha-Beta AI failed to select a move\n");
 	return 0;
 }
 

@@ -85,7 +85,7 @@ bool MoveCondition_Type::IsSatisfied(Move *move)
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: report piece reference not found: pieceRef
+		ReportError("Referenced piece not found for \"type\" move condition: %s\n", pieceRef);
 		return false;
 	}
 	return other->TypeMatches(type);
@@ -97,7 +97,7 @@ bool MoveCondition_Owner::IsSatisfied(Move *move)
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: report piece reference not found: pieceRef
+		ReportError("Referenced piece not found for \"owner\" move condition: %s\n", pieceRef);
 		return false;
 	}
 
@@ -113,7 +113,7 @@ bool MoveCondition_MoveNumber::IsSatisfied(Move *move)
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: report piece reference not found: pieceRef
+		ReportError("Referenced piece not found for \"move number\" move condition: %s\n", pieceRef);
 		return false;
 	}
 
@@ -126,7 +126,7 @@ bool MoveCondition_MaxDist::IsSatisfied(Move *move)
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: report piece reference not found: pieceRef
+		ReportError("Referenced piece not found for \"max dist\" move condition: %s\n", pieceRef);
 		return false;
 	}
 
@@ -150,7 +150,7 @@ bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: report piece reference not found: pieceRef
+		ReportError("Referenced piece not found for \"turns since last move\" move condition: %s\n", pieceRef);
 		return false;
 	}
 

@@ -55,7 +55,7 @@ GameState *Move::Perform(bool updateDisplay)
 				step = *it;
 				if (!step->Reverse(updateDisplay))
 				{
-					// todo: report cockup somehow
+					ReportError("Encountered an error rolling back a failed move\n");
 					return 0;
 				}
 			} while (reversing);
@@ -92,7 +92,7 @@ bool Move::Reverse(bool updateDisplay)
 				step = *it;
 				if (!step->Perform(updateDisplay))
 				{
-					// todo: report cockup somehow
+					ReportError("Encountered an error rolling back a failed move reversal\n");
 					return false;
 				}
 			} while (reversing);

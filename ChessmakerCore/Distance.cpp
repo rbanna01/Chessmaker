@@ -32,7 +32,7 @@ int Distance::GetValue(MoveStep *previousStep, int maxDist)
 			return previousStep->distance + number;
 		return number;
 	default:
-		// todo: report unexpected relative-to value
+		ReportError("Distance has unexpected relative-to value: %i\n", (int)relativeTo);
 		return 0;
 	}
 }

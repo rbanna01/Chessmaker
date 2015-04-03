@@ -41,7 +41,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	xml_node<> *node = doc.first_node()->first_node("board");
 	if (node == 0)
 	{
-		printf("Can't find \"board\" node in game definition\n");
+		ReportError("Can't find \"board\" node in game definition\n");
 		delete game;
 		return 0;
 	}
@@ -60,7 +60,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	node = node->next_sibling("dirs");
 	if (node == 0)
 	{
-		printf("Can't find \"dirs\" node in game definition\n");
+		ReportError("Can't find \"dirs\" node in game definition\n");
 		delete game;
 		return 0;
 	}
@@ -73,7 +73,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	node = node->next_sibling("pieces");
 	if (node == 0)
 	{
-		printf("Can't find \"pieces\" node in game definition\n");
+		ReportError("Can't find \"pieces\" node in game definition\n");
 		delete game;
 		return 0;
 	}
@@ -92,7 +92,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	node = node->next_sibling("setup");
 	if (node == 0)
 	{
-		printf("Can't find \"setup\" node in game definition\n");
+		ReportError("Can't find \"setup\" node in game definition\n");
 		delete game;
 		return 0;
 	}
@@ -110,7 +110,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	node = node->next_sibling("rules");
 	if (node == 0)
 	{
-		printf("Can't find \"rules\" node in game definition\n");
+		ReportError("Can't find \"rules\" node in game definition\n");
 		delete game;
 		return 0;
 	}
@@ -119,25 +119,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		delete game;
 		return 0;
 	}
-	
-	// todo: implement this player type stuff. AIs was an array of AI objects in the view.
-	/*
-	// this needs enhanced to also allow for remote players
-	if (typeof AIs != 'undefined')
-	for (var i = 0; i < game.players.length; i++) {
-	var AI = AIs[i];
-	if (AI == null)
-	continue;
 
-	var player = game.players[i];
-	player.type = Player.Type.AI;
-	player.AI = AIs[i];
-
-	if (i >= AIs.length - 1)
-	break;
-	}
-	*/
-	
 #ifndef NO_SVG
 	// write svgDoc into svgOutput
 	print(std::back_inserter(*svgOutput), svgDoc, print_no_indenting);
@@ -317,7 +299,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		auto it = cellsByRef.find(link.destinationCellRef);
 		if (it == cellsByRef.end())
 		{
-			// todo: report invalid link destination cell error somehow
+			ReportError("Cell %s has a link to an invalid destination cell: %s\n", link.fromCell->GetName(), link.destinationCellRef);
 			continue;
 		}
 
@@ -423,9 +405,7 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		{
 			auto it2 = pieceTypesByName.find(capturedAs);
 			if (it2 == pieceTypesByName.end())
-			{
-				// todo: report error somehow - captured as type is not defined
-			}
+				ReportError("Piece type \"%s\" is set to be captured as a type that has not been defined: \"%s\"\n", type->GetName(), capturedAs);
 			else
 				type->capturedAs = std::get<0>(it2->second); 
 		}
@@ -594,7 +574,7 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 			return ParseMove_ReferencePiece(moveNode);
 	}
 
-	// todo: report unexpected move type error
+	ReportError("Got a move with an unexpected type: %s\n", moveNode->name());
 	return 0;
 }
 
@@ -905,9 +885,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 
 		}*/
 		else
-		{
-			// todo: report unexpected move condition type
-		}
+			ReportError("Unexpected move condition type: %s\n", child->name());
 
 		child = child->next_sibling();
 	}
@@ -949,9 +927,7 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 			conditions->elements.push_back(new StateCondition_Threatened(type));
 		}
 		else
-		{
-			// todo: report unexpected state condition type
-		}
+			ReportError("Unexpected state condition type: %s\n", child->name());
 
 		child = child->next_sibling();
 	}
@@ -973,7 +949,7 @@ Condition::NumericComparison_t GameParser::ParseNumericComparison(char *value)
 	if (strcmp(value, "greater than or equals") == 0)
 		return Condition::GreaterThanOrEquals;
 	
-	// todo: report invalid comparison type
+	ReportError("Unexpected numeric comparison type: %s\n", value);
 	return Condition::Equals;
 }
 
@@ -1008,7 +984,7 @@ MoveDefinition::When_t GameParser::ParseWhen(char *val)
 	if (strcmp(val, "capture") == 0)
 		return MoveDefinition::Capturing;
 
-	// todo: report unexpected value
+	ReportError("Unexpected 'when' value: %s\n", val);
 	return MoveDefinition::Any;
 }
 
@@ -1025,7 +1001,7 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 	if (strcmp(val, "ally") == 0)
 		return Player::Ally;
 
-	// todo: report unexpected value
+	ReportError("Unexpected relationship type: %s\n", val);
 	return Player::Any;
 }
 
@@ -1080,7 +1056,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 			auto it = pieceTypesByName.find(typeName);
 			if (it == pieceTypesByName.end())
 			{
-				// todo: report error somehow
+				ReportError("Unrecognized piece type: %s\n", typeName);
 				return false;
 			}
 			PieceType *type = std::get<0>(it->second);
@@ -1095,7 +1071,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				auto it = cellsByRef.find(position);
 				if (it == cellsByRef.end())
 				{
-					// todo: report error somehow
+					ReportError("Piece has unrecognised position: %s\n", position);
 					return false;
 				}
 				Cell *cell = it->second;
@@ -1106,7 +1082,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				if (cell->piece == 0)
 					cell->piece = piece;
 				else
-					; // todo: report multiple-pieces-in-one-cell
+					ReportError("Definition specified multiple pieces in cell %s - this is not allowed\n", cell->GetName());
 
 #ifndef NO_SVG
 				// generate piece image
@@ -1132,7 +1108,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				auto it2 = piece->pieceType->appearances.find(player->id);
 				if (it2 == piece->pieceType->appearances.end())
 				{
-					// todo: report error, piece has no appearance for this player
+					ReportError("Piece type \"%s\" has no appearance specified for player \"%s\"\n", piece->pieceType->GetName(), player->GetName());
 					return false;
 				}
 				val = svgDoc->allocate_string(it2->second, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
@@ -1167,7 +1143,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 
 	if (end == 0)
 	{
-		// report error parsing end of game
+		ReportError("An error occurred parsing the EndOfGame\n");
 		return false;
 	}
 	else
@@ -1214,7 +1190,7 @@ bool GameParser::ParseTurnRepeat(TurnRepeat *repeat, xml_node<> *repeatNode)
 				return false;
 		}
 		else
-			; // todo: report unexpected node name
+			ReportError("Unexpected move node: %s\n", node->name());
 
 		node = node->next_sibling();
 	}
@@ -1231,7 +1207,7 @@ Player *GameParser::GetPlayerByName(char *name)
 			return player;
 	}
 
-	// todo: report invalid player name
+	ReportError("Attempted to look up invalid player name: %s\n", name);
 	return 0;
 }
 
@@ -1256,7 +1232,7 @@ EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 		}
 		else
 		{
-			// todo: report unexpected check type
+			ReportError("Unexpected end-of-game check type: %s\n", node->name());
 			continue;
 		}
 

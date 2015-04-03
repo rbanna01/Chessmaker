@@ -13,6 +13,8 @@
 #include <set>
 #include <string>
 
+void ReportError(const char *msg, ...);
+
 struct char_cmp {
 	bool operator () (const char *a, const char *b) const
 	{

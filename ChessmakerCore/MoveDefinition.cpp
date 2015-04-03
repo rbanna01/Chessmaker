@@ -34,7 +34,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 		piece = baseMove->GetPieceByReference(pieceRef);
 		if (piece == 0)
 		{
-			// todo: log piece ref not found - pieceRef;
+			ReportError("Referenced piece not found for slide move: %s\n", pieceRef);
 			return moves;
 		}
 	}
@@ -109,7 +109,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 		piece = baseMove->GetPieceByReference(pieceRef);
 		if (piece == 0)
 		{
-			// todo: log piece ref not found - pieceRef;
+			ReportError("Referenced piece not found for leap move: %s\n", pieceRef);
 			return moves;
 		}
 	}
@@ -206,7 +206,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 		piece = baseMove->GetPieceByReference(pieceRef);
 		if (piece == 0)
 		{
-			// todo: log piece ref not found - pieceRef;
+			ReportError("Referenced piece not found for hop move: %s\n", pieceRef);
 			return moves;
 		}
 	}
@@ -313,7 +313,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 		piece = baseMove->GetPieceByReference(pieceRef);
 		if (piece == 0)
 		{
-			// todo: log piece ref not found - pieceRef;
+			ReportError("Referenced piece not found for shoot move: %s\n", pieceRef);
 			return moves;
 		}
 	}
@@ -404,7 +404,7 @@ std::list<Move*> *MoveLike::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 	Piece *other = baseMove->GetPieceByReference(pieceRef);
 	if (other == 0)
 	{
-		// todo: log piece ref not found - pieceRef;
+		ReportError("Referenced piece not found for move like move: %s\n", pieceRef);
 		return moves;
 	}
 	
