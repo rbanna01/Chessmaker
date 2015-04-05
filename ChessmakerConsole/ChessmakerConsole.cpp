@@ -15,10 +15,10 @@
 
 extern "C" __declspec(dllimport)
 bool Initialize(char* definition);
-
+/*
 extern "C" __declspec(dllimport)
 std::string *GetBoardSVG();
-
+*/
 extern "C" __declspec(dllimport)
 bool SetPlayerLocal(const char *playerName);
 
@@ -63,11 +63,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		delete definition;
 		return 1;
 	}
-	else
-		printf("Definition parsed successfully\n");
 
 	delete definition;
-
+/*
 	// retrieve and then save the board SVG file
 	std::string *svg = GetBoardSVG();
 	printf("received %i bytes:\n%s\n", svg->size(), svg->c_str());
@@ -77,7 +75,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	ofs.close();
 
 	delete svg;
-
+*/
 	if (!SetPlayerLocal("white"))
 		printf("Error setting player to LOCAL\n");
 	else if (!SetPlayerAI("black", "random capture"))
@@ -105,6 +103,7 @@ void RunGameLoop()
 		{
 			std::string *output = ListPossibleMoves();
 			printf(output->c_str());
+			printf("Enter move: ");
 			delete output;
 		}
 

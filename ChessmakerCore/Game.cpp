@@ -58,9 +58,10 @@ void Game::Start()
 
 bool Game::StartNextTurn()
 {
-#ifdef NO_SVG
+#ifdef CONSOLE
 	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
-#else
+#endif
+#ifdef EMSCRIPTEN
 	//$('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
 	// todo: implement this
 #endif
@@ -85,7 +86,7 @@ bool Game::StartNextTurn()
 				game.performMove(move);
 			}, 1);*/
 		}
-#ifndef NO_SVG
+#ifdef EMSCRIPTEN
 		//$('#wait').show();
 		// todo: implement this
 	}
@@ -168,20 +169,22 @@ void Game::EndGame(Player *victor)
 	else
 		sprintf(text, "Game finished, %s wins\n", victor->GetName());
 		
-#ifdef NO_SVG
+#ifdef CONSOLE
 	printf(text);
-#else
-	/* todo: implement this
+#endif
+#ifdef EMSCRIPTEN
+	// todo: implement this
 	$('#nextMove').text(text);
-	$('#wait').hide();*/
+	//$('#wait').hide();
 #endif
 }
 
 void Game::LogMove(Player *player, Move *move)
 {
-#ifdef NO_SVG
+#ifdef CONSOLE
 	printf("%s\n", move->GetNotation());
-#else
+#endif
+#ifdef EMSCRIPTEN
 	/*
 	var historyDiv = $('#moveHistory');
 

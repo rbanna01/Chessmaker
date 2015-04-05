@@ -15,6 +15,13 @@
 
 void ReportError(const char *msg, ...);
 
+#define NO_SVG
+
+// if some new implementation wishes to use SVG output, then simply duplicate this logic
+#ifdef EMSCRIPTEN
+#undef NO_SVG
+#endif
+
 struct char_cmp {
 	bool operator () (const char *a, const char *b) const
 	{

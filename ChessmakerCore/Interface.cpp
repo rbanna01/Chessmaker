@@ -40,8 +40,11 @@ bool Initialize(char* definition)
 	if (game == 0)
 		return false;
 
-	game->Start();
+#ifdef CONSOLE
+	printf("Definition parsed successfully\n");
+#endif
 
+	game->Start();
 	return true;
 }
 
