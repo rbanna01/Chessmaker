@@ -27,8 +27,8 @@ public:
 	char *DetermineNotation(int detailLevel);
 	char *GetNotation() { return notation; }
 
-	void AddPieceReference(Piece *piece, char *ref);
-	Piece *GetPieceByReference(char *ref);
+	void AddPieceReference(Piece *piece, const char *ref);
+	Piece *GetPieceByReference(const char *ref);
 
 	Cell *GetEndPos();
 	std::list<Cell*> GetAllPositions();
@@ -46,7 +46,7 @@ private:
 	char notation[NOTATION_LENGTH];
 
 	std::list<MoveStep*> steps;
-	std::map<char*, Piece*, char_cmp> references;
+	std::map<const char*, Piece*, char_cmp> references;
 
 	int prevPieceMoveTurn;
 

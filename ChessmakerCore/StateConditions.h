@@ -7,6 +7,7 @@ class StateCondition : public Condition
 {
 public:
 	virtual bool IsSatisfied(GameState *move, bool canMove) = 0;
+	virtual ~StateCondition() {}
 };
 
 
@@ -14,7 +15,7 @@ class StateConditionGroup : public StateCondition
 {
 public:
 	StateConditionGroup(GroupType_t type);
-	~StateConditionGroup();
+	virtual ~StateConditionGroup();
 
 	virtual bool IsSatisfied(GameState *state, bool canMove);
 private:

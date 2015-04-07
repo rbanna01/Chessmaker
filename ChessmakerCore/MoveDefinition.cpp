@@ -7,7 +7,7 @@
 #include "MoveDefinition.h"
 #include "MoveStep.h"
 
-MoveDefinition::MoveDefinition(char *pieceRef, MoveConditionGroup *conditions, When_t when, direction_t direction)
+MoveDefinition::MoveDefinition(const char *pieceRef, MoveConditionGroup *conditions, When_t when, direction_t direction)
 {
 	strcpy(this->pieceRef, pieceRef);
 	this->conditions = conditions;
@@ -385,7 +385,6 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 		}
     }
 
-	// todo: implement this
 	return moves;
 }
 

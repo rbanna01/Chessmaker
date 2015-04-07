@@ -157,6 +157,8 @@ void Game::ProcessEndOfGame(EndOfGame::CheckType_t result)
 			ReportError("Unfortunately, chessmaker can't (yet) handle a player losing in a game that doesn't have two players.\n");
 		}
 		break;
+	default:
+		break;
 	}
 }
 
@@ -168,13 +170,13 @@ void Game::EndGame(Player *victor)
 		sprintf(text, "Game finished, stalemate\n");
 	else
 		sprintf(text, "Game finished, %s wins\n", victor->GetName());
-		
+
 #ifdef CONSOLE
 	printf(text);
 #endif
 #ifdef EMSCRIPTEN
 	// todo: implement this
-	$('#nextMove').text(text);
+	//$('#nextMove').text(text);
 	//$('#wait').hide();
 #endif
 }

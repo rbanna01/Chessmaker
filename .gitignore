@@ -29,3 +29,5 @@ _ReSharper*/
 obj/
 *.sdf
 *.opensdf
+ChessmakerCore/Emscripten/*
+*.mem

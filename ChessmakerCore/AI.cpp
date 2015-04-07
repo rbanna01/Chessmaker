@@ -116,7 +116,7 @@ double AI_AlphaBeta::FindBestScore(GameState *state, double alpha, double beta, 
 			EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckStartOfTurn(state, anyMoves);
 			if (gameEnd != EndOfGame::None)
 			{
-				for (it; it != moves->end(); it++)
+				for (; it != moves->end(); it++)
 					delete *it;
 				delete moves;
 

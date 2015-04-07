@@ -68,11 +68,15 @@ bool MoveConditionGroup::IsSatisfied(Move *move)
         return true;
     case GroupType_t::Xor:
 		for (auto it = elements.begin(); it != elements.end(); it++)
+		{
 			if ((*it)->IsSatisfied(move))
-                if (any)
-                    return false;
-                else
-                    any = true;
+			{
+				if (any)
+					return false;
+				else
+					any = true;
+			}
+		}
         return any;
 	default: // there are no other types!
 		return false;

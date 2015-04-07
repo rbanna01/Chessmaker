@@ -10,13 +10,19 @@
 #include "GameState.h"
 #include "TurnOrder.h"
 
+#ifdef EMSCRIPTEN
+#define EXPOSE_METHOD extern "C"
+#else
+#define EXPOSE_METHOD extern "C" __declspec(dllexport)
+#endif
+
 Game *game = 0;
 
 #ifndef NO_SVG
 std::string *boardSVG = 0;
 #endif
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 bool Initialize(char* definition)
 {
 	if (game != 0)
@@ -49,14 +55,14 @@ bool Initialize(char* definition)
 }
 
 #ifndef NO_SVG
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 std::string *GetBoardSVG()
 {
 	return boardSVG;
 }
 #endif
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 bool SetPlayerLocal(const char *playerName)
 {
 	auto players = game->GetPlayers();
@@ -74,7 +80,7 @@ bool SetPlayerLocal(const char *playerName)
 	return false;
 }
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 bool SetPlayerRemote(const char *playerName)
 {
 	auto players = game->GetPlayers();
@@ -92,7 +98,7 @@ bool SetPlayerRemote(const char *playerName)
 	return false;
 }
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 bool SetPlayerAI(const char *playerName, const char *aiName)
 {
 	PlayerAI *ai;
@@ -124,14 +130,14 @@ bool SetPlayerAI(const char *playerName, const char *aiName)
 	return false;
 }
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 void Shutdown()
 {
 	delete game;
 	game = 0;
 }
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 std::string *ListPossibleMoves()
 {
 	std::string *output = new std::string("Possible moves:\n");
@@ -147,7 +153,7 @@ std::string *ListPossibleMoves()
 	return output;
 }
 
-extern "C" __declspec(dllexport)
+EXPOSE_METHOD
 int PerformMove(const char *notation)
 {
 	// See if this is a valid move, and if so, perform it. If not, return -1.
@@ -199,5 +205,7 @@ void ReportError(const char *msg, ...)
 	vprintf(msg, args);
 	va_end(args);
 
-	// todo: if using emscripten, show a popup dialog to indicate that the game has encountered an error
+#ifdef EMSCRIPTEN
+	// todo: show a popup dialog to indicate that the game has encountered an error
+#endif
 }

@@ -23,6 +23,7 @@ protected:
 class MoveCondition : public Condition
 {
 public:
+	virtual ~MoveCondition() {}
 	virtual bool IsSatisfied(Move *move) = 0;
 };
 
@@ -31,7 +32,7 @@ class MoveConditionGroup : public MoveCondition
 {
 public:
 	MoveConditionGroup(GroupType_t type);
-	~MoveConditionGroup();
+	virtual ~MoveConditionGroup();
 
 	virtual bool IsSatisfied(Move *move);
 private:
@@ -45,7 +46,7 @@ private:
 class MoveCondition_Type : public MoveCondition
 {
 public:
-	MoveCondition_Type(char *of, PieceType *type)
+	MoveCondition_Type(const char *of, PieceType *type)
 	{
 		strcpy(pieceRef, of);
 		this->type = type;
@@ -61,7 +62,7 @@ private:
 class MoveCondition_Owner : public MoveCondition
 {
 public:
-	MoveCondition_Owner(char *of, Player::Relationship_t relationship)
+	MoveCondition_Owner(const char *of, Player::Relationship_t relationship)
 	{
 		strcpy(pieceRef, of);
 		this->relationship = relationship;
@@ -77,7 +78,7 @@ private:
 class MoveCondition_MoveNumber : public MoveCondition
 {
 public:
-	MoveCondition_MoveNumber(char *of, int number, NumericComparison_t comparison)
+	MoveCondition_MoveNumber(const char *of, int number, NumericComparison_t comparison)
 	{
 		strcpy(pieceRef, of);
 		this->number = number;
@@ -95,7 +96,7 @@ private:
 class MoveCondition_MaxDist : public MoveCondition
 {
 public:
-	MoveCondition_MaxDist(char *from, unsigned int dir, int number, NumericComparison_t comparison)
+	MoveCondition_MaxDist(const char *from, unsigned int dir, int number, NumericComparison_t comparison)
 	{
 		strcpy(pieceRef, from);
 		this->dir = dir;
@@ -115,7 +116,7 @@ private:
 class MoveCondition_TurnsSinceLastMove : public MoveCondition
 {
 public:
-	MoveCondition_TurnsSinceLastMove(char *of, int number, NumericComparison_t comparison)
+	MoveCondition_TurnsSinceLastMove(const char *of, int number, NumericComparison_t comparison)
 	{
 		strcpy(pieceRef, of);
 		this->number = number;

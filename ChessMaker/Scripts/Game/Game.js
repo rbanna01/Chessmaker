@@ -1,34 +1,9 @@
 ﻿"use strict";
 
 function Game() {
-    this.board = null;
-    this.players = [];
-    this.turnOrder = null;
-    this.state = null;
-    this.endOfGame = null;
     this.showCaptured = true;
     this.showHeld = false;
 }
-
-Game.parse = function (xml, boardRootElement) {
-
-    // this needs enhanced to also allow for remote players
-    if (typeof AIs != 'undefined')
-        for (var i = 0; i < game.players.length; i++) {
-            var AI = AIs[i];
-            if (AI == null)
-                continue;
-
-            var player = game.players[i];
-            player.type = Player.Type.AI;
-            player.AI = AIs[i];
-
-            if (i >= AIs.length - 1)
-                break;
-        }
-
-    return game;
-};
 
 Game.prototype.showMoveOptions = function (piece) {
     var moves = this.state.possibleMovesByPiece[piece.elementID];

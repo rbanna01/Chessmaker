@@ -62,10 +62,12 @@ bool StateConditionGroup::IsSatisfied(GameState *state, bool canMove)
 		while (it != elements.end())
 		{
 			if ((*it)->IsSatisfied(state, canMove))
+			{
 				if (any)
 					return false;
 				else
 					any = true;
+			}
 			it++;
 		}
 		return any;

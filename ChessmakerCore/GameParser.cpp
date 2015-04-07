@@ -583,7 +583,7 @@ MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
-	char *pieceRef = attr == 0 ? "self" : attr->value();
+	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
 	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
@@ -604,7 +604,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
-	char *pieceRef = attr == 0 ? "self" : attr->value();
+	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
 	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
@@ -631,7 +631,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
-	char *pieceRef = attr == 0 ? "self" : attr->value();
+	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
 	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
@@ -660,7 +660,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
-	char *pieceRef = attr == 0 ? "self" : attr->value();
+	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
 	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
@@ -683,7 +683,7 @@ MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
 {
 	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
 
-	char *pieceRef = moveNode->first_attribute("other")->value();
+	const char *pieceRef = moveNode->first_attribute("other")->value();
 	
 	xml_attribute<> *attr = moveNode->first_attribute("when");
 	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
@@ -800,21 +800,21 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			conditions->elements.push_back(ParseMoveConditions(child, Condition::Xor));
 		else if (strcmp(child->name(), "type") == 0)
 		{
-			char *of = child->first_attribute("of")->value();
+			const char *of = child->first_attribute("of")->value();
 			auto it = pieceTypesByName.find(child->value());
 			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
 			conditions->elements.push_back(new MoveCondition_Type(of, type));
 		}
 		else if (strcmp(child->name(), "owner") == 0)
 		{
-			char *of = child->first_attribute("of")->value();
+			const char *of = child->first_attribute("of")->value();
 			Player::Relationship_t relationship = ParseRelationship(child->value());
 			conditions->elements.push_back(new MoveCondition_Owner(of, relationship));
 		}
 		else if (strcmp(child->name(), "moveNumber") == 0)
 		{
 			xml_attribute<> *attr = child->first_attribute("of");
-			char *of = attr == 0 ? "self" : attr->value();
+			const char *of = attr == 0 ? "self" : attr->value();
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_MoveNumber(of, number, comparison));
@@ -822,7 +822,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		else if (strcmp(child->name(), "maxDist") == 0)
 		{
 			xml_attribute<> *attr = child->first_attribute("from"); // not present in the schema
-			char *from = attr == 0 ? "self" : attr->value();
+			const char *from = attr == 0 ? "self" : attr->value();
 			unsigned int dir = LookupDirection(child->first_attribute("dir")->value());
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
@@ -831,7 +831,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		else if (strcmp(child->name(), "turnsSinceLastMove") == 0)
 		{
 			xml_attribute<> *attr = child->first_attribute("of");
-			char *of = attr == 0 ? "self" : attr->value();
+			const char *of = attr == 0 ? "self" : attr->value();
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_TurnsSinceLastMove(of, number, comparison));
@@ -839,7 +839,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		else if (strcmp(child->name(), "threatened") == 0)
 		{
 			bool value = strcmp(child->value(), "true") == 0;
-			char *partOfMove = child->first_attribute("where")->value();
+			const char *partOfMove = child->first_attribute("where")->value();
 			bool start = strcmp(partOfMove, "end") != 0;
 			bool end = strcmp(partOfMove, "start") != 0;
 			conditions->elements.push_back(new MoveCondition_Threatened(start, end, value));
@@ -1050,7 +1050,6 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 		while (pieceNode != 0)
 		{
 			char *position = pieceNode->first_attribute("location")->value();
-			Piece::State_t state = Piece::OnBoard;
 
 			char *typeName = pieceNode->first_attribute("type")->value();
 			auto it = pieceTypesByName.find(typeName);
