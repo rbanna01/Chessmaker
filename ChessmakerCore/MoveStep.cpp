@@ -26,10 +26,7 @@ bool MoveStep::Perform(bool updateDisplay)
 	if (!Pickup(fromState, fromStateOwner, fromPos, fromOwner, fromType))
 		return false;
 
-	Place(toState, toStateOwner, toPos, toOwner, toType);
-
-	if (updateDisplay)
-		UpdateDisplay();
+	Place(toState, toStateOwner, toPos, toOwner, toType, updateDisplay);
 
 	return true;
 }
@@ -40,10 +37,7 @@ bool MoveStep::Reverse(bool updateDisplay)
 	if (!Pickup(toState, toStateOwner, toPos, toOwner, toType))
 		return false;
 
-	Place(fromState, fromStateOwner, fromPos, fromOwner, fromType);
-
-	if (updateDisplay)
-		UpdateDisplay();
+	Place(fromState, fromStateOwner, fromPos, fromOwner, fromType, updateDisplay);
 
 	return true;
 }
@@ -53,19 +47,19 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 {
 	if (piece->GetState() != state) // piece isn't in the expected state, quit
 	{
-		//console.log('state is wrong: got ' + this.piece.pieceState + ', expected ' + state + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+		ReportError("move error - state is wrong: got %i, expected %i for %s %s\n", piece->GetState(), state, piece->GetOwner()->GetName(), piece->GetType()->GetName());
 		return false;
 	}
 
 	if (piece->GetOwner() != owner)
 	{
-		//console.log('owner is wrong: got ' + this.piece.ownerPlayer.name + ', expected ' + owner.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+		ReportError("move error - owner is wrong: got %s, expected %s for %s %s\n", piece->GetOwner()->GetName(), owner->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
 		return false;
 	}
 
 	if (piece->GetStateOwner() != stateOwner)
 	{
-		//console.log('state owner is wrong: got ' + (this.piece.stateOwner == null ? '[null]' : this.piece.stateOwner.name) + ', expected ' + (stateOwner == null ? '[null]' : stateOwner.name) + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+		ReportError("move error - state owner is wrong: got %s, expected %s for %s %s\n", piece->GetStateOwner() == 0 ? "[null]" : piece->GetStateOwner()->GetName(), stateOwner == 0 ? "[null]" : stateOwner->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
 		return false;
 	}
 
@@ -74,7 +68,7 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 	case Piece::OnBoard:
 		if (piece->GetPosition() != pos)
 		{
-			//console.log('position is wrong: got ' + this.piece.position.name + ', expected ' + pos.name + ' for ' + this.piece.ownerPlayer.name + ' ' + this.piece.pieceType.name);
+			ReportError("move error - position is wrong: got %s, expected %s for %s %s\n", piece->GetPosition()->GetName(), pos->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
 			return false;
 		}
 		if (toState != fromState || fromOwner != toOwner)
@@ -84,20 +78,27 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 
 	case Piece::Captured:
 		if (stateOwner == 0 || stateOwner->piecesCaptured.erase(piece) == 0)
-			return false; // wasn't captured by that player after all ... can't perform this action
+		{
+			ReportError("move error - captured piece is not held by its state owner\n");
+			return false;
+		}
 		return true;
 
 	case Piece::Held:
 		if (stateOwner == 0 || stateOwner->piecesHeld.erase(piece) == 0)
-			return false; // wasn't held by that player after all ... can't perform this action
+		{
+			ReportError("move error - held piece is not held by its state owner\n");
+			return false;
+		}
 		return true;
 	default:
-		return false;// throw 'Unexpected piece state in MoveStep.pickup: ' + state;
+		ReportError("move error - piece has an invalid state: %i\n", state);
+		return false;
 	}
 }
 
 
-void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
+void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
 {
     piece->pieceState = state;
 	piece->stateOwner = stateOwner;
@@ -118,14 +119,20 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 		stateOwner->piecesHeld.insert(piece);
 		break;
 	default:
-		return; //throw 'Unexpected piece state in MoveStep.place: ' + state;
+		ReportError("move error - piece has an invalid state: %i\n", state);
+		return;
 	}
-}
 
+	if (!updateDisplay)
+		return;
 
-void MoveStep::UpdateDisplay()
-{
-	// todo ... implement this somehow
+	// move the svg element for this piece
+#ifdef EMSCRIPTEN
+	EM_ASM_ARGS(
+		{ movePiece($0, $1, $2, $3, $4, $5) },
+		piece->GetID(), (int)state, stateOwner == 0 ? "" : stateOwner->GetName(), pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetName(), type->GetAppearance(owner)
+	);
+#endif
 }
 
 

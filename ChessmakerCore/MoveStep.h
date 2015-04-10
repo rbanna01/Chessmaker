@@ -29,7 +29,7 @@ public:
 
 private:
 	bool Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
-	void Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type);
+	void Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type, bool updateDisplay);
 	void UpdateDisplay();
 
 	static int nextID;

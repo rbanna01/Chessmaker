@@ -16,6 +16,9 @@ public:
 	Cell* FollowLink(direction_t dir);
 	char *GetName() { return reference; }
 	Piece *GetPiece() { return piece; }
+
+	int GetCoordX() { return coordX; }
+	int GetCoordY() { return coordY; }
 private:
 	char reference[CELL_REF_LENGTH];
 

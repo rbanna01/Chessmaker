@@ -1,4 +1,5 @@
 #include "PieceType.h"
+#include "Player.h"
 #include "MoveDefinition.h"
 
 PieceType::PieceType()
@@ -17,3 +18,16 @@ PieceType::~PieceType()
 		delete [] it->second;
 #endif
 }
+
+
+#ifndef NO_SVG
+const char *PieceType::GetAppearance(Player *player)
+{
+	auto it = appearances.find(player->GetID());
+
+	if (it == appearances.end())
+		return "";
+	
+	return it->second;
+}
+#endif

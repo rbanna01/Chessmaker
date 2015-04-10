@@ -3,6 +3,7 @@
 #include "Definitions.h"
 
 class MoveDefinition;
+class Player;
 
 #define TYPE_NAME_LENGTH 32
 #define TYPE_NOTATION_LENGTH 3
@@ -15,6 +16,9 @@ public:
 	std::list<MoveDefinition*> &GetMoves() { return moves; }
 	const char *GetName() { return name; }
 	int GetValue() { return value; }
+#ifndef NO_SVG
+	const char *GetAppearance(Player *player);
+#endif
 
 private:
 	int value = 1;
@@ -23,7 +27,7 @@ private:
 	std::list<MoveDefinition*> moves;
 
 #ifndef NO_SVG
-	std::map<int, char*> appearances;
+	std::map<int, const char*> appearances;
 #endif
 	//std::list<PromotionOpportunity*> promotionOpportunities;
 	PieceType *capturedAs;

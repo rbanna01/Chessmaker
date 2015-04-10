@@ -58,14 +58,6 @@ void Game::Start()
 
 bool Game::StartNextTurn()
 {
-#ifdef CONSOLE
-	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
-#endif
-#ifdef EMSCRIPTEN
-	//$('#nextMove').text(this.state.currentPlayer.name.substr(0, 1).toUpperCase() + this.state.currentPlayer.name.substr(1) + ' to move');
-	// todo: implement this
-#endif
-
 	possibleMoves = currentState->PrepareMovesForTurn();
 	EndOfGame::CheckType_t result = endOfGame->CheckStartOfTurn(currentState, !possibleMoves->empty());
 	if (result != EndOfGame::None)
@@ -74,7 +66,8 @@ bool Game::StartNextTurn()
 		return false;
 	}
 
-	if (currentState->currentPlayer->type != Player::Local)
+	bool local = currentState->currentPlayer->type != Player::Local;
+	if (!local)
 	{
 		if (currentState->currentPlayer->type == Player::AI)
 		{
@@ -86,16 +79,16 @@ bool Game::StartNextTurn()
 				game.performMove(move);
 			}, 1);*/
 		}
+	}
+
 #ifdef EMSCRIPTEN
-		//$('#wait').show();
-		// todo: implement this
-	}
-	else
-	{
-		//$('#wait').hide();
-		// todo: implement this
+	EM_ASM_ARGS({setCurrentPlayer($0, $1);}, currentState->GetCurrentPlayer()->GetName(), local);
 #endif
-	}
+
+#ifdef CONSOLE
+	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
+#endif
+
 	return true;
 }
 
@@ -175,9 +168,7 @@ void Game::EndGame(Player *victor)
 	printf(text);
 #endif
 #ifdef EMSCRIPTEN
-	// todo: implement this
-	//$('#nextMove').text(text);
-	//$('#wait').hide();
+	EM_ASM_ARGS({setCurrentPlayer($0, true);}, text);
 #endif
 }
 
@@ -186,19 +177,9 @@ void Game::LogMove(Player *player, Move *move)
 #ifdef CONSOLE
 	printf("%s\n", move->GetNotation());
 #endif
+	
 #ifdef EMSCRIPTEN
-	/*
-	var historyDiv = $('#moveHistory');
-
-    $('<div/>', {
-        class: 'move ' + player.name,
-        number: move.moveNumber,
-        html: move.notation
-    }).appendTo(historyDiv);
-
-    historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
-	*/
-	// todo: implement this
+	EM_ASM_ARGS({ logMove($0, $1, $2); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), move->GetNotation());
 #endif
 }
 

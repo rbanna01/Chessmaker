@@ -48,6 +48,42 @@ function initializeUI() {
     */
 }
 
+function setCurrentPlayer(name, isLocal) {
+    name = Pointer_stringify(name);
+    $('#nextMove').text(name.substr(0, 1).toUpperCase() + name.substr(1) + ' to move');
+
+    if (isLocal)
+        $('#wait').hide();
+    else
+        $('#wait').show();
+}
+
+function logMove(player, number, notation) {
+    var historyDiv = $('#moveHistory');
+
+    $('<div/>', {
+        class: 'move ' + Pointer_stringify(player),
+        number: number,
+        html: notation
+    }).appendTo(historyDiv);
+
+    historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
+}
+
+function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
+    var element = document.getElementById('p' + pieceID);
+
+    owner = Pointer_stringify(owner);
+    appearance = Pointer_stringify(appearance);
+
+    // at some point, use state and stateOwner to determine where to place piece elements outwith the board
+
+    element.setAttribute('class', 'piece ' + owner);
+    element.setAttribute('x', posX);
+    element.setAttribute('y', posY);
+    element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
+}
+
 function cellClicked(e) {
     if (hasClass(this, 'selected'))
         clearSelection();

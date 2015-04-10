@@ -19,6 +19,7 @@ public:
 
 	char *GetName() { return name; }
 	Game *GetGame() { return game; }
+	int GetID() { return id; }
 	Type_t GetType() { return type; }
 	void SetType(Type_t t) { type = t; }
 	PlayerAI *GetAI() { return ai; }
