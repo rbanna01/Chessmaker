@@ -1,6 +1,10 @@
 #ifndef RAPIDXML_HPP_INCLUDED
 #define RAPIDXML_HPP_INCLUDED
 
+#ifdef EMSCRIPTEN
+#define RAPIDXML_NO_EXCEPTIONS
+#endif
+
 // Copyright (C) 2006, 2009 Marcin Kalicinski
 // Version 1.13
 // Revision $DateTime: 2009/05/13 01:46:17 $
@@ -25,7 +29,7 @@
     
 #if defined(RAPIDXML_NO_EXCEPTIONS)
 
-#define RAPIDXML_PARSE_ERROR(what, where) { parse_error_handler(what, where); assert(0); }
+#define RAPIDXML_PARSE_ERROR(what, where) { parse_error_handler(what, where); }
 
 namespace rapidxml
 {

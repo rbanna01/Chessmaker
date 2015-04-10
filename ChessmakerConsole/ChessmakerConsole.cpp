@@ -17,7 +17,7 @@ extern "C" __declspec(dllimport)
 bool Initialize(char* definition);
 /*
 extern "C" __declspec(dllimport)
-std::string *GetBoardSVG();
+const char *GetBoardSVG();
 */
 extern "C" __declspec(dllimport)
 bool SetPlayerLocal(const char *playerName);

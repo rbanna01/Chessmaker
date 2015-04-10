@@ -10,6 +10,10 @@
 	#include <stdlib.h>
 #endif
 
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 #include <list>
 #include <map>
 #include <set>

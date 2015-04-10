@@ -11,7 +11,7 @@
 #include "TurnOrder.h"
 
 #ifdef EMSCRIPTEN
-#define EXPOSE_METHOD extern "C"
+#define EXPOSE_METHOD extern "C" EMSCRIPTEN_KEEPALIVE 
 #else
 #define EXPOSE_METHOD extern "C" __declspec(dllexport)
 #endif
@@ -56,9 +56,9 @@ bool Initialize(char* definition)
 
 #ifndef NO_SVG
 EXPOSE_METHOD
-std::string *GetBoardSVG()
+const char *GetBoardSVG()
 {
-	return boardSVG;
+	return boardSVG->c_str();
 }
 #endif
 
@@ -209,3 +209,10 @@ void ReportError(const char *msg, ...)
 	// todo: show a popup dialog to indicate that the game has encountered an error
 #endif
 }
+
+#ifdef EMSCRIPTEN
+namespace rapidxml
+{
+	void parse_error_handler(const char *what, void *where) { ReportError(what); printf("\n"); abort(); }
+}
+#endif

@@ -67,7 +67,7 @@ function arrayRemoveItem(array, itemToRemove) {
 };
 
 function calculateRatio() {
-    var svg = $('#render')[0];
+    var svg = document.getElementById('render');
     var viewBox = svg.getAttribute('viewBox').split(' ');
     var width = parseFloat(viewBox[2]);
     var height = parseFloat(viewBox[3]);

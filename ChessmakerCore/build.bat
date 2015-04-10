@@ -1,11 +1,9 @@
 del /q Emscripten\*.*
 mkdir Emscripten
 
-SET optimisation=%1
+SET optimisation=%*
 
-@ECHO ON
-
-IF "%1" == "" (
+IF "%optimisation%" == "" (
   SET optimisation = "-O0"
 )
 
@@ -13,11 +11,11 @@ SET "allFiles = "
 
 setlocal enabledelayedexpansion
 for %%f in (*.cpp) do (
-	echo Generating %%f...
+	echo Processing %%f...
 	call emcc %optimisation% %%f -o Emscripten\%%~nf.bc -std=c++11
 	set "allFiles=!allFiles! Emscripten\%%~nf.bc "
 )
 setlocal disabledelayedexpansion
 
 echo Linking JS...
-emcc %optimisation% %allFiles% -o ../ChessMaker/Scripts/chessmaker.js
+emcc %optimisation% --memory-init-file 0 %allFiles% -o ../ChessMaker/Scripts/chessmaker.js

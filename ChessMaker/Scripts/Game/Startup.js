@@ -1,12 +1,20 @@
 ﻿"use strict";
 
-var game;
 function loadDefinition(xml) {
-    // game-creating code was here
+    console.time('load');
+    if (!Module.ccall('Initialize', 'bool', ['string'], [xml])) {
+        console.log('An error occurred initializing the game');
+        return;
+    }
+    console.timeEnd('load');
+
     initializeUI();
 }
 
 function initializeUI() {
+    var boardSVG = Module.ccall('GetBoardSVG', 'string', [], []);
+    document.getElementById('main').innerHTML = boardSVG;
+    
     $('#render path.cell').click(cellClicked);
     /*
     $('#main').click(function (e) {
@@ -17,7 +25,7 @@ function initializeUI() {
     calculateRatio();
     resizeBoard();
     $(window).resize(function () { resizeBoard(); });
-
+    /*
     // calculate column positions within captured piece controls
     var listX = 25, listXStep = 50; // stepListX should be calculated based on the pixel width of ... either of the two containers. Probably. And whether or not we have multiple columns.
     for (var i = 0; i < game.players.length; i++) {
@@ -25,9 +33,9 @@ function initializeUI() {
         player.pieceListX = listX;
         listX += listXStep;
     }
-
+    */
     $('#moveHistory').slideDown();
-
+    /*
     if (game.showCaptured)
         $('#captureSection').slideDown();
     else
@@ -37,6 +45,7 @@ function initializeUI() {
         $('#heldSection').slideDown();
     else
         $('#heldSection').remove();
+    */
 }
 
 function cellClicked(e) {
@@ -50,6 +59,7 @@ function cellClicked(e) {
         clearSelection();
         addClass($(this), 'selected');
 
+        /*
         var cell = game.board.cells[this.getAttribute('id')];
         if (game.state.currentPlayer.type == Player.Type.Local && cell != null && cell.piece != null && cell.piece.ownerPlayer == game.state.currentPlayer) {
             console.log('clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in cell ' + cell.name);
@@ -57,6 +67,7 @@ function cellClicked(e) {
         }
         else
             console.log('clicked cell ' + cell.name);
+        */
     }
 
     return false;
@@ -77,6 +88,7 @@ function clearSelection() {
 }
 
 function selectMove(clicked) {
+    /*
     var pieceCell = game.board.getCellBySelector('.selected');
     var destCell = game.board.getCellByElement(clicked);
 
@@ -88,4 +100,5 @@ function selectMove(clicked) {
         return;
 
     game.selectMoveByCell(piece, destCell);
+    */
 }
