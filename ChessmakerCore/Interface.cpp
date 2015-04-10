@@ -63,70 +63,79 @@ const char *GetBoardSVG()
 #endif
 
 EXPOSE_METHOD
-bool SetPlayerLocal(const char *playerName)
+bool SetPlayerLocal(int number)
 {
 	auto players = game->GetPlayers();
+	int i = 1;
 	for (auto it = players.begin(); it != players.end(); it++)
 	{
-		Player *p = *it;
-		if (strcmp(p->GetName(), playerName) == 0)
+		if (i++ == number)
 		{
+			Player *p = *it;
 			p->SetType(Player::Local);
 			return true;
 		}
 	}
 
-	ReportError("Player \"%s\" not found, cannot set as local\n", playerName);
+	ReportError("Only got %i players, cannot set #%i as local\n", players.size(), number);
 	return false;
 }
 
 EXPOSE_METHOD
-bool SetPlayerRemote(const char *playerName)
+bool SetPlayerRemote(int number)
 {
 	auto players = game->GetPlayers();
+	int i = 1;
 	for (auto it = players.begin(); it != players.end(); it++)
 	{
-		Player *p = *it;
-		if (strcmp(p->GetName(), playerName) == 0)
+		if (i++ == number)
 		{
+			Player *p = *it;
 			p->SetType(Player::Remote);
 			return true;
 		}
 	}
 
-	ReportError("Player \"%s\" not found, cannot set as remote\n", playerName);
+	ReportError("Only got %i players, cannot set #%i as remote\n", players.size(), number);
 	return false;
 }
 
 EXPOSE_METHOD
-bool SetPlayerAI(const char *playerName, const char *aiName)
+bool SetPlayerAI(int number, const char *aiName)
 {
 	PlayerAI *ai;
 	if (strcmp(aiName, "random") == 0)
 		ai = new AI_Random(game);
 	else if (strcmp(aiName, "random capture") == 0)
 		ai = new AI_Random(game);
-	else if (strcmp(aiName, "alpha beta") == 0)
+	else if (strcmp(aiName, "alpha beta 3") == 0)
 		ai = new AI_AlphaBeta(game, 3);
+	else if (strcmp(aiName, "alpha beta 4") == 0)
+		ai = new AI_AlphaBeta(game, 4);
+	else if (strcmp(aiName, "alpha beta 5") == 0)
+		ai = new AI_AlphaBeta(game, 5);
+	else if (strcmp(aiName, "alpha beta 6") == 0)
+		ai = new AI_AlphaBeta(game, 6);
 	else
 	{
-		ReportError("AI \"%s\" not found, cannot set player \"%s\" as AI\n", aiName, playerName);
+		ReportError("AI \"%s\" not found, cannot set player #%i as AI\n", aiName, number);
 		return false;
 	}
 
 	auto players = game->GetPlayers();
+	int i = 1;
 	for (auto it = players.begin(); it != players.end(); it++)
 	{
-		Player *p = *it;
-		if (strcmp(p->GetName(), playerName) == 0)
+		if (i++ == number)
 		{
-			p->SetAI(ai);
+			Player *p = *it;
+			p->SetType(Player::Local);
 			return true;
 		}
 	}
 
 	delete ai;
-	ReportError("Player \"%s\" not found, cannot set as AI\n", playerName);
+	ReportError("Only got %i players, cannot set #%i as AI\n", players.size(), number);
 	return false;
 }
 

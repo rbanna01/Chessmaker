@@ -8,6 +8,30 @@ function loadDefinition(xml) {
     }
     console.timeEnd('load');
 
+    // set players to the correct types
+    setPlayerLocal = Module.cwrap('SetPlayerLocal', 'bool', ['int']);
+    setPlayerRemote = Module.cwrap('SetPlayerRemote', 'bool', ['int']);
+    setPlayerAI = Module.cwrap('SetPlayerAI', 'bool', ['int', 'string']);
+    for (var i = 1; i <= players.length; i++) {
+        var player = players[i - 1];
+        if (player === true) {
+            if (!setPlayerLocal(i))
+                console.log('Unable to set player #' + i + ' to play locally');
+        }
+        else if (player === false) {
+            if (!setPlayerRemote(i))
+                console.log('Unable to set player #' + i + ' to play remotely');
+        }
+        else {
+            if (!setPlayerAI(i, ai))
+                console.log('Unable to set player #' + i + ' to use "' + ai + '" AI');
+        }
+    }
+
+    // these are just for testing
+    listPossibleMoves = Module.cwrap('ListPossibleMoves', 'string', []);
+    performMove = Module.cwrap('PerformMove', 'int', ['string']);
+
     initializeUI();
 }
 

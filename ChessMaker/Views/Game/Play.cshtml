@@ -32,27 +32,14 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/game")
-@*
-    @if (Model.AIs != null) {
-        for (var i = 0; i < Model.AIs.Length; i++) {
-            var AI = Model.AIs[i];
-            if (AI != null) {
-                @Scripts.Render("~/Scripts/AI/" + AI.Filename);
-            }
-        }
+    
+  <script type="text/javascript">
+    var players = [
+    @Model.Players[0].IsAI ? (Model.Players[0] as ChessMaker.Models.AIDifficultyModel).InternalName : Model.Players[0].IsLocal.ToString()
+    @for (var i = 1; i < Model.Players.Length; i++) {
+        @:, @Model.Players[i].IsAI ? (Model.Players[i] as ChessMaker.Models.AIDifficultyModel).InternalName : Model.Players[i].IsLocal.ToString()
     }
-*@
-    <script type="text/javascript">
-@*
-    @if (Model.AIs != null) {
-        @:var AIs = [
-        @: @(Model.AIs[0] == null ? "null" : Model.AIs[0].Init)
-        for (var i = 1; i < Model.AIs.Length; i++) {
-            @:, @(Model.AIs[i] == null ? "null" : Model.AIs[i].Init)
-        }
-        @:];
-    }
-*@
+    ];
 
     $.ajax({
         type: "GET",
@@ -60,5 +47,5 @@
         dataType: "text",
         success: loadDefinition
     });
-    </script>
+</script>
 }

@@ -182,6 +182,11 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             var model = new GamePlayModel(versionToPlay, GameMode.Offline);
+            
+            model.Players = new PlayerModel[versionToPlay.Variant.PlayerCount];
+            for (int i=0; i<model.Players.Length; i++)
+                model.Players[i] = new PlayerModel() { IsLocal = true };
+
             return View("Play", model);
         }
 
@@ -195,7 +200,12 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             var model = new GamePlayModel(versionToPlay, GameMode.AI);
-            model.AIs = new[] { null, variants.ListAiDifficulties().Single(ai => ai.ID == difficulty) };
+            var AIs = variants.ListAiDifficulties();
+            
+            model.Players = new PlayerModel[versionToPlay.Variant.PlayerCount];
+            model.Players[0] = new PlayerModel() { IsLocal = true };
+            for (int i = 1; i < model.Players.Length; i++)
+                model.Players[i] = AIs.Single(ai => ai.ID == difficulty);
 
             return View("Play", model);
         }
@@ -210,15 +220,15 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             var model = new GamePlayModel(versionToPlay, GameMode.AI_vs_AI);
+            var AIs = variants.ListAiDifficulties();
 
-            var AIs = new AIDifficultyModel[versionToPlay.Variant.PlayerCount];
-            for (var i = 0; i < AIs.Length && i < difficulty.Length; i++)
-                AIs[i] = variants.ListAiDifficulties().Single(ai => ai.ID == difficulty[i]);
+            model.Players = new PlayerModel[versionToPlay.Variant.PlayerCount];
+            for (var i = 0; i < model.Players.Length && i < difficulty.Length; i++)
+                model.Players[i] = AIs.Single(ai => ai.ID == difficulty[i]);
 
-            for (var i = difficulty.Length; i < AIs.Length; i++)
-                AIs[i] = AIs[difficulty.Length];
+            for (var i = difficulty.Length; i < model.Players.Length; i++)
+                model.Players[i] = model.Players[difficulty.Length];
 
-            model.AIs = AIs;
             return View("Play", model);
         }
 /*

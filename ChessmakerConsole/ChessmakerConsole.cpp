@@ -20,13 +20,13 @@ extern "C" __declspec(dllimport)
 const char *GetBoardSVG();
 */
 extern "C" __declspec(dllimport)
-bool SetPlayerLocal(const char *playerName);
+bool SetPlayerLocal(int number);
 
 extern "C" __declspec(dllimport)
-bool SetPlayerRemote(const char *playerName);
+bool SetPlayerRemote(int number);
 
 extern "C" __declspec(dllimport)
-bool SetPlayerAI(const char *playerName, const char *aiName);
+bool SetPlayerAI(int number, const char *aiName);
 
 extern "C" __declspec(dllimport)
 void Shutdown();
@@ -76,9 +76,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	delete svg;
 */
-	if (!SetPlayerLocal("white"))
+	if (!SetPlayerLocal(1))
 		printf("Error setting player to LOCAL\n");
-	else if (!SetPlayerAI("black", "random capture"))
+	else if (!SetPlayerAI(2, "random capture"))
 		printf("Error setting player to AI\n");
 	else
 		RunGameLoop();

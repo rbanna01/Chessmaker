@@ -85,12 +85,12 @@ namespace ChessMaker.Services
         public List<AIDifficultyModel> ListAiDifficulties()
         {
             var list = new List<AIDifficultyModel>();
-            list.Add(new AIDifficultyModel() { ID = 1, Name = "Completely random", Filename = "Random.js", Init = "new AI_Random()" });
-            list.Add(new AIDifficultyModel() { ID = 2, Name = "Random capture", Filename = "RandomCapture.js", Init = "new AI_RandomCapture()" });
-            list.Add(new AIDifficultyModel() { ID = 3, Name = "AlphaBeta, depth 3", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(3)" });
-            list.Add(new AIDifficultyModel() { ID = 4, Name = "AlphaBeta, depth 4", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(4)" });
-            list.Add(new AIDifficultyModel() { ID = 5, Name = "AlphaBeta, depth 5", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(5)" });
-            list.Add(new AIDifficultyModel() { ID = 6, Name = "AlphaBeta, depth 6", Filename = "AlphaBeta.js", Init = "new AI_AlphaBeta(6)" });
+            list.Add(new AIDifficultyModel() { ID = 1, DisplayName = "Completely random", InternalName = "random" });
+            list.Add(new AIDifficultyModel() { ID = 2, DisplayName = "Random capture", InternalName = "random capture" });
+            list.Add(new AIDifficultyModel() { ID = 3, DisplayName = "AlphaBeta, depth 3", InternalName = "alpha beta 3" });
+            list.Add(new AIDifficultyModel() { ID = 4, DisplayName = "AlphaBeta, depth 4", InternalName = "alpha beta 4" });
+            list.Add(new AIDifficultyModel() { ID = 5, DisplayName = "AlphaBeta, depth 5", InternalName = "alpha beta 5" });
+            list.Add(new AIDifficultyModel() { ID = 6, DisplayName = "AlphaBeta, depth 6", InternalName = "alpha beta 6" });
             return list;
         }
 

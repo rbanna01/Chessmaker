@@ -54,12 +54,18 @@ namespace ChessMaker.Models
         public int NumPlayers { get; set; }
     }
 
-    public class AIDifficultyModel
+    public class PlayerModel
+    {
+        public bool IsLocal { get; set; }
+        public virtual bool IsAI { get { return false; } }
+    }
+
+    public class AIDifficultyModel : PlayerModel
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Filename { get; set; }
-        public string Init { get; set; }
+        public string DisplayName { get; set; }
+        public string InternalName { get; set; }
+        public override bool IsAI { get { return true; } }
     }
 
     public class GamePlayModel
@@ -84,6 +90,6 @@ namespace ChessMaker.Models
         public int? Version { get; private set; }
 
         public GameMode Mode { get; set; }
-        public AIDifficultyModel[] AIs { get; set; }
+        public PlayerModel[] Players { get; set; }
     }
 }
