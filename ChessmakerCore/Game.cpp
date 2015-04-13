@@ -174,12 +174,29 @@ void Game::EndGame(Player *victor)
 
 void Game::LogMove(Player *player, Move *move)
 {
+	std::string notation = "";
+
+	int turnNumber = move->GetPrevState()->GetTurnNumber();
+	int numPlayers = players.size();
+	int displayNumber = (turnNumber + numPlayers + 1) / numPlayers - 1;
+	notation += std::to_string(displayNumber);
+
+	int playerNum = turnNumber % numPlayers;
+	if (playerNum == 1)// first player's move
+		notation += ".  ";
+	else if (playerNum == 0) // last player's move
+		notation += "...";
+	else
+		notation += ".. ";
+
+	notation += move->GetNotation();
+
 #ifdef CONSOLE
-	printf("%s\n", move->GetNotation());
+	printf("%s\n", notation.c_str());
 #endif
 	
 #ifdef EMSCRIPTEN
-	EM_ASM_ARGS({ logMove($0, $1, $2); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), move->GetNotation());
+	EM_ASM_ARGS({ logMove($0, $1, $2); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str());
 #endif
 }
 

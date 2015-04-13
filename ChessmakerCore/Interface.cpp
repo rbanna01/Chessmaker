@@ -149,17 +149,17 @@ void Shutdown()
 EXPOSE_METHOD
 void ListPossibleMoves()
 {
-	std::string *output = new std::string("Possible moves:\n");
+	std::string output = "Possible moves:\n";
 
 	auto moves = game->GetPossibleMoves();
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;
-		output->append(move->GetNotation());
-		output->append("\n");
+		output += move->GetNotation();
+		output += "\n";
 	}
 
-	printf(output->c_str()); printf("\n");
+	printf(output.c_str());
 }
 
 EXPOSE_METHOD

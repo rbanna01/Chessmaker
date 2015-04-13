@@ -110,36 +110,23 @@ bool Move::Reverse(bool updateDisplay)
 
 char *Move::DetermineNotation(int detailLevel)
 {
-	int numPlayers = prevState->game->players.size();
-	int displayNumber = (prevState->turnNumber + numPlayers + 1) / numPlayers - 1;
-	sprintf(notation, "%i", displayNumber);
-
-	if (prevState->turnNumber % numPlayers == 1) // first player's move
-		strcat(notation, ".  ");
-	else
-		strcat(notation, "...");
-
     switch (detailLevel)
 	{
         case 1:
-			strcat(notation, piece->pieceType->notation);
+			strcpy(notation, piece->pieceType->notation);
 			if (IsCapture())
 				strcat(notation, "x");
 			strcat(notation, GetEndPos()->GetName());
             break;
         case 2:
-			strcat(notation, piece->pieceType->notation);
+			strcpy(notation, piece->pieceType->notation);
 			strcat(notation, startPos->GetName());
 			if (IsCapture())
 				strcat(notation, "x");
 			strcat(notation, GetEndPos()->GetName());
             break;
         default:
-			strcat(notation, piece->pieceType->notation);
-
-			char strID[8];
-			sprintf(strID, "(%i)", piece->GetID());
-			strcat(notation, strID);
+			sprintf(notation, "%s(%i)", piece->pieceType->notation, piece->GetID());
 
 			strcat(notation, startPos->GetName());
 			if (IsCapture())
