@@ -147,7 +147,7 @@ void Shutdown()
 }
 
 EXPOSE_METHOD
-std::string *ListPossibleMoves()
+void ListPossibleMoves()
 {
 	std::string *output = new std::string("Possible moves:\n");
 
@@ -159,7 +159,7 @@ std::string *ListPossibleMoves()
 		output->append("\n");
 	}
 
-	return output;
+	printf(output->c_str()); printf("\n");
 }
 
 EXPOSE_METHOD

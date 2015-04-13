@@ -101,10 +101,8 @@ void RunGameLoop()
 			printf("Invalid input, please retry\n");
 		else
 		{
-			std::string *output = ListPossibleMoves();
-			printf(output->c_str());
+			ListPossibleMoves();
 			printf("Enter move: ");
-			delete output;
 		}
 
 		std::getline(std::cin, input);

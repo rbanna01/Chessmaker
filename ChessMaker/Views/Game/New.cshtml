@@ -39,7 +39,7 @@
             </li>
             <li id="aiDifficulty" style="display:none">
                 @Html.Label("aiSelect", "Difficulty")
-                @Html.DropDownList("aiSelect", new SelectList(Model.Difficulties, "ID", "Name"))
+                @Html.DropDownList("aiSelect", new SelectList(Model.Difficulties, "ID", "DisplayName"))
             </li>
             <li id="inviteOpponents" style="display:none">
                 <label>Opponent<span class="opponentsPlural">s</span></label>

@@ -1,5 +1,8 @@
 ﻿"use strict";
 
+var listPossibleMoves;
+var performMove;
+
 function loadDefinition(xml) {
     console.time('load');
     if (!Module.ccall('Initialize', 'bool', ['string'], [xml])) {
@@ -7,11 +10,11 @@ function loadDefinition(xml) {
         return;
     }
     console.timeEnd('load');
-
+    
     // set players to the correct types
-    setPlayerLocal = Module.cwrap('SetPlayerLocal', 'bool', ['int']);
-    setPlayerRemote = Module.cwrap('SetPlayerRemote', 'bool', ['int']);
-    setPlayerAI = Module.cwrap('SetPlayerAI', 'bool', ['int', 'string']);
+    var setPlayerLocal = Module.cwrap('SetPlayerLocal', 'bool', ['number']);
+    var setPlayerRemote = Module.cwrap('SetPlayerRemote', 'bool', ['number']);
+    var setPlayerAI = Module.cwrap('SetPlayerAI', 'bool', ['number', 'string']);
     for (var i = 1; i <= players.length; i++) {
         var player = players[i - 1];
         if (player === true) {
@@ -23,20 +26,20 @@ function loadDefinition(xml) {
                 console.log('Unable to set player #' + i + ' to play remotely');
         }
         else {
-            if (!setPlayerAI(i, ai))
-                console.log('Unable to set player #' + i + ' to use "' + ai + '" AI');
+            if (!setPlayerAI(i, player))
+                console.log('Unable to set player #' + i + ' to use "' + player + '" AI');
         }
     }
-
+    
     // these are just for testing
-    listPossibleMoves = Module.cwrap('ListPossibleMoves', 'string', []);
-    performMove = Module.cwrap('PerformMove', 'int', ['string']);
+    listPossibleMoves = Module.cwrap('ListPossibleMoves', null);
+    performMove = Module.cwrap('PerformMove', 'number', ['string']);
 
     initializeUI();
 }
 
 function initializeUI() {
-    var boardSVG = Module.ccall('GetBoardSVG', 'string', [], []);
+    var boardSVG = Module.ccall('GetBoardSVG', 'string');
     document.getElementById('main').innerHTML = boardSVG;
     
     $('#render path.cell').click(cellClicked);
@@ -88,7 +91,7 @@ function logMove(player, number, notation) {
     $('<div/>', {
         class: 'move ' + Pointer_stringify(player),
         number: number,
-        html: notation
+        html: Pointer_stringify(notation)
     }).appendTo(historyDiv);
 
     historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
