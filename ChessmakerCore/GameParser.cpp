@@ -922,7 +922,8 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 		}
 		else if (strcmp(child->name(), "threatened") == 0)
 		{
-			auto it = pieceTypesByName.find(child->value());
+			char *typeName = child->first_attribute("type")->value();
+			auto it = pieceTypesByName.find(typeName);
 			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
 			conditions->elements.push_back(new StateCondition_Threatened(type));
 		}
