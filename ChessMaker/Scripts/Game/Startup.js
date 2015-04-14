@@ -4,28 +4,28 @@ var performMove;
 
 function loadDefinition(xml) {
     console.time('load');
-    if (!Module.ccall('Initialize', 'bool', ['string'], [xml])) {
+    if (Module.ccall('Initialize', 'number', ['string'], [xml]) == 0) {
         console.log('An error occurred initializing the game');
         return;
     }
     console.timeEnd('load');
     
     // set players to the correct types
-    var setPlayerLocal = Module.cwrap('SetPlayerLocal', 'bool', ['number']);
-    var setPlayerRemote = Module.cwrap('SetPlayerRemote', 'bool', ['number']);
-    var setPlayerAI = Module.cwrap('SetPlayerAI', 'bool', ['number', 'string']);
+    var setPlayerLocal = Module.cwrap('SetPlayerLocal', 'number', ['number']);
+    var setPlayerRemote = Module.cwrap('SetPlayerRemote', 'number', ['number']);
+    var setPlayerAI = Module.cwrap('SetPlayerAI', 'number', ['number', 'string']);
     for (var i = 1; i <= players.length; i++) {
         var player = players[i - 1];
         if (player === true) {
-            if (!setPlayerLocal(i))
+            if (setPlayerLocal(i) == 0)
                 console.log('Unable to set player #' + i + ' to play locally');
         }
         else if (player === false) {
-            if (!setPlayerRemote(i))
+            if (setPlayerRemote(i) == 0)
                 console.log('Unable to set player #' + i + ' to play remotely');
         }
         else {
-            if (!setPlayerAI(i, player))
+            if (setPlayerAI(i, player) == 0)
                 console.log('Unable to set player #' + i + ' to use "' + player + '" AI');
         }
     }

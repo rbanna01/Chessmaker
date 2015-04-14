@@ -12,8 +12,14 @@
 
 #ifdef EMSCRIPTEN
 #define EXPOSE_METHOD extern "C" EMSCRIPTEN_KEEPALIVE 
+#define BOOL_TYPE int
+#define TRUE_VAL 1
+#define FALSE_VAL 0
 #else
 #define EXPOSE_METHOD extern "C" __declspec(dllexport)
+#define BOOL_TYPE bool
+#define TRUE_VAL true
+#define FALSE_VAL false
 #endif
 
 Game *game = 0;
@@ -23,7 +29,7 @@ std::string *boardSVG = 0;
 #endif
 
 EXPOSE_METHOD
-bool Initialize(char* definition)
+BOOL_TYPE Initialize(char* definition)
 {
 	if (game != 0)
 		delete game;
@@ -44,14 +50,14 @@ bool Initialize(char* definition)
 	delete parser;
 
 	if (game == 0)
-		return false;
+		return FALSE_VAL;
 
 #ifdef CONSOLE
 	printf("Definition parsed successfully\n");
 #endif
 
 	game->Start();
-	return true;
+	return TRUE_VAL;
 }
 
 #ifndef NO_SVG
@@ -63,7 +69,7 @@ const char *GetBoardSVG()
 #endif
 
 EXPOSE_METHOD
-bool SetPlayerLocal(int number)
+BOOL_TYPE SetPlayerLocal(int number)
 {
 	auto players = game->GetPlayers();
 	int i = 1;
@@ -73,16 +79,16 @@ bool SetPlayerLocal(int number)
 		{
 			Player *p = *it;
 			p->SetType(Player::Local);
-			return true;
+			return TRUE_VAL;
 		}
 	}
 
 	ReportError("Only got %i players, cannot set #%i as local\n", players.size(), number);
-	return false;
+	return FALSE_VAL;
 }
 
 EXPOSE_METHOD
-bool SetPlayerRemote(int number)
+BOOL_TYPE SetPlayerRemote(int number)
 {
 	auto players = game->GetPlayers();
 	int i = 1;
@@ -92,16 +98,16 @@ bool SetPlayerRemote(int number)
 		{
 			Player *p = *it;
 			p->SetType(Player::Remote);
-			return true;
+			return TRUE_VAL;
 		}
 	}
 
 	ReportError("Only got %i players, cannot set #%i as remote\n", players.size(), number);
-	return false;
+	return FALSE_VAL;
 }
 
 EXPOSE_METHOD
-bool SetPlayerAI(int number, const char *aiName)
+BOOL_TYPE SetPlayerAI(int number, const char *aiName)
 {
 	PlayerAI *ai;
 	if (strcmp(aiName, "random") == 0)
@@ -119,7 +125,7 @@ bool SetPlayerAI(int number, const char *aiName)
 	else
 	{
 		ReportError("AI \"%s\" not found, cannot set player #%i as AI\n", aiName, number);
-		return false;
+		return FALSE_VAL;
 	}
 
 	auto players = game->GetPlayers();
@@ -130,13 +136,13 @@ bool SetPlayerAI(int number, const char *aiName)
 		{
 			Player *p = *it;
 			p->SetType(Player::Local);
-			return true;
+			return TRUE_VAL;
 		}
 	}
 
 	delete ai;
 	ReportError("Only got %i players, cannot set #%i as AI\n", players.size(), number);
-	return false;
+	return FALSE_VAL;
 }
 
 EXPOSE_METHOD
