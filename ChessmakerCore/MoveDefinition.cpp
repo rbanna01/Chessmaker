@@ -549,9 +549,9 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 			std::set<Piece*> pieces = otherPlayer->GetPiecesOnBoard();
 			for (auto it2 = pieces.begin(); it2 != pieces.end(); it2++)
 			{
-				Piece *otherPiece = *it2;
+				other = *it2;
 
-				if (!otherPiece->TypeMatches(otherPieceType))
+				if (!other->TypeMatches(otherPieceType))
 					continue;
 
 				Move *move = baseMove->Clone();
