@@ -3,6 +3,7 @@
 #include "EndOfGame.h"
 #include "GameState.h"
 #include "Move.h"
+#include "Piece.h"
 #include "TurnOrder.h"
 
 
@@ -66,8 +67,37 @@ bool Game::StartNextTurn()
 		return false;
 	}
 
-	bool local = currentState->currentPlayer->type != Player::Local;
-	if (!local)
+	bool local = currentState->currentPlayer->type == Player::Local;
+
+#ifdef EMSCRIPTEN
+	EM_ASM_ARGS({setCurrentPlayer($0, $1);}, currentState->GetCurrentPlayer()->GetName(), local);
+#endif
+
+#ifdef CONSOLE
+	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
+#endif
+
+	if (local) // list possible moves
+	{
+#ifdef EMSCRIPTEN
+		for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
+		{
+			Move *move = *it;
+			EM_ASM_ARGS({ addPossibleMove($0, $1, $2); }, move->GetNotation(), move->GetPiece()->GetPosition()->GetName(), move->GetEndPos()->GetName());
+		}
+#endif
+#ifdef CONSOLE
+		std::string output = "Possible moves:\n";
+		for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
+		{
+			Move *move = *it;
+			output += move->GetNotation();
+			output += "\n";
+		}
+		printf(output.c_str());
+#endif
+	}
+	else
 	{
 		if (currentState->currentPlayer->type == Player::AI)
 		{
@@ -80,14 +110,6 @@ bool Game::StartNextTurn()
 			}, 1);*/
 		}
 	}
-
-#ifdef EMSCRIPTEN
-	EM_ASM_ARGS({setCurrentPlayer($0, $1);}, currentState->GetCurrentPlayer()->GetName(), local);
-#endif
-
-#ifdef CONSOLE
-	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
-#endif
 
 	return true;
 }
@@ -168,7 +190,7 @@ void Game::EndGame(Player *victor)
 	printf(text);
 #endif
 #ifdef EMSCRIPTEN
-	EM_ASM_ARGS({setCurrentPlayer($0, true);}, text);
+	EM_ASM_ARGS({showGameEnd($0);}, text);
 #endif
 }
 

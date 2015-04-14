@@ -1,6 +1,5 @@
 ﻿"use strict";
 
-var listPossibleMoves;
 var performMove;
 
 function loadDefinition(xml) {
@@ -32,7 +31,6 @@ function loadDefinition(xml) {
     }
     
     // these are just for testing
-    listPossibleMoves = Module.cwrap('ListPossibleMoves', null);
     performMove = Module.cwrap('PerformMove', 'number', ['string']);
 
     initializeUI();
@@ -75,7 +73,33 @@ function initializeUI() {
     */
 }
 
+var possibleMovesByCell = {};
+function addPossibleMove(notation, fromCell, toCell) {
+    notation = Pointer_stringify(notation);
+    fromCell = Pointer_stringify(fromCell);
+    toCell = Pointer_stringify(toCell);
+
+    var fromCellMoves = possibleMovesByCell[fromCell];
+    if (fromCellMoves === undefined) {
+        fromCellMoves = {};
+        possibleMovesByCell[fromCell] = fromCellMoves;
+    }
+
+    var toCellMoves = fromCellMoves[toCell];
+    if (toCellMoves === undefined) {
+        toCellMoves = [];
+        fromCellMoves[toCell] = toCellMoves;
+    }
+    toCellMoves.push(notation);
+}
+
+function clearPossibleMoves() {
+    possibleMovesByCell = {};
+}
+
 function setCurrentPlayer(name, isLocal) {
+    clearPossibleMoves();
+
     name = Pointer_stringify(name);
     $('#nextMove').text(name.substr(0, 1).toUpperCase() + name.substr(1) + ' to move');
 
@@ -83,6 +107,14 @@ function setCurrentPlayer(name, isLocal) {
         $('#wait').hide();
     else
         $('#wait').show();
+}
+
+function showGameEnd(message) {
+    clearPossibleMoves();
+
+    message = Pointer_stringify(message);
+    $('#nextMove').text(message);
+    $('#wait').hide();
 }
 
 function logMove(player, number, notation) {
@@ -111,57 +143,76 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
 }
 
+var selectedCell;
 function cellClicked(e) {
     if (hasClass(this, 'selected'))
         clearSelection();
-    else if (hasClass(this, 'option')) {
+    else if (hasClass(this, 'option') && selectedCell != null) {
         selectMove(this);
         clearSelection();
     }
-    else {
-        clearSelection();
-        addClass($(this), 'selected');
-
-        /*
-        var cell = game.board.cells[this.getAttribute('id')];
-        if (game.state.currentPlayer.type == Player.Type.Local && cell != null && cell.piece != null && cell.piece.ownerPlayer == game.state.currentPlayer) {
-            console.log('clicked ' + cell.piece.ownerPlayer.name + ' ' + cell.piece.pieceType.name + ' in cell ' + cell.name);
-            game.showMoveOptions(cell.piece);
-        }
-        else
-            console.log('clicked cell ' + cell.name);
-        */
-    }
+    else
+        showMoveOptions(this);
 
     return false;
 }
 
 function clearSelection() {
-    var paths = $('#render .selected');
-    if (paths.length == 0)
-        return;
+    selectedCell = null;
 
-    remClass(paths, 'selected');
+    var paths = $('#render .selected');
+    if (paths.length > 0)
+        remClass(paths, 'selected');
 
     var paths = $('#render .option');
-    if (paths.length == 0)
+    if (paths.length > 0)
+        remClass(paths, 'option');
+}
+
+function showMoveOptions(clicked) {
+    if (possibleMovesByCell.length == 0)
         return;
 
-    remClass(paths, 'option');
+    var movesFromThisCell = possibleMovesByCell[clicked.getAttribute('id')];
+    if (movesFromThisCell === undefined) {
+        // if no cells currently highlighted, highlight cells containing pieces that CAN move. Otherwise, clear the selection.
+        if ($('#render .cell.option').length > 0) {
+            clearSelection();
+            return;
+        }
+
+        for (var fromCell in possibleMovesByCell) {
+            var cell = document.getElementById(fromCell);
+            addClass($(cell), 'option');
+        }
+        selectedCell = null;
+        return;
+    }
+
+    clearSelection();
+
+    addClass($(clicked), 'selected');
+    selectedCell = clicked;
+
+    for (var toRef in movesFromThisCell) {
+        var toCell = document.getElementById(toRef);
+        addClass($(toCell), 'option');
+    }
 }
 
 function selectMove(clicked) {
-    /*
-    var pieceCell = game.board.getCellBySelector('.selected');
-    var destCell = game.board.getCellByElement(clicked);
+    var fromCell = selectedCell.getAttribute('id');
+    var toCell = clicked.getAttribute('id');
 
-    if (pieceCell == null || destCell == null)
+    var moves = possibleMovesByCell[fromCell][toCell];
+    if (moves === undefined) {
+        console.log('error: invalid move selection');
         return;
+    }
 
-    var piece = pieceCell.piece;
-    if (piece == null)
-        return;
-
-    game.selectMoveByCell(piece, destCell);
-    */
+    if (moves.length == 1)
+        performMove(moves[0]);
+    else {
+        console.log('todo: add a popup showing the move options for these cells');
+    }
 }

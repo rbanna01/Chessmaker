@@ -32,9 +32,6 @@ extern "C" __declspec(dllimport)
 void Shutdown();
 
 extern "C" __declspec(dllimport)
-std::string *ListPossibleMoves();
-
-extern "C" __declspec(dllimport)
 int PerformMove(const char *notation);
 
 void RunGameLoop();
@@ -100,10 +97,7 @@ void RunGameLoop()
 		if (retVal == -1)
 			printf("Invalid input, please retry\n");
 		else
-		{
-			ListPossibleMoves();
 			printf("Enter move: ");
-		}
 
 		std::getline(std::cin, input);
 		if (input.length() == 0)

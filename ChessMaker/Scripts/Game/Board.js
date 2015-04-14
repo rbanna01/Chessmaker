@@ -1,27 +1,6 @@
 ﻿"use strict";
 
-function Board(game) {
-    this.game = game;
-    this.elementID = 'render';
-    this.cells = {};
-    this.relativeDirections = {};
-    this.directionGroups = {};
-}
-
-Board.prototype.getCellBySelector = function (selector) {
-    var cellImage = $('#render path.cell' + selector);
-    if (cellImage.length == 0)
-        return null;
-
-    return this.getCellByElement(cellImage[0]);
-};
-
-Board.prototype.getCellByElement = function (element) {
-    var cell = game.board.cells[element.getAttribute('id')];
-    if (cell === undefined)
-        return null;
-    return cell;
-};
+function Board() { }
 
 Board.prototype.updatePiecePositions = function (groupNode) {
     /*

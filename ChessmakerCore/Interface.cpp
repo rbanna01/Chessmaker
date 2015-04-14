@@ -147,22 +147,6 @@ void Shutdown()
 }
 
 EXPOSE_METHOD
-void ListPossibleMoves()
-{
-	std::string output = "Possible moves:\n";
-
-	auto moves = game->GetPossibleMoves();
-	for (auto it = moves->begin(); it != moves->end(); it++)
-	{
-		Move *move = *it;
-		output += move->GetNotation();
-		output += "\n";
-	}
-
-	printf(output.c_str());
-}
-
-EXPOSE_METHOD
 int PerformMove(const char *notation)
 {
 	// See if this is a valid move, and if so, perform it. If not, return -1.
