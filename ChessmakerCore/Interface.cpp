@@ -113,7 +113,7 @@ BOOL_TYPE SetPlayerAI(int number, const char *aiName)
 	if (strcmp(aiName, "random") == 0)
 		ai = new AI_Random(game);
 	else if (strcmp(aiName, "random capture") == 0)
-		ai = new AI_Random(game);
+		ai = new AI_RandomCapture(game);
 	else if (strcmp(aiName, "alpha beta 3") == 0)
 		ai = new AI_AlphaBeta(game, 3);
 	else if (strcmp(aiName, "alpha beta 4") == 0)
@@ -135,7 +135,7 @@ BOOL_TYPE SetPlayerAI(int number, const char *aiName)
 		if (i++ == number)
 		{
 			Player *p = *it;
-			p->SetType(Player::Local);
+			p->SetAI(ai);
 			return TRUE_VAL;
 		}
 	}
