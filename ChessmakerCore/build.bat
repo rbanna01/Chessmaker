@@ -18,4 +18,4 @@ for %%f in (*.cpp) do (
 setlocal disabledelayedexpansion
 
 echo Linking JS...
-emcc %optimisation% --memory-init-file 0 %allFiles% -o ../ChessMaker/Scripts/chessmaker.js
+emcc %optimisation% --memory-init-file 0 %allFiles% -o ../ChessMaker/Scripts/Game/Chessmaker.js

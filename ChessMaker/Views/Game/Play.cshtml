@@ -34,18 +34,15 @@
     @Scripts.Render("~/bundles/game")
     
   <script type="text/javascript">
-    var players = [
-    @(Model.Players[0].IsAI ? (Model.Players[0] as ChessMaker.Models.AIDifficultyModel).InternalName : Model.Players[0].IsLocal ? "true" : "false")
-    @for (var i = 1; i < Model.Players.Length; i++) {
-        @:, @Html.Raw(Model.Players[i].IsAI ? string.Format("\"{0}\"", (Model.Players[i] as ChessMaker.Models.AIDifficultyModel).InternalName) : Model.Players[i].IsLocal ? "true" : "false")
-        }
-    ];
-
-    $.ajax({
-        type: "GET",
-        url: "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
-        dataType: "text",
-        success: loadDefinition
-    });
+    initializeGame(
+        "@Url.Content("~/Scripts/Game/Worker.js")",
+        "@(Model.Version.HasValue ? Url.Action("Definition", new { id = Model.Tag, version = Model.Version.Value }) : Url.Action("Definition", new { id = Model.Tag }))",
+        [
+            @(Model.Players[0].IsAI ? (Model.Players[0] as ChessMaker.Models.AIDifficultyModel).InternalName : Model.Players[0].IsLocal ? "true" : "false")
+            @for (var i = 1; i < Model.Players.Length; i++) {
+                @:, @Html.Raw(Model.Players[i].IsAI ? string.Format("\"{0}\"", (Model.Players[i] as ChessMaker.Models.AIDifficultyModel).InternalName) : Model.Players[i].IsLocal ? "true" : "false")
+            }
+        ]
+    );
 </script>
 }

@@ -1,45 +1,46 @@
 ﻿"use strict";
 
-var performMove;
+var worker;
+function initializeGame(workerUrl, defUrl, players) {
+    console.time('load all');
 
-function loadDefinition(xml) {
-    console.time('load');
-    if (Module.ccall('Initialize', 'number', ['string'], [xml]) == 0) {
-        console.log('An error occurred initializing the game');
-        return;
-    }
-    console.timeEnd('load');
-    
-    // set players to the correct types
-    var setPlayerLocal = Module.cwrap('SetPlayerLocal', 'number', ['number']);
-    var setPlayerRemote = Module.cwrap('SetPlayerRemote', 'number', ['number']);
-    var setPlayerAI = Module.cwrap('SetPlayerAI', 'number', ['number', 'string']);
-    for (var i = 1; i <= players.length; i++) {
-        var player = players[i - 1];
-        if (player === true) {
-            if (setPlayerLocal(i) == 0)
-                console.log('Unable to set player #' + i + ' to play locally');
+    worker = new Worker(workerUrl);
+    worker.onmessage = function (event) {
+        switch (event.data[0]) {
+            case 'init':
+                initializeUI(event.data[1]);
+                break;
+            case 'error':
+                console.error(event.data[1]);
+                break;
+            case 'poss':
+                addPossibleMove(event.data[1], event.data[2], event.data[3]);
+                break;
+            case 'player':
+                setCurrentPlayer(event.data[1], event.data[2]);
+                break;
+            case 'end':
+                showGameEnd(event.data[1]);
+                break;
+            case 'log':
+                logMove(event.data[1], event.data[2], event.data[3]);
+                break;
+            case 'move':
+                movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6], event.data[7]);
+                break;
+            default:
+                console.log("Didn't understand message from worker: " + event.data[0]);
+                break;
         }
-        else if (player === false) {
-            if (setPlayerRemote(i) == 0)
-                console.log('Unable to set player #' + i + ' to play remotely');
-        }
-        else {
-            if (setPlayerAI(i, player) == 0)
-                console.log('Unable to set player #' + i + ' to use "' + player + '" AI');
-        }
-    }
-    
-    // these are just for testing
-    performMove = Module.cwrap('PerformMove', 'number', ['string']);
+    };
 
-    initializeUI();
+    worker.postMessage(['load', defUrl, players]);
 }
 
-function initializeUI() {
-    var boardSVG = Module.ccall('GetBoardSVG', 'string');
+function initializeUI(boardSVG) {
     document.getElementById('main').innerHTML = boardSVG;
-    
+    console.timeEnd('load all');
+
     $('#render path.cell').click(cellClicked);
     /*
     $('#main').click(function (e) {
@@ -75,10 +76,6 @@ function initializeUI() {
 
 var possibleMovesByCell = {};
 function addPossibleMove(notation, fromCell, toCell) {
-    notation = Pointer_stringify(notation);
-    fromCell = Pointer_stringify(fromCell);
-    toCell = Pointer_stringify(toCell);
-
     var fromCellMoves = possibleMovesByCell[fromCell];
     if (fromCellMoves === undefined) {
         fromCellMoves = {};
@@ -100,7 +97,6 @@ function clearPossibleMoves() {
 function setCurrentPlayer(name, isLocal) {
     clearPossibleMoves();
 
-    name = Pointer_stringify(name);
     $('#nextMove').text(name.substr(0, 1).toUpperCase() + name.substr(1) + ' to move');
 
     if (isLocal)
@@ -112,7 +108,6 @@ function setCurrentPlayer(name, isLocal) {
 function showGameEnd(message) {
     clearPossibleMoves();
 
-    message = Pointer_stringify(message);
     $('#nextMove').text(message);
     $('#wait').hide();
 }
@@ -121,9 +116,9 @@ function logMove(player, number, notation) {
     var historyDiv = $('#moveHistory');
 
     $('<div/>', {
-        class: 'move ' + Pointer_stringify(player),
+        class: 'move ' + player,
         number: number,
-        html: Pointer_stringify(notation)
+        html: notation
     }).appendTo(historyDiv);
 
     historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
@@ -132,8 +127,8 @@ function logMove(player, number, notation) {
 function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     var element = document.getElementById('p' + pieceID);
 
-    owner = Pointer_stringify(owner);
-    appearance = Pointer_stringify(appearance);
+    owner = owner;
+    appearance = appearance;
 
     // at some point, use state and stateOwner to determine where to place piece elements outwith the board
 
@@ -211,7 +206,7 @@ function selectMove(clicked) {
     }
 
     if (moves.length == 1)
-        performMove(moves[0]);
+        worker.postMessage(['move', moves[0]]);
     else {
         console.log('todo: add a popup showing the move options for these cells');
     }

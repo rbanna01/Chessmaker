@@ -616,6 +616,16 @@
       <include dir="left45" />
       <include dir="right45" />
     </group>
+    <group name="any">
+      <include dir="north" />
+      <include dir="south" />
+      <include dir="east" />
+      <include dir="west" />
+      <include dir="northeast" />
+      <include dir="northwest" />
+      <include dir="southeast" />
+      <include dir="southwest" />
+    </group>
   </dirs>
   <pieces>
     <piece name="king" notation="K" value="200">

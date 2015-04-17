@@ -341,12 +341,13 @@
     </EmbeddedResource>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="robots.txt" />
-    <Content Include="Scripts\chessmaker.js" />
-    <Content Include="Scripts\Game\Game.js" />
-    <Content Include="Scripts\Game\Board.js" />
-    <Content Include="Scripts\Game\MoveStep.js" />
-    <Content Include="Scripts\Game\Player.js" />
-    <Content Include="Scripts\Game\Startup.js" />
+    <Content Include="Scripts\Game\Chessmaker.js" />
+    <Content Include="Scripts\Game\Worker.js" />
+    <Content Include="Scripts\Game\xGame.js" />
+    <Content Include="Scripts\Game\xBoard.js" />
+    <Content Include="Scripts\Game\xMoveStep.js" />
+    <Content Include="Scripts\Game\xPlayer.js" />
+    <Content Include="Scripts\Game\UI.js" />
     <Content Include="Scripts\Designer\Pieces.js" />
     <Content Include="Scripts\Designer\References.js" />
     <Content Include="Scripts\Designer\Groups.js" />

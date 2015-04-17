@@ -1,13 +1,5 @@
 ﻿"use strict";
 
-function extend(child, parent) {
-    function ctor() { }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor();
-
-    child.prototype.constructor = child;
-}
-
 function SVG(tag) {
     return document.createElementNS('http://www.w3.org/2000/svg', tag);
 }
@@ -45,26 +37,6 @@ function hasClass(elem, className) {
     var spaced = ' ' + className + ' ';
     return classes.indexOf(spaced) != -1;
 }
-
-// knockout has a method for this, apparently. Can we use that? do we need knockout?
-function arrayIndexOf(array, item) {
-    if (typeof Array.prototype.indexOf == "function")
-        return Array.prototype.indexOf.call(array, item);
-    for (var i = 0, j = array.length; i < j; i++)
-        if (array[i] === item)
-            return i;
-    return -1;
-}
-
-// knockout has a method for this, apparently. Can we use that? do we need knockout?
-function arrayRemoveItem(array, itemToRemove) {
-    var index = arrayIndexOf(array, itemToRemove);
-    if (index >= 0) {
-        array.splice(index, 1);
-        return true;
-    }
-    return false;
-};
 
 function calculateRatio() {
     var svg = document.getElementById('render');
