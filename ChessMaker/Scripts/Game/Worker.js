@@ -94,5 +94,11 @@ function logMove(player, number, notation) {
 }
 
 function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
+    if (state == 1)
+        state = 'captured'
+    else if (state == 2)
+        state = 'held';
+    else
+        state = 'board';
     postMessage(['move', pieceID, state, Pointer_stringify(stateOwner), posX, posY, Pointer_stringify(owner), Pointer_stringify(appearance)]);
 }

@@ -129,12 +129,44 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
 
     owner = owner;
     appearance = appearance;
-
-    // at some point, use state and stateOwner to determine where to place piece elements outwith the board
+    var board = document.getElementById('render');
 
     element.setAttribute('class', 'piece ' + owner);
     element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
-    $(element).velocity({ x: posX, y: posY });
+    
+    if (state == 'board') {
+        if (element.parentElement == board) {// already on board - remove & add so its on top for animation purposes
+            $(element).velocity({ x: posX, y: posY }, { duration: 600, easing: "ease-in-out", begin: function (elements) {
+                    board.removeChild(element);
+                    board.appendChild(element);
+                }
+            });
+        }
+        else {
+            $(element) // moving onto board, so fade out, move instantly, then fade in
+                .velocity({ opacity: 0 }, { complete: function (elements) {
+                        element.parent.removeChild(element);
+                        board.appendChild(element);
+                    }
+                })
+                .velocity({ x: posX, y: posY }, { duration: 0 })
+                .velocity({ opacity: 1 });
+        }
+    }
+    else {
+        posX = -100;
+        posY = 0;
+        $(element)
+            .velocity({ opacity: 0 }, { complete: function (elements) {
+                    element.parentElement.removeChild(element);
+                    var parent = document.getElementById(state); // "captured" or "held"
+                    if (parent != null)
+                        parent.appendChild(element);
+                }
+            })
+            .velocity({ x: posX, y: posY }, { duration: 0 })
+            .velocity({ opacity: 1 });
+    }
 }
 
 var selectedCell;
