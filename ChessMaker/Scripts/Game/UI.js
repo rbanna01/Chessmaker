@@ -133,9 +133,8 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     // at some point, use state and stateOwner to determine where to place piece elements outwith the board
 
     element.setAttribute('class', 'piece ' + owner);
-    element.setAttribute('x', posX);
-    element.setAttribute('y', posY);
     element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
+    $(element).velocity({ x: posX, y: posY });
 }
 
 var selectedCell;

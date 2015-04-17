@@ -11,7 +11,9 @@ onmessage = function (event) {
             loadDefinition(event.data[1], event.data[2]);
             break;
         case 'move':
+            console.time('move');
             performMove(event.data[1]);
+            console.timeEnd('move');
             break;
         default:
             error("Worker received an expected message from UI thread: " + event.data[0]);
