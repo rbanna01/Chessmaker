@@ -74,7 +74,9 @@ function parseDefinition(xml, players) {
     performMove = Module.cwrap('PerformMove', 'number', ['string']);
 
     var boardSVG = Module.ccall('GetBoardSVG', 'string');
-    postMessage(['init', boardSVG]);
+    var showCaptured = Module.ccall('ShouldShowCapturedPieces', 'number') != 0;
+    var showHeld = Module.ccall('ShouldShowHeldPieces', 'number') != 0;
+    postMessage(['init', boardSVG, showCaptured, showHeld]);
 }
 
 function addPossibleMove(notation, fromCell, toCell) {

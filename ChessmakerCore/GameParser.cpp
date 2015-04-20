@@ -32,7 +32,9 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 
 	game = new Game();
 	game->board = new Board(game);
-	game->holdCapturedPieces = false;
+	game->holdCapturedPieces = false; // todo: determine these somehow, rather than hard-coding them
+	game->showCapturedPieces = true;  //
+	game->showHeldPieces = false;     //
 
 	maxDirection = FIRST_ABSOLUTE_DIRECTION >> 1;
 	allDirections = 0;

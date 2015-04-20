@@ -27,6 +27,8 @@ public:
 	EndOfGame *GetEndOfGame() { return endOfGame; }
 	std::list<Move*> *GetPossibleMoves() { return possibleMoves; }
 	bool GetHoldCapturedPieces() { return holdCapturedPieces; }
+	bool ShouldShowCapturedPieces() { return showCapturedPieces; }
+	bool ShouldShowHeldPieces() { return showHeldPieces; }
 
 	std::list<PieceType*> GetAllPieceTypes() { return allPieceTypes; }
 	std::list<Player*> GetPlayers() { return players; }
@@ -47,7 +49,7 @@ private:
 	std::list<Player*> players;
 	std::list<Move*> *possibleMoves;
 
-	bool holdCapturedPieces;
+	bool holdCapturedPieces, showCapturedPieces, showHeldPieces;
 	
 	friend class GameParser;
 	friend class GameState;

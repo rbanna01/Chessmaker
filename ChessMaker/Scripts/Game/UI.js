@@ -8,7 +8,7 @@ function initializeGame(workerUrl, defUrl, players) {
     worker.onmessage = function (event) {
         switch (event.data[0]) {
             case 'init':
-                initializeUI(event.data[1]);
+                initializeUI(event.data[1], event.data[2], event.data[3]);
                 break;
             case 'error':
                 console.error(event.data[1]);
@@ -37,7 +37,7 @@ function initializeGame(workerUrl, defUrl, players) {
     worker.postMessage(['load', defUrl, players]);
 }
 
-function initializeUI(boardSVG) {
+function initializeUI(boardSVG, showCaptured, showHeld) {
     document.getElementById('main').innerHTML = boardSVG;
     console.timeEnd('load all');
 
@@ -61,17 +61,16 @@ function initializeUI(boardSVG) {
     }
     */
     $('#moveHistory').slideDown();
-    /*
-    if (game.showCaptured)
+    
+    if (showCaptured)
         $('#captureSection').slideDown();
     else
         $('#captureSection').remove();
 
-    if (game.showHeld)
+    if (showHeld)
         $('#heldSection').slideDown();
     else
         $('#heldSection').remove();
-    */
 }
 
 var possibleMovesByCell = {};
@@ -154,8 +153,8 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
         }
     }
     else {
-        posX = -100;
-        posY = 0;
+        posX = 50;
+        posY = 50;
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
                     element.parentElement.removeChild(element);

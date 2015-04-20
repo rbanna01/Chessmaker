@@ -146,6 +146,18 @@ BOOL_TYPE SetPlayerAI(int number, const char *aiName)
 }
 
 EXPOSE_METHOD
+BOOL_TYPE ShouldShowCapturedPieces()
+{
+	return game->ShouldShowCapturedPieces() ? TRUE_VAL : FALSE_VAL;
+}
+
+EXPOSE_METHOD
+BOOL_TYPE ShouldShowHeldPieces()
+{
+	return game->ShouldShowHeldPieces() ? TRUE_VAL : FALSE_VAL;
+}
+
+EXPOSE_METHOD
 void Shutdown()
 {
 	delete game;

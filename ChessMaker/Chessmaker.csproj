@@ -345,7 +345,6 @@
     <Content Include="robots.txt" />
     <Content Include="Scripts\Game\Chessmaker.js" />
     <Content Include="Scripts\Game\Worker.js" />
-    <Content Include="Scripts\Game\xGame.js" />
     <Content Include="Scripts\Game\xBoard.js" />
     <Content Include="Scripts\Game\xMoveStep.js" />
     <Content Include="Scripts\Game\xPlayer.js" />
