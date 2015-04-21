@@ -147,12 +147,11 @@ class ReferencePiece : public MoveDefinition
 {
 public:
 	ReferencePiece(const char *pieceRef, PieceType *type, Player::Relationship_t relationship, unsigned int dir, Distance *distance)
-		: MoveDefinition("", 0, Any, 0)
+		: MoveDefinition("", 0, Any, dir)
 	{
 		strcpy(this->otherPieceRef, pieceRef);
 		this->relationship = relationship;
 		this->distance = distance;
-		this->otherPieceDirection = dir;
 	}
 	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
@@ -163,7 +162,6 @@ private:
 	PieceType *otherPieceType;
 	Player::Relationship_t relationship;
 	Distance *distance;
-	unsigned int otherPieceDirection;
 
 	friend class GameParser;
 };
