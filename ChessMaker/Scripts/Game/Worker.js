@@ -45,7 +45,7 @@ function loadDefinition(defUrl, players) {
 
 function parseDefinition(xml, players) {
     console.time('parse');
-    if (Module.ccall('Initialize', 'number', ['string'], [xml]) == 0) {
+    if (Module.ccall('Parse', 'number', ['string'], [xml]) == 0) {
         error('An error occurred initializing the game');
         return;
     }
@@ -77,6 +77,8 @@ function parseDefinition(xml, players) {
     var showCaptured = Module.ccall('ShouldShowCapturedPieces', 'number') != 0;
     var showHeld = Module.ccall('ShouldShowHeldPieces', 'number') != 0;
     postMessage(['init', boardSVG, showCaptured, showHeld]);
+
+    Module.ccall('Start', null);
 }
 
 function addPossibleMove(notation, fromCell, toCell) {

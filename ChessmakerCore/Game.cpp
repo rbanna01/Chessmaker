@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "ai.h"
 #include "Board.h"
 #include "EndOfGame.h"
 #include "GameState.h"
@@ -67,7 +68,7 @@ bool Game::StartNextTurn()
 		return false;
 	}
 
-	bool local = currentState->currentPlayer->type == Player::Local;
+	bool local = currentState->GetCurrentPlayer()->GetType() == Player::Local;
 
 #ifdef EMSCRIPTEN
 	EM_ASM_ARGS({setCurrentPlayer($0, $1);}, currentState->GetCurrentPlayer()->GetName(), local);
@@ -97,18 +98,15 @@ bool Game::StartNextTurn()
 		printf(output.c_str());
 #endif
 	}
-	else
+	else if (currentState->GetCurrentPlayer()->GetType() == Player::AI)
 	{
-		if (currentState->currentPlayer->type == Player::AI)
+		auto move = currentState->GetCurrentPlayer()->GetAI()->SelectMove();
+		if (move == 0)
 		{
-			/* todo: implement this
-			setTimeout(function() {
-				console.time('ai');
-				var move = game.state.currentPlayer.AI.selectMove();
-				console.timeEnd('ai');
-				game.performMove(move);
-			}, 1);*/
+			ReportError("AI failed to select a move\n");
+			return false;
 		}
+		PerformMove(move);
 	}
 
 	return true;

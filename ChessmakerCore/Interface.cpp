@@ -29,7 +29,7 @@ std::string *boardSVG = 0;
 #endif
 
 EXPOSE_METHOD
-BOOL_TYPE Initialize(char* definition)
+BOOL_TYPE Parse(char* definition)
 {
 	if (game != 0)
 		delete game;
@@ -56,8 +56,13 @@ BOOL_TYPE Initialize(char* definition)
 	printf("Definition parsed successfully\n");
 #endif
 
-	game->Start();
 	return TRUE_VAL;
+}
+
+EXPOSE_METHOD
+void Start()
+{
+	game->Start();
 }
 
 #ifndef NO_SVG
@@ -176,31 +181,17 @@ int PerformMove(const char *notation)
 		Move *move = *it;
 		if (strcmp(notation, move->GetNotation()) == 0)
 		{
-			do
+			auto result = game->PerformMove(move);
+			switch (result)
 			{
-				auto result = game->PerformMove(move);
-				switch (result)
-				{
-				case Game::GameComplete:
-					return 0;
-				case Game::MoveComplete:
-					if (game->GetCurrentState()->GetCurrentPlayer()->GetType() == Player::AI)
-					{
-						move = game->GetCurrentState()->GetCurrentPlayer()->GetAI()->SelectMove();
-						if (move == 0)
-						{
-							ReportError("AI failed to select a move\n");
-							return -1;
-						}
-						continue;
-					}
-					else
-						return 1;
-				default:
-					ReportError("An error occurred performing a move\n");
-					return -1;
-				}
-			} while (true);
+			case Game::GameComplete:
+				return 0;
+			case Game::MoveComplete:
+				return 1;
+			default:
+				ReportError("An error occurred performing a move\n");
+				return -1;
+			}
 		}
 	}
 	return -1;

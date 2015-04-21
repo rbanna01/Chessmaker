@@ -11,10 +11,17 @@
 #include <iostream>
 #include <fstream>
 
+#if _DEBUG
 #pragma comment(lib, "..\\Debug\\ChessmakerCore.lib")
+#else
+#pragma comment(lib, "..\\Release\\ChessmakerCore.lib")
+#endif
 
 extern "C" __declspec(dllimport)
-bool Initialize(char* definition);
+bool Parse(char* definition);
+
+extern "C" __declspec(dllimport)
+void Start();
 /*
 extern "C" __declspec(dllimport)
 const char *GetBoardSVG();
@@ -54,7 +61,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	def.close();
 	
 	// initialize game engine
-	if (!Initialize(definition))
+	if (!Parse(definition))
 	{
 		printf("Error parsing definition\n");
 		delete definition;
@@ -90,6 +97,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 void RunGameLoop()
 {
+	Start();
+
 	int retVal = 0;
 	std::string input;
 	do
