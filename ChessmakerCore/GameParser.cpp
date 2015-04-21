@@ -764,7 +764,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 	attr = moveNode->first_attribute("dir");
 	direction_t dir = attr == 0 ? 0 : LookupDirection(attr->value());
 
-	moveNode->first_attribute("dist");
+	attr = moveNode->first_attribute("dist");
 	Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
 
 	ReferencePiece *moveDef = new ReferencePiece(name, 0, relat, dir, dist);
