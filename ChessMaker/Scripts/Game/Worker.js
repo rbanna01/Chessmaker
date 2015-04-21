@@ -102,5 +102,5 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
         state = 'held';
     else
         state = 'board';
-    postMessage(['move', pieceID, state, Pointer_stringify(stateOwner), posX, posY, Pointer_stringify(owner), Pointer_stringify(appearance)]);
+    postMessage(['move', pieceID, state, stateOwner, posX, posY, Pointer_stringify(owner), Pointer_stringify(appearance)]);
 }

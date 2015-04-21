@@ -1,7 +1,16 @@
 ﻿"use strict";
 
 var worker;
+var numPlayers;
+var capturedPieces, heldPieces;
+
 function initializeGame(workerUrl, defUrl, players) {
+    numPlayers = players.length;
+
+    capturedPieces = {}; heldPieces = {};
+    for (var i = 1; i <= numPlayers; i++)
+        capturedPieces[i] = heldPieces[i] = 0;
+
     console.time('load all');
 
     worker = new Worker(workerUrl);
@@ -125,9 +134,6 @@ function logMove(player, number, notation) {
 
 function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     var element = document.getElementById('p' + pieceID);
-
-    owner = owner;
-    appearance = appearance;
     var board = document.getElementById('render');
 
     element.setAttribute('class', 'piece ' + owner);
@@ -143,9 +149,13 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
         }
         else {
             $(element) // moving onto board, so fade out, move instantly, then fade in
-                .velocity({ opacity: 0 }, { complete: function (elements) {
-                        element.parent.removeChild(element);
+                .velocity({ opacity: 0 }, {
+                    complete: function (elements) {
+                        var container = element.parent;
+                        container.removeChild(element);
                         board.appendChild(element);
+
+                        // todo: determine the counter for this player's captured/held pieces, and reduce it by one. Slide everything else in the container up to account for the empty space. And the squeezing.
                     }
                 })
                 .velocity({ x: posX, y: posY }, { duration: 0 })
@@ -153,14 +163,17 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
         }
     }
     else {
-        posX = 50;
-        posY = 50;
+        var counter = state == 'captured' ? capturedPieces : heldPieces;
+        var container = document.getElementById(state);  // 'captured' or 'held'
+        counter[stateOwner]++;
+
+        posX = stateOwner * 196 / (numPlayers + 1);
+        posY = counter[stateOwner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
                     element.parentElement.removeChild(element);
-                    var parent = document.getElementById(state); // "captured" or "held"
-                    if (parent != null)
-                        parent.appendChild(element);
+                    if (container != null)
+                        container.appendChild(element);
                 }
             })
             .velocity({ x: posX, y: posY }, { duration: 0 })

@@ -1,8 +1,6 @@
 ﻿"use strict";
 
-function Board() { }
-
-Board.prototype.updatePiecePositions = function (groupNode) {
+function updatePiecePositions(groupNode) {
     /*
     this ought to sort by value, rather than just by image (really just type, alphabetically)
     */
@@ -48,4 +46,4 @@ Board.prototype.updatePiecePositions = function (groupNode) {
 
         this.setAttribute('y', (num - 0.45) * stepSize);
     });
-};
+}

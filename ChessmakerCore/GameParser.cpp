@@ -36,6 +36,8 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 	game->showCapturedPieces = true;  //
 	game->showHeldPieces = false;     //
 
+	Player::nextID = 1;
+
 	maxDirection = FIRST_ABSOLUTE_DIRECTION >> 1;
 	allDirections = 0;
 	directionLookups.clear();

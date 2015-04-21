@@ -346,8 +346,6 @@
     <Content Include="Scripts\Game\Chessmaker.js" />
     <Content Include="Scripts\Game\Worker.js" />
     <Content Include="Scripts\Game\xBoard.js" />
-    <Content Include="Scripts\Game\xMoveStep.js" />
-    <Content Include="Scripts\Game\xPlayer.js" />
     <Content Include="Scripts\Game\UI.js" />
     <Content Include="Scripts\Designer\Pieces.js" />
     <Content Include="Scripts\Designer\References.js" />

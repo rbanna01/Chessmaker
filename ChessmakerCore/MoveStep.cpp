@@ -130,7 +130,7 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 #ifdef EMSCRIPTEN
 	EM_ASM_ARGS(
 		{ movePiece($0, $1, $2, $3, $4, $5, $6) },
-		piece->GetID(), (int)state, stateOwner == 0 ? "" : stateOwner->GetName(), pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetName(), type->GetAppearance(owner)
+		piece->GetID(), (int)state, stateOwner == 0 ? 0 : stateOwner->GetID(), pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetName(), type->GetAppearance(owner)
 	);
 #endif
 }
