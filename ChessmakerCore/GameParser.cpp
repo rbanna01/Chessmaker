@@ -653,7 +653,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
 
 	attr = moveNode->first_attribute("captureHurdle");
-	bool captureHurdle = attr == 0 || (strcmp(attr->value(), "true") == 0);
+	bool captureHurdle = attr != 0 && strcmp(attr->value(), "true") == 0;
 
 	return new Hop(pieceRef, conditions, when, dir, distToHurdle, distToHurdleMax, distAfterHurdle, distAfterHurdleMax, captureHurdle);
 }
