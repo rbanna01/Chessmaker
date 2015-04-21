@@ -72,9 +72,9 @@ private:
 	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *rootNode);
 	Player *GetPlayerByName(char *name);
 
-	unsigned int LookupDirection(char *dirName);
+	direction_t LookupDirection(char *dirName);
 
-	unsigned int maxDirection, allDirections;
+	direction_t maxDirection, allDirections;
 	dirLookup_t directionLookups;
 	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
 	std::map<char*, Cell*, char_cmp> cellsByRef;

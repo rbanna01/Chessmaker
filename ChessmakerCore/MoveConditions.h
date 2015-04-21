@@ -96,7 +96,7 @@ private:
 class MoveCondition_MaxDist : public MoveCondition
 {
 public:
-	MoveCondition_MaxDist(const char *from, unsigned int dir, int number, NumericComparison_t comparison)
+	MoveCondition_MaxDist(const char *from, direction_t dir, int number, NumericComparison_t comparison)
 	{
 		strcpy(pieceRef, from);
 		this->dir = dir;
@@ -107,7 +107,7 @@ public:
 	virtual bool IsSatisfied(Move *move);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
-	unsigned int dir;
+	direction_t dir;
 	int number;
 	MoveCondition::NumericComparison_t comparison;
 };

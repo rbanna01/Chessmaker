@@ -136,7 +136,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 struct TempCellLink
 {
 public:
-	TempCellLink(Cell *c, unsigned int d, char *r)
+	TempCellLink(Cell *c, direction_t d, char *r)
 	{
 		fromCell = c;
 		direction = d;
@@ -144,7 +144,7 @@ public:
 	}
 
 	Cell *fromCell;
-	unsigned int direction;
+	direction_t direction;
 	char* destinationCellRef;
 };
 
@@ -326,7 +326,7 @@ bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 		if (strcmp(node->name(), "relative") == 0)
 		{
 			char *name = node->first_attribute("name")->value();
-			unsigned int id = LookupDirection(name); // this should always be new
+			direction_t id = LookupDirection(name); // this should always be new
 			relativeDir_t values;
 
 			xml_node<> *child = node->first_node();
@@ -335,15 +335,15 @@ bool GameParser::ParseDirections(Board *board, xml_node<> *dirsNode)
 				char *from = child->first_attribute("from")->value();
 				char *to = child->first_attribute("to")->value();
 				
-				unsigned int fromID = LookupDirection(from); // this should never be new, and also < firstRelativeDirection
-				unsigned int toID = LookupDirection(to); // this should never be new, and also < firstRelativeDirection
+				direction_t fromID = LookupDirection(from); // this should never be new, and also < firstRelativeDirection
+				direction_t toID = LookupDirection(to); // this should never be new, and also < firstRelativeDirection
 
 				values.insert(relativeDirValue_t(fromID, toID));
 
 				child = child->next_sibling();
 			}
 
-			board->relativeDirections.insert(std::pair<unsigned int, relativeDir_t>(id, values));
+			board->relativeDirections.insert(std::pair<direction_t, relativeDir_t>(id, values));
 		}
 		else if (strcmp(node->name(), "group") == 0)
 		{
@@ -589,7 +589,7 @@ MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
-	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+	direction_t dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
 	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
 
@@ -610,7 +610,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
-	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+	direction_t dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
 	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
 
@@ -621,7 +621,7 @@ MoveDefinition *GameParser::ParseMove_Leap(xml_node<char> *moveNode)
 	Distance *secondDist = attr == 0 ? &Distance::Zero : ParseDistance(attr->value());
 
 	attr = moveNode->first_attribute("secondDir");
-	unsigned int secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
+	direction_t secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
 
 	attr = moveNode->first_attribute("when");
 	MoveDefinition::When_t when = attr == 0 ? MoveDefinition::Any : ParseWhen(attr->value());
@@ -637,7 +637,7 @@ MoveDefinition *GameParser::ParseMove_Hop(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
-	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+	direction_t dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
 	Distance *distToHurdle = ParseDistance(moveNode->first_attribute("distToHurdle")->value());
 
@@ -666,7 +666,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
-	unsigned int dir = LookupDirection(moveNode->first_attribute("dir")->value());
+	direction_t dir = LookupDirection(moveNode->first_attribute("dir")->value());
 
 	Distance *dist = ParseDistance(moveNode->first_attribute("dist")->value());
 
@@ -677,7 +677,7 @@ MoveDefinition *GameParser::ParseMove_Shoot(xml_node<char> *moveNode)
 	Distance *secondDist = attr == 0 ? &Distance::Zero : ParseDistance(attr->value());
 
 	attr = moveNode->first_attribute("secondDir");
-	unsigned int secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
+	direction_t secondDir = attr == 0 ? 0 : LookupDirection(attr->value());
 
 	return new Shoot(pieceRef, conditions, MoveDefinition::Capturing, dir, dist, distMax, secondDir, secondDist);
 }
@@ -762,7 +762,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 	Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
 
 	attr = moveNode->first_attribute("dir");
-	unsigned int dir = attr == 0 ? 0 : LookupDirection(attr->value());
+	direction_t dir = attr == 0 ? 0 : LookupDirection(attr->value());
 
 	moveNode->first_attribute("dist");
 	Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
@@ -827,7 +827,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		{
 			xml_attribute<> *attr = child->first_attribute("from"); // not present in the schema
 			const char *from = attr == 0 ? "self" : attr->value();
-			unsigned int dir = LookupDirection(child->first_attribute("dir")->value());
+			direction_t dir = LookupDirection(child->first_attribute("dir")->value());
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			conditions->elements.push_back(new MoveCondition_MaxDist(from, dir, number, comparison));
@@ -1252,7 +1252,7 @@ EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
 	return endOfGame;
 }
 
-unsigned int GameParser::LookupDirection(char *dirName)
+direction_t GameParser::LookupDirection(char *dirName)
 {
 	if (strcmp(dirName, "forward") == 0)
 		return DIRECTION_FORWARD;
