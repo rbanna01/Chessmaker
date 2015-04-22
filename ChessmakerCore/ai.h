@@ -41,9 +41,9 @@ public:
 	AI_AlphaBeta(Game *game, int ply) : PlayerAI(game) { this->ply = ply; }
 	virtual Move *SelectMove();
 private:
-	double FindBestScore(GameState *state, double alpha, double beta, int depth);
-	double GetMoveScore(Move *move, double alpha, double beta, int depth);
-	double GetScoreForEndOfGame(EndOfGame::CheckType_t result);
-	double EvaluateBoard(GameState *state);
+	int FindBestScore(GameState *state, int alpha, int beta, int depth);
+	int GetMoveScore(Move *move, int alpha, int beta, int depth);
+	int GetScoreForEndOfGame(EndOfGame::CheckType_t result);
+	int EvaluateBoard(GameState *state);
 	int ply;
 };

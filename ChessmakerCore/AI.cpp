@@ -5,7 +5,7 @@
 #include "Piece.h"
 #include "PieceType.h"
 #include "Player.h"
-#include <float.h>
+#include <limits.h>
 
 
 Move *AI_Random::SelectMove()
@@ -58,13 +58,14 @@ Move *AI_RandomCapture::SelectMove()
 	return 0;
 }
 
-
+// the order we look through moves is important. If we look at the best moves first, we can ignore most others! See https://chessprogramming.wikispaces.com/Move+Ordering
+// rather than just evaluating, we probably want to do a quiescence search, see https://chessprogramming.wikispaces.com/Quiescence+Search
 Move *AI_AlphaBeta::SelectMove()
 {
-	double alpha = DBL_MIN;
-	double beta = DBL_MAX;
+	int alpha = INT_MIN;
+	int beta = INT_MAX;
 
-    double bestScore = DBL_MIN;
+	int bestScore = INT_MIN;
 	std::list<Move*> bestMoves;
     
 	auto moves = game->GetPossibleMoves();
@@ -72,7 +73,7 @@ Move *AI_AlphaBeta::SelectMove()
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;
-        double score = GetMoveScore(move, alpha, beta, ply);
+        int score = GetMoveScore(move, alpha, beta, ply);
 
         if (score > bestScore) {
             bestScore = score;
@@ -97,9 +98,8 @@ Move *AI_AlphaBeta::SelectMove()
 }
 
 
-double AI_AlphaBeta::FindBestScore(GameState *state, double alpha, double beta, int depth)
+int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth)
 {
-	
 	if (depth == 0)
         return EvaluateBoard(state);
     
@@ -124,7 +124,7 @@ double AI_AlphaBeta::FindBestScore(GameState *state, double alpha, double beta, 
 			}
         }
 
-        double score = GetMoveScore(move, alpha, beta, depth);
+		int score = GetMoveScore(move, alpha, beta, depth);
 		delete move;
 
 		if (score >= beta)
@@ -148,12 +148,12 @@ double AI_AlphaBeta::FindBestScore(GameState *state, double alpha, double beta, 
 }
 
 
-double AI_AlphaBeta::GetMoveScore(Move *move, double alpha, double beta, int depth)
+int AI_AlphaBeta::GetMoveScore(Move *move, int alpha, int beta, int depth)
 {
 	GameState *subsequentState = move->Perform(false);
 
 	EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckEndOfTurn(move->GetPrevState(), move);
-	double score;
+	int score;
 
 	if (gameEnd == EndOfGame::None)
 	{
@@ -171,14 +171,14 @@ double AI_AlphaBeta::GetMoveScore(Move *move, double alpha, double beta, int dep
 }
 
 
-double AI_AlphaBeta::GetScoreForEndOfGame(EndOfGame::CheckType_t result)
+int AI_AlphaBeta::GetScoreForEndOfGame(EndOfGame::CheckType_t result)
 {
 	switch (result)
 	{
 	case EndOfGame::Win:
-		return DBL_MAX;
+		return INT_MAX;
 	case EndOfGame::Lose:
-		return DBL_MIN;
+		return INT_MIN;
 	case EndOfGame::Draw:
 	default:
 		return 0;
@@ -186,9 +186,9 @@ double AI_AlphaBeta::GetScoreForEndOfGame(EndOfGame::CheckType_t result)
 }
 
 
-double AI_AlphaBeta::EvaluateBoard(GameState *state)
+int AI_AlphaBeta::EvaluateBoard(GameState *state)
 {
-	double score = 0;
+	int score = 0;
 
 	Player *current = state->GetCurrentPlayer();
 
@@ -196,7 +196,7 @@ double AI_AlphaBeta::EvaluateBoard(GameState *state)
 	for (auto itPlayers = players.begin(); itPlayers != players.end(); itPlayers++)
     {
 		Player *other = *itPlayers;
-        double playerScore = 0;
+		int playerScore = 0;
 
 		// add piece value to score
 		auto piecesOnBoard = other->GetPiecesOnBoard();
