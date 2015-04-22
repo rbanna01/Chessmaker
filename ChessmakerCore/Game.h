@@ -34,7 +34,7 @@ public:
 	std::list<Player*> GetPlayers() { return players; }
 private:
 	bool StartNextTurn();
-	bool EndTurn(GameState *newState, Move *move);
+	bool EndTurn(GameState *newState);
 	void ProcessEndOfGame(EndOfGame::CheckType_t);
 	void EndGame(Player *victor);
 

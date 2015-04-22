@@ -60,7 +60,7 @@ EndOfGame::CheckType_t EndOfGame::CheckStartOfTurn(GameState *state, bool canMov
 }
 
 
-EndOfGame::CheckType_t EndOfGame::CheckEndOfTurn(GameState *state, Move *move)
+EndOfGame::CheckType_t EndOfGame::CheckEndOfTurn(GameState *state)
 {
 	// return Win/Lose/Draw/IllegalMove, or None if the game isn't over yet
 

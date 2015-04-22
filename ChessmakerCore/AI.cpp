@@ -21,7 +21,6 @@ Move *AI_Random::SelectMove()
 		index++;
 	}
 
-	ReportError("Random AI failed to select a move\n");
 	return 0;
 }
 
@@ -54,9 +53,9 @@ Move *AI_RandomCapture::SelectMove()
 		index++;
 	}
 
-	ReportError("Random Capture AI failed to select a move\n");
 	return 0;
 }
+
 
 // the order we look through moves is important. If we look at the best moves first, we can ignore most others! See https://chessprogramming.wikispaces.com/Move+Ordering
 // rather than just evaluating, we probably want to do a quiescence search, see https://chessprogramming.wikispaces.com/Quiescence+Search
@@ -84,8 +83,8 @@ Move *AI_AlphaBeta::SelectMove()
             bestMoves.push_back(move);
     }
 
-	int selectedIndex = rand() % moves->size(), index = 0;
-	for (auto it = moves->begin(); it != moves->end(); it++)
+	int selectedIndex = rand() % bestMoves.size(), index = 0;
+	for (auto it = bestMoves.begin(); it != bestMoves.end(); it++)
 	{
 		if (index == selectedIndex)
 			return *it;
@@ -93,7 +92,6 @@ Move *AI_AlphaBeta::SelectMove()
 		index++;
 	}
 
-	ReportError("Alpha-Beta AI failed to select a move\n");
 	return 0;
 }
 
@@ -152,7 +150,7 @@ int AI_AlphaBeta::GetMoveScore(Move *move, int alpha, int beta, int depth)
 {
 	GameState *subsequentState = move->Perform(false);
 
-	EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckEndOfTurn(move->GetPrevState(), move);
+	EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckEndOfTurn(move->GetPrevState());
 	int score;
 
 	if (gameEnd == EndOfGame::None)

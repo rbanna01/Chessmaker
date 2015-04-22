@@ -19,7 +19,7 @@ public:
 	static EndOfGame *CreateDefault();
 
 	CheckType_t CheckStartOfTurn(GameState *state, bool canMove);
-	CheckType_t CheckEndOfTurn(GameState *state, Move *move);
+	CheckType_t CheckEndOfTurn(GameState *state);
 	bool AnyIllegalMovesSpecified() { return illegalMovesSpecified; }
 
 private:

@@ -100,7 +100,13 @@ bool Game::StartNextTurn()
 	}
 	else if (currentState->GetCurrentPlayer()->GetType() == Player::AI)
 	{
+#ifdef EMSCRIPTEN
+		EM_ASM(console.time("ai"));
+#endif
 		auto move = currentState->GetCurrentPlayer()->GetAI()->SelectMove();
+#ifdef EMSCRIPTEN
+		EM_ASM(console.timeEnd("ai"));
+#endif
 		if (move == 0)
 		{
 			ReportError("AI failed to select a move\n");
@@ -118,7 +124,7 @@ Game::MoveResult_t Game::PerformMove(Move *move)
 	if (subsequentState != 0)
 	{
 		LogMove(currentState->currentPlayer, move);
-		if (EndTurn(subsequentState, move))
+		if (EndTurn(subsequentState))
 			return MoveComplete;
 		else
 			return GameComplete;
@@ -129,9 +135,9 @@ Game::MoveResult_t Game::PerformMove(Move *move)
 	}
 }
 
-bool Game::EndTurn(GameState *newState, Move *move)
+bool Game::EndTurn(GameState *newState)
 {
-	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState, move);
+	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState);
 	ClearPossibleMoves();
 	delete currentState;
 
