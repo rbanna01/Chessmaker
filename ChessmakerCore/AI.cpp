@@ -57,7 +57,7 @@ Move *AI_RandomCapture::SelectMove()
 }
 
 
-// the order we look through moves is important. If we look at the best moves first, we can ignore most others! See https://chessprogramming.wikispaces.com/Move+Ordering
+// the order we look through moves is important. If we look at the best moves first, we can ignore most others! See https://chessprogramming.wikispaces.com/Move+Ordering (consider captures first?)
 // rather than just evaluating, we probably want to do a quiescence search, see https://chessprogramming.wikispaces.com/Quiescence+Search
 Move *AI_AlphaBeta::SelectMove()
 {
@@ -68,11 +68,23 @@ Move *AI_AlphaBeta::SelectMove()
 	std::list<Move*> bestMoves;
     
 	auto moves = game->GetPossibleMoves();
+	Player *player = game->GetCurrentState()->GetCurrentPlayer();
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;
-        int score = GetMoveScore(move, alpha, beta, ply);
+		GameState *subsequentState = move->Perform(false);
+
+		int score;
+		if (player->GetRelationship(subsequentState->GetCurrentPlayer()) == Player::Enemy)
+			score = -FindBestScore(subsequentState, -beta, -alpha, ply - 1);
+		else
+			score = FindBestScore(subsequentState, alpha, beta, ply - 1);
+
+		move->Reverse(false);
+		delete subsequentState;
+
+		//printf("Move has a score of %i\n", bestScore);
 
         if (score > bestScore) {
             bestScore = score;
@@ -82,8 +94,9 @@ Move *AI_AlphaBeta::SelectMove()
         else if (score == bestScore)
             bestMoves.push_back(move);
     }
-
-	int selectedIndex = rand() % bestMoves.size(), index = 0;
+	printf("Best %i move(s) have a score of %i\n", bestMoves.size(), bestScore);
+	int selectedIndex = rand() % bestMoves.size(), index = 0; // this is NOT randomizing, at least in the emscripten
+	
 	for (auto it = bestMoves.begin(); it != bestMoves.end(); it++)
 	{
 		if (index == selectedIndex)
@@ -91,81 +104,68 @@ Move *AI_AlphaBeta::SelectMove()
 
 		index++;
 	}
-
+	
 	return 0;
 }
 
 
 int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth)
 {
+	EndOfGame *endOfGame = game->GetEndOfGame();
+	EndOfGame::CheckType_t gameEndType = endOfGame->CheckEndOfTurn(state);
+	if (gameEndType != EndOfGame::None)
+		return GetScoreForEndOfGame(gameEndType);
+
 	if (depth == 0)
-        return EvaluateBoard(state);
-    
-	bool anyMoves = false;
-    auto moves = state->DeterminePossibleMoves();
+		return EvaluateBoard(state); // should be quiescing here
+
+	auto moves = state->DeterminePossibleMoves();
+
+	gameEndType = endOfGame->CheckStartOfTurn(state, !moves->empty());
+	if (gameEndType != EndOfGame::None)
+	{
+		for (auto it = moves->begin(); it != moves->end(); it++)
+			delete *it;
+		delete moves;
+		return GetScoreForEndOfGame(gameEndType);
+	}
+	
+	int bestScore = INT_MIN;
+	Player *movePlayer = state->GetCurrentPlayer();
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
-    {
+	{
 		Move *move = *it;
-        if (!anyMoves)
-		{
-            anyMoves = true;
+		GameState *subsequentState = move->Perform(false);
+		int score;
 
-			EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckStartOfTurn(state, anyMoves);
-			if (gameEnd != EndOfGame::None)
-			{
-				for (; it != moves->end(); it++)
-					delete *it;
-				delete moves;
+		if (movePlayer->GetRelationship(subsequentState->GetCurrentPlayer()) == Player::Enemy)
+			score = -FindBestScore(subsequentState, -beta, -alpha, depth - 1);
+		else
+			score = FindBestScore(subsequentState, alpha, beta, depth - 1);
 
-				return GetScoreForEndOfGame(gameEnd);
-			}
-        }
-
-		int score = GetMoveScore(move, alpha, beta, depth);
-		delete move;
-
+		move->Reverse(false);
 		if (score >= beta)
 		{
-			for (it++; it != moves->end(); it++)
-				delete *it;
-			delete moves;
+			bestScore = score;
 
-			return beta;
+			for (; it != moves->end(); it++)
+				delete *it;
+			break;
 		}
-        if (score > alpha)
-            alpha = score;
-    }
+		else if(score > bestScore)
+		{
+			bestScore = score;
+			if (score > alpha)
+				alpha = score;
+		}
+		delete move;
+	}
+
+	//printf("FindBestScore at depth %i returns %i\n", depth, alpha);
 
 	delete moves;
-
-    if (!anyMoves)
-        return GetScoreForEndOfGame(game->GetEndOfGame()->CheckStartOfTurn(state, anyMoves));
-
-    return alpha;
-}
-
-
-int AI_AlphaBeta::GetMoveScore(Move *move, int alpha, int beta, int depth)
-{
-	GameState *subsequentState = move->Perform(false);
-
-	EndOfGame::CheckType_t gameEnd = game->GetEndOfGame()->CheckEndOfTurn(move->GetPrevState());
-	int score;
-
-	if (gameEnd == EndOfGame::None)
-	{
-        if (move->GetPlayer()->GetRelationship(subsequentState->GetCurrentPlayer()) == Player::Enemy)
-            score = -FindBestScore(subsequentState, -beta, -alpha, depth - 1);
-        else
-            score = FindBestScore(subsequentState, alpha, beta, depth - 1);
-    }
-	else
-		score = GetScoreForEndOfGame(gameEnd);
-
-    move->Reverse(false);
-	delete subsequentState;
-    return score;
+	return bestScore;
 }
 
 

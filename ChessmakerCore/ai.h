@@ -42,7 +42,6 @@ public:
 	virtual Move *SelectMove();
 private:
 	int FindBestScore(GameState *state, int alpha, int beta, int depth);
-	int GetMoveScore(Move *move, int alpha, int beta, int depth);
 	int GetScoreForEndOfGame(EndOfGame::CheckType_t result);
 	int EvaluateBoard(GameState *state);
 	int ply;
