@@ -56,15 +56,16 @@ Move *AI_RandomCapture::SelectMove()
 	return 0;
 }
 
-
+#define MAX_VAL INT_MAX
+#define MIN_VAL -MAX_VAL
 // the order we look through moves is important. If we look at the best moves first, we can ignore most others! See https://chessprogramming.wikispaces.com/Move+Ordering (consider captures first?)
 // rather than just evaluating, we probably want to do a quiescence search, see https://chessprogramming.wikispaces.com/Quiescence+Search
 Move *AI_AlphaBeta::SelectMove()
 {
-	int alpha = INT_MIN;
-	int beta = INT_MAX;
+	int alpha = MIN_VAL;
+	int beta = MAX_VAL;
 
-	int bestScore = INT_MIN;
+	int bestScore = MIN_VAL;
 	std::list<Move*> bestMoves;
     
 	auto moves = game->GetPossibleMoves();
@@ -86,17 +87,28 @@ Move *AI_AlphaBeta::SelectMove()
 
 		//printf("Move has a score of %i\n", bestScore);
 
-        if (score > bestScore) {
-            bestScore = score;
+		if (score >= beta)
+		{
+			bestScore = score;
+
 			bestMoves.clear();
 			bestMoves.push_back(move);
-        }
-        else if (score == bestScore)
-            bestMoves.push_back(move);
+		}
+		else if (score > bestScore)
+		{
+			bestScore = score;
+			if (score > alpha)
+				alpha = score;
+
+			bestMoves.clear();
+			bestMoves.push_back(move);
+		}
+		else if (score == bestScore)
+			bestMoves.push_back(move);
     }
 	printf("Best %i move(s) have a score of %i\n", bestMoves.size(), bestScore);
-	int selectedIndex = rand() % bestMoves.size(), index = 0; // this is NOT randomizing, at least in the emscripten
-	
+	//srand(time(NULL)); // need to seed the random selection ... across all AIs. somehow.
+	int selectedIndex = rand() % bestMoves.size(), index = 0;
 	for (auto it = bestMoves.begin(); it != bestMoves.end(); it++)
 	{
 		if (index == selectedIndex)
@@ -130,7 +142,7 @@ int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth
 		return GetScoreForEndOfGame(gameEndType);
 	}
 	
-	int bestScore = INT_MIN;
+	int bestScore = MIN_VAL;
 	Player *movePlayer = state->GetCurrentPlayer();
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
@@ -153,7 +165,7 @@ int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth
 				delete *it;
 			break;
 		}
-		else if(score > bestScore)
+		else if (score > bestScore)
 		{
 			bestScore = score;
 			if (score > alpha)
@@ -174,9 +186,9 @@ int AI_AlphaBeta::GetScoreForEndOfGame(EndOfGame::CheckType_t result)
 	switch (result)
 	{
 	case EndOfGame::Win:
-		return INT_MAX;
+		return MAX_VAL;
 	case EndOfGame::Lose:
-		return INT_MIN;
+		return MIN_VAL;
 	case EndOfGame::Draw:
 	default:
 		return 0;
