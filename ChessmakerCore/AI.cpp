@@ -69,6 +69,8 @@ Move *AI_AlphaBeta::SelectMove()
 	std::list<Move*> bestMoves;
     
 	auto moves = game->GetPossibleMoves();
+	SortMoves(moves);
+
 	GameState *currentState = game->GetCurrentState();
 	Player *player = currentState->GetCurrentPlayer();
 
@@ -122,6 +124,7 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 		return EvaluateBoard(currentState); // should be quiescing here
 
 	auto moves = currentState->DeterminePossibleMoves();
+	SortMoves(moves);
 
 	gameEndType = endOfGame->CheckStartOfTurn(currentState, !moves->empty());
 	if (gameEndType != EndOfGame::None)
@@ -166,6 +169,25 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 
 	delete moves;
 	return bestScore;
+}
+
+
+void AI_AlphaBeta::SortMoves(std::list<Move*> *moves)
+{
+	// separate captures from non-capturing moves, and put them all at the front
+	std::list<Move*> captures;
+	for (auto it = moves->begin(); it != moves->end(); it++)
+	{
+		Move *move = *it;
+		if (move->IsCapture())
+		{
+			captures.push_front(move);
+			it = moves->erase(it);
+		}
+	}
+
+	for (auto it = captures.begin(); it != captures.end(); it++)
+		moves->push_front(*it);
 }
 
 

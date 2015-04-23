@@ -44,5 +44,6 @@ private:
 	int FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth);
 	int GetScoreForEndOfGame(EndOfGame::CheckType_t result);
 	int EvaluateBoard(GameState *state);
+	void SortMoves(std::list<Move*> *moves);
 	int ply;
 };
