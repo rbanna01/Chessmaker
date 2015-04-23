@@ -220,6 +220,33 @@ bool Move::IsCapture()
 }
 
 
+int Move::GetCaptureValue()
+{
+	int sum = 0;
+	for (auto it = steps.begin(); it != steps.end(); it++)
+	{
+		MoveStep *step = *it;
+		int val = step->GetPiece()->GetType()->GetValue();
+
+		if (step->toState != Piece::OnBoard)
+		{
+			if (player->GetRelationship(step->GetPiece()->GetOwner()) == Player::Enemy)
+				sum += val;
+			else
+				sum -= val;
+		}
+		else
+		{
+			if (player->GetRelationship(step->GetPiece()->GetOwner()) == Player::Enemy)
+				sum -= val;
+			else
+				sum += val;
+		}
+	}
+	return sum;
+}
+
+
 bool Move::WouldCapture(Cell* target)
 {
 	for (auto it = steps.begin(); it != steps.end(); it++)

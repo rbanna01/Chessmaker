@@ -174,20 +174,23 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 
 void AI_AlphaBeta::SortMoves(std::list<Move*> *moves)
 {
-	// separate captures from non-capturing moves, and put them all at the front
-	std::list<Move*> captures;
+	// separate captures from non-capturing moves, and put them all at the front. Sort them by [Value of captured piece] - [value of capturing piece]
+	std::multimap<int, Move*> captures;
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;
-		if (move->IsCapture())
-		{
-			captures.push_front(move);
-			it = moves->erase(it);
-		}
+		int val = move->GetCaptureValue();
+		if (val <= 0)
+			continue; // not capturing anything
+
+		val -= move->GetPiece()->GetType()->GetValue();
+
+		captures.insert(std::pair<int, Move*>(val, move));
+		it = moves->erase(it);
 	}
 
-	for (auto it = captures.begin(); it != captures.end(); it++)
-		moves->push_front(*it);
+	for (auto it = captures.rbegin(); it != captures.rend(); it++)
+		moves->push_front(it->second);
 }
 
 

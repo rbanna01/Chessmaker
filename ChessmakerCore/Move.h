@@ -33,6 +33,7 @@ public:
 	Cell *GetEndPos();
 	std::list<Cell*> GetAllPositions();
 	bool IsCapture();
+	int GetCaptureValue();
 	bool WouldCapture(Cell* target);
 	PieceType *GetPromotionType();
 	Player *GetPlayer() { return player; }
