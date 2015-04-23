@@ -85,20 +85,9 @@ Move *AI_AlphaBeta::SelectMove()
 		move->Reverse(false);
 		delete subsequentState;
 
-		//printf("Move has a score of %i\n", bestScore);
-
-		if (score >= beta)
+		if (score > bestScore)
 		{
 			bestScore = score;
-
-			bestMoves.clear();
-			bestMoves.push_back(move);
-		}
-		else if (score > bestScore)
-		{
-			bestScore = score;
-			if (score > alpha)
-				alpha = score;
 
 			bestMoves.clear();
 			bestMoves.push_back(move);
@@ -106,7 +95,7 @@ Move *AI_AlphaBeta::SelectMove()
 		else if (score == bestScore)
 			bestMoves.push_back(move);
     }
-	printf("Best %i move(s) have a score of %i\n", bestMoves.size(), bestScore);
+	
 	//srand(time(NULL)); // need to seed the random selection ... across all AIs. somehow.
 	int selectedIndex = rand() % bestMoves.size(), index = 0;
 	for (auto it = bestMoves.begin(); it != bestMoves.end(); it++)
@@ -173,8 +162,6 @@ int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth
 		}
 		delete move;
 	}
-
-	//printf("FindBestScore at depth %i returns %i\n", depth, alpha);
 
 	delete moves;
 	return bestScore;
