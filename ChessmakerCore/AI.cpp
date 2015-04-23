@@ -69,7 +69,8 @@ Move *AI_AlphaBeta::SelectMove()
 	std::list<Move*> bestMoves;
     
 	auto moves = game->GetPossibleMoves();
-	Player *player = game->GetCurrentState()->GetCurrentPlayer();
+	GameState *currentState = game->GetCurrentState();
+	Player *player = currentState->GetCurrentPlayer();
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -78,9 +79,9 @@ Move *AI_AlphaBeta::SelectMove()
 
 		int score;
 		if (player->GetRelationship(subsequentState->GetCurrentPlayer()) == Player::Enemy)
-			score = -FindBestScore(subsequentState, -beta, -alpha, ply - 1);
+			score = -FindBestScore(currentState, subsequentState, -beta, -alpha, ply - 1);
 		else
-			score = FindBestScore(subsequentState, alpha, beta, ply - 1);
+			score = FindBestScore(currentState, subsequentState, alpha, beta, ply - 1);
 
 		move->Reverse(false);
 		delete subsequentState;
@@ -110,19 +111,19 @@ Move *AI_AlphaBeta::SelectMove()
 }
 
 
-int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth)
+int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth)
 {
 	EndOfGame *endOfGame = game->GetEndOfGame();
-	EndOfGame::CheckType_t gameEndType = endOfGame->CheckEndOfTurn(state);
+	EndOfGame::CheckType_t gameEndType = endOfGame->CheckEndOfTurn(prevState);
 	if (gameEndType != EndOfGame::None)
 		return GetScoreForEndOfGame(gameEndType);
 
 	if (depth == 0)
-		return EvaluateBoard(state); // should be quiescing here
+		return EvaluateBoard(currentState); // should be quiescing here
 
-	auto moves = state->DeterminePossibleMoves();
+	auto moves = currentState->DeterminePossibleMoves();
 
-	gameEndType = endOfGame->CheckStartOfTurn(state, !moves->empty());
+	gameEndType = endOfGame->CheckStartOfTurn(currentState, !moves->empty());
 	if (gameEndType != EndOfGame::None)
 	{
 		for (auto it = moves->begin(); it != moves->end(); it++)
@@ -132,7 +133,7 @@ int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth
 	}
 	
 	int bestScore = MIN_VAL;
-	Player *movePlayer = state->GetCurrentPlayer();
+	Player *movePlayer = currentState->GetCurrentPlayer();
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -141,9 +142,9 @@ int AI_AlphaBeta::FindBestScore(GameState *state, int alpha, int beta, int depth
 		int score;
 
 		if (movePlayer->GetRelationship(subsequentState->GetCurrentPlayer()) == Player::Enemy)
-			score = -FindBestScore(subsequentState, -beta, -alpha, depth - 1);
+			score = -FindBestScore(currentState, subsequentState, -beta, -alpha, depth - 1);
 		else
-			score = FindBestScore(subsequentState, alpha, beta, depth - 1);
+			score = FindBestScore(currentState, subsequentState, alpha, beta, depth - 1);
 
 		move->Reverse(false);
 		if (score >= beta)

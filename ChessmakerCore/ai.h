@@ -41,7 +41,7 @@ public:
 	AI_AlphaBeta(Game *game, int ply) : PlayerAI(game) { this->ply = ply; }
 	virtual Move *SelectMove();
 private:
-	int FindBestScore(GameState *state, int alpha, int beta, int depth);
+	int FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth);
 	int GetScoreForEndOfGame(EndOfGame::CheckType_t result);
 	int EvaluateBoard(GameState *state);
 	int ply;
