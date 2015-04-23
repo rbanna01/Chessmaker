@@ -85,8 +85,9 @@ namespace ChessMaker.Services
         public List<AIDifficultyModel> ListAiDifficulties()
         {
             var list = new List<AIDifficultyModel>();
-            list.Add(new AIDifficultyModel() { ID = 1, DisplayName = "Completely random", InternalName = "random" });
-            list.Add(new AIDifficultyModel() { ID = 2, DisplayName = "Random capture", InternalName = "random capture" });
+            list.Add(new AIDifficultyModel() { ID = 0, DisplayName = "Completely random", InternalName = "random" });
+            list.Add(new AIDifficultyModel() { ID = 1, DisplayName = "Random capture", InternalName = "random capture" });
+            list.Add(new AIDifficultyModel() { ID = 2, DisplayName = "AlphaBeta, depth 2", InternalName = "alpha beta 2" });
             list.Add(new AIDifficultyModel() { ID = 3, DisplayName = "AlphaBeta, depth 3", InternalName = "alpha beta 3" });
             list.Add(new AIDifficultyModel() { ID = 4, DisplayName = "AlphaBeta, depth 4", InternalName = "alpha beta 4" });
             list.Add(new AIDifficultyModel() { ID = 5, DisplayName = "AlphaBeta, depth 5", InternalName = "alpha beta 5" });
