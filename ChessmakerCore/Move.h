@@ -30,6 +30,7 @@ public:
 	void AddPieceReference(Piece *piece, const char *ref);
 	Piece *GetPieceByReference(const char *ref);
 
+	Cell *GetStartPos() { return startPos; }
 	Cell *GetEndPos();
 	std::list<Cell*> GetAllPositions();
 	bool IsCapture();

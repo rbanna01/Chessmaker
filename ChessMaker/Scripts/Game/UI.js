@@ -32,7 +32,7 @@ function initializeGame(workerUrl, defUrl, players) {
                 showGameEnd(event.data[1]);
                 break;
             case 'log':
-                logMove(event.data[1], event.data[2], event.data[3]);
+                logMove(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5]);
                 break;
             case 'move':
                 movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6], event.data[7]);
@@ -47,6 +47,17 @@ function initializeGame(workerUrl, defUrl, players) {
 }
 
 function initializeUI(boardSVG, showCaptured, showHeld) {
+    var pos = boardSVG.indexOf('</defs>');
+
+    var gradients =
+'<radialgradient id="lastFromLight" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopLightHighlight" offset="20%" /><stop class="stopLight" offset="50%" /></radialgradient>' +
+'<radialgradient id="lastFromMid" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopMidHiglight" offset="20%" /><stop class="stopMid" offset="50%" /></radialgradient>' +
+'<radialgradient id="lastFromDark" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopDarkHighlight" offset="20%" /><stop class="stopDark" offset="50%" /></radialgradient>' +
+'<radialgradient id="lastToLight" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopLight" offset="80%" /><stop class="stopLightHighlight" offset="100%" /></radialgradient>' +
+'<radialgradient id="lastToMid" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopMid" offset="80%" /><stop class="stopMidHighlight" offset="100%" /></radialgradient>' +
+'<radialgradient id="lastToDark" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop class="stopDark" offset="80%" /><stop class="stopDarkHighlight" offset="100%" /></radialgradient>';
+    boardSVG = boardSVG.substr(0, pos) + gradients + boardSVG.substr(pos);
+
     document.getElementById('main').innerHTML = boardSVG;
     console.timeEnd('load all');
 
@@ -120,7 +131,7 @@ function showGameEnd(message) {
     $('#wait').hide();
 }
 
-function logMove(player, number, notation) {
+function logMove(player, number, notation, fromRef, toRef) {
     var historyDiv = $('#moveHistory');
 
     $('<div/>', {
@@ -130,6 +141,21 @@ function logMove(player, number, notation) {
     }).appendTo(historyDiv);
 
     historyDiv.get(0).scrollTop = historyDiv.get(0).scrollHeight;
+
+    remClass($('#render .cell.lastMoveFrom'), 'lastMoveFrom');
+    remClass($('#render .cell.lastMoveTo'), 'lastMoveTo');
+
+    if (fromRef != '') {
+        var fromCell = document.getElementById(fromRef);
+        if (fromCell != null)
+            addClassSingle(fromCell, 'lastMoveFrom');
+    }
+
+    if (toRef != '') {
+        var toCell = document.getElementById(toRef);
+        if (toCell != null)
+            addClassSingle(toCell, 'lastMoveTo');
+    }
 }
 
 function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {

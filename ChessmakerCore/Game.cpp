@@ -208,7 +208,7 @@ void Game::LogMove(Player *player, Move *move)
 	notation += std::to_string(displayNumber);
 
 	int playerNum = turnNumber % numPlayers;
-	if (playerNum == 1)// first player's move
+	if (playerNum == 1) // first player's move
 		notation += ".  ";
 	else if (playerNum == 0) // last player's move
 		notation += "...";
@@ -222,7 +222,10 @@ void Game::LogMove(Player *player, Move *move)
 #endif
 	
 #ifdef EMSCRIPTEN
-	EM_ASM_ARGS({ logMove($0, $1, $2); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str());
+	// as well as logging notation, this passes indicators for the cells that were moved from/to
+	Cell *start = move->GetStartPos();
+	Cell *end = move->GetEndPos();
+	EM_ASM_ARGS({ logMove($0, $1, $2, $3, $4); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str(), start == 0 ? "" : start->GetName(), end == 0 ? "" : end->GetName());
 #endif
 }
 

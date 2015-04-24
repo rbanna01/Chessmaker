@@ -23,3 +23,58 @@
 #render .piece .darkStroke{stroke:#@Model.PieceDark;}
 #render .piece .lightFill{fill:#@Model.PieceLight;}
 #render .piece .darkFill{fill:#@Model.PieceDark;}
+
+
+#render defs .stopLight{
+    stop-color:#@Model.BoardLight;
+    stop-opacity:1;
+}
+
+#render defs .stopMid {
+    stop-color:#@Model.BoardMid;
+    stop-opacity:1
+}
+
+#render defs .stopDark {
+    stop-color:#@Model.BoardDark;
+    stop-opacity:1
+}
+
+#render defs .stopLightHighlight {
+    stop-color:#@Model.BoardLightHighlight;
+    stop-opacity:1;
+}
+
+#render defs .stopMidHighlight {
+    stop-color:#@Model.BoardMidHighlight;
+    stop-opacity:1
+}
+
+#render defs .stopDarkHighlight {
+    stop-color:#@Model.BoardDarkHighlight;
+    stop-opacity:1
+}
+
+#render .cell.light.lastMoveFrom {
+    fill:url(#lastFromLight);
+}
+
+#render .cell.mid.lastMoveFrom {
+    fill:url(#lastFromMid);
+}
+
+#render .cell.dark.lastMoveFrom {
+    fill:url(#lastFromDark);
+}
+
+#render .cell.light.lastMoveTo {
+    fill:url(#lastToLight);
+}
+
+#render .cell.mid.lastMoveTo {
+    fill:url(#lastToMid);
+}
+
+#render .cell.dark.lastMoveTo {
+    fill:url(#lastToDark);
+}

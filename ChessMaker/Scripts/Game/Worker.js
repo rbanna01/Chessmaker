@@ -93,8 +93,8 @@ function showGameEnd(message) {
     postMessage(['end', Pointer_stringify(message)]);
 }
 
-function logMove(player, number, notation) {
-    postMessage(['log', Pointer_stringify(player), number, Pointer_stringify(notation)]);
+function logMove(player, number, notation, from, to) {
+    postMessage(['log', Pointer_stringify(player), number, Pointer_stringify(notation), Pointer_stringify(from), Pointer_stringify(to)]);
 }
 
 function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
