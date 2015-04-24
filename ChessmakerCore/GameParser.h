@@ -6,7 +6,7 @@
 
 class Board;
 class Distance;
-class EndOfGame;
+class StateLogic;
 class Game;
 class PieceType;
 class Player;
@@ -69,7 +69,7 @@ private:
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
 	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
-	EndOfGame *ParseEndOfGame(rapidxml::xml_node<char> *rootNode);
+	StateLogic *ParseStateLogic(rapidxml::xml_node<char> *rootNode, bool startOfTurn);
 	Player *GetPlayerByName(char *name);
 
 	direction_t LookupDirection(char *dirName);

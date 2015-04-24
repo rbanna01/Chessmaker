@@ -8,7 +8,6 @@
 #include "Board.h"
 #include "Cell.h"
 #include "Distance.h"
-#include "EndOfGame.h"
 #include "Game.h"
 #include "GameState.h"
 #include "MoveConditions.h"
@@ -17,6 +16,7 @@
 #include "PieceType.h"
 #include "Player.h"
 #include "StateConditions.h"
+#include "StateLogic.h"
 #include "TurnOrder.h"
 
 using namespace rapidxml;
@@ -903,7 +903,6 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 	if (node == 0)
 		return 0;
 
-
 	StateConditionGroup *conditions = new StateConditionGroup(type);
 
 	xml_node<> *child = node->first_node();
@@ -1142,16 +1141,27 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 	else
 		game->turnOrder = order;
 
-	node = rulesNode->first_node("endOfGame");
-	EndOfGame *end = node == 0 ? EndOfGame::CreateDefault() : ParseEndOfGame(node);
+	node = rulesNode->first_node("startOfTurn");
+	StateLogic *logic = node == 0 ? StateLogic::CreateDefault(true) : ParseStateLogic(node, true);
 
-	if (end == 0)
+	if (logic == 0)
 	{
-		ReportError("An error occurred parsing the EndOfGame\n");
+		ReportError("An error occurred parsing the startOfTurn rules\n");
 		return false;
 	}
 	else
-		game->endOfGame = end;
+		game->startOfTurnLogic = logic;
+
+	node = rulesNode->first_node("endOfTurn");
+	logic = node == 0 ? StateLogic::CreateDefault(false) : ParseStateLogic(node, false);
+
+	if (logic == 0)
+	{
+		ReportError("An error occurred parsing the endOfTurn rules\n");
+		return false;
+	}
+	else
+		game->endOfTurnLogic = logic;
 
 	return true;
 }
@@ -1215,41 +1225,79 @@ Player *GameParser::GetPlayerByName(char *name)
 	return 0;
 }
 
-EndOfGame *GameParser::ParseEndOfGame(xml_node<> *rootNode)
+StateLogic *GameParser::ParseStateLogic(xml_node<> *rootNode, bool startOfTurn)
 {
-	EndOfGame *endOfGame = new EndOfGame();
+	StateLogic *stateLogic = new StateLogic(startOfTurn);
 
+	// essentially gonna parse any number of if/then/else, endGame, notify & disallow, to any depth
 	xml_node<> *node = rootNode->first_node();
+	StateLogicBlock *lastIf = 0;
+	StateLogicElement *logicElement;
+
 	while (node != 0)
 	{
-		EndOfGame::CheckType_t checkType;
-		if (strcmp(node->name(), "win") == 0)
-			checkType = EndOfGame::Win;
-		else if (strcmp(node->name(), "lose") == 0)
-			checkType = EndOfGame::Lose;
-		else if (strcmp(node->name(), "draw") == 0)
-			checkType = EndOfGame::Draw;
-		else if (strcmp(node->name(), "illegal") == 0)
+		if (strcmp(node->name(), "if") == 0)
 		{
-			checkType = EndOfGame::IllegalMove;
-			endOfGame->illegalMovesSpecified = true;
+			lastIf = new StateLogicBlock(ParseStateConditions(node, Condition::And));
+			logicElement = lastIf;
+		}
+		else if (strcmp(node->name(), "then") == 0)
+		{
+			lastIf->logicIfTrue = ParseStateLogic(node, startOfTurn);
+			logicElement = 0;
+		}
+		else if (strcmp(node->name(), "else") == 0)
+		{
+			lastIf->logicIfFalse = ParseStateLogic(node, startOfTurn);
+			logicElement = 0;
+		}
+		else if (strcmp(node->name(), "endGame") == 0)
+		{
+			GameEnd *end = new GameEnd();
+
+			const char *type = node->first_attribute("type")->value();
+			if (strcmp(type, "win") == 0)
+				end->type = StateLogic::Win;
+			else if (strcmp(type, "lose") == 0)
+				end->type = StateLogic::Lose;
+			else if (strcmp(type, "draw") == 0)
+				end->type = StateLogic::Draw;
+
+			// message
+			// appendNotation
+
+			logicElement = end;
+		}
+		else if (strcmp(node->name(), "notify") == 0)
+		{
+			GameEnd *notEnd = new GameEnd();
+			notEnd->type = StateLogic::None;
+
+			// message
+			// appendNotation
+
+			logicElement = notEnd;
+		}
+		else if (strcmp(node->name(), "disallow") == 0)
+		{
+			game->illegalMovesSpecified = true;
+			GameEnd *end = new GameEnd();
+			end->type = StateLogic::IllegalMove;
+			logicElement = end;
 		}
 		else
 		{
 			ReportError("Unexpected end-of-game check type: %s\n", node->name());
-			continue;
+			logicElement = 0;
 		}
 
-		xml_attribute<> *attr = node->first_attribute("when");
-		auto checkList = strcmp(attr->value(), "startOfTurn") == 0 ? &endOfGame->startOfTurnChecks : &endOfGame->endOfTurnChecks;
-
-		StateConditionGroup *conditions = ParseStateConditions(node, Condition::And);
-		checkList->push_back(new EndOfGameCheck(checkType, conditions));
+		if (logicElement != 0)
+			stateLogic->elements.push_back(logicElement);
 
 		node = node->next_sibling();
 	}
-	
-	return endOfGame;
+
+	return stateLogic;
 }
 
 direction_t GameParser::LookupDirection(char *dirName)

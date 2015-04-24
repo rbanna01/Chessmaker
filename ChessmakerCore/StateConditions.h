@@ -22,7 +22,7 @@ private:
 	GroupType_t type;
 	std::list<StateCondition*> elements;
 
-	friend class EndOfGame;
+	friend class StateLogic;
 	friend class GameParser;
 };
 

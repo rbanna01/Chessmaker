@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Definitions.h"
-#include "EndOfGame.h"
+#include "StateLogic.h"
 
 class Game;
 class GameState;
@@ -42,7 +42,7 @@ public:
 	virtual Move *SelectMove();
 private:
 	int FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth);
-	int GetScoreForEndOfGame(EndOfGame::CheckType_t result);
+	int GetScoreForStateLogic(StateLogic::GameEnd_t result);
 	int EvaluateBoard(GameState *state);
 	void SortMoves(std::list<Move*> *moves);
 	int ply;

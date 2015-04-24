@@ -20,13 +20,6 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="notation">
-		<xs:restriction base="xs:string">
-			<xs:minLength value="0"/>
-			<xs:maxLength value="1"/>
-		</xs:restriction>
-	</xs:simpleType>
-
 	<xs:simpleType name="numericComparison">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="equals" />
@@ -42,13 +35,6 @@
 			<xs:enumeration value="start" />
 			<xs:enumeration value="end" />
 			<xs:enumeration value="both" />
-		</xs:restriction>
-	</xs:simpleType>
-
-	<xs:simpleType name="gameEndConditionApplicability">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="startOfTurn" />
-			<xs:enumeration value="endOfTurn" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -208,7 +194,42 @@
 		</xs:choice>
 	</xs:complexType>
 
-	<xs:complexType name="turnConditions">
+	<xs:complexType name="stateLogic">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="endGame">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="logicOutcome">
+							<xs:attribute name="type" use="required">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="win" />
+										<xs:enumeration value="lose" />
+										<xs:enumeration value="draw" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="notify" type="logicOutcome"/>
+			<xs:element name="disallow"/>
+
+			<xs:sequence>  
+				<xs:element name="if" type="stateConditions" minOccurs="1"/>
+				<xs:element name="then" type="stateLogic" minOccurs="1"/>
+				<xs:element name="else" type="stateLogic" minOccurs="0"/>
+			</xs:sequence>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="logicOutcome">
+		<xs:attribute name="message" type="xs:string" use="required"/>
+		<xs:attribute name="appendNotation" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<xs:complexType name="stateConditions">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="cannotMove">
 				<xs:complexType>
@@ -219,24 +240,8 @@
 					<xs:attribute name="type" type="xs:string" use="required"/>
 				</xs:complexType>
 			</xs:element>
-		</xs:choice>		
+		</xs:choice>
 	</xs:complexType>
-
-  <xs:complexType name="gameEndConditions">
-    <xs:complexContent>
-      <xs:extension base="turnConditions">
-        <xs:attribute name="when" type="gameEndConditionApplicability" use="required" />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="illegalMoveConditions">
-    <xs:complexContent>
-      <xs:extension base="turnConditions">
-        <xs:attribute name="when" fixed="endOfTurn" use="required" />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
 	<xs:simpleType name="when">
 		<xs:restriction base="xs:string">
@@ -518,7 +523,14 @@
 									</xs:sequence>
 									<xs:attribute name="name" type="xs:string"/>
 									<xs:attribute name="value" type="xs:nonNegativeInteger"/>
-									<xs:attribute name="notation" type="notation"/>
+									<xs:attribute name="notation">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="0"/>
+												<xs:maxLength value="1"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -548,16 +560,8 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="turnOrder" type="turnOrder" />
-							<xs:element name="endOfGame">
-								<xs:complexType>
-									<xs:choice minOccurs="0" maxOccurs="unbounded">
-										<xs:element name="win" type="gameEndConditions"/>
-										<xs:element name="lose" type="gameEndConditions"/>
-										<xs:element name="draw" type="gameEndConditions"/>
-										<xs:element name="illegal" type="illegalMoveConditions"/>
-									</xs:choice>
-								</xs:complexType>
-              </xs:element>
+							<xs:element name="startOfTurn" type="stateLogic" minOccurs="0" />
+							<xs:element name="endOfTurn" type="stateLogic" minOccurs="0" />
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

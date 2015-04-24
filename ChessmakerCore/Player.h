@@ -43,7 +43,7 @@ private:
 
 	static int nextID;
 
-	friend class EndOfGame;
+	friend class StateLogic;
 	friend class Game;
 	friend class MoveStep;
 	friend class GameParser;

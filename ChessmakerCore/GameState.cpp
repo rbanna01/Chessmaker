@@ -107,14 +107,14 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 			{
 				Move *move = *it2;
         
-				if (game->GetEndOfGame()->AnyIllegalMovesSpecified())
+				if (game->AnyIllegalMovesSpecified())
 				{
 					GameState *subsequentState = move->Perform(false);
-					EndOfGame::CheckType_t result = game->GetEndOfGame()->CheckEndOfTurn(this);
+					StateLogic::GameEnd_t result = game->CheckEndOfTurn(this);
 					move->Reverse(false);
 					delete subsequentState;
 
-					if (result == EndOfGame::IllegalMove)
+					if (result == StateLogic::IllegalMove)
 					{
 						delete move;
 						continue;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Definitions.h"
-#include "EndOfGame.h"
 #include "PieceType.h"
 #include "Player.h"
+#include "StateLogic.h"
 
 class Board;
 class GameState;
@@ -24,18 +24,20 @@ public:
 	Board *GetBoard() { return board; }
 	GameState *GetCurrentState() { return currentState; }
 	TurnOrder *GetTurnOrder() { return turnOrder; }
-	EndOfGame *GetEndOfGame() { return endOfGame; }
+	StateLogic::GameEnd_t CheckStartOfTurn(GameState *state, bool canMove);
+	StateLogic::GameEnd_t CheckEndOfTurn(GameState *state);
 	std::list<Move*> *GetPossibleMoves() { return possibleMoves; }
 	bool GetHoldCapturedPieces() { return holdCapturedPieces; }
 	bool ShouldShowCapturedPieces() { return showCapturedPieces; }
 	bool ShouldShowHeldPieces() { return showHeldPieces; }
+	bool AnyIllegalMovesSpecified() { return illegalMovesSpecified; }
 
 	std::list<PieceType*> GetAllPieceTypes() { return allPieceTypes; }
 	std::list<Player*> GetPlayers() { return players; }
 private:
 	bool StartNextTurn();
 	bool EndTurn(GameState *newState);
-	void ProcessEndOfGame(EndOfGame::CheckType_t);
+	void ProcessEndOfGame(StateLogic::GameEnd_t);
 	void EndGame(Player *victor);
 
 	void ClearPossibleMoves();
@@ -44,12 +46,12 @@ private:
 	Board *board;
 	GameState *currentState;
 	TurnOrder *turnOrder;
-	EndOfGame *endOfGame;
+	StateLogic *startOfTurnLogic, *endOfTurnLogic;
 	std::list<PieceType*> allPieceTypes;
 	std::list<Player*> players;
 	std::list<Move*> *possibleMoves;
 
-	bool holdCapturedPieces, showCapturedPieces, showHeldPieces;
+	bool holdCapturedPieces, showCapturedPieces, showHeldPieces, illegalMovesSpecified;
 	
 	friend class GameParser;
 	friend class GameState;

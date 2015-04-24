@@ -27,7 +27,7 @@ private:
 
 	void CalculateMovesForPlayer(Player *player, std::list<Move*> *output);
 
-	friend class EndOfGame;
+	friend class StateLogic;
 	friend class Game;
 	friend class Move;
 };

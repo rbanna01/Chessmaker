@@ -1,10 +1,10 @@
 #include "Game.h"
 #include "ai.h"
 #include "Board.h"
-#include "EndOfGame.h"
 #include "GameState.h"
 #include "Move.h"
 #include "Piece.h"
+#include "StateLogic.h"
 #include "TurnOrder.h"
 
 
@@ -12,8 +12,11 @@ Game::Game()
 {
 	board = 0;
 	currentState = 0;
-	endOfGame = 0;
+	startOfTurnLogic = 0;
+	endOfTurnLogic = 0;
 	turnOrder = 0;
+
+	illegalMovesSpecified = false;
 }
 
 
@@ -23,8 +26,10 @@ Game::~Game()
 		delete board;
 	if (currentState != 0)
 		delete currentState;
-	if (endOfGame != 0)
-		delete endOfGame;
+	if (startOfTurnLogic != 0)
+		delete startOfTurnLogic;
+	if (endOfTurnLogic != 0)
+		delete endOfTurnLogic;
 	if (turnOrder != 0)
 		delete turnOrder;
 
@@ -61,8 +66,8 @@ void Game::Start()
 bool Game::StartNextTurn()
 {
 	possibleMoves = currentState->PrepareMovesForTurn();
-	EndOfGame::CheckType_t result = endOfGame->CheckStartOfTurn(currentState, !possibleMoves->empty());
-	if (result != EndOfGame::None)
+	StateLogic::GameEnd_t result = CheckStartOfTurn(currentState, !possibleMoves->empty());
+	if (result != StateLogic::None)
 	{
 		ProcessEndOfGame(result);
 		return false;
@@ -137,11 +142,11 @@ Game::MoveResult_t Game::PerformMove(Move *move)
 
 bool Game::EndTurn(GameState *newState)
 {
-	EndOfGame::CheckType_t result = endOfGame->CheckEndOfTurn(currentState);
+	StateLogic::GameEnd_t result = CheckEndOfTurn(currentState);
 	ClearPossibleMoves();
 	delete currentState;
 
-	if (result != EndOfGame::None) {
+	if (result != StateLogic::None) {
 		ProcessEndOfGame(result);
 		return false;
 	}
@@ -151,17 +156,27 @@ bool Game::EndTurn(GameState *newState)
 }
 
 
-void Game::ProcessEndOfGame(EndOfGame::CheckType_t result)
+StateLogic::GameEnd_t Game::CheckStartOfTurn(GameState *state, bool canMove)
+{
+	return startOfTurnLogic->Evaluate(state, canMove);
+}
+
+StateLogic::GameEnd_t Game::CheckEndOfTurn(GameState *state)
+{
+	return endOfTurnLogic->Evaluate(state, true);
+}
+
+void Game::ProcessEndOfGame(StateLogic::GameEnd_t result)
 {
 	switch (result)
 	{
-	case EndOfGame::Win:
+	case StateLogic::Win:
 		EndGame(currentState->currentPlayer);
 		break;
-	case EndOfGame::Draw:
+	case StateLogic::Draw:
 		EndGame(0);
 		break;
-	case EndOfGame::Lose:
+	case StateLogic::Lose:
 		if (players.size() == 2)
 		{
 			Player *other = players.front();

@@ -115,10 +115,9 @@ Move *AI_AlphaBeta::SelectMove()
 
 int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth)
 {
-	EndOfGame *endOfGame = game->GetEndOfGame();
-	EndOfGame::CheckType_t gameEndType = endOfGame->CheckEndOfTurn(prevState);
-	if (gameEndType != EndOfGame::None)
-		return GetScoreForEndOfGame(gameEndType);
+	StateLogic::GameEnd_t gameEndType = game->CheckEndOfTurn(prevState);
+	if (gameEndType != StateLogic::None)
+		return GetScoreForStateLogic(gameEndType);
 
 	if (depth == 0)
 		return EvaluateBoard(currentState); // should be quiescing here
@@ -126,13 +125,13 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 	auto moves = currentState->DeterminePossibleMoves();
 	SortMoves(moves);
 
-	gameEndType = endOfGame->CheckStartOfTurn(currentState, !moves->empty());
-	if (gameEndType != EndOfGame::None)
+	gameEndType = game->CheckStartOfTurn(currentState, !moves->empty());
+	if (gameEndType != StateLogic::None)
 	{
 		for (auto it = moves->begin(); it != moves->end(); it++)
 			delete *it;
 		delete moves;
-		return GetScoreForEndOfGame(gameEndType);
+		return GetScoreForStateLogic(gameEndType);
 	}
 	
 	int bestScore = MIN_VAL;
@@ -191,15 +190,15 @@ void AI_AlphaBeta::SortMoves(std::list<Move*> *moves)
 }
 
 
-int AI_AlphaBeta::GetScoreForEndOfGame(EndOfGame::CheckType_t result)
+int AI_AlphaBeta::GetScoreForStateLogic(StateLogic::GameEnd_t result)
 {
 	switch (result)
 	{
-	case EndOfGame::Win:
+	case StateLogic::Win:
 		return MAX_VAL;
-	case EndOfGame::Lose:
+	case StateLogic::Lose:
 		return MIN_VAL;
-	case EndOfGame::Draw:
+	case StateLogic::Draw:
 	default:
 		return 0;
 	}
