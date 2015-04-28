@@ -85,8 +85,8 @@ function addPossibleMove(notation, fromCell, toCell) {
     postMessage(['poss', Pointer_stringify(notation), Pointer_stringify(fromCell), Pointer_stringify(toCell)]);
 }
 
-function setCurrentPlayer(name, isLocal) {
-    postMessage(['player', Pointer_stringify(name), isLocal]);
+function startTurn(msg, isLocal) {
+    postMessage(['player', Pointer_stringify(msg), isLocal]);
 }
 
 function showGameEnd(message) {
@@ -105,4 +105,8 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     else
         state = 'board';
     postMessage(['move', pieceID, state, stateOwner, posX, posY, Pointer_stringify(owner), Pointer_stringify(appearance)]);
+}
+
+function showMessage(msg) {
+    postMessage(['msg', Pointer_stringify(msg)]);
 }

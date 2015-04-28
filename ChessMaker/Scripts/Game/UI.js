@@ -26,7 +26,7 @@ function initializeGame(workerUrl, defUrl, players) {
                 addPossibleMove(event.data[1], event.data[2], event.data[3]);
                 break;
             case 'player':
-                setCurrentPlayer(event.data[1], event.data[2]);
+                startTurn(event.data[1], event.data[2]);
                 break;
             case 'end':
                 showGameEnd(event.data[1]);
@@ -36,6 +36,9 @@ function initializeGame(workerUrl, defUrl, players) {
                 break;
             case 'move':
                 movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6], event.data[7]);
+                break;
+            case 'msg':
+                showMessage(event.data[1]);
                 break;
             default:
                 console.log("Didn't understand message from worker: " + event.data[0]);
@@ -113,10 +116,10 @@ function clearPossibleMoves() {
     possibleMovesByCell = {};
 }
 
-function setCurrentPlayer(name, isLocal) {
+function startTurn(msg, isLocal) {
     clearPossibleMoves();
 
-    $('#nextMove').text(name.substr(0, 1).toUpperCase() + name.substr(1) + ' to move');
+    $('#nextMove').text(msg);
 
     if (isLocal)
         $('#wait').hide();
@@ -279,4 +282,8 @@ function selectMove(clicked) {
     else {
         console.log('todo: add a popup showing the move options for these cells');
     }
+}
+
+function showMessage(msg) {
+    alert(msg); // this should be incorporated into the UI rather than just alerting
 }

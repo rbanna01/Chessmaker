@@ -115,9 +115,9 @@ Move *AI_AlphaBeta::SelectMove()
 
 int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, int alpha, int beta, int depth)
 {
-	StateLogic::GameEnd_t gameEndType = game->CheckEndOfTurn(prevState);
-	if (gameEndType != StateLogic::None)
-		return GetScoreForStateLogic(gameEndType);
+	GameEnd *gameEnd = game->CheckEndOfTurn(prevState);
+	if (gameEnd->GetType() != StateLogic::None)
+		return GetScoreForStateLogic(gameEnd->GetType());
 
 	if (depth == 0)
 		return EvaluateBoard(currentState); // should be quiescing here
@@ -125,13 +125,13 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 	auto moves = currentState->DeterminePossibleMoves();
 	SortMoves(moves);
 
-	gameEndType = game->CheckStartOfTurn(currentState, !moves->empty());
-	if (gameEndType != StateLogic::None)
+	gameEnd = game->CheckStartOfTurn(currentState, !moves->empty());
+	if (gameEnd->GetType() != StateLogic::None)
 	{
 		for (auto it = moves->begin(); it != moves->end(); it++)
 			delete *it;
 		delete moves;
-		return GetScoreForStateLogic(gameEndType);
+		return GetScoreForStateLogic(gameEnd->GetType());
 	}
 	
 	int bestScore = MIN_VAL;

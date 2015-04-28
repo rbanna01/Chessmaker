@@ -1142,7 +1142,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		game->turnOrder = order;
 
 	node = rulesNode->first_node("startOfTurn");
-	StateLogic *logic = node == 0 ? StateLogic::CreateDefault(true) : ParseStateLogic(node, true);
+	StateLogic *logic = node == 0 ? new StateLogic(true) : ParseStateLogic(node, true);
 
 	if (logic == 0)
 	{
@@ -1153,7 +1153,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		game->startOfTurnLogic = logic;
 
 	node = rulesNode->first_node("endOfTurn");
-	logic = node == 0 ? StateLogic::CreateDefault(false) : ParseStateLogic(node, false);
+	logic = node == 0 ? new StateLogic(false) : ParseStateLogic(node, false);
 
 	if (logic == 0)
 	{
@@ -1253,37 +1253,35 @@ StateLogic *GameParser::ParseStateLogic(xml_node<> *rootNode, bool startOfTurn)
 		}
 		else if (strcmp(node->name(), "endGame") == 0)
 		{
-			GameEnd *end = new GameEnd();
-
+			xml_attribute<> *appendNot = node->first_attribute("appendNotation");
+			const char *appendNotation = appendNot == 0 ? "" : appendNot->value();
+			const char *message = node->first_attribute("message")->value();
 			const char *type = node->first_attribute("type")->value();
+
 			if (strcmp(type, "win") == 0)
-				end->type = StateLogic::Win;
+				logicElement = new GameEnd(StateLogic::Win, message, appendNotation);
 			else if (strcmp(type, "lose") == 0)
-				end->type = StateLogic::Lose;
+				logicElement = new GameEnd(StateLogic::Lose, message, appendNotation);
 			else if (strcmp(type, "draw") == 0)
-				end->type = StateLogic::Draw;
-
-			// message
-			// appendNotation
-
-			logicElement = end;
+				logicElement = new GameEnd(StateLogic::Draw, message, appendNotation);
+			else
+			{
+				ReportError("Unexpected GameEnd type: %s\n", type);
+				logicElement = 0;
+			}
 		}
 		else if (strcmp(node->name(), "notify") == 0)
 		{
-			GameEnd *notEnd = new GameEnd();
-			notEnd->type = StateLogic::None;
+			xml_attribute<> *appendNot = node->first_attribute("appendNotation");
+			const char *appendNotation = appendNot == 0 ? "" : appendNot->value();
+			const char *message = node->first_attribute("message")->value();
 
-			// message
-			// appendNotation
-
-			logicElement = notEnd;
+			logicElement = new GameEnd(StateLogic::None, message, appendNotation);
 		}
 		else if (strcmp(node->name(), "disallow") == 0)
 		{
 			game->illegalMovesSpecified = true;
-			GameEnd *end = new GameEnd();
-			end->type = StateLogic::IllegalMove;
-			logicElement = end;
+			logicElement = new GameEnd(StateLogic::IllegalMove, "");
 		}
 		else
 		{

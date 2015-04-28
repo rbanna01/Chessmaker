@@ -24,8 +24,8 @@ public:
 	Board *GetBoard() { return board; }
 	GameState *GetCurrentState() { return currentState; }
 	TurnOrder *GetTurnOrder() { return turnOrder; }
-	StateLogic::GameEnd_t CheckStartOfTurn(GameState *state, bool canMove);
-	StateLogic::GameEnd_t CheckEndOfTurn(GameState *state);
+	GameEnd* CheckStartOfTurn(GameState *state, bool canMove);
+	GameEnd* CheckEndOfTurn(GameState *state);
 	std::list<Move*> *GetPossibleMoves() { return possibleMoves; }
 	bool GetHoldCapturedPieces() { return holdCapturedPieces; }
 	bool ShouldShowCapturedPieces() { return showCapturedPieces; }
@@ -36,12 +36,12 @@ public:
 	std::list<Player*> GetPlayers() { return players; }
 private:
 	bool StartNextTurn();
-	bool EndTurn(GameState *newState);
-	void ProcessEndOfGame(StateLogic::GameEnd_t);
-	void EndGame(Player *victor);
+	bool EndTurn(GameState *newState, Move *lastMove);
+	void ProcessEndOfGame(GameEnd* result);
+	void EndGame(Player *victor, const char *message);
 
-	void ClearPossibleMoves();
-	void LogMove(Player *player, Move *move);
+	void ClearPossibleMoves(Move *dontDelete = 0);
+	void LogMove(Move *move, int turnNumber, const char *appendNotation);
 
 	Board *board;
 	GameState *currentState;
@@ -50,6 +50,7 @@ private:
 	std::list<PieceType*> allPieceTypes;
 	std::list<Player*> players;
 	std::list<Move*> *possibleMoves;
+	const char *startOfTurnAppendNotation;
 
 	bool holdCapturedPieces, showCapturedPieces, showHeldPieces, illegalMovesSpecified;
 	

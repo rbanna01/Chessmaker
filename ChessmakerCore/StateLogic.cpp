@@ -4,9 +4,19 @@
 #include "StateConditions.h"
 #include "TurnOrder.h"
 
+GameEnd *noEnd, *outOfPieces, *outOfMoves, *endOfTurnOrder;
+
 StateLogic::StateLogic(bool startOfTurn)
 {
 	this->startOfTurn = startOfTurn;
+
+	if (startOfTurn)
+	{
+		noEnd = new GameEnd(None, "");
+		outOfPieces = new GameEnd(Lose, "out of pieces");
+		outOfMoves = new GameEnd(Draw, "no moves possible");
+		endOfTurnOrder = new GameEnd(Draw, "end of game reached");
+	}
 }
 
 
@@ -18,53 +28,27 @@ StateLogic::~StateLogic()
 		delete *it;
 		it++;
 	}
-}
-
-
-StateLogic *StateLogic::CreateDefault(bool startOfTurn)
-{
-	StateLogic *stateLogic = new StateLogic(startOfTurn);
-	
-	StateConditionGroup *conditions = new StateConditionGroup(Condition::And);
-	GameEnd *outcome = new GameEnd();
 
 	if (startOfTurn)
 	{
-		// conditions->elements.push_back(new StateCondition_PieceCount("self", 0, Condition::Equals)); todo: add this in, once it exists
-		outcome->type = Lose;
-		// message
-		// appendNotation
+		delete noEnd;
+		delete outOfPieces;
+		delete outOfMoves;
+		delete endOfTurnOrder;
 	}
-	else
-	{
-		conditions->elements.push_back(new StateCondition_CannotMove());
-		outcome->type = Draw;
-		// message
-		// appendNotation
-	}
-
-	StateLogicBlock *block = new StateLogicBlock(conditions);
-
-	StateLogic *ifTrue = new StateLogic(startOfTurn);
-	ifTrue->elements.push_back(outcome);
-
-    return stateLogic;
 }
 
 
-StateLogic::GameEnd_t StateLogic::Evaluate(GameState *state, bool canMove)
+GameEnd* StateLogic::Evaluate(GameState *state, bool canMove)
 {
-	// return Win/Lose/Draw/IllegalMove, or None if the game isn't over yet
-
-	bool noNextPlayer = state->game->GetTurnOrder()->GetNextPlayer() == 0;
-	state->game->GetTurnOrder()->StepBackward();
+	// return a GameEnd with a type of Win/Lose/Draw/IllegalMove, or None if the game isn't over yet. It may also have a message, and an operation to peform on the move's notation.
 
 	auto it = elements.begin();
 	while (it != elements.end())
 	{
 		StateLogicElement *element = *it;
-		GameEnd_t result = element->Evaluate(state, canMove);
-		if (result != None)
+		GameEnd *result = element->Evaluate(state, canMove);
+		if (result != 0)
 			return result;
 		it++;
 	}
@@ -74,22 +58,21 @@ StateLogic::GameEnd_t StateLogic::Evaluate(GameState *state, bool canMove)
 		if (!canMove)
 		{
 			if (state->currentPlayer->piecesOnBoard.size() == 0)
-				return Lose; // can't move and have no pieces. lose.
+				return outOfPieces; // can't move and have no pieces. lose.
 			else
-				return Draw; // can't move, but have pieces. draw.
+				return outOfMoves; // can't move, but have pieces. draw.
 		}
 	}
-	else if (noNextPlayer) // if the next player is null, we've reached the end of the turn order
-        return Draw;
+	else
+	{
+		bool noNextPlayer = state->game->GetTurnOrder()->GetNextPlayer() == 0;
+		state->game->GetTurnOrder()->StepBackward();
 
-    return None;
-}
+		if (noNextPlayer)
+			return endOfTurnOrder; // if the next player is null, we've reached the end of the turn order
+	}
 
-
-StateLogic::GameEnd_t GameEnd::Evaluate(GameState* state, bool canMove)
-{
-	// todo: handle message and appendNotation, somehow
-	return type;
+    return noEnd;
 }
 
 
@@ -110,7 +93,15 @@ StateLogicBlock::~StateLogicBlock()
 }
 
 
-StateLogic::GameEnd_t StateLogicBlock::Evaluate(GameState *state, bool canMove)
+GameEnd::GameEnd(StateLogic::GameEnd_t type, const char *message, const char *appendNotation)
+{
+	this->type = type;
+	sprintf(this->message, message);
+	sprintf(this->appendNotation, appendNotation);
+}
+
+
+GameEnd* StateLogicBlock::Evaluate(GameState *state, bool canMove)
 {
 	bool satisfied = this->conditions->IsSatisfied(state, canMove);
 	StateLogic *resultantLogic = satisfied ? logicIfTrue : logicIfFalse;
@@ -118,5 +109,5 @@ StateLogic::GameEnd_t StateLogicBlock::Evaluate(GameState *state, bool canMove)
 	if (resultantLogic != 0)
 		return resultantLogic->Evaluate(state, canMove);
 
-	return StateLogic::None;
+	return 0;
 }

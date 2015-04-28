@@ -66,21 +66,35 @@ void Game::Start()
 bool Game::StartNextTurn()
 {
 	possibleMoves = currentState->PrepareMovesForTurn();
-	StateLogic::GameEnd_t result = CheckStartOfTurn(currentState, !possibleMoves->empty());
-	if (result != StateLogic::None)
+	GameEnd *result = CheckStartOfTurn(currentState, !possibleMoves->empty());
+	startOfTurnAppendNotation = result->GetAppendNotation();
+
+	if (result->GetType() != StateLogic::None)
 	{
 		ProcessEndOfGame(result);
 		return false;
 	}
 
+	bool gotMessage = strlen(result->GetMessage()) != 0;
 	bool local = currentState->GetCurrentPlayer()->GetType() == Player::Local;
 
+	// capitalize first letter of player name
+	std::string message = "";
+	char c = toupper(currentState->GetCurrentPlayer()->GetName()[0]);
+	message.insert(0, 1, c);
+	message += currentState->GetCurrentPlayer()->GetName() + 1;
+	message += " to move";
+
 #ifdef EMSCRIPTEN
-	EM_ASM_ARGS({setCurrentPlayer($0, $1);}, currentState->GetCurrentPlayer()->GetName(), local);
+	EM_ASM_ARGS({startTurn($0, $1);}, message.c_str(), local);
+	if (gotMessage)
+		EM_ASM_ARGS({showMessage($0);}, result->GetMessage());
 #endif
 
 #ifdef CONSOLE
-	printf("%s to move\n", currentState->GetCurrentPlayer()->GetName());
+	printf("%s\n", message.c_str());
+	if (gotMessage)
+		printf("  %s\n", result->GetMessage());
 #endif
 
 	if (local) // list possible moves
@@ -126,55 +140,73 @@ bool Game::StartNextTurn()
 Game::MoveResult_t Game::PerformMove(Move *move)
 {
 	GameState *subsequentState = move->Perform(true);
-	if (subsequentState != 0)
-	{
-		LogMove(currentState->currentPlayer, move);
-		if (EndTurn(subsequentState))
-			return MoveComplete;
-		else
-			return GameComplete;
-	}
-	else
-	{
+	if (subsequentState == 0)
 		return MoveError;
-	}
+
+	if (EndTurn(subsequentState, move))
+		return MoveComplete;
+	else
+		return GameComplete;
 }
 
-bool Game::EndTurn(GameState *newState)
+bool Game::EndTurn(GameState *newState, Move *lastMove)
 {
-	StateLogic::GameEnd_t result = CheckEndOfTurn(currentState);
-	ClearPossibleMoves();
+	GameEnd *result = CheckEndOfTurn(currentState);
+	
+	// store the turn number for logging purposes
+	int turnNumber = currentState->GetTurnNumber();
+	ClearPossibleMoves(lastMove);
 	delete currentState;
 
-	if (result != StateLogic::None) {
+	if (result->GetType() != StateLogic::None) {
 		ProcessEndOfGame(result);
+		LogMove(lastMove, turnNumber, result->GetAppendNotation());
+		delete lastMove;
 		return false;
 	}
 
+	bool gotMessage = strlen(result->GetMessage()) != 0;
+
+#ifdef EMSCRIPTEN
+	if (gotMessage)
+		EM_ASM_ARGS({ showMessage($0); }, result->GetMessage());
+#endif
+
+#ifdef CONSOLE
+	if (gotMessage)
+		printf("%s\n", result->GetMessage());
+#endif
+
 	currentState = newState;
-	return StartNextTurn();
+	bool shouldContinue = StartNextTurn();
+
+	// logging must happen AFTER the next StartNextTurn, so(e.g.) the * from a Check move can be applied to the previous turn's notation
+	LogMove(lastMove, turnNumber, result->GetAppendNotation());
+	delete lastMove;
+
+	return shouldContinue;
 }
 
 
-StateLogic::GameEnd_t Game::CheckStartOfTurn(GameState *state, bool canMove)
+GameEnd* Game::CheckStartOfTurn(GameState *state, bool canMove)
 {
 	return startOfTurnLogic->Evaluate(state, canMove);
 }
 
-StateLogic::GameEnd_t Game::CheckEndOfTurn(GameState *state)
+GameEnd* Game::CheckEndOfTurn(GameState *state)
 {
 	return endOfTurnLogic->Evaluate(state, true);
 }
 
-void Game::ProcessEndOfGame(StateLogic::GameEnd_t result)
+void Game::ProcessEndOfGame(GameEnd *result)
 {
-	switch (result)
+	switch (result->GetType())
 	{
 	case StateLogic::Win:
-		EndGame(currentState->currentPlayer);
+		EndGame(currentState->currentPlayer, result->GetMessage());
 		break;
 	case StateLogic::Draw:
-		EndGame(0);
+		EndGame(0, result->GetMessage());
 		break;
 	case StateLogic::Lose:
 		if (players.size() == 2)
@@ -182,7 +214,7 @@ void Game::ProcessEndOfGame(StateLogic::GameEnd_t result)
 			Player *other = players.front();
 			if (other == currentState->currentPlayer)
 				other = players.back();
-			EndGame(other);
+			EndGame(other, result->GetMessage());
 		}
 		else
 		{
@@ -197,27 +229,37 @@ void Game::ProcessEndOfGame(StateLogic::GameEnd_t result)
 }
 
 
-void Game::EndGame(Player *victor)
+void Game::EndGame(Player *victor, const char *message)
 {
-	char text[PLAYER_NAME_LENGTH + 32];
+	// capitalize first letter
+	char c = toupper(message[0]);
+	std::string output = "";
+	output.insert(0, 1, c);
+	output += message + 1;
+
 	if (victor == 0)
-		sprintf(text, "Game finished, stalemate\n");
+	{
+		output += ", game drawn\n";
+	}
 	else
-		sprintf(text, "Game finished, %s wins\n", victor->GetName());
+	{
+		output += ", ";
+		output += victor->GetName();
+		output += " wins\n";
+	}
 
 #ifdef CONSOLE
-	printf(text);
+	printf(output.c_str());
 #endif
 #ifdef EMSCRIPTEN
-	EM_ASM_ARGS({showGameEnd($0);}, text);
+	EM_ASM_ARGS({showGameEnd($0);}, output.c_str());
 #endif
 }
 
-void Game::LogMove(Player *player, Move *move)
+void Game::LogMove(Move *move, int turnNumber, const char *appendNotation)
 {
 	std::string notation = "";
 
-	int turnNumber = move->GetPrevState()->GetTurnNumber();
 	int numPlayers = players.size();
 	int displayNumber = (turnNumber + numPlayers + 1) / numPlayers - 1;
 	notation += std::to_string(displayNumber);
@@ -231,6 +273,8 @@ void Game::LogMove(Player *player, Move *move)
 		notation += ".. ";
 
 	notation += move->GetNotation();
+	notation += startOfTurnAppendNotation;
+	notation += appendNotation;
 
 #ifdef CONSOLE
 	printf("%s\n", notation.c_str());
@@ -240,17 +284,19 @@ void Game::LogMove(Player *player, Move *move)
 	// as well as logging notation, this passes indicators for the cells that were moved from/to
 	Cell *start = move->GetStartPos();
 	Cell *end = move->GetEndPos();
-	EM_ASM_ARGS({ logMove($0, $1, $2, $3, $4); }, currentState->GetCurrentPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str(), start == 0 ? "" : start->GetName(), end == 0 ? "" : end->GetName());
+	EM_ASM_ARGS({ logMove($0, $1, $2, $3, $4); }, move->GetPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str(), start == 0 ? "" : start->GetName(), end == 0 ? "" : end->GetName());
 #endif
 }
 
-void Game::ClearPossibleMoves()
+void Game::ClearPossibleMoves(Move *dontDelete)
 {
 	if (possibleMoves == 0)
 		return;
 
-	while (!possibleMoves->empty())
-		delete possibleMoves->front(), possibleMoves->pop_front();
+	for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
+		if (*it != dontDelete)
+			delete *it;
+
 	delete possibleMoves;
 	possibleMoves = 0;
 }

@@ -225,8 +225,22 @@
 	</xs:complexType>
 
 	<xs:complexType name="logicOutcome">
-		<xs:attribute name="message" type="xs:string" use="required"/>
-		<xs:attribute name="appendNotation" type="xs:string" use="optional"/>
+		<xs:attribute name="message" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="0"/>
+					<xs:maxLength value="100"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="appendNotation" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="0"/>
+					<xs:maxLength value="5"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
 	</xs:complexType>
 
 	<xs:complexType name="stateConditions">
