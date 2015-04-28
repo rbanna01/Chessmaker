@@ -11,6 +11,30 @@
 #render .cell.midStroke, .detail.midStroke{stroke:#@Model.BoardMid;}
 #render .cell.darkStroke, .detail.darkStroke{stroke:#@Model.BoardDark;}
 
+#render .cell.light.lastMoveFrom {
+    fill:url(#lastFromLight);
+}
+
+#render .cell.mid.lastMoveFrom {
+    fill:url(#lastFromMid);
+}
+
+#render .cell.dark.lastMoveFrom {
+    fill:url(#lastFromDark);
+}
+
+#render .cell.light.lastMoveTo {
+    fill:url(#lastToLight);
+}
+
+#render .cell.mid.lastMoveTo {
+    fill:url(#lastToMid);
+}
+
+#render .cell.dark.lastMoveTo {
+    fill:url(#lastToDark);
+}
+
 #render .cell.selected.light{fill:#@Model.BoardLightSelected;}
 #render .cell.selected.mid{fill:#@Model.BoardMidSelected;}
 #render .cell.selected.dark{fill:#@Model.BoardDarkSelected;}
@@ -53,28 +77,4 @@
 #render defs .stopDarkHighlight {
     stop-color:#@Model.BoardDarkHighlight;
     stop-opacity:1
-}
-
-#render .cell.light.lastMoveFrom {
-    fill:url(#lastFromLight);
-}
-
-#render .cell.mid.lastMoveFrom {
-    fill:url(#lastFromMid);
-}
-
-#render .cell.dark.lastMoveFrom {
-    fill:url(#lastFromDark);
-}
-
-#render .cell.light.lastMoveTo {
-    fill:url(#lastToLight);
-}
-
-#render .cell.mid.lastMoveTo {
-    fill:url(#lastToMid);
-}
-
-#render .cell.dark.lastMoveTo {
-    fill:url(#lastToDark);
 }
