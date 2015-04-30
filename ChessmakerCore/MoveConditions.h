@@ -147,7 +147,8 @@ private:
 	static bool IsThreatened(GameState *state, Cell *position);
 
 	bool start, end, value;
-	static bool alreadyChecking;
+	static bool checkingThreat;
 
+	friend class GameState;
 	friend class StateCondition_Threatened;
 };

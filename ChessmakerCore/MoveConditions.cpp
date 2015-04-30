@@ -162,15 +162,15 @@ bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_Threatened::alreadyChecking = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
+bool MoveCondition_Threatened::checkingThreat = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
 bool MoveCondition_Threatened::IsSatisfied(Move *move)
 {
-	if (alreadyChecking)
+	if (checkingThreat)
 		return true;
 
-	alreadyChecking = true;
+	checkingThreat = true;
 	bool retVal = CheckSatisfied(move);
-	alreadyChecking = false;
+	checkingThreat = false;
 
 	return retVal;
 }
@@ -204,21 +204,23 @@ bool MoveCondition_Threatened::CheckSatisfied(Move *move)
 bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)
 {
 	auto moves = state->DetermineThreatMoves();
-	
 	bool retVal = false;
+	
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;
 		if (move->WouldCapture(position))
 		{
 			retVal = true;
+
+			for (; it != moves->end(); it++)
+				delete *it;
 			break;
 		}
-	}
 
-	while (!moves->empty())
-		delete moves->front(), moves->pop_front();
-	delete moves;
+		delete *it;
+	}
 	
+	delete moves;
 	return retVal;
 }

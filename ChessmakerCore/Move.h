@@ -40,6 +40,7 @@ public:
 	Piece *GetPiece() { return piece; }
 	GameState *GetPrevState() { return prevState; }
 	std::list<MoveStep*> GetSteps() { return steps; }
+
 private:
 	Player *player;
 	GameState *prevState;

@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include "Game.h"
 #include "Move.h"
+#include "MoveConditions.h"
 #include "MoveDefinition.h"
 #include "Piece.h"
 
@@ -112,8 +113,8 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 			for (auto it2 = possibilities->begin(); it2 != possibilities->end(); it2++)
 			{
 				Move *move = *it2;
-        
-				if (game->AnyIllegalMovesSpecified())
+				
+				if (!MoveCondition_Threatened::checkingThreat && game->AnyIllegalMovesSpecified())
 				{
 					GameState *subsequentState = move->Perform(false);
 					GameEnd *result = game->CheckEndOfTurn(this);

@@ -87,7 +87,7 @@ bool StateCondition_CannotMove::IsSatisfied(GameState *state, bool canMove)
 
 bool StateCondition_Threatened::IsSatisfied(GameState *state, bool canMove)
 {
-	if (MoveCondition_Threatened::alreadyChecking)
+	if (MoveCondition_Threatened::checkingThreat)
         return false; // assume NOT threatened
 
 	auto pieces = state->GetCurrentPlayer()->GetPiecesOnBoard();
@@ -97,9 +97,9 @@ bool StateCondition_Threatened::IsSatisfied(GameState *state, bool canMove)
 		if (!piece->TypeMatches(type))
             continue;
 		
-        MoveCondition_Threatened::alreadyChecking = true;
+        MoveCondition_Threatened::checkingThreat = true;
         bool threatened = MoveCondition_Threatened::IsThreatened(state, piece->GetPosition());
-        MoveCondition_Threatened::alreadyChecking = false;
+        MoveCondition_Threatened::checkingThreat = false;
 		
         if (threatened)
             return true;

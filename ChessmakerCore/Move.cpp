@@ -78,7 +78,8 @@ bool Move::Reverse(bool updateDisplay)
 	piece->lastMoveTurn = prevPieceMoveTurn;
 	piece->moveNumber--;
 	prevState->game->GetTurnOrder()->StepBackward();
-	prevState->subsequentMove = 0;
+	if (prevState->subsequentMove == this)
+		prevState->subsequentMove = 0;
 
 	for (auto it = steps.rbegin(); it != steps.rend(); it++)
 	{
