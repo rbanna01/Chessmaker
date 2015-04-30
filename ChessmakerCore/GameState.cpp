@@ -4,17 +4,23 @@
 #include "MoveDefinition.h"
 #include "Piece.h"
 
-GameState::GameState(Game *game, Player *currentPlayer, int turnNumber)
+GameState::GameState(Game *game, Player *currentPlayer, GameState *previousState)
 {
 	this->game = game;
 	this->currentPlayer = currentPlayer;
-	this->turnNumber = turnNumber;
+	this->turnNumber = previousState == 0 ? 1 : previousState->turnNumber + 1;
+	this->previousState = previousState;
+	subsequentMove = 0;
 }
 
 
 GameState::~GameState()
 {
-	
+	if (previousState != 0)
+		delete previousState;
+
+	if (subsequentMove != 0)
+		delete subsequentMove;
 }
 
 
@@ -112,6 +118,7 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 					GameState *subsequentState = move->Perform(false);
 					GameEnd *result = game->CheckEndOfTurn(this);
 					move->Reverse(false);
+					subsequentState->ClearPreviousState();
 					delete subsequentState;
 
 					if (result->GetType() == StateLogic::IllegalMove)

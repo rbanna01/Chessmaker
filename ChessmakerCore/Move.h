@@ -32,7 +32,7 @@ public:
 
 	Cell *GetStartPos() { return startPos; }
 	Cell *GetEndPos();
-	std::list<Cell*> GetAllPositions();
+	std::list<Piece*> *GetAllCaptures();
 	bool IsCapture();
 	bool WouldCapture(Cell* target);
 	PieceType *GetPromotionType();

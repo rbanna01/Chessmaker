@@ -10,6 +10,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
+#include <limits.h>
 
 #if _DEBUG
 #pragma comment(lib, "..\\Debug\\ChessmakerCore.lib")
@@ -41,7 +43,7 @@ void Shutdown();
 extern "C" __declspec(dllimport)
 int PerformMove(const char *notation);
 
-void RunGameLoop();
+void RunGameLoop(bool anyLocalPlayer);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -69,6 +71,62 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	delete definition;
+
+	bool setupFailed = false, anyLocalPlayer;
+	
+	do
+	{
+		std::string input;
+		printf("Game type? 1 = local, 2 = vs AI, 3 = AI vs AI\n");
+
+		std::getline(std::cin, input);
+		if (input.compare("1") == 0)
+		{
+			if (!SetPlayerLocal(1))
+			{
+				setupFailed = true;
+				printf("Error setting player to LOCAL\n");
+			}
+			else if (!SetPlayerLocal(2))
+			{
+				setupFailed = true;
+				printf("Error setting player to LOCAL\n");
+			}
+			anyLocalPlayer = true;
+			break;
+		}
+		else if (input.compare("2") == 0)
+		{
+			if (!SetPlayerLocal(1))
+			{
+				setupFailed = true;
+				printf("Error setting player to LOCAL\n");
+			}
+			else if (!SetPlayerAI(2, "random capture"))
+			{
+				setupFailed = true;
+				printf("Error setting player to AI\n");
+			}
+			anyLocalPlayer = true;
+			break;
+		}
+		else if (input.compare("3") == 0)
+		{
+			if (!SetPlayerAI(1, "random capture"))
+			{
+				setupFailed = true;
+				printf("Error setting player to AI\n");
+			}
+			else if (!SetPlayerAI(2, "random capture"))
+			{
+				setupFailed = true;
+				printf("Error setting player to AI\n");
+			}
+			anyLocalPlayer = false;
+			break;
+		}
+	} while (true);
+
 /*
 	// retrieve and then save the board SVG file
 	std::string *svg = GetBoardSVG();
@@ -80,12 +138,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	delete svg;
 */
-	if (!SetPlayerLocal(1))
-		printf("Error setting player to LOCAL\n");
-	else if (!SetPlayerAI(2, "random capture"))
-		printf("Error setting player to AI\n");
-	else
-		RunGameLoop();
+	
+	if (!setupFailed)
+		RunGameLoop(anyLocalPlayer);
 
 	Shutdown();
 
@@ -95,9 +150,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 }
 
-void RunGameLoop()
+void RunGameLoop(bool anyLocalPlayer)
 {
+	srand(time(NULL));
 	Start();
+
+	if (!anyLocalPlayer)
+		return;
 
 	int retVal = 0;
 	std::string input;

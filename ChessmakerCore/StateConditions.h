@@ -48,3 +48,61 @@ public:
 private:
 	PieceType *type;
 };
+
+
+class StateCondition_TurnsSinceLastMove : public StateCondition
+{
+public:
+	StateCondition_TurnsSinceLastMove(PieceType *type, Player::Relationship_t owner, NumericComparison_t comparison, int number)
+	{
+		this->type = type;
+		this->owner = owner;
+		this->comparison = comparison;
+		this->number = number;
+	}
+
+	virtual bool IsSatisfied(GameState *move, bool canMove);
+private:
+	PieceType *type;
+	Player::Relationship_t owner;
+	NumericComparison_t comparison;
+	int number;
+};
+
+
+class StateCondition_TurnsSinceLastCapture : public StateCondition
+{
+public:
+	StateCondition_TurnsSinceLastCapture(PieceType *type, Player::Relationship_t owner, NumericComparison_t comparison, int number)
+	{
+		this->type = type;
+		this->owner = owner;
+		this->comparison = comparison;
+		this->number = number;
+	}
+
+	virtual bool IsSatisfied(GameState *move, bool canMove);
+private:
+	PieceType *type;
+	Player::Relationship_t owner;
+	NumericComparison_t comparison;
+	int number;
+};
+
+
+class StateCondition_LastMoveRepetition : public StateCondition
+{
+public:
+	StateCondition_LastMoveRepetition(int period, NumericComparison_t comparison, int number)
+	{
+		this->period = period;
+		this->comparison = comparison;
+		this->number = number;
+	}
+
+	virtual bool IsSatisfied(GameState *move, bool canMove);
+
+private:
+	NumericComparison_t comparison;
+	int period, number;
+};

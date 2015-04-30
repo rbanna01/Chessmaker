@@ -86,6 +86,7 @@ Move *AI_AlphaBeta::SelectMove()
 			score = FindBestScore(currentState, subsequentState, alpha, beta, ply - 1);
 
 		move->Reverse(false);
+		subsequentState->ClearPreviousState();
 		delete subsequentState;
 
 		if (score > bestScore)
@@ -149,6 +150,9 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 			score = FindBestScore(currentState, subsequentState, alpha, beta, depth - 1);
 
 		move->Reverse(false);
+		subsequentState->ClearPreviousState();
+		delete subsequentState;
+
 		if (score >= beta)
 		{
 			bestScore = score;

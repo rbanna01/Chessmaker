@@ -930,6 +930,49 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
 			conditions->elements.push_back(new StateCondition_Threatened(type));
 		}
+		else if (strcmp(child->name(), "turnsSinceLastMove") == 0)
+		{
+			char *typeName = child->first_attribute("type")->value();
+			auto it = pieceTypesByName.find(typeName);
+			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+			
+			xml_attribute<> *attr = child->first_attribute("owner");
+			Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
+
+			int number = atoi(child->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+
+			conditions->elements.push_back(new StateCondition_TurnsSinceLastMove(type, relat, comparison, number));
+		}
+		else if (strcmp(child->name(), "turnsSinceLastCapture") == 0)
+		{
+			xml_attribute<> *attr = child->first_attribute("type");
+			PieceType *type;
+			if (attr == 0)
+				type = 0;
+			else
+			{
+				char *typeName = attr->value();
+				auto it = pieceTypesByName.find(typeName);
+				type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+			}
+			
+			attr = child->first_attribute("owner");
+			Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
+
+			int number = atoi(child->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+
+			conditions->elements.push_back(new StateCondition_TurnsSinceLastCapture(type, relat, comparison, number));
+		}
+		else if (strcmp(child->name(), "lastMoveRepetition") == 0)
+		{
+			int period = atoi(child->first_attribute("period")->value());
+			int number = atoi(child->value());
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+
+			conditions->elements.push_back(new StateCondition_LastMoveRepetition(period, comparison, number));
+		}
 		else
 			ReportError("Unexpected state condition type: %s\n", child->name());
 

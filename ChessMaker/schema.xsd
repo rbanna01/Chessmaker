@@ -72,7 +72,7 @@
 					<xs:simpleContent>
 						<xs:extension base="xs:positiveInteger">
 							<xs:attribute name="of" type="xs:string"/>
-							<xs:attribute name="comparison" type="numericComparison"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -83,7 +83,7 @@
 					<xs:simpleContent>
 						<xs:extension base="xs:positiveInteger">
 							<xs:attribute name="dir" type="direction" use="required"/>
-							<xs:attribute name="comparison" type="numericComparison"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -94,7 +94,7 @@
 					<xs:simpleContent>
 						<xs:extension base="xs:positiveInteger">
 							<xs:attribute name="of" type="xs:string"/>
-							<xs:attribute name="comparison" type="numericComparison"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -252,6 +252,38 @@
 			<xs:element name="threatened">
 				<xs:complexType>
 					<xs:attribute name="type" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnsSinceLastMove">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="type" type="xs:string" use="required"/>
+							<xs:attribute name="owner" type="owner" default="any"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnsSinceLastCapture">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="type" type="xs:string" default="any"/>
+							<xs:attribute name="owner" type="owner" default="any"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="lastMoveRepetition">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="period" type="xs:positiveInteger" use="required"/>
+							<xs:attribute name="comparison" type="numericComparison" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
 				</xs:complexType>
 			</xs:element>
 		</xs:choice>

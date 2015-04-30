@@ -10,7 +10,7 @@ class Player;
 class GameState
 {
 public:
-	GameState(Game *game, Player *currentPlayer, int turnNumber);
+	GameState(Game *game, Player *currentPlayer, GameState *previousState);
 	~GameState();
 
 	std::list<Move*> *PrepareMovesForTurn();
@@ -19,11 +19,16 @@ public:
 	Game *GetGame() { return game; }
 	Player *GetCurrentPlayer() { return currentPlayer; }
 	int GetTurnNumber() { return turnNumber; }
+	GameState *GetPreviousState() { return previousState; }
+	void ClearPreviousState() { previousState = 0; }
+	Move *GetSubsequentMove() { return subsequentMove; }
 
 private:
 	Game *game;
 	Player *currentPlayer;
 	int turnNumber;
+	GameState *previousState;
+	Move *subsequentMove;
 
 	void CalculateMovesForPlayer(Player *player, std::list<Move*> *output);
 

@@ -67,8 +67,9 @@ GameState *Move::Perform(bool updateDisplay)
 	prevPieceMoveTurn = piece->lastMoveTurn;
 	piece->lastMoveTurn = prevState->turnNumber;
 	piece->moveNumber++;
+	prevState->subsequentMove = this;
 
-	return new GameState(prevState->game, prevState->game->GetTurnOrder()->GetNextPlayer(), prevState->turnNumber + 1);
+	return new GameState(prevState->game, prevState->game->GetTurnOrder()->GetNextPlayer(), prevState);
 }
 
 
@@ -104,6 +105,7 @@ bool Move::Reverse(bool updateDisplay)
 	piece->lastMoveTurn = prevPieceMoveTurn;
     piece->moveNumber--;
 	prevState->game->GetTurnOrder()->StepBackward();
+	prevState->subsequentMove = 0;
 	return true;
 }
 
@@ -193,18 +195,17 @@ Cell *Move::GetEndPos()
 }
 
 
-std::list<Cell*> Move::GetAllPositions()
+std::list<Piece*> *Move::GetAllCaptures()
 {
-	std::list<Cell*> allPositions;
+	std::list<Piece*> *allCaptures = new std::list<Piece*>();
 
 	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
-		if (step->GetPiece() == piece && step->toState == Piece::OnBoard)
-			allPositions.push_back(step->toPos);
+		if (step->toState != Piece::OnBoard)
+			allCaptures->push_back(piece);
 	}
-
-	return allPositions;
+	return allCaptures;
 }
 
 

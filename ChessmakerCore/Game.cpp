@@ -58,7 +58,7 @@ void Game::Start()
 		return;
 	}
 
-	currentState = new GameState(this, turnOrder->GetNextPlayer(), 1);
+	currentState = new GameState(this, turnOrder->GetNextPlayer(), 0);
 	StartNextTurn();
 }
 
@@ -156,12 +156,10 @@ bool Game::EndTurn(GameState *newState, Move *lastMove)
 	// store the turn number for logging purposes
 	int turnNumber = currentState->GetTurnNumber();
 	ClearPossibleMoves(lastMove);
-	delete currentState;
 
 	if (result->GetType() != StateLogic::None) {
 		ProcessEndOfGame(result);
 		LogMove(lastMove, turnNumber, result->GetAppendNotation());
-		delete lastMove;
 		return false;
 	}
 
@@ -182,7 +180,6 @@ bool Game::EndTurn(GameState *newState, Move *lastMove)
 
 	// logging must happen AFTER the next StartNextTurn, so(e.g.) the * from a Check move can be applied to the previous turn's notation
 	LogMove(lastMove, turnNumber, result->GetAppendNotation());
-	delete lastMove;
 
 	return shouldContinue;
 }

@@ -867,17 +867,45 @@
         <turn player="black" />
       </repeat>
     </turnOrder>
-    <endOfGame>
-      <lose when="startOfTurn">
+    <startOfTurn>
+      <if>
         <threatened type="king" />
-        <cannotMove />
-      </lose>
-      <draw when="startOfTurn">
-        <cannotMove />
-      </draw>
-      <illegal when="endOfTurn">
+      </if>
+      <then>
+        <if>
+          <cannotMove />
+        </if>
+        <then>
+          <endGame type="lose" message="checkmate" appendNotation="++" />
+        </then>
+        <else>
+          <notify message="check" appendNotation="+" />
+          <!-- return on notify?-->
+        </else>
+      </then>
+      <else>
+        <if>
+          <cannotMove />
+        </if>
+        <then>
+          <endGame type="draw" message="stalemate" />
+        </then>
+      </else>
+    </startOfTurn>
+    <endOfTurn>
+      <if>
         <threatened type="king" />
-      </illegal>
-    </endOfGame>
+      </if>
+      <then>
+        <disallow />
+      </then>
+      <if>
+		  <turnsSinceLastMove type="pawn" comparison="greater than or equals">100</turnsSinceLastMove>
+		  <turnsSinceLastCapture comparison="greater than or equals">100</turnsSinceLastCapture>
+	  </if>
+	  <then>
+		<endGame type="draw" message="fifty-move rule" />
+	  </then>
+	</endOfTurn>
   </rules>
 </game>
