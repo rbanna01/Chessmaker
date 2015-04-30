@@ -6,11 +6,12 @@
 
 GameEnd *noEnd, *outOfPieces, *outOfMoves, *endOfTurnOrder;
 
-StateLogic::StateLogic(bool startOfTurn)
+StateLogic::StateLogic(bool startOfTurn, bool root)
 {
 	this->startOfTurn = startOfTurn;
+	this->root = root;
 
-	if (startOfTurn)
+	if (root && startOfTurn)
 	{
 		noEnd = new GameEnd(None, "");
 		outOfPieces = new GameEnd(Lose, "out of pieces");
@@ -29,7 +30,7 @@ StateLogic::~StateLogic()
 		it++;
 	}
 
-	if (startOfTurn)
+	if (root && startOfTurn)
 	{
 		delete noEnd;
 		delete outOfPieces;
@@ -52,6 +53,9 @@ GameEnd* StateLogic::Evaluate(GameState *state, bool canMove)
 			return result;
 		it++;
 	}
+
+	if (root)
+		return noEnd;
 
 	if (startOfTurn)
 	{

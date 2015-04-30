@@ -12,7 +12,7 @@ class StateLogicElement;
 class StateLogic
 {
 public:
-	StateLogic(bool startOfTurn);
+	StateLogic(bool startOfTurn, bool root);
 	~StateLogic();
 
 	typedef enum { None, Win, Lose, Draw, IllegalMove } GameEnd_t;
@@ -20,7 +20,7 @@ public:
 	GameEnd* Evaluate(GameState *state, bool canMove);
 
 private:
-	bool startOfTurn;
+	bool startOfTurn, root;
 	std::list<StateLogicElement*> elements;
 
 	friend class GameParser;

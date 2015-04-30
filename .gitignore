@@ -31,3 +31,4 @@ obj/
 *.opensdf
 ChessmakerCore/Emscripten/*
 *.mem
+*.js.map

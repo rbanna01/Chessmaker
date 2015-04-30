@@ -69,7 +69,7 @@ private:
 	bool ParseRules(rapidxml::xml_node<char> *rulesNode);
 	TurnOrder *ParseTurnOrder(rapidxml::xml_node<char> *node);
 	bool ParseTurnRepeat(TurnRepeat *repeat, rapidxml::xml_node<char> *repeatNode);
-	StateLogic *ParseStateLogic(rapidxml::xml_node<char> *rootNode, bool startOfTurn);
+	StateLogic *ParseStateLogic(rapidxml::xml_node<char> *rootNode, bool startOfTurn, bool root);
 	Player *GetPlayerByName(char *name);
 
 	direction_t LookupDirection(char *dirName);

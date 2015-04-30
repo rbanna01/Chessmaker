@@ -1185,7 +1185,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		game->turnOrder = order;
 
 	node = rulesNode->first_node("startOfTurn");
-	StateLogic *logic = node == 0 ? new StateLogic(true) : ParseStateLogic(node, true);
+	StateLogic *logic = node == 0 ? new StateLogic(true, true) : ParseStateLogic(node, true, true);
 
 	if (logic == 0)
 	{
@@ -1196,7 +1196,7 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		game->startOfTurnLogic = logic;
 
 	node = rulesNode->first_node("endOfTurn");
-	logic = node == 0 ? new StateLogic(false) : ParseStateLogic(node, false);
+	logic = node == 0 ? new StateLogic(false, true) : ParseStateLogic(node, false, true);
 
 	if (logic == 0)
 	{
@@ -1268,9 +1268,9 @@ Player *GameParser::GetPlayerByName(char *name)
 	return 0;
 }
 
-StateLogic *GameParser::ParseStateLogic(xml_node<> *rootNode, bool startOfTurn)
+StateLogic *GameParser::ParseStateLogic(xml_node<> *rootNode, bool startOfTurn, bool root)
 {
-	StateLogic *stateLogic = new StateLogic(startOfTurn);
+	StateLogic *stateLogic = new StateLogic(startOfTurn, root);
 
 	// essentially gonna parse any number of if/then/else, endGame, notify & disallow, to any depth
 	xml_node<> *node = rootNode->first_node();
@@ -1286,12 +1286,12 @@ StateLogic *GameParser::ParseStateLogic(xml_node<> *rootNode, bool startOfTurn)
 		}
 		else if (strcmp(node->name(), "then") == 0)
 		{
-			lastIf->logicIfTrue = ParseStateLogic(node, startOfTurn);
+			lastIf->logicIfTrue = ParseStateLogic(node, startOfTurn, false);
 			logicElement = 0;
 		}
 		else if (strcmp(node->name(), "else") == 0)
 		{
-			lastIf->logicIfFalse = ParseStateLogic(node, startOfTurn);
+			lastIf->logicIfFalse = ParseStateLogic(node, startOfTurn, false);
 			logicElement = 0;
 		}
 		else if (strcmp(node->name(), "endGame") == 0)
