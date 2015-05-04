@@ -6,15 +6,14 @@
 Board::Board(Game *game)
 {
 	this->game = game;
-	cells = 0;
 	allAbsoluteDirections = 0;
 }
 
 
 Board::~Board()
 {
-	if (cells != 0)
-		delete [] cells;
+	for (auto it = cells.begin(); it != cells.end(); it++)
+		delete *it;
 }
 
 

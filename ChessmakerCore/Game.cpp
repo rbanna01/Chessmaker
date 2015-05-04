@@ -33,8 +33,6 @@ Game::~Game()
 	if (turnOrder != 0)
 		delete turnOrder;
 
-	ClearPossibleMoves();
-
 	auto it = players.begin();
 	while (it != players.end())
 	{
@@ -49,6 +47,7 @@ Game::~Game()
 		it2++;
 	}
 }
+
 
 void Game::Start()
 {
@@ -65,7 +64,8 @@ void Game::Start()
 
 bool Game::StartNextTurn()
 {
-	possibleMoves = currentState->PrepareMovesForTurn();
+	std::list<Move*> *possibleMoves = currentState->GetPossibleMoves();
+
 	GameEnd *result = CheckStartOfTurn(currentState, !possibleMoves->empty());
 	startOfTurnAppendNotation = result->GetAppendNotation();
 
@@ -74,6 +74,8 @@ bool Game::StartNextTurn()
 		ProcessEndOfGame(result);
 		return false;
 	}
+
+	ApplyUniqueNotation(possibleMoves);
 
 	bool gotMessage = strlen(result->GetMessage()) != 0;
 	bool local = currentState->GetCurrentPlayer()->GetType() == Player::Local;
@@ -137,6 +139,7 @@ bool Game::StartNextTurn()
 	return true;
 }
 
+
 Game::MoveResult_t Game::PerformMove(Move *move)
 {
 	GameState *subsequentState = move->Perform(true);
@@ -149,15 +152,15 @@ Game::MoveResult_t Game::PerformMove(Move *move)
 		return GameComplete;
 }
 
+
 bool Game::EndTurn(GameState *newState, Move *lastMove)
 {
 	GameEnd *result = CheckEndOfTurn(currentState);
-	
-	// store the turn number for logging purposes
-	int turnNumber = currentState->GetTurnNumber();
-	ClearPossibleMoves(lastMove);
+	currentState->ClearPossibleMoves(lastMove);
+	int turnNumber = currentState->GetTurnNumber(); // we need this for logging purposes
 
-	if (result->GetType() != StateLogic::None) {
+	if (result->GetType() != StateLogic::None)
+	{
 		ProcessEndOfGame(result);
 		LogMove(lastMove, turnNumber, result->GetAppendNotation());
 		return false;
@@ -190,10 +193,12 @@ GameEnd* Game::CheckStartOfTurn(GameState *state, bool canMove)
 	return startOfTurnLogic->Evaluate(state, canMove);
 }
 
+
 GameEnd* Game::CheckEndOfTurn(GameState *state)
 {
 	return endOfTurnLogic->Evaluate(state, true);
 }
+
 
 void Game::ProcessEndOfGame(GameEnd *result)
 {
@@ -253,6 +258,42 @@ void Game::EndGame(Player *victor, const char *message)
 #endif
 }
 
+
+// determine notation for each move (done all at once to ensure they are unique)
+void Game::ApplyUniqueNotation(std::list<Move*> *moves)
+{
+	std::map<char*, Move*, char_cmp> movesByNotation;
+
+	for (auto it = moves->begin(); it != moves->end(); it++)
+	{
+		Move *move = *it;
+
+		// ensure unique notation
+		for (int detailLevel = 1; detailLevel <= MAX_NOTATION_DETAIL; detailLevel++)
+		{
+			char *notation = move->DetermineNotation(detailLevel);
+
+			auto existingIt = movesByNotation.find(notation);
+			if (existingIt != movesByNotation.end())
+			{
+				// another move uses this notation. Calculate a new, more-specific notation for that other move.
+				Move *other = existingIt->second;
+				char *otherNot = other->DetermineNotation(detailLevel + 1);
+
+				// only save the other move with the more specific notation if we haven't done so already
+				if (movesByNotation.find(otherNot) == movesByNotation.end())
+					movesByNotation.insert(std::pair<char*, Move*>(otherNot, other));
+			}
+			else
+			{
+				movesByNotation.insert(std::pair<char*, Move*>(notation, move));
+				break;
+			}
+		}
+	}
+}
+
+
 void Game::LogMove(Move *move, int turnNumber, const char *appendNotation)
 {
 	std::string notation = "";
@@ -283,17 +324,4 @@ void Game::LogMove(Move *move, int turnNumber, const char *appendNotation)
 	Cell *end = move->GetEndPos();
 	EM_ASM_ARGS({ logMove($0, $1, $2, $3, $4); }, move->GetPlayer()->GetName(), move->GetPrevState()->GetTurnNumber(), notation.c_str(), start == 0 ? "" : start->GetName(), end == 0 ? "" : end->GetName());
 #endif
-}
-
-void Game::ClearPossibleMoves(Move *dontDelete)
-{
-	if (possibleMoves == 0)
-		return;
-
-	for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
-		if (*it != dontDelete)
-			delete *it;
-
-	delete possibleMoves;
-	possibleMoves = 0;
 }

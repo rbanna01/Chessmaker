@@ -18,6 +18,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 void ReportError(const char *msg, ...);
 

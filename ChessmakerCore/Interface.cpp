@@ -177,7 +177,7 @@ int PerformMove(const char *notation)
 	// See if this is a valid move, and if so, perform it. If not, return -1.
 	// If the game has finished, return 0, otherwise, return 1.
 
-	auto moves = game->GetPossibleMoves();
+	auto moves = game->GetCurrentState()->GetPossibleMoves();
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
 		Move *move = *it;

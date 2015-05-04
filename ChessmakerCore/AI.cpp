@@ -10,7 +10,7 @@
 
 Move *AI_Random::SelectMove()
 {
-	auto moves = game->GetPossibleMoves();
+	auto moves = game->GetCurrentState()->GetPossibleMoves();
 	int selectedIndex = rand() % moves->size(), index = 0;
 	
 	for (auto it = moves->begin(); it != moves->end(); it++)
@@ -27,7 +27,7 @@ Move *AI_Random::SelectMove()
 
 Move *AI_RandomCapture::SelectMove()
 {
-	auto moves = game->GetPossibleMoves();
+	auto moves = game->GetCurrentState()->GetPossibleMoves();
 	int numCaptures = 0;
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -68,7 +68,7 @@ Move *AI_AlphaBeta::SelectMove()
 	int bestScore = MIN_VAL;
 	std::list<Move*> bestMoves;
     
-	auto moves = game->GetPossibleMoves();
+	auto moves = game->GetCurrentState()->GetPossibleMoves();
 	SortMoves(moves);
 
 	GameState *currentState = game->GetCurrentState();
@@ -86,7 +86,7 @@ Move *AI_AlphaBeta::SelectMove()
 			score = FindBestScore(currentState, subsequentState, alpha, beta, ply - 1);
 
 		move->Reverse(false);
-		subsequentState->ClearPreviousState();
+		subsequentState->DiscardState();
 		delete subsequentState;
 
 		if (score > bestScore)
@@ -123,18 +123,13 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 	if (depth == 0)
 		return EvaluateBoard(currentState); // should be quiescing here
 
-	auto moves = currentState->DeterminePossibleMoves();
-	SortMoves(moves);
+	auto moves = currentState->GetPossibleMoves();
 
 	gameEnd = game->CheckStartOfTurn(currentState, !moves->empty());
 	if (gameEnd->GetType() != StateLogic::None)
-	{
-		for (auto it = moves->begin(); it != moves->end(); it++)
-			delete *it;
-		delete moves;
 		return GetScoreForStateLogic(gameEnd->GetType());
-	}
 	
+	SortMoves(moves);
 	int bestScore = MIN_VAL;
 	Player *movePlayer = currentState->GetCurrentPlayer();
 
@@ -150,15 +145,12 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 			score = FindBestScore(currentState, subsequentState, alpha, beta, depth - 1);
 
 		move->Reverse(false);
-		subsequentState->ClearPreviousState();
+		subsequentState->DiscardState();
 		delete subsequentState;
 
 		if (score >= beta)
 		{
 			bestScore = score;
-
-			for (; it != moves->end(); it++)
-				delete *it;
 			break;
 		}
 		else if (score > bestScore)
@@ -167,10 +159,8 @@ int AI_AlphaBeta::FindBestScore(GameState *prevState, GameState *currentState, i
 			if (score > alpha)
 				alpha = score;
 		}
-		delete move;
 	}
 
-	delete moves;
 	return bestScore;
 }
 

@@ -16,11 +16,12 @@ public:
 
 	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
 	int GetMaxDistance(Cell *cell, direction_t direction);
+	std::vector<Cell*> GetCells() { return cells; }
 private:
 	direction_t ResolveRelativeDirection(direction_t id, direction_t relativeTo);
 
 	Game *game;
-	Cell *cells;
+	std::vector<Cell*> cells;
 	direction_t allAbsoluteDirections, firstRelativeDirection, lastRelativeDirection;
 	std::map<direction_t, relativeDir_t> relativeDirections;
 

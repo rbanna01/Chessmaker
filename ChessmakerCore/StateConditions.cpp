@@ -174,16 +174,46 @@ bool StateCondition_TurnsSinceLastCapture::IsSatisfied(GameState *state, bool ca
 }
 
 
-bool StateCondition_LastMoveRepetition::IsSatisfied(GameState *state, bool canMove)
+bool StateCondition_RepetitionOfPosition::IsSatisfied(GameState *state, bool canMove)
 {
-	int steps = number * period;
+	state->DetermineHash(); // if we are to re-use states, we should only call this if the state doesn't already have a hash
 
-	if (state->GetTurnNumber() <= steps)
-		return false;
-
-	// todo: game state should store move repetition count ... ? But how does it know about turn order etc? How do we handle complicated turn order?
-	// do we just say Last N moves for each player should match the ones for that player only? Is that sufficient?
-	// In a "two moves about" game, I'd treat both moves of a player as one.
-	// In a variable turns game ... there's no well-defined meaning for this. Hmm.
-	return false;
+	// use the hash stored on game states to count how many times states have occurred with the same hash
+	int repetitionCount = IncrementCount(state);
+	state->MarkForPositionRepetition();
+	return ResolveComparison(comparison, repetitionCount, number);
 }
+
+
+int StateCondition_RepetitionOfPosition::IncrementCount(GameState *state)
+{
+	const char *stateKey = state->GetHash();
+	auto it = positionRepetitions.find(stateKey);
+
+	if (it == positionRepetitions.end())
+	{
+		positionRepetitions.insert(std::pair<const char*, int>(stateKey, 1));
+		return 1;
+	}
+	else
+		return ++it->second;
+}
+
+
+void StateCondition_RepetitionOfPosition::DecrementCount(GameState *state)
+{
+	const char *stateKey = state->GetHash();
+	auto it = positionRepetitions.find(stateKey);
+
+	if (it == positionRepetitions.end())
+	{
+		ReportError("Attempting to reduce the occurance of an unknown position's repetition");
+		return;
+	}
+
+	if (--it->second <= 0) // erasing here ensures that we don't hold onto the key of a deleted state
+		positionRepetitions.erase(it);
+}
+
+
+std::map<const char*, int, char_cmp> StateCondition_RepetitionOfPosition::positionRepetitions;

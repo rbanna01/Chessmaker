@@ -6,7 +6,7 @@
 class StateCondition : public Condition
 {
 public:
-	virtual bool IsSatisfied(GameState *move, bool canMove) = 0;
+	virtual bool IsSatisfied(GameState *state, bool canMove) = 0;
 	virtual ~StateCondition() {}
 };
 
@@ -32,7 +32,7 @@ class StateCondition_CannotMove : public StateCondition
 public:
 	StateCondition_CannotMove() { }
 
-	virtual bool IsSatisfied(GameState *move, bool canMove);
+	virtual bool IsSatisfied(GameState *state, bool canMove);
 };
 
 
@@ -44,7 +44,7 @@ public:
 		this->type = type;
 	}
 
-	virtual bool IsSatisfied(GameState *move, bool canMove);
+	virtual bool IsSatisfied(GameState *state, bool canMove);
 private:
 	PieceType *type;
 };
@@ -61,7 +61,7 @@ public:
 		this->number = number;
 	}
 
-	virtual bool IsSatisfied(GameState *move, bool canMove);
+	virtual bool IsSatisfied(GameState *state, bool canMove);
 private:
 	PieceType *type;
 	Player::Relationship_t owner;
@@ -81,7 +81,7 @@ public:
 		this->number = number;
 	}
 
-	virtual bool IsSatisfied(GameState *move, bool canMove);
+	virtual bool IsSatisfied(GameState *state, bool canMove);
 private:
 	PieceType *type;
 	Player::Relationship_t owner;
@@ -90,19 +90,22 @@ private:
 };
 
 
-class StateCondition_LastMoveRepetition : public StateCondition
+class StateCondition_RepetitionOfPosition : public StateCondition
 {
 public:
-	StateCondition_LastMoveRepetition(int period, NumericComparison_t comparison, int number)
+	StateCondition_RepetitionOfPosition(NumericComparison_t comparison, int number)
 	{
-		this->period = period;
 		this->comparison = comparison;
 		this->number = number;
 	}
 
-	virtual bool IsSatisfied(GameState *move, bool canMove);
+	virtual bool IsSatisfied(GameState *state, bool canMove);
+	static void DecrementCount(GameState *state);
 
 private:
+	static int IncrementCount(GameState *state);
+	static std::map<const char*, int, char_cmp> positionRepetitions;
+
 	NumericComparison_t comparison;
-	int period, number;
+	int number;
 };

@@ -185,7 +185,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		node = node->next_sibling();
 	}
 
-	Cell *cells = new Cell[iCell];
+	std::vector<Cell*> cells(iCell, NULL);
 	iCell = 0;
 
 	cellsByRef.clear();
@@ -198,7 +198,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 		if (strcmp(node->name(), "cell") == 0)
 		{
 			attr = node->first_attribute("id");
-			Cell *cell = &cells[iCell++];
+			Cell *cell = cells[iCell++] = new Cell();
 
 			char *ref = attr->value();
 			strcpy(cell->reference, ref);
@@ -965,13 +965,12 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 
 			conditions->elements.push_back(new StateCondition_TurnsSinceLastCapture(type, relat, comparison, number));
 		}
-		else if (strcmp(child->name(), "lastMoveRepetition") == 0)
+		else if (strcmp(child->name(), "repetitionOfPosition") == 0)
 		{
-			int period = atoi(child->first_attribute("period")->value());
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 
-			conditions->elements.push_back(new StateCondition_LastMoveRepetition(period, comparison, number));
+			conditions->elements.push_back(new StateCondition_RepetitionOfPosition(comparison, number));
 		}
 		else
 			ReportError("Unexpected state condition type: %s\n", child->name());

@@ -26,7 +26,6 @@ public:
 	TurnOrder *GetTurnOrder() { return turnOrder; }
 	GameEnd* CheckStartOfTurn(GameState *state, bool canMove);
 	GameEnd* CheckEndOfTurn(GameState *state);
-	std::list<Move*> *GetPossibleMoves() { return possibleMoves; }
 	bool GetHoldCapturedPieces() { return holdCapturedPieces; }
 	bool ShouldShowCapturedPieces() { return showCapturedPieces; }
 	bool ShouldShowHeldPieces() { return showHeldPieces; }
@@ -40,7 +39,7 @@ private:
 	void ProcessEndOfGame(GameEnd* result);
 	void EndGame(Player *victor, const char *message);
 
-	void ClearPossibleMoves(Move *dontDelete = 0);
+	void ApplyUniqueNotation(std::list<Move*> *moves);
 	void LogMove(Move *move, int turnNumber, const char *appendNotation);
 
 	Board *board;
@@ -49,7 +48,6 @@ private:
 	StateLogic *startOfTurnLogic, *endOfTurnLogic;
 	std::list<PieceType*> allPieceTypes;
 	std::list<Player*> players;
-	std::list<Move*> *possibleMoves;
 	const char *startOfTurnAppendNotation;
 
 	bool holdCapturedPieces, showCapturedPieces, showHeldPieces, illegalMovesSpecified;
