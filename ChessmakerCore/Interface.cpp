@@ -60,9 +60,9 @@ BOOL_TYPE Parse(char* definition)
 }
 
 EXPOSE_METHOD
-void Start()
+int Start()
 {
-	game->Start();
+	return game->Start();
 }
 
 #ifndef NO_SVG
@@ -183,22 +183,38 @@ int PerformMove(const char *notation)
 		Move *move = *it;
 		if (strcmp(notation, move->GetNotation()) == 0)
 		{
-			auto result = game->PerformMove(move);
-			switch (result)
-			{
-			case Game::GameComplete:
-				return 0;
-			case Game::MoveComplete:
-				return 1;
-			default:
+			Game::MoveResult_t result = game->PerformMove(move);
+			if (result == Game::MoveError)
 				ReportError("An error occurred performing a move\n");
-				return -1;
-			}
+			return result;
 		}
 	}
-	return -1;
+	return Game::MoveError;
 }
 
+
+EXPOSE_METHOD
+int PerformAIMove()
+{
+	Player *player = game->GetCurrentState()->GetCurrentPlayer();
+	if (player->GetType() != Player::AI)
+	{
+		ReportError("Current player is not AI\n");
+		return Game::MoveError;
+	}
+
+	auto move = player->GetAI()->SelectMove();
+	if (move == 0)
+	{
+		ReportError("AI failed to select a move\n");
+		return Game::MoveError;
+	}
+
+	Game::MoveResult_t result = game->PerformMove(move);
+	if (result == Game::MoveError)
+		ReportError("An error occurred performing a move\n");
+	return result;
+}
 
 void ReportError(const char *msg, ...)
 {

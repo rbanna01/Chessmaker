@@ -49,16 +49,18 @@ Game::~Game()
 }
 
 
-void Game::Start()
+Game::MoveResult_t Game::Start()
 {
 	if (currentState != 0)
 	{
 		ReportError("Cannot start game, it has already started\n");
-		return;
+		return Game::MoveError;
 	}
 
 	currentState = new GameState(this, turnOrder->GetNextPlayer(), 0);
 	StartNextTurn();
+
+	return currentState->GetCurrentPlayer()->GetType() == Player::AI ? NextTurnIsAI : NextTurnIsHuman;
 }
 
 
@@ -119,22 +121,6 @@ bool Game::StartNextTurn()
 		printf(output.c_str());
 #endif
 	}
-	else if (currentState->GetCurrentPlayer()->GetType() == Player::AI)
-	{
-#ifdef EMSCRIPTEN
-		EM_ASM(console.time("ai"));
-#endif
-		auto move = currentState->GetCurrentPlayer()->GetAI()->SelectMove();
-#ifdef EMSCRIPTEN
-		EM_ASM(console.timeEnd("ai"));
-#endif
-		if (move == 0)
-		{
-			ReportError("AI failed to select a move\n");
-			return false;
-		}
-		PerformMove(move);
-	}
 
 	return true;
 }
@@ -147,7 +133,7 @@ Game::MoveResult_t Game::PerformMove(Move *move)
 		return MoveError;
 
 	if (EndTurn(subsequentState, move))
-		return MoveComplete;
+		return subsequentState->GetCurrentPlayer()->GetType() == Player::AI ? NextTurnIsAI : NextTurnIsHuman;
 	else
 		return GameComplete;
 }

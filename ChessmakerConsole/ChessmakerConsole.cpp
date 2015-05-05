@@ -23,7 +23,7 @@ extern "C" __declspec(dllimport)
 bool Parse(char* definition);
 
 extern "C" __declspec(dllimport)
-void Start();
+int Start();
 /*
 extern "C" __declspec(dllimport)
 const char *GetBoardSVG();
@@ -43,7 +43,10 @@ void Shutdown();
 extern "C" __declspec(dllimport)
 int PerformMove(const char *notation);
 
-void RunGameLoop(bool anyLocalPlayer);
+extern "C" __declspec(dllimport)
+int PerformAIMove();
+
+void RunGameLoop();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -72,7 +75,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	delete definition;
 
-	bool setupFailed = false, anyLocalPlayer;
+	bool setupFailed = false;
 	
 	do
 	{
@@ -92,7 +95,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				setupFailed = true;
 				printf("Error setting player to LOCAL\n");
 			}
-			anyLocalPlayer = true;
 			break;
 		}
 		else if (input.compare("2") == 0)
@@ -107,7 +109,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				setupFailed = true;
 				printf("Error setting player to AI\n");
 			}
-			anyLocalPlayer = true;
 			break;
 		}
 		else if (input.compare("3") == 0)
@@ -122,7 +123,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				setupFailed = true;
 				printf("Error setting player to AI\n");
 			}
-			anyLocalPlayer = false;
 			break;
 		}
 	} while (true);
@@ -140,7 +140,7 @@ int _tmain(int argc, _TCHAR* argv[])
 */
 	
 	if (!setupFailed)
-		RunGameLoop(anyLocalPlayer);
+		RunGameLoop();
 
 	Shutdown();
 
@@ -150,19 +150,25 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 }
 
-void RunGameLoop(bool anyLocalPlayer)
+#define MOVE_RESULT_DONE 0
+#define MOVE_RESULT_NEXT_LOCAL 1
+#define MOVE_RESULT_NEXT_AI 2
+#define MOVE_RESULT_ERROR -1
+
+void RunGameLoop()
 {
 	srand(time(NULL));
-	Start();
-
-	if (!anyLocalPlayer)
-		return;
-
-	int retVal = 0;
+	int retVal = Start();
 	std::string input;
 	do
 	{
-		if (retVal == -1)
+		if (retVal == MOVE_RESULT_NEXT_AI)
+		{
+			retVal = PerformAIMove();
+			continue;
+		}
+
+		if (retVal == MOVE_RESULT_ERROR)
 			printf("Invalid input, please retry\n");
 		else
 			printf("Enter move: ");
@@ -175,7 +181,7 @@ void RunGameLoop(bool anyLocalPlayer)
 		}
 
 		retVal = PerformMove(input.c_str());
-	} while (retVal != 0);
+	} while (retVal != MOVE_RESULT_DONE);
 
 	printf("Game over\n");
 }

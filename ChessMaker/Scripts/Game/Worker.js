@@ -2,7 +2,7 @@
 
 importScripts('Chessmaker.js');
 
-var performMove;
+var performMove, performAIMove;
 
 onmessage = function (event) {
     var command = event.data[0];
@@ -12,8 +12,9 @@ onmessage = function (event) {
             break;
         case 'move':
             console.time('move');
-            performMove(event.data[1]);
+            var retVal = performMove(event.data[1]);
             console.timeEnd('move');
+            checkRunAI(retVal);
             break;
         default:
             error("Worker received an expected message from UI thread: " + event.data[0]);
@@ -72,13 +73,23 @@ function parseDefinition(xml, players) {
     }
 
     performMove = Module.cwrap('PerformMove', 'number', ['string']);
+    performAIMove = Module.cwrap('PerformAIMove', 'number');
 
     var boardSVG = Module.ccall('GetBoardSVG', 'string');
     var showCaptured = Module.ccall('ShouldShowCapturedPieces', 'number') != 0;
     var showHeld = Module.ccall('ShouldShowHeldPieces', 'number') != 0;
     postMessage(['init', boardSVG, showCaptured, showHeld]);
 
-    Module.ccall('Start', null);
+    var retVal = Module.ccall('Start', 'number');
+    checkRunAI(retVal);
+}
+
+function checkRunAI(retVal) {
+    while (retVal == 2) {
+        console.time('ai');
+        retVal = performAIMove();
+        console.timeEnd('ai');
+    }
 }
 
 function addPossibleMove(notation, fromCell, toCell) {

@@ -16,9 +16,9 @@ public:
 	Game();
 	~Game();
 
-	typedef enum { MoveComplete, GameComplete, MoveError } MoveResult_t;
+	typedef enum { MoveError = -1, GameComplete = 0, NextTurnIsHuman = 1, NextTurnIsAI = 2 } MoveResult_t;
 
-	void Start();
+	Game::MoveResult_t Start();
 	MoveResult_t PerformMove(Move *move);
 
 	Board *GetBoard() { return board; }
