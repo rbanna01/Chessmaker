@@ -131,8 +131,7 @@ bool StateCondition_TurnsSinceLastMove::IsSatisfied(GameState *state, bool canMo
 		if (!move->GetPiece()->TypeMatches(type))
 			continue;
 
-		if (ResolveComparison(comparison, stepsBack, number))
-			return true;
+		return ResolveComparison(comparison, stepsBack, number);
 	}
 
 	return false;
@@ -164,8 +163,8 @@ bool StateCondition_TurnsSinceLastCapture::IsSatisfied(GameState *state, bool ca
 			if (!piece->TypeMatches(type))
 				continue;
 
-			if (ResolveComparison(comparison, stepsBack, number))
-				return true;
+			delete capturedPieces;
+			return ResolveComparison(comparison, stepsBack, number);
 		}
 		delete capturedPieces;
 	}
