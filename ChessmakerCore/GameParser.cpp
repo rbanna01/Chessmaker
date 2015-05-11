@@ -411,30 +411,43 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 			if (it2 == pieceTypesByName.end())
 				ReportError("Piece type \"%s\" is set to be captured as a type that has not been defined: \"%s\"\n", type->GetName(), capturedAs);
 			else
-				type->capturedAs = std::get<0>(it2->second); 
+				type->capturedAs = std::get<0>(it2->second);
 		}
+	}
 
-		/*
-		todo: resolve promotion opportunity options
-		for (var i = 0; i < type.promotionOpportunities.length; i++)
-			type.promotionOpportunities[i].resolveOptions(definitions);
-		*/
+	// resolve piece type pointers from the ReferencePiece and Promotion move definitions
+	while (!referencePieceTypeQueue.empty())
+	{
+		auto item = referencePieceTypeQueue.begin();
+		ReferencePiece *moveDef = item->first;
+		char *typeName = item->second;
 
-		// resolve piece type pointers from the ReferencePiece move definition
-		while (!referencePieceTypeQueue.empty())
-		{
-			auto item = referencePieceTypeQueue.begin();
-			ReferencePiece *moveDef = item->first;
-			char *typeName = item->second;
+		auto it = pieceTypesByName.find(typeName);
+		PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+		if (type == 0)
+			ReportError("referencePiece move refers to a piece type that has not been defined: \"%s\"\n", typeName);
+		else
+			moveDef->otherPieceType = type;
 
-			auto it = pieceTypesByName.find(typeName);
-			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-			if (type != 0)
-				moveDef->otherPieceType = type;
+		delete[] typeName;
+		referencePieceTypeQueue.erase(item);
+	}
 
-			delete[] typeName;
-			referencePieceTypeQueue.erase(item);
-		}
+	while (!promotionTypeQueue.empty())
+	{
+		auto item = promotionTypeQueue.begin();
+		Promotion *moveDef = item->first;
+		char *typeName = item->second;
+
+		auto it = pieceTypesByName.find(typeName);
+		PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
+		if (type == 0)
+			ReportError("promotion move refers to a piece type that has not been defined: \"%s\"\n", typeName);
+		else
+			moveDef->options.push_back(type);
+
+		delete[] typeName;
+		promotionTypeQueue.erase(item);
 	}
 	
 	return true;
@@ -495,12 +508,6 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 				type.immobilizations.push(Immobilization.parse(this));
 			else // consider: other special types: blocks (as per immobilize, but instead prevents pieces entering a square), kills (kills pieces in target squares without expending a move)
 				throw "Unexpected node name in piece's \"special\" tag: " + this.tagName;;
-		}
-		else if (strcmp(node->name(), "promotion") == 0)
-		{
-			var promos = childNode.childNodes;
-			for (var j = 0; j<promos.length; j++)
-				type.promotionOpportunities.push(PromotionOpportunity.parse(promos[j]);
 		}*/
 #ifndef NO_SVG
 		else if (strcmp(node->name(), "appearance") == 0)
@@ -563,6 +570,8 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 		return ParseMove_Shoot(moveNode);
 	if (strcmp(moveNode->name(), "moveLike") == 0)
 		return ParseMove_MoveLike(moveNode);
+	if (strcmp(moveNode->name(), "promotion") == 0)
+		return ParseMove_Promotion(moveNode);
 	if (isTopLevel)
 	{
 		if (strcmp(moveNode->name(), "sequence") == 0)
@@ -696,6 +705,30 @@ MoveDefinition *GameParser::ParseMove_MoveLike(xml_node<char> *moveNode)
 }
 
 
+MoveDefinition *GameParser::ParseMove_Promotion(xml_node<char> *moveNode)
+{
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
+
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	const char *pieceRef = attr == 0 ? "self" : attr->value();
+
+	Promotion *moveDef = new Promotion(pieceRef, conditions);
+
+	xml_node<> *optionNode = moveNode->first_node("option");
+	do
+	{
+		// queue up setting the piece type potions of this promotion once all the piece types have been loaded. Set it by typeName.
+		char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+		strcpy(typeNameCopy, optionNode->value());
+		promotionTypeQueue.insert(std::make_pair(moveDef, typeNameCopy));
+
+		optionNode = optionNode->next_sibling("option");
+	} while (optionNode != 0);
+
+	return moveDef;
+}
+
+
 MoveDefinition *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
 {
 	Sequence *move = new Sequence();
@@ -771,7 +804,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 
 	if (typeName != 0)
 	{
-		// queue up setting the OtherPieceType of this moveDef once all the piece types have been loaded. Set it by typeName.
+		// queue up setting the OtherPieceType of this referencePiece once all the piece types have been loaded. Set it by typeName.
 		char *typeNameCopy = new char[TYPE_NAME_LENGTH];
 		strcpy(typeNameCopy, typeName);
 		referencePieceTypeQueue.insert(std::make_pair(moveDef, typeNameCopy));

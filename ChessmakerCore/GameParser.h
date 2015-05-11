@@ -54,6 +54,7 @@ private:
 	MoveDefinition *ParseMove_Hop(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_Shoot(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_MoveLike(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_Promotion(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_Sequence(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
@@ -79,6 +80,7 @@ private:
 	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
 	std::map<char*, Cell*, char_cmp> cellsByRef;
 	std::map<ReferencePiece*, char*> referencePieceTypeQueue;
+	std::map<Promotion*, char*> promotionTypeQueue;
 #ifndef NO_SVG
 	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;
 #endif

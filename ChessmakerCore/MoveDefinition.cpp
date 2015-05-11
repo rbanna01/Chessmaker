@@ -565,6 +565,39 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 }
 
 
+std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	std::list<Move*> *moves = new std::list<Move*>();
+
+	// some steps will specify a different piece to act upon, rather than the piece being moved
+	if (!moveSelf)
+	{
+		piece = baseMove->GetPieceByReference(pieceRef);
+		if (piece == 0)
+		{
+			ReportError("Referenced piece not found for promotion: %s\n", pieceRef);
+			return moves;
+		}
+	}
+
+	if (conditions != 0 && !conditions->IsSatisfied(baseMove))
+		return moves; // This assumes that no conditions will be dependent on the promoted type. If they are, this needs moved into the loop, and shouldn't look at baseMove
+
+	Player *player = baseMove->GetPlayer();
+	Game *game = player->GetGame();
+
+	for (auto it = options.begin(); it != options.end(); it++)
+	{
+		MoveStep *step = MoveStep::CreatePromotion(piece, piece->GetType(), *it);
+		Move *move = baseMove->Clone();
+		move->AddStep(step);
+		moves->push_back(move);
+	}
+
+	return moves;
+}
+
+
 std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>(), *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();

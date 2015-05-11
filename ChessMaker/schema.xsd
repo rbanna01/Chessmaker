@@ -358,6 +358,14 @@
 		<xs:attribute name="owner" type="owner" default="any"/>
 	</xs:complexType>
 
+	<xs:complexType name="promotion">
+		<xs:sequence>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
+	</xs:complexType>
+
 	<xs:complexType name="moveList">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -367,6 +375,7 @@
 				<xs:element name="shoot" type="shoot"/>
 				<xs:element name="moveLike" type="moveLike"/>
 				<xs:element name="sequence" type="moveSequence"/>
+				<xs:element name="promotion" type="promotion"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -381,6 +390,8 @@
 			<xs:element name="repeat" type="moveSequenceLoop"/>
 			<xs:element name="whenPossible" type="moveSequence"/>
 			<xs:element name="referencePiece" type="referencePiece"/>
+			<xs:element name="promotion" type="promotion"/>
+			<!-- ideally want this always at the end, regardless of nested depth -->
 		</xs:choice>
 	</xs:complexType>
 
@@ -480,10 +491,6 @@
 										<xs:element name="special" minOccurs="0" maxOccurs="1">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:choice minOccurs="0" maxOccurs="1">
-														<xs:element name="royal"/>
-														<xs:element name="anti_royal"/>
-													</xs:choice>
 													<xs:choice minOccurs="0" maxOccurs="unbounded">
 														<xs:element name="immobilize">
 															<xs:complexType>
@@ -499,16 +506,6 @@
 														</xs:element>
 													</xs:choice>
 												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="promotion" minOccurs="0" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
-													<xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
-												</xs:sequence>
-												<xs:attribute name="mandatory" type="xs:boolean" default="true"/>
-												<xs:attribute name="type" type="promotionType" use="required"/>
 											</xs:complexType>
 										</xs:element>
 										-->

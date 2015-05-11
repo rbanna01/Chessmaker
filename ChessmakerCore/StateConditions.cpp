@@ -123,8 +123,6 @@ bool StateCondition_TurnsSinceLastMove::IsSatisfied(GameState *state, bool canMo
 		Move *move = checkState->GetSubsequentMove();
 		checkState = checkState->GetPreviousState();
 
-		// move == 0, always. And if I stop the clearing of subsequentMove in Move::Reverse, move is still A DELETED OBJECT... argh.
-
 		if (owner != Player::Any && state->GetCurrentPlayer()->GetRelationship(move->GetPlayer()) != owner)
 			continue;
 

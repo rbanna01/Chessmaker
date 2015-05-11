@@ -77,21 +77,13 @@ std::list<Move*> *GameState::DetermineThreatMoves()
 
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output)
 {
+	// get all VALID move possibilities for each piece on the board
 	std::set<Piece*> pieces(player->piecesOnBoard);
 	for (auto it = pieces.begin(); it != pieces.end(); it++)
 	{
 		Piece *piece = *it;
 		Move *moveTemplate = new Move(piece->GetOwner(), this, piece, piece->GetPosition());
 
-        // get promotion possibilities
-        //piece.pieceType.promotionOpportunities.each(function (op) {
-        //    if (!op.mandatory && op.type != PromotionType.EndOfMove && op.isAvailable(moveTemplate, this.game))
-        //        op.options.each(function (option) {
-        //            output.push(new Promotion(piece.ownerPlayer, piece, option, this.moveNumber, op.type == PromotionType.CountsAsMove));
-        //        });
-        //});
-
-        // and then get move possibilities
 		auto moves = piece->GetType()->GetMoves();
 		for (auto it = moves.begin(); it != moves.end(); it++)
 		{

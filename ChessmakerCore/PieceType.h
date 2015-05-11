@@ -29,7 +29,6 @@ private:
 #ifndef NO_SVG
 	std::map<int, const char*> appearances;
 #endif
-	//std::list<PromotionOpportunity*> promotionOpportunities;
 	PieceType *capturedAs;
 
 	friend class GameParser;

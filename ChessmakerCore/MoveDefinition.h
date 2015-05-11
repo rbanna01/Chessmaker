@@ -167,6 +167,24 @@ private:
 };
 
 
+class Promotion : public MoveDefinition
+{
+public:
+	Promotion(const char *pieceRef, MoveConditionGroup *conditions)
+		: MoveDefinition(pieceRef, conditions, Any, 0)
+	{
+		
+	}
+
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+
+private:
+	std::list<PieceType*> options;
+
+	friend class GameParser;
+};
+
+
 class MoveGroup : public MoveDefinition
 {
 public:
