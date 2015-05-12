@@ -601,8 +601,12 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>(), *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();
-	prevStepMoves->push_back(baseMove->Clone());
-	
+	Move *clone = baseMove->Clone();
+	prevStepMoves->push_back(clone);
+
+	if (previousStep != 0) // because we're checking if steps == previousStep, we need to ensure we're using the right cloned copy
+		previousStep = *clone->GetSteps().rbegin();
+
 	for (int rep = 1; rep <= maxOccurs; rep++)
 	{
 		for (auto itStep = contents.begin(); itStep != contents.end(); itStep++)
@@ -613,16 +617,30 @@ std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 			{
 				Move *prevMove = *itPrevMove;
 
+				bool previousStepReached = previousStep == 0;
 				std::list<MoveStep*> steps = prevMove->GetSteps();
+				MoveStep *step = 0;
 				for (auto itDoStep = steps.begin(); itDoStep != steps.end(); itDoStep++)
-					(*itDoStep)->Perform(false);
+				{
+					// don't (re)perform moves until we reach the first step of this group
+					step = *itDoStep;
+					if (previousStepReached)
+						step->Perform(false);
+					else if (step == previousStep)
+						previousStepReached = true;
+				}
 
-				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, steps.size() > 0 ? *steps.rbegin() : previousStep);
+				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, step == 0 ? previousStep : step);
 				currentStepMoves->splice(currentStepMoves->end(), *nextMovesForStep);
 				delete nextMovesForStep;
 
 				for (auto itUndoStep = steps.rbegin(); itUndoStep != steps.rend(); itUndoStep++)
-					(*itUndoStep)->Reverse(false);
+				{
+					step = *itUndoStep;
+					if (step == previousStep)
+						break; // don't rewind past this point
+					step->Reverse(false);
+				}
 			}
 
 			std::list<Move*> *tmp = prevStepMoves;
