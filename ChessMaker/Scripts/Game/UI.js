@@ -166,24 +166,29 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     var board = document.getElementById('render');
 
     element.setAttribute('class', 'piece ' + owner);
-    element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
+
+    var changeApp = function (x) {
+        element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
+    };
     
     if (state == 'board') {
         if (element.parentElement == board) {// already on board - remove & add so its on top for animation purposes
             $(element).velocity({ x: posX, y: posY }, { duration: 600, easing: "ease-in-out", begin: function (elements) {
                     board.removeChild(element);
                     board.appendChild(element);
-                }
+                },
+                complete: changeApp
             });
         }
         else {
             $(element) // moving onto board, so fade out, move instantly, then fade in
                 .velocity({ opacity: 0 }, {
                     complete: function (elements) {
+                        changeApp();
+
                         var container = element.parent;
                         container.removeChild(element);
                         board.appendChild(element);
-
                         // todo: determine the counter for this player's captured/held pieces, and reduce it by one. Slide everything else in the container up to account for the empty space. And the squeezing.
                     }
                 })
@@ -200,6 +205,8 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
         posY = counter[stateOwner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
+                    changeApp();
+
                     element.parentElement.removeChild(element);
                     if (container != null)
                         container.appendChild(element);
