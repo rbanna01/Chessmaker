@@ -804,11 +804,14 @@
 				<sequence>
 					<slide dist="1" dir="forward" when="move" />
 					<whenPossible>
-						<promotion>
+						<promotion appendNotation="true">
 							<conditions>
 								<maxDist dir="forward" comparison="equals">0</maxDist>
 							</conditions>
 							<option>queen</option>
+							<option>knight</option>
+							<option>rook</option>
+							<option>bishop</option>
 						</promotion>
 					</whenPossible>
 				</sequence>
@@ -820,11 +823,14 @@
 				<sequence>
 					<slide dir="turn45" dist="1" when="capture" />
 					<whenPossible>
-						<promotion>
+						<promotion appendNotation="true">
 							<conditions>
 								<maxDist dir="forward" comparison="equals">0</maxDist>
 							</conditions>
 							<option>queen</option>
+							<option>knight</option>
+							<option>rook</option>
+							<option>bishop</option>
 						</promotion>
 					</whenPossible>
 				</sequence>

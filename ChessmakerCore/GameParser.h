@@ -80,7 +80,7 @@ private:
 	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
 	std::map<char*, Cell*, char_cmp> cellsByRef;
 	std::map<ReferencePiece*, char*> referencePieceTypeQueue;
-	std::map<Promotion*, char*> promotionTypeQueue;
+	std::multimap<Promotion*, char*> promotionTypeQueue;
 #ifndef NO_SVG
 	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;
 #endif

@@ -10,7 +10,7 @@ class Piece;
 class PieceType;
 
 #define MAX_NOTATION_DETAIL 3
-#define NOTATION_LENGTH 10
+#define APPEND_NOTATION_LENGTH 6
 
 class Move
 {
@@ -24,8 +24,9 @@ public:
 	GameState *Perform(bool updateDisplay);
 	bool Reverse(bool updateDisplay);
 
-	char *DetermineNotation(int detailLevel);
-	char *GetNotation() { return notation; }
+	const char *DetermineNotation(int detailLevel);
+	const char *GetNotation() { return notation.c_str(); }
+	void SetAppendNotation(const char *append);
 
 	void AddPieceReference(Piece *piece, const char *ref);
 	Piece *GetPieceByReference(const char *ref);
@@ -46,7 +47,8 @@ private:
 	GameState *prevState;
 	Piece *piece;
 	Cell *startPos;
-	char notation[NOTATION_LENGTH];
+	std::string notation;
+	char appendNotation[APPEND_NOTATION_LENGTH];
 
 	std::list<MoveStep*> steps;
 	std::map<const char*, Piece*, char_cmp> references;

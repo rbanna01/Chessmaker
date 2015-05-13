@@ -712,7 +712,10 @@ MoveDefinition *GameParser::ParseMove_Promotion(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *pieceRef = attr == 0 ? "self" : attr->value();
 
-	Promotion *moveDef = new Promotion(pieceRef, conditions);
+	attr = moveNode->first_attribute("appendNotation");
+	bool appendNot = attr == 0 || strcmp(attr->value(), "true") == 0;
+
+	Promotion *moveDef = new Promotion(pieceRef, conditions, appendNot);
 
 	xml_node<> *optionNode = moveNode->first_node("option");
 	do

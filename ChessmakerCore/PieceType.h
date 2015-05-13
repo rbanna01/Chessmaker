@@ -15,6 +15,7 @@ public:
 	~PieceType();
 	std::list<MoveDefinition*> &GetMoves() { return moves; }
 	const char *GetName() { return name; }
+	const char *GetNotation() { return notation; }
 	int GetValue() { return value; }
 #ifndef NO_SVG
 	const char *GetAppearance(Player *player);

@@ -248,7 +248,7 @@ void Game::EndGame(Player *victor, const char *message)
 // determine notation for each move (done all at once to ensure they are unique)
 void Game::ApplyUniqueNotation(std::list<Move*> *moves)
 {
-	std::map<char*, Move*, char_cmp> movesByNotation;
+	std::map<const char*, Move*, char_cmp> movesByNotation;
 
 	for (auto it = moves->begin(); it != moves->end(); it++)
 	{
@@ -257,22 +257,22 @@ void Game::ApplyUniqueNotation(std::list<Move*> *moves)
 		// ensure unique notation
 		for (int detailLevel = 1; detailLevel <= MAX_NOTATION_DETAIL; detailLevel++)
 		{
-			char *notation = move->DetermineNotation(detailLevel);
+			const char *notation = move->DetermineNotation(detailLevel);
 
 			auto existingIt = movesByNotation.find(notation);
 			if (existingIt != movesByNotation.end())
 			{
 				// another move uses this notation. Calculate a new, more-specific notation for that other move.
 				Move *other = existingIt->second;
-				char *otherNot = other->DetermineNotation(detailLevel + 1);
+				const char *otherNot = other->DetermineNotation(detailLevel + 1);
 
 				// only save the other move with the more specific notation if we haven't done so already
 				if (movesByNotation.find(otherNot) == movesByNotation.end())
-					movesByNotation.insert(std::pair<char*, Move*>(otherNot, other));
+					movesByNotation.insert(std::pair<const char*, Move*>(otherNot, other));
 			}
 			else
 			{
-				movesByNotation.insert(std::pair<char*, Move*>(notation, move));
+				movesByNotation.insert(std::pair<const char*, Move*>(notation, move));
 				break;
 			}
 		}

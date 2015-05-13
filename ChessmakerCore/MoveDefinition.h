@@ -170,16 +170,17 @@ private:
 class Promotion : public MoveDefinition
 {
 public:
-	Promotion(const char *pieceRef, MoveConditionGroup *conditions)
+	Promotion(const char *pieceRef, MoveConditionGroup *conditions, bool appendNotation)
 		: MoveDefinition(pieceRef, conditions, Any, 0)
 	{
-		
+		this->appendNotation = appendNotation;
 	}
 
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
 	std::list<PieceType*> options;
+	bool appendNotation;
 
 	friend class GameParser;
 };

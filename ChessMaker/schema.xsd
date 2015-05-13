@@ -364,6 +364,7 @@
 			<xs:element name="option" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="piece" type="xs:string" default="self"/>
+		<xs:attribute name="appendNotation" type="xs:boolean" default="true"/>
 	</xs:complexType>
 
 	<xs:complexType name="moveList">

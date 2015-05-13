@@ -4,6 +4,15 @@ var worker;
 var numPlayers;
 var capturedPieces, heldPieces;
 
+$(function () {
+    $('#moveDisambiguation').dialog({
+        modal: true,
+        autoOpen: false
+    });
+
+    $('#moveDisambiguationOptions').on('click', 'li', selectMoveFromPopup);
+});
+
 function initializeGame(workerUrl, defUrl, players) {
     numPlayers = players.length;
 
@@ -222,7 +231,7 @@ function cellClicked(e) {
     if (hasClass(this, 'selected'))
         clearSelection();
     else if (hasClass(this, 'option') && selectedCell != null) {
-        selectMove(this);
+        selectMoveFromCell(this);
         clearSelection();
     }
     else
@@ -274,7 +283,7 @@ function showMoveOptions(clicked) {
     }
 }
 
-function selectMove(clicked) {
+function selectMoveFromCell(clicked) {
     var fromCell = selectedCell.getAttribute('id');
     var toCell = clicked.getAttribute('id');
 
@@ -287,8 +296,18 @@ function selectMove(clicked) {
     if (moves.length == 1)
         worker.postMessage(['move', moves[0]]);
     else {
-        console.log('todo: add a popup showing the move options for these cells');
+        var output = '';
+        for (var i = 0; i < moves.length; i++)
+            output += '<li notation="' + moves[i] + '">' + moves[i] + '</li>';
+        $('#moveDisambiguationOptions').html(output);
+        $('#moveDisambiguation').dialog('open');
     }
+}
+
+function selectMoveFromPopup() {
+    var move = this.getAttribute('notation');
+    worker.postMessage(['move', move]);
+    $('#moveDisambiguation').dialog('close');
 }
 
 function showMessage(msg) {

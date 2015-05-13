@@ -585,13 +585,17 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 
 	Player *player = baseMove->GetPlayer();
 	Game *game = player->GetGame();
-
+	
 	for (auto it = options.begin(); it != options.end(); it++)
 	{
-		MoveStep *step = MoveStep::CreatePromotion(piece, piece->GetType(), *it);
+		PieceType *type = *it;
+		MoveStep *step = MoveStep::CreatePromotion(piece, piece->GetType(), type);
 		Move *move = baseMove->Clone();
 		move->AddStep(step);
 		moves->push_back(move);
+
+		if (appendNotation)
+			move->SetAppendNotation(type->GetNotation());
 	}
 
 	return moves;

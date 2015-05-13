@@ -68,3 +68,11 @@ svg.pieceList {
 #moveHistory .move:hover {
     text-decoration: underline;
 }
+
+#moveDisambiguationOptions li {
+    cursor: pointer;
+}
+
+#moveDisambiguationOptions li:hover {
+    text-decoration: underline;
+}

@@ -10,6 +10,7 @@ Move::Move(Player *player, GameState *prevState, Piece *piece, Cell *startPos)
 	this->prevState = prevState;
 	this->piece = piece;
 	this->startPos = startPos;
+	appendNotation[0] = 0;
 }
 
 
@@ -112,43 +113,46 @@ bool Move::Reverse(bool updateDisplay)
 }
 
 
-char *Move::DetermineNotation(int detailLevel)
+const char *Move::DetermineNotation(int detailLevel)
 {
     switch (detailLevel)
 	{
         case 1:
-			strcpy(notation, piece->pieceType->notation);
+			notation = piece->pieceType->GetNotation();
 			if (IsCapture())
-				strcat(notation, "x");
-			strcat(notation, GetEndPos()->GetName());
+				notation += "x";
+			notation += GetEndPos()->GetName();
             break;
         case 2:
-			strcpy(notation, piece->pieceType->notation);
-			strcat(notation, startPos->GetName());
+			notation = piece->pieceType->notation;
+			notation += startPos->GetName();
 			if (IsCapture())
-				strcat(notation, "x");
-			strcat(notation, GetEndPos()->GetName());
+				notation += "x";
+			notation += GetEndPos()->GetName();
             break;
         default:
-			sprintf(notation, "%s(%i)", piece->pieceType->notation, piece->GetID());
-
-			strcat(notation, startPos->GetName());
+			notation = piece->pieceType->GetNotation();
+			notation += "(";
+			notation += std::to_string(piece->GetID());
+			notation += ")";
+			notation += startPos->GetName();
 			if (IsCapture())
-				strcat(notation, "x");
-			strcat(notation, GetEndPos()->GetName());
+				notation += "x";
+			notation += GetEndPos()->GetName();
             break;
     }
 	
-    // add promotion letter onto the end
-    /*var promotion = GetPromotionType();
-    if (promotion != 0)
-        strcat(notation, promotion->notation;*/
-
-    // add a plus to the end if its check. add a hash if its checkmate.
-
+	notation += appendNotation;
+	
     // how to account for castling? some special moves simply need to specify their own special notation, i guess...
 
-	return notation;
+	return notation.c_str();
+}
+
+
+void Move::SetAppendNotation(const char *append)
+{
+	strcpy(appendNotation, append);
 }
 
 

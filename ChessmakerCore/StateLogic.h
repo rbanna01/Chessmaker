@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Definitions.h"
+#include "Move.h"
 
 class StateLogicCheck;
 class GameEnd;
@@ -27,7 +28,6 @@ private:
 };
 
 #define LOGIC_MESSAGE_LENGTH 101
-#define APPEND_NOTATION_LENGTH 6
 
 class StateLogicElement
 {
