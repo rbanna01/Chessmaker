@@ -41,42 +41,41 @@ MoveConditionGroup::~MoveConditionGroup()
 }
 
 
-bool MoveConditionGroup::IsSatisfied(Move *move)
+bool MoveConditionGroup::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	bool any = false;
 
-	switch (type) {
+	switch (type)
+	{
 	case GroupType_t::And:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-            if (!(*it)->IsSatisfied(move))
+			if (!(*it)->IsSatisfied(move, lastPerformed))
                 return false;
         return true;
     case GroupType_t::Or:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if ((*it)->IsSatisfied(move))
+			if ((*it)->IsSatisfied(move, lastPerformed))
                 return true;
         return false;
     case GroupType_t::Nand:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if (!(*it)->IsSatisfied(move))
+			if (!(*it)->IsSatisfied(move, lastPerformed))
                 return true;
         return false;
     case GroupType_t::Nor:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if ((*it)->IsSatisfied(move))
+			if ((*it)->IsSatisfied(move, lastPerformed))
                 return false;
         return true;
     case GroupType_t::Xor:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-		{
-			if ((*it)->IsSatisfied(move))
+			if ((*it)->IsSatisfied(move, lastPerformed))
 			{
 				if (any)
 					return false;
 				else
 					any = true;
 			}
-		}
         return any;
 	default: // there are no other types!
 		return false;
@@ -84,7 +83,7 @@ bool MoveConditionGroup::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_Type::IsSatisfied(Move *move)
+bool MoveCondition_Type::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
@@ -96,7 +95,7 @@ bool MoveCondition_Type::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_Owner::IsSatisfied(Move *move)
+bool MoveCondition_Owner::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
@@ -112,7 +111,7 @@ bool MoveCondition_Owner::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_MoveNumber::IsSatisfied(Move *move)
+bool MoveCondition_MoveNumber::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
@@ -125,7 +124,7 @@ bool MoveCondition_MoveNumber::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_MaxDist::IsSatisfied(Move *move)
+bool MoveCondition_MaxDist::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
@@ -149,7 +148,7 @@ bool MoveCondition_MaxDist::IsSatisfied(Move *move)
 }
 
 
-bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
+bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	Piece *other = move->GetPieceByReference(pieceRef);
 	if (other == 0)
@@ -163,42 +162,55 @@ bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move)
 
 
 bool MoveCondition_Threatened::checkingThreat = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
-bool MoveCondition_Threatened::IsSatisfied(Move *move)
+bool MoveCondition_Threatened::IsSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	if (checkingThreat)
 		return true;
 
 	checkingThreat = true;
-	bool retVal = CheckSatisfied(move);
+	bool retVal = CheckSatisfied(move, lastPerformed);
 	checkingThreat = false;
 
 	return retVal;
 }
 
-bool MoveCondition_Threatened::CheckSatisfied(Move *move)
+bool MoveCondition_Threatened::CheckSatisfied(Move *move, MoveStep *lastPerformed)
 {
-	MoveStep *step = *move->GetSteps().rbegin(); // all steps except the current one will already have been performed
-
-	if (start && step->GetFromState() == Piece::OnBoard)
+	if (start && move->GetPiece()->GetState() == Piece::OnBoard)
 	{
-		bool threatened = IsThreatened(move->GetPrevState(), step->GetFromPosition());
+		bool threatened = IsThreatened(move->GetPrevState(), move->GetPiece()->GetPosition());
 		if (threatened != value)
 			return false;
 	}
 
-	if (end && step->GetToState() == Piece::OnBoard)
+	if (!end)
+		return true;
+
+	bool passedLast = lastPerformed == 0;
+	auto steps = move->GetSteps();
+	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
-		if (!step->Perform(false))
-			return false;
-
-		bool threatened = IsThreatened(move->GetPrevState(), step->GetToPosition());
-		step->Reverse(false);
-
-		if (threatened != value)
-			return false;
+		MoveStep *step = *it;
+		if (passedLast)
+		{
+			if (!step->Perform(false))
+				return false;
+		}
+		else if (step == lastPerformed)
+			passedLast = true;
 	}
 
-	return true;
+	bool returnVal = true;
+	if (move->GetPiece()->GetState() == Piece::OnBoard)
+	{
+		bool threatened = IsThreatened(move->GetPrevState(), move->GetPiece()->GetPosition());
+		returnVal = threatened == value;
+	}
+
+	for (auto it = steps.rbegin(); it != steps.rend() && *it != lastPerformed; it++)
+		(*it)->Reverse(false);
+
+	return returnVal;
 }
 
 bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)

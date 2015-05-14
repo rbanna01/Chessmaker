@@ -76,6 +76,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 				}
 
                 Move *move = baseMove->Clone();
+				MoveStep *lastPerformedStep = move->GetSteps().empty() ? 0 : *move->GetSteps().rbegin();
                 if (captureStep != 0)
 				{
                     move->AddStep(captureStep);
@@ -84,7 +85,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
                 move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), cell, dir, dist));
 
-				if (conditions == 0 || conditions->IsSatisfied(move))
+				if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
 					moves->push_back(move);
 				else
 					delete move;
@@ -174,6 +175,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 						}
 
 						Move *move = baseMove->Clone();
+						MoveStep *lastPerformedStep = move->GetSteps().empty() ? 0 : *move->GetSteps().rbegin();
 						if (captureStep != 0)
 						{
 							move->AddStep(captureStep);
@@ -182,7 +184,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 
 						move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, secondDir, secondDist > 0 ? secondDist : dist));
 
-						if (conditions == 0 || conditions->IsSatisfied(move))
+						if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
 							moves->push_back(move);
 						else
 							delete move;
@@ -269,6 +271,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 					}
 
                     Move *move = baseMove->Clone();
+					MoveStep *lastPerformedStep = move->GetSteps().empty() ? 0 : *move->GetSteps().rbegin();
                     move->AddPieceReference(hurdle, "hurdle");
 
                     if (captureHurdle)
@@ -285,7 +288,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 
                     move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, dir, distTo + distAfter));
 
-                    if (conditions == 0 || conditions->IsSatisfied(move))
+					if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
 						moves->push_back(move);
 					else
 						delete move;
@@ -372,10 +375,11 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 							break; // cannot capture this piece, and unlike leaps, shoots don't continue past other pieces
 
 						Move *move = baseMove->Clone();
+						MoveStep *lastPerformedStep = move->GetSteps().empty() ? 0 : *move->GetSteps().rbegin();
 						move->AddStep(captureStep);
 						move->AddPieceReference(target, "target");
 
-						if (conditions == 0 || conditions->IsSatisfied(move))
+						if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
 							moves->push_back(move);
 						else
 							delete move;
@@ -580,7 +584,8 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 		}
 	}
 
-	if (conditions != 0 && !conditions->IsSatisfied(baseMove))
+	MoveStep *lastPerformedStep = baseMove->GetSteps().empty() ? 0 : *baseMove->GetSteps().rbegin();
+	if (conditions != 0 && !conditions->IsSatisfied(baseMove, lastPerformedStep))
 		return moves; // This assumes that no conditions will be dependent on the promoted type. If they are, this needs moved into the loop, and shouldn't look at baseMove
 
 	Player *player = baseMove->GetPlayer();

@@ -24,7 +24,7 @@ class MoveCondition : public Condition
 {
 public:
 	virtual ~MoveCondition() {}
-	virtual bool IsSatisfied(Move *move) = 0;
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed) = 0;
 };
 
 
@@ -34,7 +34,7 @@ public:
 	MoveConditionGroup(GroupType_t type);
 	virtual ~MoveConditionGroup();
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	GroupType_t type;
 	std::list<MoveCondition*> elements;
@@ -52,7 +52,7 @@ public:
 		this->type = type;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	PieceType *type;
@@ -68,7 +68,7 @@ public:
 		this->relationship = relationship;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	Player::Relationship_t relationship;
@@ -85,7 +85,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	int number;
@@ -104,7 +104,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	direction_t dir;
@@ -123,7 +123,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	int number;
@@ -141,9 +141,9 @@ public:
 		this->value = value;
 	}
 
-	virtual bool IsSatisfied(Move *move);
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
-	bool CheckSatisfied(Move *move);
+	bool CheckSatisfied(Move *move, MoveStep *lastPerformed);
 	static bool IsThreatened(GameState *state, Cell *position);
 
 	bool start, end, value;
