@@ -912,7 +912,6 @@
 				</then>
 				<else>
 					<notify message="check" appendNotation="+" />
-					<!-- return on notify?-->
 				</else>
 			</then>
 			<else>
