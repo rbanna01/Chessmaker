@@ -26,9 +26,7 @@ bool MoveStep::Perform(bool updateDisplay)
 	if (!Pickup(fromState, fromStateOwner, fromPos, fromOwner, fromType))
 		return false;
 
-	Place(toState, toStateOwner, toPos, toOwner, toType, updateDisplay);
-
-	return true;
+	return Place(toState, toStateOwner, toPos, toOwner, toType, updateDisplay);
 }
 
 
@@ -37,9 +35,7 @@ bool MoveStep::Reverse(bool updateDisplay)
 	if (!Pickup(toState, toStateOwner, toPos, toOwner, toType))
 		return false;
 
-	Place(fromState, fromStateOwner, fromPos, fromOwner, fromType, updateDisplay);
-
-	return true;
+	return Place(fromState, fromStateOwner, fromPos, fromOwner, fromType, updateDisplay);
 }
 
 
@@ -98,16 +94,15 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 }
 
 
-void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
+bool MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
 {
-    piece->pieceState = state;
-	piece->stateOwner = stateOwner;
-	piece->position = pos;
-	piece->owner = owner;
-	piece->pieceType = type;
-    
 	switch (state) {
 	case Piece::State_t::OnBoard:
+		if (pos->piece != 0 && pos->piece != piece)
+		{
+			ReportError("move error - destination cell already has another piece in it: %s %s (moving %s %s)\n", pos->piece->GetOwner()->GetName(), pos->piece->GetType()->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
+			return false;
+		}
 		pos->piece = piece;
 		if (toState != fromState || fromOwner != toOwner)
 			owner->piecesOnBoard.insert(piece);
@@ -120,11 +115,17 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 		break;
 	default:
 		ReportError("move error - piece has an invalid state: %i\n", state);
-		return;
+		return false;
 	}
 
+	piece->pieceState = state;
+	piece->stateOwner = stateOwner;
+	piece->position = pos;
+	piece->owner = owner;
+	piece->pieceType = type;
+
 	if (!updateDisplay)
-		return;
+		return true;
 
 	// move the svg element for this piece
 #ifdef EMSCRIPTEN
@@ -133,6 +134,8 @@ void MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 		piece->GetID(), (int)state, stateOwner == 0 ? 0 : stateOwner->GetID(), pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetName(), type->GetAppearance(owner)
 	);
 #endif
+
+	return true;
 }
 
 
