@@ -32,7 +32,7 @@ function initializeGame(workerUrl, defUrl, players) {
                 console.error(event.data[1]);
                 break;
             case 'poss':
-                addPossibleMove(event.data[1], event.data[2], event.data[3]);
+                addPossibleMove(event.data[1], event.data[2], event.data[3], event.data[4]);
                 break;
             case 'player':
                 startTurn(event.data[1], event.data[2]);
@@ -106,7 +106,10 @@ function initializeUI(boardSVG, showCaptured, showHeld) {
 }
 
 var possibleMovesByCell = {};
-function addPossibleMove(notation, fromCell, toCell) {
+function addPossibleMove(notation, fromCell, toCell, disambiguation) {
+    if (disambiguation == '')
+        disambiguation = notation;
+
     var fromCellMoves = possibleMovesByCell[fromCell];
     if (fromCellMoves === undefined) {
         fromCellMoves = {};
@@ -118,7 +121,8 @@ function addPossibleMove(notation, fromCell, toCell) {
         toCellMoves = [];
         fromCellMoves[toCell] = toCellMoves;
     }
-    toCellMoves.push(notation);
+
+    toCellMoves.push([notation, disambiguation]);
 }
 
 function clearPossibleMoves() {
@@ -293,12 +297,16 @@ function selectMoveFromCell(clicked) {
         return;
     }
 
-    if (moves.length == 1)
-        worker.postMessage(['move', moves[0]]);
+    if (moves.length == 1) {
+        var move = moves[0];
+        worker.postMessage(['move', move[0]]);
+    }
     else {
         var output = '';
-        for (var i = 0; i < moves.length; i++)
-            output += '<li notation="' + moves[i] + '">' + moves[i] + '</li>';
+        for (var i = 0; i < moves.length; i++) {
+            var move = moves[i];
+            output += '<li notation="' + move[0] + '">' + move[1] + '</li>';
+        }
         $('#moveDisambiguationOptions').html(output);
         $('#moveDisambiguation').dialog('open');
     }

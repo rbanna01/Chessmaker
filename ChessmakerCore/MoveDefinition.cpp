@@ -599,6 +599,10 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 		move->AddStep(step);
 		moves->push_back(move);
 
+		std::string descr = "Promote to ";
+		descr += type->GetName();
+		move->SetDescription(descr);
+
 		if (appendNotation)
 			move->SetAppendNotation(type->GetNotation());
 	}

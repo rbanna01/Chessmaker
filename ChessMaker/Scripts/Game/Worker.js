@@ -92,8 +92,8 @@ function checkRunAI(retVal) {
     }
 }
 
-function addPossibleMove(notation, fromCell, toCell) {
-    postMessage(['poss', Pointer_stringify(notation), Pointer_stringify(fromCell), Pointer_stringify(toCell)]);
+function addPossibleMove(notation, fromCell, toCell, disambiguation) {
+    postMessage(['poss', Pointer_stringify(notation), Pointer_stringify(fromCell), Pointer_stringify(toCell), Pointer_stringify(disambiguation)]);
 }
 
 function startTurn(msg, isLocal) {

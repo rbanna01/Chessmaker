@@ -31,6 +31,8 @@ Move *Move::Clone()
 	}
 
 	move->references = references;
+	strcpy(move->appendNotation, appendNotation);
+	move->description = description;
 
 	return move;
 }

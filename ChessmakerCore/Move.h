@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Definitions.h"
+#include "PieceType.h"
 
 class Cell;
 class GameState;
 class MoveStep;
 class Player;
 class Piece;
-class PieceType;
 
 #define MAX_NOTATION_DETAIL 3
 #define APPEND_NOTATION_LENGTH 6
+#define MOVE_DESCRIPTION_LENGTH TYPE_NAME_LENGTH + 11
 
 class Move
 {
@@ -27,6 +28,8 @@ public:
 	const char *DetermineNotation(int detailLevel);
 	const char *GetNotation() { return notation.c_str(); }
 	void SetAppendNotation(const char *append);
+	const char *GetDescription() { return description.c_str(); }
+	void SetDescription(std::string description) { this->description = description; }
 
 	void AddPieceReference(Piece *piece, const char *ref);
 	Piece *GetPieceByReference(const char *ref);
@@ -47,7 +50,7 @@ private:
 	GameState *prevState;
 	Piece *piece;
 	Cell *startPos;
-	std::string notation;
+	std::string notation, description;
 	char appendNotation[APPEND_NOTATION_LENGTH];
 
 	std::list<MoveStep*> steps;

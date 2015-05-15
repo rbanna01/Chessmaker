@@ -107,7 +107,7 @@ bool Game::StartNextTurn()
 		for (auto it = possibleMoves->begin(); it != possibleMoves->end(); it++)
 		{
 			Move *move = *it;
-			EM_ASM_ARGS({ addPossibleMove($0, $1, $2); }, move->GetNotation(), move->GetPiece()->GetPosition()->GetName(), move->GetEndPos()->GetName());
+			EM_ASM_ARGS({ addPossibleMove($0, $1, $2, $3); }, move->GetNotation(), move->GetPiece()->GetPosition()->GetName(), move->GetEndPos()->GetName(), move->GetDescription());
 		}
 #endif
 #ifdef CONSOLE
