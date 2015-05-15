@@ -5,16 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="dcbb51e27c994d2e82b4a73fb6e2dfdb" Name="Diagram1">
-        <EntityTypeShape EntityType="ChessMakerModel.GamePlayer" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.Game" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.GameStatus" Width="1.5" PointX="8" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.Move" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.User" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.Variant" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.VariantVersion" Width="1.5" PointX="5.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ChessMakerModel.GamePlayer" Width="1.5" PointX="5.375" PointY="6.125" IsExpanded="true" FillColor="Green" />
+        <EntityTypeShape EntityType="ChessMakerModel.Game" Width="1.5" PointX="5.375" PointY="2.625" IsExpanded="true" FillColor="Green" />
+        <EntityTypeShape EntityType="ChessMakerModel.GameStatus" Width="1.5" PointX="7.625" PointY="2.625" IsExpanded="true" FillColor="Silver" />
+        <EntityTypeShape EntityType="ChessMakerModel.Move" Width="1.5" PointX="9.875" PointY="4" IsExpanded="true" FillColor="Green" />
+        <EntityTypeShape EntityType="ChessMakerModel.User" Width="1.5" PointX="0.875" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ChessMakerModel.Variant" Width="1.5" PointX="0.875" PointY="1.25" IsExpanded="true" FillColor="192, 0, 0" />
+        <EntityTypeShape EntityType="ChessMakerModel.VariantVersion" Width="1.5" PointX="3.125" PointY="1.25" IsExpanded="true" FillColor="192, 0, 0" />
         <AssociationConnector Association="ChessMakerModel.FK_GamePlayers_Games" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_GamePlayers_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="ChessMakerModel.FK_Moves_GamePlayers" ManuallyRouted="false" />
+        <AssociationConnector Association="ChessMakerModel.FK_Moves_GamePlayers" ManuallyRouted="false" >
+        </AssociationConnector>
         <AssociationConnector Association="ChessMakerModel.FK_Games_GameStatuses" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_Games_Users" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_Games_VariantVersions" ManuallyRouted="false" />
