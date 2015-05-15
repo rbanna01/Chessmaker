@@ -51,6 +51,20 @@ direction_t Board::ResolveRelativeDirection(direction_t id, direction_t relative
 }
 
 
+void Board::PrecomputeDistances()
+{
+	for (auto it = cells.begin(); it != cells.end(); it++)
+	{
+		Cell *cell = *it;
+		FOR_EACH_DIR_IN_SET(allAbsoluteDirections, dir)
+		{
+			int dist = GetMaxDistance(cell, dir);
+			cell->maxDists.insert(std::pair<direction_t, int>(dir, dist));
+		}
+	}
+}
+
+
 int Board::GetMaxDistance(Cell *cell, direction_t direction)
 {
 	int num = 0;

@@ -15,9 +15,11 @@ public:
 	~Board();
 
 	direction_t ResolveDirections(direction_t dir, direction_t prevDir);
-	int GetMaxDistance(Cell *cell, direction_t direction);
 	std::vector<Cell*> GetCells() { return cells; }
+	void PrecomputeDistances();
+
 private:
+	int GetMaxDistance(Cell *cell, direction_t direction);
 	direction_t ResolveRelativeDirection(direction_t id, direction_t relativeTo);
 
 	Game *game;
@@ -27,4 +29,3 @@ private:
 
 	friend class GameParser;
 };
-

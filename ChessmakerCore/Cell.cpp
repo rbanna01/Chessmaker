@@ -19,6 +19,13 @@ void Cell::AddLink(direction_t dir, Cell* destination)
 
 Cell* Cell::FollowLink(direction_t dir)
 {
-	std::map<direction_t, Cell*>::iterator it = links.find(dir);
+	auto it = links.find(dir);
 	return it == links.end() ? 0 : it->second;
+}
+
+
+int Cell::GetMaxDist(direction_t dir)
+{
+	auto it = maxDists.find(dir);
+	return it == maxDists.end() ? 0 : it->second;
 }

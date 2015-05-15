@@ -14,6 +14,7 @@ public:
 
 	void AddLink(direction_t dir, Cell* destination);
 	Cell* FollowLink(direction_t dir);
+	int GetMaxDist(direction_t dir);
 	char *GetName() { return reference; }
 	Piece *GetPiece() { return piece; }
 
@@ -24,9 +25,11 @@ private:
 
 	Piece *piece;
 	std::map<direction_t, Cell*> links;
+	std::map<direction_t, int> maxDists;
 	
 	int coordX, coordY;
 
+	friend class Board;
 	friend class MoveStep;
 	friend class GameParser;
 };

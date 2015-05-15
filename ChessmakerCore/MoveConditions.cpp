@@ -140,7 +140,7 @@ bool MoveCondition_MaxDist::IsSatisfied(Move *move, MoveStep *lastPerformed)
 
 	FOR_EACH_DIR_IN_SET(dirs, dir)
 	{
-        int maxDist = board->GetMaxDistance(other->GetPosition(), dir);
+        int maxDist = other->GetPosition()->GetMaxDist(dir);
         if (ResolveComparison(comparison, maxDist, number))
             return true;
     }

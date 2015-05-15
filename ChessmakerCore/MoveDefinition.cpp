@@ -45,7 +45,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
 	FOR_EACH_DIR_IN_SET(dirs, dir)
 	{
-		int boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), dir);
+		int boardMaxDist = piece->GetPosition()->GetMaxDist(dir);
 		int minDist = distance->GetValue(previousStep, boardMaxDist);
 		int maxDist = distance->GetMaxValue(distanceMax, previousStep, boardMaxDist);
 		Cell *cell = piece->GetPosition();
@@ -121,7 +121,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 	
 	FOR_EACH_DIR_IN_SET(dirs, firstDir)
 	{
-		int boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), firstDir);
+		int boardMaxDist = piece->GetPosition()->GetMaxDist(firstDir);
 		int minDist = distance->GetValue(previousStep, boardMaxDist);
 		int maxDist = distance->GetMaxValue(distanceMax, previousStep, boardMaxDist);
 
@@ -143,7 +143,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 			FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
 			{
 				Cell *destCell = straightCell;
-				boardMaxDist = game->GetBoard()->GetMaxDistance(destCell, secondDir);
+				boardMaxDist = destCell->GetMaxDist(secondDir);
 				int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
 				int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
 
@@ -219,7 +219,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 
 	FOR_EACH_DIR_IN_SET(dirs, dir)
 	{
-		int boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), dir);
+		int boardMaxDist = piece->GetPosition()->GetMaxDist(dir);
 		int minDistTo = distToHurdle->GetValue(previousStep, boardMaxDist);
 		int maxDistTo = distToHurdle->GetMaxValue(distToHurdleMax, previousStep, boardMaxDist);
 		int minDistAfter = distAfterHurdle->GetValue(previousStep, boardMaxDist); // doesn't the 'board max' need recalculated based on hurdle position?
@@ -327,7 +327,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
 	FOR_EACH_DIR_IN_SET(dirs, firstDir)
 	{
-		int boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), firstDir);
+		int boardMaxDist = piece->GetPosition()->GetMaxDist(firstDir);
 		int minDist = distance->GetValue(previousStep, boardMaxDist);
 		int maxDist = distance->GetMaxValue(distanceMax, previousStep, boardMaxDist);
 
@@ -349,7 +349,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 			FOR_EACH_DIR_IN_SET(secondDirs, secondDir)
 			{
 				Cell *destCell = straightCell;
-				boardMaxDist = game->GetBoard()->GetMaxDistance(destCell, secondDir);
+				boardMaxDist = destCell->GetMaxDist(secondDir);
 				int minDist2 = hasSecondDir ? secondDist->GetValue(previousStep, boardMaxDist) : 0;
 				int maxDist2 = hasSecondDir ? secondDist->GetMaxValue(0, previousStep, boardMaxDist) : 0;
 
@@ -510,7 +510,7 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 
 		FOR_EACH_DIR_IN_SET(dirs, dir)
 		{
-			int boardMaxDist = game->GetBoard()->GetMaxDistance(piece->GetPosition(), dir);
+			int boardMaxDist = piece->GetPosition()->GetMaxDist(dir);
 			int minDist = distance->GetValue(previousStep, boardMaxDist);
 			int maxDist = distance->GetMaxValue(0, previousStep, boardMaxDist);
 			Cell *cell = piece->GetPosition();

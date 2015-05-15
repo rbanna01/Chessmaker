@@ -312,6 +312,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 	}
 	
 	board->allAbsoluteDirections = allDirections;
+	board->PrecomputeDistances();
 	return true;
 }
 
