@@ -604,10 +604,6 @@
 			<include dir="southeast" />
 			<include dir="southwest" />
 		</group>
-		<group name="sideways">
-			<include dir="east" />
-			<include dir="west" />
-		</group>
 		<group name="turn90">
 			<include dir="left90" />
 			<include dir="right90" />
@@ -656,8 +652,29 @@
 						<threatened where="end">false</threatened>
 					</conditions>
 				</slide>
-				<sequence>
-					<slide dir="sideways" dist="1">
+				<sequence customNotation = "0-0">
+					<slide dir="west" dist="1">
+						<conditions>
+							<moveNumber comparison="equals">1</moveNumber>
+							<threatened where="both">false</threatened>
+						</conditions>
+					</slide>
+					<slide dir="same" dist="1">
+						<conditions>
+							<threatened where="end">false</threatened>
+						</conditions>
+					</slide>
+					<referencePiece name="castling rook" dir="same" dist="any" type="rook" owner="self" />
+					<hop piece="castling rook" dir="opposite" distToHurdle="any" distAfterHurdle="1">
+						<conditions>
+							<moveNumber of="hurdle" comparison="equals">1</moveNumber>
+							<type of="hurdle">king</type>
+							<owner of="hurdle">self</owner>
+						</conditions>
+					</hop>
+				</sequence>
+				<sequence customNotation = "0-0-0">
+					<slide dir="east" dist="1">
 						<conditions>
 							<moveNumber comparison="equals">1</moveNumber>
 							<threatened where="both">false</threatened>

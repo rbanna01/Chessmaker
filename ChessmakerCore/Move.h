@@ -27,6 +27,7 @@ public:
 
 	const char *DetermineNotation(int detailLevel);
 	const char *GetNotation() { return notation.c_str(); }
+	void SetNotation(std::string notation, bool custom = false) { this->notation = notation; if (custom) hasCustomNotation = true; }
 	void SetAppendNotation(const char *append);
 	const char *GetDescription() { return description.c_str(); }
 	void SetDescription(std::string description) { this->description = description; }
@@ -52,6 +53,7 @@ private:
 	Cell *startPos;
 	std::string notation, description;
 	char appendNotation[APPEND_NOTATION_LENGTH];
+	bool hasCustomNotation;
 
 	std::list<MoveStep*> steps;
 	std::map<const char*, Piece*, char_cmp> references;

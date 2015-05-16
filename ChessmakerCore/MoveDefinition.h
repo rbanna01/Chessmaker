@@ -20,6 +20,9 @@ public:
 	MoveDefinition(const char *pieceRef, MoveConditionGroup *conditions, When_t when, direction_t direction);
 	virtual ~MoveDefinition();
 
+	void SetCustomNotation(std::string notation) { this->notation = notation; }
+	std::string GetCustomNotation() { return this->notation; }
+
 	virtual std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 protected:
 	char pieceRef[PIECE_REF_LENGTH];
@@ -28,6 +31,8 @@ protected:
 	direction_t direction;
 	bool moveSelf;
 
+private:
+	std::string notation;
 	friend class GameParser;
 };
 

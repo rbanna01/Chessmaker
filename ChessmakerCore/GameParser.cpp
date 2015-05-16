@@ -561,35 +561,47 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 
 MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 {
+	MoveDefinition *retVal = 0;
 	if (strcmp(moveNode->name(), "slide") == 0)
-		return ParseMove_Slide(moveNode);
-	if (strcmp(moveNode->name(), "leap") == 0)
-		return ParseMove_Leap(moveNode);
-	if (strcmp(moveNode->name(), "hop") == 0)
-		return ParseMove_Hop(moveNode);
-	if (strcmp(moveNode->name(), "shoot") == 0)
-		return ParseMove_Shoot(moveNode);
-	if (strcmp(moveNode->name(), "moveLike") == 0)
-		return ParseMove_MoveLike(moveNode);
-	if (strcmp(moveNode->name(), "promotion") == 0)
-		return ParseMove_Promotion(moveNode);
-	if (isTopLevel)
+		retVal = ParseMove_Slide(moveNode);
+	else if (strcmp(moveNode->name(), "leap") == 0)
+		retVal = ParseMove_Leap(moveNode);
+	else if (strcmp(moveNode->name(), "hop") == 0)
+		retVal = ParseMove_Hop(moveNode);
+	else if (strcmp(moveNode->name(), "shoot") == 0)
+		retVal = ParseMove_Shoot(moveNode);
+	else if (strcmp(moveNode->name(), "moveLike") == 0)
+		retVal = ParseMove_MoveLike(moveNode);
+	else if (strcmp(moveNode->name(), "promotion") == 0)
+		retVal = ParseMove_Promotion(moveNode);
+	else if (isTopLevel)
 	{
 		if (strcmp(moveNode->name(), "sequence") == 0)
-			return ParseMove_Sequence(moveNode);
+			retVal = ParseMove_Sequence(moveNode);
 	}
 	else
 	{
 		if (strcmp(moveNode->name(), "repeat") == 0)
-			return ParseMove_Repeat(moveNode);
+			retVal = ParseMove_Repeat(moveNode);
 		if (strcmp(moveNode->name(), "whenPossible") == 0)
-			return ParseMove_WhenPossible(moveNode);
+			retVal = ParseMove_WhenPossible(moveNode);
 		if (strcmp(moveNode->name(), "referencePiece") == 0)
-			return ParseMove_ReferencePiece(moveNode);
+			retVal = ParseMove_ReferencePiece(moveNode);
 	}
 
-	ReportError("Got a move with an unexpected type: %s\n", moveNode->name());
-	return 0;
+	if (retVal == 0)
+		ReportError("Got a move with an unexpected type: %s\n", moveNode->name());
+	else if (isTopLevel)
+	{
+		xml_attribute<> *attr = moveNode->first_attribute("customNotation");
+		if (attr != 0)
+		{
+			std::string notation = attr->value();
+			retVal->SetCustomNotation(notation);
+		}
+	}
+	
+	return retVal;
 }
 
 MoveDefinition *GameParser::ParseMove_Slide(xml_node<char> *moveNode)

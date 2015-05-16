@@ -370,13 +370,69 @@
 	<xs:complexType name="moveList">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="slide" type="slide"/>
-				<xs:element name="leap" type="leap"/>
-				<xs:element name="hop" type="hop"/>
-				<xs:element name="shoot" type="shoot"/>
-				<xs:element name="moveLike" type="moveLike"/>
-				<xs:element name="sequence" type="moveSequence"/>
-				<xs:element name="promotion" type="promotion"/>
+				<xs:element name="slide">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="slide">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="leap">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="leap">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="hop">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="hop">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="shoot">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="shoot">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="moveLike">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="moveLike">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="sequence">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="sequence">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="promotion">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="promotion">
+								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>

@@ -10,6 +10,7 @@ Move::Move(Player *player, GameState *prevState, Piece *piece, Cell *startPos)
 	this->prevState = prevState;
 	this->piece = piece;
 	this->startPos = startPos;
+	hasCustomNotation = false;
 	appendNotation[0] = 0;
 }
 
@@ -31,8 +32,11 @@ Move *Move::Clone()
 	}
 
 	move->references = references;
-	strcpy(move->appendNotation, appendNotation);
 	move->description = description;
+	if (hasCustomNotation)
+		move->notation = notation;
+	move->hasCustomNotation = hasCustomNotation;
+	strcpy(move->appendNotation, appendNotation);
 
 	return move;
 }
@@ -117,6 +121,10 @@ bool Move::Reverse(bool updateDisplay)
 
 const char *Move::DetermineNotation(int detailLevel)
 {
+	// if I already have a notation set, just return that?
+	if (hasCustomNotation)
+		return notation.c_str();
+
     switch (detailLevel)
 	{
         case 1:
@@ -145,9 +153,6 @@ const char *Move::DetermineNotation(int detailLevel)
     }
 	
 	notation += appendNotation;
-	
-    // how to account for castling? some special moves simply need to specify their own special notation, i guess...
-
 	return notation.c_str();
 }
 

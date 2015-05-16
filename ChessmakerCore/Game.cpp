@@ -273,6 +273,7 @@ void Game::ApplyUniqueNotation(std::list<Move*> *moves)
 			else
 			{
 				movesByNotation.insert(std::pair<const char*, Move*>(notation, move));
+				move->SetNotation(notation);
 				break;
 			}
 		}

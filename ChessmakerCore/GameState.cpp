@@ -108,6 +108,10 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 					}
                 }
 
+				std::string customNotation = moveDef->GetCustomNotation();
+				if (!customNotation.empty())
+					move->SetNotation(customNotation, true);
+
                 output->push_back(move);
             }
 			delete possibilities;
