@@ -185,11 +185,11 @@ bool StateCondition_RepetitionOfPosition::IsSatisfied(GameState *state, bool can
 int StateCondition_RepetitionOfPosition::IncrementCount(GameState *state)
 {
 	const char *stateKey = state->GetHash();
-	auto it = positionRepetitions.find(stateKey);
+	auto it = positionRepetitions->find(stateKey);
 
-	if (it == positionRepetitions.end())
+	if (it == positionRepetitions->end())
 	{
-		positionRepetitions.insert(std::pair<const char*, int>(stateKey, 1));
+		positionRepetitions->insert(std::pair<const char*, int>(stateKey, 1));
 		return 1;
 	}
 	else
@@ -200,17 +200,16 @@ int StateCondition_RepetitionOfPosition::IncrementCount(GameState *state)
 void StateCondition_RepetitionOfPosition::DecrementCount(GameState *state)
 {
 	const char *stateKey = state->GetHash();
-	auto it = positionRepetitions.find(stateKey);
+	auto it = positionRepetitions->find(stateKey);
 
-	if (it == positionRepetitions.end())
+	if (it == positionRepetitions->end())
 	{
 		ReportError("Attempting to reduce the occurance of an unknown position's repetition");
 		return;
 	}
 
 	if (--it->second <= 0) // erasing here ensures that we don't hold onto the key of a deleted state
-		positionRepetitions.erase(it);
+		positionRepetitions->erase(it);
 }
 
-
-std::map<const char*, int, char_cmp> StateCondition_RepetitionOfPosition::positionRepetitions;
+std::map<const char*, int, char_cmp> *StateCondition_RepetitionOfPosition::positionRepetitions;

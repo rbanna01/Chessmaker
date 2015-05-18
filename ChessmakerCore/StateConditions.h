@@ -97,14 +97,17 @@ public:
 	{
 		this->comparison = comparison;
 		this->number = number;
+		if (positionRepetitions == 0)
+			positionRepetitions = new std::map<const char*, int, char_cmp>();
 	}
+	virtual ~StateCondition_RepetitionOfPosition() { if (positionRepetitions != 0) { delete positionRepetitions; positionRepetitions = 0; } }
 
 	virtual bool IsSatisfied(GameState *state, bool canMove);
 	static void DecrementCount(GameState *state);
 
 private:
 	static int IncrementCount(GameState *state);
-	static std::map<const char*, int, char_cmp> positionRepetitions;
+	static std::map<const char*, int, char_cmp> *positionRepetitions;
 
 	NumericComparison_t comparison;
 	int number;
