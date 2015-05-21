@@ -1157,7 +1157,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 
 			if (strcmp(position, "held") == 0)
 			{
-				Piece *piece = new Piece(player, type, 0, Piece::Held, player);
+				Piece *piece = new Piece(player, type, 0, Piece::Held);
 				player->piecesHeld.insert(piece);
 			}
 			else
@@ -1170,7 +1170,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				}
 				Cell *cell = it->second;
 
-				Piece *piece = new Piece(player, type, cell, Piece::OnBoard, 0);
+				Piece *piece = new Piece(player, type, cell, Piece::OnBoard);
 				player->piecesOnBoard.insert(piece);
 
 				if (cell->piece == 0)
@@ -1186,8 +1186,8 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				sprintf(val, "p%d", piece->uniqueID);
 				image->append_attribute(svgDoc->allocate_attribute("id", val));
 
-				val = svgDoc->allocate_string("piece ", PLAYER_NAME_LENGTH + 6);
-				strcat(val, player->name);
+				val = svgDoc->allocate_string(0, 14);
+				sprintf(val, "piece player%d", player->GetID());
 				image->append_attribute(svgDoc->allocate_attribute("class", val));
 
 				val = svgDoc->allocate_string(0, 8);

@@ -25,6 +25,8 @@ public:
 
 	virtual std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep) = 0;
 protected:
+	MoveStep *CreateCapture(Piece *target, Piece *capturedBy);
+
 	char pieceRef[PIECE_REF_LENGTH];
 	MoveConditionGroup *conditions;
 	When_t when;

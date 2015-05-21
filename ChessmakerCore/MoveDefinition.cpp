@@ -24,6 +24,15 @@ MoveDefinition::~MoveDefinition()
 }
 
 
+MoveStep *MoveDefinition::CreateCapture(Piece *target, Piece *capturedBy)
+{
+	Player *player = capturedBy->GetOwner();
+	if (player->GetGame()->GetHoldCapturedPieces())
+		return MoveStep::CreatePickup(target, target->GetPosition(), player);
+	return MoveStep::CreateCapture(target, target->GetPosition());
+}
+
+
 std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
@@ -70,7 +79,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 					if (when == Moving)
 						break;
 					else if (piece->CanCapture(target))
-						captureStep = MoveStep::CreateCapture(target, cell, piece->GetOwner(), game->GetHoldCapturedPieces());
+						captureStep = CreateCapture(target, piece);
                     else
                         break; // cannot capture this piece. Slides cannot pass over pieces, so there can be no more valid slides in this direction.
 				}
@@ -169,7 +178,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 						else
 						{
 							if (when != Moving && piece->CanCapture(target))
-								captureStep = MoveStep::CreateCapture(target, destCell, piece->GetOwner(), game->GetHoldCapturedPieces());
+								captureStep = CreateCapture(target, piece);
 							else
 								continue; // cannot capture this piece, but unlike slides, leaps don't stop when a piece is in the way
 						}
@@ -265,7 +274,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 						if (when == Moving)
 							break;
 						else if (piece->CanCapture(target))
-							captureStep = MoveStep::CreateCapture(target, destCell, piece->GetOwner(), game->GetHoldCapturedPieces());
+							captureStep = CreateCapture(target, piece);
 						else
 							break; // cannot capture this piece. Cannot hop over a second piece, so there can be no more valid hops in this direction.
 					}
@@ -276,7 +285,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 
                     if (captureHurdle)
 					{
-                        MoveStep *hurdleCaptureStep = MoveStep::CreateCapture(hurdle, hurdle->GetPosition(), piece->GetOwner(), game->GetHoldCapturedPieces());
+                        MoveStep *hurdleCaptureStep = CreateCapture(hurdle, piece);
                         move->AddStep(hurdleCaptureStep);
                     }
 
@@ -370,7 +379,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 						if (target == 0)
 							continue; // needs to be a capture for this shoot to be valid, and there is no piece here. But there might be pieces beyond this one.
 						else if (piece->CanCapture(target))
-							captureStep = MoveStep::CreateCapture(target, destCell, piece->GetOwner(), game->GetHoldCapturedPieces());
+							captureStep = CreateCapture(target, piece);
 						else
 							break; // cannot capture this piece, and unlike leaps, shoots don't continue past other pieces
 

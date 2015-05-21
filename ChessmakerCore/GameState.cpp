@@ -188,7 +188,7 @@ void GameState::DetermineHash()
 			hash += "|h";
 			hash += piece->GetType()->GetName(); // unique ID?
 			hash += ",";
-			hash += std::to_string(piece->GetStateOwner()->GetID());
+			hash += std::to_string(piece->GetOwner()->GetID());
 		}
 	}
 }

@@ -44,7 +44,7 @@ function initializeGame(workerUrl, defUrl, players) {
                 logMove(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5]);
                 break;
             case 'move':
-                movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6], event.data[7]);
+                movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6]);
                 break;
             case 'msg':
                 showMessage(event.data[1]);
@@ -174,11 +174,11 @@ function logMove(player, number, notation, fromRef, toRef) {
     }
 }
 
-function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
+function movePiece(pieceID, state, posX, posY, owner, appearance) {
     var element = document.getElementById('p' + pieceID);
     var board = document.getElementById('render');
 
-    element.setAttribute('class', 'piece ' + owner);
+    element.setAttribute('class', 'piece player' + owner);
 
     var changeApp = function (x) {
         element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
@@ -212,10 +212,10 @@ function movePiece(pieceID, state, stateOwner, posX, posY, owner, appearance) {
     else {
         var counter = state == 'captured' ? capturedPieces : heldPieces;
         var container = document.getElementById(state);  // 'captured' or 'held'
-        counter[stateOwner]++;
+        counter[owner]++;
 
-        posX = stateOwner * 196 / (numPlayers + 1);
-        posY = counter[stateOwner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
+        posX = owner * 196 / (numPlayers + 1);
+        posY = counter[owner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
                     changeApp();

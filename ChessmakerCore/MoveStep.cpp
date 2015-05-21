@@ -10,7 +10,6 @@ MoveStep::MoveStep(Piece *piece)
 	this->piece = piece;
     fromPos = toPos = 0;
 	fromOwner = toOwner = piece->GetOwner();
-	fromStateOwner = toStateOwner = 0;
 	fromType = toType = piece->GetType();
     direction = 0; // used only for resolving relative directions of subsequent steps
 }
@@ -23,23 +22,23 @@ MoveStep::~MoveStep()
 
 bool MoveStep::Perform(bool updateDisplay)
 {
-	if (!Pickup(fromState, fromStateOwner, fromPos, fromOwner, fromType))
+	if (!Pickup(fromState, fromPos, fromOwner, fromType))
 		return false;
 
-	return Place(toState, toStateOwner, toPos, toOwner, toType, updateDisplay);
+	return Place(toState, toPos, toOwner, toType, updateDisplay);
 }
 
 
 bool MoveStep::Reverse(bool updateDisplay)
 {
-	if (!Pickup(toState, toStateOwner, toPos, toOwner, toType))
+	if (!Pickup(toState, toPos, toOwner, toType))
 		return false;
 
-	return Place(fromState, fromStateOwner, fromPos, fromOwner, fromType, updateDisplay);
+	return Place(fromState, fromPos, fromOwner, fromType, updateDisplay);
 }
 
 
-bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type)
+bool MoveStep::Pickup(Piece::State_t state, Cell *pos, Player *owner, PieceType *type)
 {
 	if (piece->GetState() != state) // piece isn't in the expected state, quit
 	{
@@ -50,12 +49,6 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 	if (piece->GetOwner() != owner)
 	{
 		ReportError("move error - owner is wrong: got %s, expected %s for %s %s\n", piece->GetOwner()->GetName(), owner->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
-		return false;
-	}
-
-	if (piece->GetStateOwner() != stateOwner)
-	{
-		ReportError("move error - state owner is wrong: got %s, expected %s for %s %s\n", piece->GetStateOwner() == 0 ? "[null]" : piece->GetStateOwner()->GetName(), stateOwner == 0 ? "[null]" : stateOwner->GetName(), piece->GetOwner()->GetName(), piece->GetType()->GetName());
 		return false;
 	}
 
@@ -73,17 +66,17 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 		return true;
 
 	case Piece::Captured:
-		if (stateOwner == 0 || stateOwner->piecesCaptured.erase(piece) == 0)
+		if (owner->piecesCaptured.erase(piece) == 0)
 		{
-			ReportError("move error - captured piece is not held by its state owner\n");
+			ReportError("move error - captured piece is not held by its owner\n");
 			return false;
 		}
 		return true;
 
 	case Piece::Held:
-		if (stateOwner == 0 || stateOwner->piecesHeld.erase(piece) == 0)
+		if (owner->piecesHeld.erase(piece) == 0)
 		{
-			ReportError("move error - held piece is not held by its state owner\n");
+			ReportError("move error - held piece is not held by its owner\n");
 			return false;
 		}
 		return true;
@@ -94,7 +87,7 @@ bool MoveStep::Pickup(Piece::State_t state, Player *stateOwner, Cell *pos, Playe
 }
 
 
-bool MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
+bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
 {
 	switch (state) {
 	case Piece::State_t::OnBoard:
@@ -108,10 +101,10 @@ bool MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 			owner->piecesOnBoard.insert(piece);
 		break;
 	case Piece::State_t::Captured:
-		stateOwner->piecesCaptured.insert(piece);
+		owner->piecesCaptured.insert(piece);
 		break;
 	case Piece::State_t::Held:
-		stateOwner->piecesHeld.insert(piece);
+		owner->piecesHeld.insert(piece);
 		break;
 	default:
 		ReportError("move error - piece has an invalid state: %i\n", state);
@@ -119,7 +112,6 @@ bool MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 	}
 
 	piece->pieceState = state;
-	piece->stateOwner = stateOwner;
 	piece->position = pos;
 	piece->owner = owner;
 	piece->pieceType = type;
@@ -130,8 +122,8 @@ bool MoveStep::Place(Piece::State_t state, Player *stateOwner, Cell *pos, Player
 	// move the svg element for this piece
 #ifdef EMSCRIPTEN
 	EM_ASM_ARGS(
-		{ movePiece($0, $1, $2, $3, $4, $5, $6) },
-		piece->GetID(), (int)state, stateOwner == 0 ? 0 : stateOwner->GetID(), pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetName(), type->GetAppearance(owner)
+		{ movePiece($0, $1, $2, $3, $4, $5) },
+		piece->GetID(), (int)state, pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetID(), type->GetAppearance(owner)
 	);
 #endif
 
@@ -151,13 +143,25 @@ MoveStep* MoveStep::CreateMove(Piece *piece, Cell *from, Cell *to, direction_t d
 };
 
 
-MoveStep* MoveStep::CreateCapture(Piece *piece, Cell *from, Player *capturedBy, bool toHeld)
+MoveStep* MoveStep::CreateCapture(Piece *piece, Cell *from)
 {
 	MoveStep *step = new MoveStep(piece);
 	step->fromState = Piece::State_t::OnBoard;
-	step->toState = toHeld ? Piece::State_t::Held : Piece::State_t::Captured;
+	step->toState = Piece::State_t::Captured;
 	step->fromPos = from;
-	step->toStateOwner = capturedBy;
+	step->distance = 0;
+	return step;
+};
+
+
+MoveStep* MoveStep::CreatePickup(Piece *piece, Cell *from, Player *heldBy)
+{
+	MoveStep *step = new MoveStep(piece);
+	step->fromState = Piece::State_t::OnBoard;
+	step->toState = Piece::State_t::Held;
+	step->fromPos = from;
+	step->fromOwner = piece->GetOwner();
+	step->toOwner = heldBy;
 	step->distance = 0;
 	return step;
 };
@@ -168,7 +172,6 @@ MoveStep* MoveStep::CreateDrop(Piece *piece, Cell *to, Player *droppedBy)
 	MoveStep *step = new MoveStep(piece);
 	step->fromState = Piece::State_t::Held;
 	step->toState = Piece::State_t::OnBoard;
-	step->fromStateOwner = droppedBy;
 	step->toPos = to;
 	step->distance = 0;
 	return step;
@@ -179,7 +182,6 @@ MoveStep* MoveStep::CreatePromotion(Piece *piece, PieceType *fromType, PieceType
 {
 	MoveStep *step = new MoveStep(piece);
 	step->fromState = step->toState = piece->GetState();
-	step->fromStateOwner = step->toStateOwner = piece->GetStateOwner();
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->fromType = fromType;
 	step->toType = toType;
@@ -192,7 +194,6 @@ MoveStep* MoveStep::CreateSteal(Piece *piece, Player *fromOwner, Player *toOwner
 {
 	MoveStep *step = new MoveStep(piece);
 	step->fromState = step->toState = piece->GetState();
-	step->fromStateOwner = step->toStateOwner = piece->GetStateOwner();
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->fromOwner = fromOwner;
 	step->toOwner = toOwner;
