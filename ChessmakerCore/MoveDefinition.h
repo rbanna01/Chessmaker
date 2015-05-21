@@ -68,7 +68,7 @@ public:
 		this->distance = distance; this->distanceMax = distanceMax;
 		this->secondDir = secondDir; this->secondDist = secondDist;
 	}
-	virtual ~Leap() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != &Distance::Any) delete secondDist; }
+	virtual ~Leap() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0 && distanceMax != &Distance::Any) delete distanceMax; if (secondDist != &Distance::Zero && secondDist != &Distance::Any) delete secondDist; }
 
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
@@ -113,7 +113,7 @@ public:
 		this->distance = distance; this->distanceMax = distanceMax;
 		this->secondDir = secondDir; this->secondDist = secondDist;
 	}
-	virtual ~Shoot() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax; if (secondDist != 0 && secondDist != &Distance::Any) delete secondDist; }
+	virtual ~Shoot() { if (distance != &Distance::Any) delete distance; if (distanceMax != 0 && distanceMax != &Distance::Any) delete distanceMax; if (secondDist != &Distance::Zero && secondDist != &Distance::Any) delete secondDist; }
 
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
