@@ -622,76 +622,71 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 
 std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
-	std::list<Move*> *moves = new std::list<Move*>(), *prevStepMoves = new std::list<Move*>(), *currentStepMoves = new std::list<Move*>();
-	Move *clone = baseMove->Clone();
-	prevStepMoves->push_back(clone);
+	std::list<Move*> *resultMoves = new std::list<Move*>(), *prevChildMoves = new std::list<Move*>(), *currentChildMoves;
+	prevChildMoves->push_back(baseMove->Clone());
 
-	if (previousStep != 0) // because we're checking if steps == previousStep, we need to ensure we're using the right cloned copy
-		previousStep = *clone->GetSteps().rbegin();
+	int lastStepNumberBeforeStarting = previousStep == 0 ? 0 : previousStep->GetNumber();
 
 	for (int rep = 1; rep <= maxOccurs; rep++)
 	{
-		for (auto itStep = contents.begin(); itStep != contents.end(); itStep++)
+		for (auto itChild = contents.begin(); itChild != contents.end(); itChild++)
 		{
-			MoveDefinition *stepDef = *itStep;
+			MoveDefinition *stepDef = *itChild;
+			currentChildMoves = new std::list<Move*>();
 
-			for (auto itPrevMove = prevStepMoves->begin(); itPrevMove != prevStepMoves->end(); itPrevMove++)
+			for (auto itMove = prevChildMoves->begin(); itMove != prevChildMoves->end(); itMove++)
 			{
-				Move *prevMove = *itPrevMove;
+				Move *move = *itMove;
+				std::list<MoveStep*> steps = move->GetSteps();
 
-				bool previousStepReached = previousStep == 0;
-				std::list<MoveStep*> steps = prevMove->GetSteps();
 				MoveStep *step = 0;
-				for (auto itDoStep = steps.begin(); itDoStep != steps.end(); itDoStep++)
+				for (auto itStep = steps.begin(); itStep != steps.end(); itStep++)
 				{
-					// don't (re)perform moves until we reach the first step of this group
-					step = *itDoStep;
-					if (previousStepReached)
+					step = *itStep;
+					if (step->GetNumber() > lastStepNumberBeforeStarting)
 						step->Perform(false);
-					else if (step == previousStep)
-						previousStepReached = true;
 				}
 
-				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(prevMove, piece, step == 0 ? previousStep : step);
-				currentStepMoves->splice(currentStepMoves->end(), *nextMovesForStep);
+				// append to "possible moves B" every possible next move from performing the current child onto the current move
+				std::list<Move*> *nextMovesForStep = stepDef->DetermineNextSteps(move, piece, step == 0 ? previousStep : step);
+				currentChildMoves->splice(currentChildMoves->end(), *nextMovesForStep);
 				delete nextMovesForStep;
 
-				for (auto itUndoStep = steps.rbegin(); itUndoStep != steps.rend(); itUndoStep++)
+				for (auto itStep = steps.rbegin(); itStep != steps.rend(); itStep++)
 				{
-					step = *itUndoStep;
-					if (step == previousStep)
-						break; // don't rewind past this point
-					step->Reverse(false);
+					step = *itStep;
+					if (step->GetNumber() > lastStepNumberBeforeStarting)
+						step->Reverse(false);
 				}
 			}
 
-			std::list<Move*> *tmp = prevStepMoves;
-			prevStepMoves = currentStepMoves;
-			currentStepMoves = tmp;
+			for (auto it = prevChildMoves->begin(); it != prevChildMoves->end(); it++)
+				delete *it;
+			delete prevChildMoves;
+			prevChildMoves = currentChildMoves;
 
-			while (!currentStepMoves->empty())
-				delete currentStepMoves->front(), currentStepMoves->pop_front();
-
-			if (prevStepMoves->size() == 0)
-				break;
+			if (prevChildMoves->empty())
+				break; // abort, this child step resulted in no valid moves
 		}
-        
-		if (prevStepMoves->size() == 0) // this FULL iteration through the loop ended with no suitable moves
-			break;
-           
+
+		if (prevChildMoves->empty())
+		{
+			delete prevChildMoves;
+			break; // abort, this iteration loop resulted in no valid moves
+		}
+
 		if (rep >= minOccurs)
-			moves->splice(moves->end(), *prevStepMoves);
+			resultMoves->splice(resultMoves->end(), *prevChildMoves);
+		else
+			for (auto it = prevChildMoves->begin(); it != prevChildMoves->end(); it++)
+				delete *it;
+
+		delete prevChildMoves;
 	}
 
-
-	while (!prevStepMoves->empty())
-		delete prevStepMoves->front(), prevStepMoves->pop_front();
-	delete prevStepMoves;
-	delete currentStepMoves;
-
 	// this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
-	if (stepOutIfFail && moves->size() == 0 && baseMove->GetSteps().size() > 0)
-		moves->push_back(baseMove->Clone());
+	if (stepOutIfFail && resultMoves->empty() && baseMove->HasSteps())
+		resultMoves->push_back(baseMove->Clone());
 
-	return moves;
+	return resultMoves;
 }

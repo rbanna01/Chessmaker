@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Definitions.h"
+#include "MoveStep.h"
 #include "PieceType.h"
 
 class Cell;
 class GameState;
-class MoveStep;
 class Player;
 class Piece;
 
@@ -19,7 +19,7 @@ public:
 	Move(Player *player, GameState *prevState, Piece *piece, Cell *startPos);
 	~Move();
 
-	void AddStep(MoveStep *step) { steps.push_back(step); }
+	void AddStep(MoveStep *step, bool setNumber = true) { steps.push_back(step); if (setNumber) step->number = steps.size(); }
 
 	Move *Clone();
 	GameState *Perform(bool updateDisplay);
@@ -45,6 +45,7 @@ public:
 	Piece *GetPiece() { return piece; }
 	GameState *GetPrevState() { return prevState; }
 	std::list<MoveStep*> GetSteps() { return steps; }
+	bool HasSteps() { return !steps.empty(); }
 
 private:
 	Player *player;

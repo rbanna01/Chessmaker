@@ -28,7 +28,7 @@ Move *Move::Clone()
 	for (auto it = steps.begin(); it != steps.end(); it++)
 	{
 		MoveStep *step = *it;
-		move->AddStep(new MoveStep(*step));
+		move->AddStep(new MoveStep(*step), false);
 	}
 
 	move->references = references;

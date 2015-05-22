@@ -20,6 +20,7 @@ public:
 	Piece::State_t GetToState() { return toState; }
 	Cell *GetFromPosition() { return fromPos; }
 	Cell *GetToPosition() { return toPos; }
+	int GetNumber() { return number; }
 
 	static MoveStep *CreateMove(Piece *piece, Cell *from, Cell *to, direction_t dir, int distance);
 	static MoveStep *CreateCapture(Piece *piece, Cell *from);
@@ -33,8 +34,7 @@ private:
 	bool Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, bool updateDisplay);
 	void UpdateDisplay();
 
-	static int nextID;
-	int uniqueID;
+	int number;
 
 	Piece *piece;
 	direction_t direction;

@@ -2,11 +2,8 @@
 #include "Game.h"
 #include "Piece.h"
 
-int MoveStep::nextID = 1;
-
 MoveStep::MoveStep(Piece *piece)
 {
-	uniqueID = MoveStep::nextID++;
 	this->piece = piece;
     fromPos = toPos = 0;
 	fromOwner = toOwner = piece->GetOwner();
