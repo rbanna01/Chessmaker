@@ -800,10 +800,57 @@
 				</g>
 			</appearance>
 			<moves>
-				<slide dist="any" dir="any" />
-				<!--
-				<moveLike other="target" when="capture" />
-				should freeze immobilizers. only! -->
+				<sequence>
+					<slide dist="any" dir="any" />
+
+					<whenPossible>
+						<referencePiece name="ahead" dir="same" dist="2" owner="self" />
+						<shoot dir="same" dist="1">
+							<conditions>
+								<type of="ahead">pawn</type>
+							</conditions>
+						</shoot>
+					</whenPossible>
+					<whenPossible>
+						<referencePiece name="left" dir="left90" dist="2" owner="self" />
+						<shoot dir="left90" dist="1">
+							<conditions>
+								<type of="left">pawn</type>
+							</conditions>
+						</shoot>
+					</whenPossible>
+					<whenPossible>
+						<referencePiece name="right" dir="right90" dist="2" owner="self" />
+						<shoot dir="right90" dist="1">
+							<conditions>
+								<type of="right">pawn</type>
+							</conditions>
+						</shoot>
+					</whenPossible>
+
+					<whenPossible>
+						<shoot dir="opposite" dist="prev+1">
+							<conditions>
+								<type of="target">withdrawer</type>
+							</conditions>
+						</shoot>
+					</whenPossible>
+				</sequence>					
+
+				<slide dir="any" dist="1">
+					<conditions>
+						<type of="target">king</type>
+					</conditions>
+				</slide>
+
+				<sequence>
+					<repeat min="1" max="3">
+						<hop dir="any" distToHurdle="1" distToHurdleMax="8" distAfterHurdle="1" distAfterHurdleMax="8" when="move" captureHurdle="true">
+							<type of="hurdle">long leaper</type>
+						</hop>
+					</repeat>
+				</sequence>
+				<!-- should freeze immobilizers. only! -->
 			</moves>
 		</piece>
 		<piece name="long leaper" notation="L" value="3">
