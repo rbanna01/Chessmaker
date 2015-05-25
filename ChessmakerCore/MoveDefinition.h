@@ -212,7 +212,7 @@ public:
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
-	std::list<Move*> *DetermineChildSteps(Move *baseMove, std::list<MoveDefinition*>::iterator it, MoveStep *previousStep, int repeatNum);
+	std::list<Move*> *DetermineChildSteps(Move *baseMove, std::list<MoveDefinition*>::iterator it, MoveStep *previousStep, int repeatNum, std::list<Move*> *prevRepeatMoves);
 
 	int minOccurs, maxOccurs;
 	bool stepOutIfFail;

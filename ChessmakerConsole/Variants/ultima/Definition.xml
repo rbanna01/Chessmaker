@@ -765,7 +765,6 @@
 			<moves>
 				<sequence>
 					<slide dist="any" dir="orthogonal" />
-					<!--
 					<whenPossible>
 						<leap dir="rank" dist="any" when="capture" />
 						<referencePiece name="king" dir="file" dist="any" type="king" owner="self" />
@@ -776,7 +775,6 @@
 						<referencePiece name="king" dir="rank" dist="any" type="king" owner="self" />
 						<leap dir="opposite" dist="prev" when="move" />
 					</whenPossible>
-					-->
 				</sequence>
 			</moves>
 		</piece>
@@ -849,7 +847,6 @@
 						<referencePiece name="ahead" dir="same" dist="2" owner="self" />
 						<shoot dir="same" dist="1" />
 					</whenPossible>
-					<!--
 					<whenPossible>
 						<referencePiece name="left" dir="left90" dist="2" owner="self" />
 						<shoot dir="left90" dist="1" />
@@ -858,7 +855,6 @@
 						<referencePiece name="right" dir="right90" dist="2" owner="self" />
 						<shoot dir="right90" dist="1" />
 					</whenPossible>
-					-->
 				</sequence>
 			</moves>
 		</piece>
