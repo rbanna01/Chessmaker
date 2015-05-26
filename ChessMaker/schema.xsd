@@ -109,6 +109,49 @@
 					</xs:simpleContent>
 				</xs:complexType>
 			</xs:element>
+
+			<xs:element name="count">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attribute name="from" type="xs:string" default="self" />
+							<xs:attribute name="dir" type="direction" use="required" />
+							<xs:attribute name="dist" type="distance" use="required" />
+							<xs:attribute name="distMax" type="distance" />
+							<xs:attribute name="type" type="xs:string" default="any" />
+							<xs:attribute name="owner" type="owner" default="any" />
+							<xs:attribute name="comparison" type="numericComparison" use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="countMultiple">
+				<xs:complexType>
+					<xs:sequence minOccurs="1" maxOccurs="unbounded">
+						<xs:element name="count">
+							<xs:complexType>
+								<xs:attribute name="from" type="xs:string" default="self" />
+								<xs:attribute name="dir" type="direction" use="required" />
+								<xs:attribute name="dist" type="distance" use="required" />
+								<xs:attribute name="distMax" type="distance" />
+								<xs:attribute name="type" type="xs:string"  />
+								<xs:attribute name="owner" type="owner" default="any" />
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="operation" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="add" />
+								<xs:enumeration value="subtract" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>	
+					<xs:attribute name="comparison" type="numericComparison" use="required" />
+					<xs:attribute name="value" type="xs:integer" use="required" />
+				</xs:complexType>
+			</xs:element>
 		</xs:choice>
 	</xs:complexType>
 
@@ -259,7 +302,7 @@
 
 	<xs:simpleType name="distance">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="any|(((max|prev)(\+|-))?[1-9][0-9]*)"/>
+			<xs:pattern value="any|[1-9][0-9]*|(max|prev)((\+|-)[1-9][0-9]*)?"/>
 			<!-- a positive integer, the text "any", or "max" or "prev" +- a positive integer -->
 		</xs:restriction>
 	</xs:simpleType>
@@ -358,6 +401,22 @@
 		<xs:attribute name="owner" type="owner" default="any"/>
 	</xs:complexType>
 
+	<xs:complexType name="setState">
+		<xs:sequence>
+			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="mode" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="set"/>
+					<xs:enumeration value="clear"/>
+					<xs:enumeration value="set and clear"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
 	<xs:complexType name="promotion">
 		<xs:sequence>
 			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
@@ -418,7 +477,7 @@
 				<xs:element name="sequence">
 					<xs:complexType>
 						<xs:complexContent>
-							<xs:extension base="sequence">
+							<xs:extension base="moveSequence">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
@@ -447,8 +506,8 @@
 			<xs:element name="repeat" type="moveSequenceLoop"/>
 			<xs:element name="whenPossible" type="moveSequence"/>
 			<xs:element name="referencePiece" type="referencePiece"/>
+			<xs:element name="setState" type="setState"/>
 			<xs:element name="promotion" type="promotion"/>
-			<!-- ideally want this always at the end, regardless of nested depth -->
 		</xs:choice>
 	</xs:complexType>
 
@@ -544,28 +603,6 @@
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="moves" type="moveList" minOccurs="1" maxOccurs="1"/>
-										<!--
-										<xs:element name="special" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:choice minOccurs="0" maxOccurs="unbounded">
-														<xs:element name="immobilize">
-															<xs:complexType>
-																<xs:sequence>
-																	<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
-																</xs:sequence>
-																<xs:attribute name="dir" type="direction" use="required"/>
-																<xs:attribute name="dist" type="distance" use="required"/>
-																<xs:attribute name="dist2" type="distance"/>
-																<xs:attribute name="offset" type="xs:nonNegativeInteger" default="0"/>
-																<xs:attribute name="allow_immobilized_suicide" type="xs:boolean" default="false"/>
-															</xs:complexType>
-														</xs:element>
-													</xs:choice>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										-->
 										<xs:element name="capturedAs" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									</xs:sequence>
 									<xs:attribute name="name" type="xs:string"/>
@@ -607,6 +644,7 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="turnOrder" type="turnOrder" />
+							<xs:element name="appendToEveryMove" minOccurs="0" type="moveSequence" />
 							<xs:element name="startOfTurn" type="stateLogicStart" minOccurs="0" />
 							<xs:element name="endOfTurn" type="stateLogicEnd" minOccurs="0" />
 						</xs:sequence>

@@ -560,6 +560,8 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 		retVal = ParseMove_Shoot(moveNode);
 	else if (strcmp(moveNode->name(), "moveLike") == 0)
 		retVal = ParseMove_MoveLike(moveNode);
+	else if (strcmp(moveNode->name(), "setState") == 0)
+		retVal = ParseMove_State(moveNode);
 	else if (strcmp(moveNode->name(), "promotion") == 0)
 		retVal = ParseMove_Promotion(moveNode);
 	else if (isTopLevel)
@@ -889,46 +891,18 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			bool end = strcmp(partOfMove, "start") != 0;
 			conditions->elements.push_back(new MoveCondition_Threatened(start, end, value));
 		}
-		/*else if (strcmp(child->name(), "num_pieces_in_range") == 0)
+		else if (strcmp(child->name(), "count") == 0)
 		{
 
 		}
-		else if (strcmp(child->name(), "move_causes_check") == 0)
+		else if (strcmp(child->name(), "math") == 0)
 		{
 
 		}
-		else if (strcmp(child->name(), "move_causes_checkmate") == 0)
+		else if (strcmp(child->name(), "hasState") == 0)
 		{
 
 		}
-		else if (strcmp(child->name(), "checkmate") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "pieces_threatened") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "repeated_check") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "no_moves_possible") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "repetition_of_position") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "turns_since_last_capture") == 0)
-		{
-
-		}
-		else if (strcmp(child->name(), "turns_since_last_move") == 0)
-		{
-
-		}*/
 		else
 			ReportError("Unexpected move condition type: %s\n", child->name());
 
@@ -1231,6 +1205,10 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		return false;
 	else
 		game->turnOrder = order;
+
+	node = rulesNode->first_node("appendToEveryMove");
+	if (node != 0)
+		game->moveToAppendEveryTurn = ParseMove(node, true);
 
 	node = rulesNode->first_node("startOfTurn");
 	StateLogic *logic = node == 0 ? new StateLogic(true, true) : ParseStateLogic(node, true, true);

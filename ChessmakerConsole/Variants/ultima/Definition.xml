@@ -826,7 +826,7 @@
 							</conditions>
 						</shoot>
 					</whenPossible>
-					
+
 					<whenPossible>
 						<shoot dir="opposite" dist="prev+1">
 							<conditions>
@@ -834,7 +834,7 @@
 							</conditions>
 						</shoot>
 					</whenPossible>
-					
+
 					<whenPossible>
 						<leap dir="rank" dist="any" when="capture">
 							<conditions>
@@ -865,7 +865,7 @@
 							</conditions>
 						</shoot>
 					</whenPossible>
-					
+
 					<whenPossible>
 						<leap dir="rank" dist="any" when="capture">
 							<conditions>
@@ -1001,6 +1001,26 @@
 				<turn player="black" />
 			</repeat>
 		</turnOrder>
+		<appendToEveryMove>
+			<setState name="immobilized" mode="set and clear">
+				<conditions>
+					<or>
+						<and>
+							<type of="this">immobilizer</type>
+							<referencePiece name="chameleon" dir="any" dist="1" type="chameleon" owner="enemy" />
+						</and>
+
+						<and>
+							<referencePiece name="immobilizer" dir="any" dist="1" type="immobilizer" owner="enemy" />
+							<countMultiple operation="add" comparison="equals" value="1">
+								<count from="immobilizer" dir="any" dist="1" type="immobilizer" owner="self" />
+								<count from="immobilizer" dir="any" dist="1" type="chameleon" owner="self" />
+							</countMultiple>
+						</and>
+					</or>
+				</conditions>
+			</setState>
+		</appendToEveryMove>
 		<startOfTurn>
 			<if>
 				<repetitionOfPosition comparison="greater than or equals">3</repetitionOfPosition>
