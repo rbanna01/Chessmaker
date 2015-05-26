@@ -77,9 +77,9 @@ private:
 
 	direction_t maxDirection, allDirections;
 	dirLookup_t directionLookups;
-	std::map<char*, std::tuple<PieceType*, char*>, char_cmp> pieceTypesByName;
+	std::map<char*, PieceType*, char_cmp> pieceTypesByName;
+	std::map<PieceType**, char*> pieceTypeReferenceQueue;
 	std::map<char*, Cell*, char_cmp> cellsByRef;
-	std::map<ReferencePiece*, char*> referencePieceTypeQueue;
 	std::multimap<Promotion*, char*> promotionTypeQueue;
 #ifndef NO_SVG
 	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;

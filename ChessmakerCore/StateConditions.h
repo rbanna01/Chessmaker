@@ -39,23 +39,25 @@ public:
 class StateCondition_Threatened : public StateCondition
 {
 public:
-	StateCondition_Threatened(PieceType *type)
+	StateCondition_Threatened()
 	{
-		this->type = type;
+		type = 0;
 	}
 
 	virtual bool IsSatisfied(GameState *state, bool canMove);
 private:
 	PieceType *type;
+
+	friend class GameParser;
 };
 
 
 class StateCondition_TurnsSinceLastMove : public StateCondition
 {
 public:
-	StateCondition_TurnsSinceLastMove(PieceType *type, Player::Relationship_t owner, NumericComparison_t comparison, int number)
+	StateCondition_TurnsSinceLastMove(Player::Relationship_t owner, NumericComparison_t comparison, int number)
 	{
-		this->type = type;
+		type = 0;
 		this->owner = owner;
 		this->comparison = comparison;
 		this->number = number;
@@ -67,15 +69,17 @@ private:
 	Player::Relationship_t owner;
 	NumericComparison_t comparison;
 	int number;
+
+	friend class GameParser;
 };
 
 
 class StateCondition_TurnsSinceLastCapture : public StateCondition
 {
 public:
-	StateCondition_TurnsSinceLastCapture(PieceType *type, Player::Relationship_t owner, NumericComparison_t comparison, int number)
+	StateCondition_TurnsSinceLastCapture(Player::Relationship_t owner, NumericComparison_t comparison, int number)
 	{
-		this->type = type;
+		type = 0;
 		this->owner = owner;
 		this->comparison = comparison;
 		this->number = number;
@@ -87,6 +91,8 @@ private:
 	Player::Relationship_t owner;
 	NumericComparison_t comparison;
 	int number;
+
+	friend class GameParser;
 };
 
 

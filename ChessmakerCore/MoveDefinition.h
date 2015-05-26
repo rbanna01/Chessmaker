@@ -159,6 +159,7 @@ public:
 		strcpy(this->otherPieceRef, pieceRef);
 		this->relationship = relationship;
 		this->distance = distance;
+		otherPieceType = 0;
 	}
 	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 

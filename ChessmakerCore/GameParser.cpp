@@ -124,6 +124,24 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 		return 0;
 	}
 
+	// resolve piece type pointers from the various places in move definitions and rules logic
+	while (!pieceTypeReferenceQueue.empty())
+	{
+		auto item = pieceTypeReferenceQueue.begin();
+		PieceType **ref = item->first;
+		char *typeName = item->second;
+
+		auto it = pieceTypesByName.find(typeName);
+		PieceType *type = it == pieceTypesByName.end() ? 0 : it->second;
+		if (type == 0)
+			ReportError("Got a reference to a piece type that has not been defined: \"%s\"\n", typeName);
+		else
+			*ref = type;
+
+		delete[] typeName;
+		pieceTypeReferenceQueue.erase(item);
+	}
+
 #ifndef NO_SVG
 	// write svgDoc into svgOutput
 	print(std::back_inserter(*svgOutput), svgDoc, print_no_indenting);
@@ -393,45 +411,16 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		char *capturedAs = ParsePieceType(node, svgDefsNode, type);
 #endif
 
-		auto info = std::make_tuple(type, capturedAs);
-		pieceTypesByName.insert(std::make_pair(type->name, info));
-		
-		node = node->next_sibling("piece");
-	}
-
-	// resolve references to other types, also populate piece type list
-	for (auto it = pieceTypesByName.begin(); it != pieceTypesByName.end(); it++)
-	{
-		PieceType *type = std::get<0>(it->second);
+		pieceTypesByName.insert(std::make_pair(type->name, type));
 		game->allPieceTypes.push_back(type);
+		node = node->next_sibling("piece");
 
-		char *capturedAs = std::get<1>(it->second);
 		if (capturedAs != 0)
 		{
-			auto it2 = pieceTypesByName.find(capturedAs);
-			if (it2 == pieceTypesByName.end())
-				ReportError("Piece type \"%s\" is set to be captured as a type that has not been defined: \"%s\"\n", type->GetName(), capturedAs);
-			else
-				type->capturedAs = std::get<0>(it2->second);
+			char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+			strcpy(typeNameCopy, capturedAs);
+			pieceTypeReferenceQueue.insert(std::make_pair(&type->capturedAs, typeNameCopy));
 		}
-	}
-
-	// resolve piece type pointers from the ReferencePiece and Promotion move definitions
-	while (!referencePieceTypeQueue.empty())
-	{
-		auto item = referencePieceTypeQueue.begin();
-		ReferencePiece *moveDef = item->first;
-		char *typeName = item->second;
-
-		auto it = pieceTypesByName.find(typeName);
-		PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-		if (type == 0)
-			ReportError("referencePiece move refers to a piece type that has not been defined: \"%s\"\n", typeName);
-		else
-			moveDef->otherPieceType = type;
-
-		delete[] typeName;
-		referencePieceTypeQueue.erase(item);
 	}
 
 	while (!promotionTypeQueue.empty())
@@ -441,11 +430,10 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		char *typeName = item->second;
 
 		auto it = pieceTypesByName.find(typeName);
-		PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-		if (type == 0)
+		if (it == pieceTypesByName.end())
 			ReportError("promotion move refers to a piece type that has not been defined: \"%s\"\n", typeName);
 		else
-			moveDef->options.push_back(type);
+			moveDef->options.push_back(it->second);
 
 		delete[] typeName;
 		promotionTypeQueue.erase(item);
@@ -823,7 +811,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 		// queue up setting the OtherPieceType of this referencePiece once all the piece types have been loaded. Set it by typeName.
 		char *typeNameCopy = new char[TYPE_NAME_LENGTH];
 		strcpy(typeNameCopy, typeName);
-		referencePieceTypeQueue.insert(std::make_pair(moveDef, typeNameCopy));
+		pieceTypeReferenceQueue.insert(std::make_pair(&moveDef->otherPieceType, typeNameCopy));
 	}
 
 	return moveDef;
@@ -854,9 +842,13 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		else if (strcmp(child->name(), "type") == 0)
 		{
 			const char *of = child->first_attribute("of")->value();
-			auto it = pieceTypesByName.find(child->value());
-			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-			conditions->elements.push_back(new MoveCondition_Type(of, type));
+			MoveCondition_Type *condition = new MoveCondition_Type(of);
+
+			char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+			strcpy(typeNameCopy, child->value());
+			pieceTypeReferenceQueue.insert(std::make_pair(&condition->type, typeNameCopy));
+
+			conditions->elements.push_back(condition);
 		}
 		else if (strcmp(child->name(), "owner") == 0)
 		{
@@ -975,15 +967,17 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 		else if (strcmp(child->name(), "threatened") == 0)
 		{
 			char *typeName = child->first_attribute("type")->value();
-			auto it = pieceTypesByName.find(typeName);
-			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-			conditions->elements.push_back(new StateCondition_Threatened(type));
+			StateCondition_Threatened *condition = new StateCondition_Threatened();
+
+			char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+			strcpy(typeNameCopy, typeName);
+			pieceTypeReferenceQueue.insert(std::make_pair(&condition->type, typeNameCopy));
+
+			conditions->elements.push_back(condition);
 		}
 		else if (strcmp(child->name(), "turnsSinceLastMove") == 0)
 		{
 			char *typeName = child->first_attribute("type")->value();
-			auto it = pieceTypesByName.find(typeName);
-			PieceType *type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
 			
 			xml_attribute<> *attr = child->first_attribute("owner");
 			Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
@@ -991,28 +985,34 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 			int number = atoi(child->value());
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 
-			conditions->elements.push_back(new StateCondition_TurnsSinceLastMove(type, relat, comparison, number));
+			StateCondition_TurnsSinceLastMove *condition = new StateCondition_TurnsSinceLastMove(relat, comparison, number);
+
+			char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+			strcpy(typeNameCopy, typeName);
+			pieceTypeReferenceQueue.insert(std::make_pair(&condition->type, typeNameCopy));
+
+			conditions->elements.push_back(condition);
 		}
 		else if (strcmp(child->name(), "turnsSinceLastCapture") == 0)
 		{
-			xml_attribute<> *attr = child->first_attribute("type");
-			PieceType *type;
-			if (attr == 0)
-				type = 0;
-			else
-			{
-				char *typeName = attr->value();
-				auto it = pieceTypesByName.find(typeName);
-				type = it == pieceTypesByName.end() ? 0 : std::get<0>(it->second);
-			}
-			
-			attr = child->first_attribute("owner");
+			xml_attribute<> *attr = child->first_attribute("owner");
 			Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
 
 			int number = atoi(child->value());
-			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 
-			conditions->elements.push_back(new StateCondition_TurnsSinceLastCapture(type, relat, comparison, number));
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			StateCondition_TurnsSinceLastCapture *condition = new StateCondition_TurnsSinceLastCapture(relat, comparison, number);
+
+			attr = child->first_attribute("type");
+			PieceType *type;
+			if (attr != 0)
+			{
+				char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+				strcpy(typeNameCopy, attr->value());
+				pieceTypeReferenceQueue.insert(std::make_pair(&condition->type, typeNameCopy));
+			}
+
+			conditions->elements.push_back(condition);
 		}
 		else if (strcmp(child->name(), "repetitionOfPosition") == 0)
 		{
@@ -1153,7 +1153,7 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				ReportError("Unrecognized piece type: %s\n", typeName);
 				return false;
 			}
-			PieceType *type = std::get<0>(it->second);
+			PieceType *type = it->second;
 
 			if (strcmp(position, "held") == 0)
 			{

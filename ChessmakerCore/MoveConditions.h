@@ -46,16 +46,18 @@ private:
 class MoveCondition_Type : public MoveCondition
 {
 public:
-	MoveCondition_Type(const char *of, PieceType *type)
+	MoveCondition_Type(const char *of)
 	{
 		strcpy(pieceRef, of);
-		this->type = type;
+		type = 0;
 	}
 
 	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	PieceType *type;
+
+	friend class GameParser;
 };
 
 
