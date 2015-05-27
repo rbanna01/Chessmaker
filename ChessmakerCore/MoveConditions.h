@@ -154,3 +154,66 @@ private:
 	friend class GameState;
 	friend class StateCondition_Threatened;
 };
+
+
+class MoveCondition_Count : public MoveCondition
+{
+public:
+	MoveCondition_Count(const char *from, direction_t dir, Distance *dist, Distance *distMax, Player::Relationship_t relationship, NumericComparison_t comparison, int number)
+	{
+		strcpy(pieceRef, from);
+		this->dir = dir;
+		this->distance = dist;
+		this->distanceMax = distMax;
+		this->relationship = relationship;
+		this->number = number;
+		this->comparison = comparison;
+		type = 0;
+	}
+
+	~MoveCondition_Count()
+	{
+		if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax;
+	}
+
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	int GetCount(Move *move, MoveStep *lastPerformed);
+private:
+	char pieceRef[PIECE_REF_LENGTH];
+	direction_t dir;
+	Distance *distance, *distanceMax;
+	PieceType *type;
+	Player::Relationship_t relationship;
+	int number;
+	MoveCondition::NumericComparison_t comparison;
+
+	friend class GameParser;
+};
+
+
+class MoveCondition_CountMultiple : public MoveCondition
+{
+public:
+	typedef enum { Add, Subtract } Operation_t;
+
+	MoveCondition_CountMultiple(Operation_t operation, NumericComparison_t comparison, int number)
+	{
+		this->operation = operation;
+		this->number = number;
+		this->comparison = comparison;
+	}
+
+	~MoveCondition_CountMultiple()
+	{
+		for (auto it = items.begin(); it != items.end(); it++)
+			delete *it;
+	}
+
+	void AddItem(MoveCondition_Count* item) { items.push_back(item); }
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+private:
+	std::list<MoveCondition_Count*> items;
+	Operation_t operation;
+	int number;
+	MoveCondition::NumericComparison_t comparison;
+};

@@ -893,15 +893,80 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		}
 		else if (strcmp(child->name(), "count") == 0)
 		{
+			xml_attribute<> *attr = child->first_attribute("from");
+			const char *from = attr == 0 ? "self" : attr->value();
 
+			direction_t dir = LookupDirection(child->first_attribute("dir")->value());
+			Distance *dist = ParseDistance(child->first_attribute("dist")->value());
+
+			attr = child->first_attribute("distMax");
+			Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+			attr = child->first_attribute("from");
+			Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(child->value());
+
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			int number = atoi(child->value());
+
+			MoveCondition_Count *condition = new MoveCondition_Count(from, dir, dist, distMax, relationship, comparison, number);
+
+			attr = child->first_attribute("type");
+			if (attr != 0)
+			{
+				char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+				strcpy(typeNameCopy, attr->value());
+				pieceTypeReferenceQueue.insert(std::make_pair(&condition->type, typeNameCopy));
+			}
+			conditions->elements.push_back(condition);
 		}
-		else if (strcmp(child->name(), "math") == 0)
+		else if (strcmp(child->name(), "countMultiple") == 0)
 		{
+			xml_attribute<> *attr = child->first_attribute("operation");
+			MoveCondition_CountMultiple::Operation_t operation;
+			if (strcmp(attr->value(), "add") == 0)
+				operation = MoveCondition_CountMultiple::Add;
+			else if (strcmp(attr->value(), "subtract") == 0)
+				operation = MoveCondition_CountMultiple::Subtract;
 
+			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
+			int number = atoi(child->first_attribute("value")->value());
+
+			MoveCondition_CountMultiple *condition = new MoveCondition_CountMultiple(operation, comparison, number);
+
+			xml_node<> *count = child->first_node();
+			while (count != 0)
+			{
+				attr = count->first_attribute("from");
+				const char *from = attr == 0 ? "self" : attr->value();
+
+				direction_t dir = LookupDirection(count->first_attribute("dir")->value());
+				Distance *dist = ParseDistance(count->first_attribute("dist")->value());
+
+				attr = count->first_attribute("distMax");
+				Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
+
+				attr = count->first_attribute("from");
+				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(count->value());
+
+				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, distMax, relationship, comparison, number);
+
+				attr = count->first_attribute("type");
+				if (attr != 0)
+				{
+					char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+					strcpy(typeNameCopy, attr->value());
+					pieceTypeReferenceQueue.insert(std::make_pair(&countCondition->type, typeNameCopy));
+				}
+
+				condition->AddItem(countCondition);
+				count = count->next_sibling();
+			}
+
+			conditions->elements.push_back(condition);
 		}
 		else if (strcmp(child->name(), "hasState") == 0)
 		{
-
+			conditions->elements.push_back(new MoveCondition_HasState(pieceRef, stateID));
 		}
 		else
 			ReportError("Unexpected move condition type: %s\n", child->name());
@@ -1033,9 +1098,9 @@ Distance *GameParser::ParseDistance(char *val)
 
 	int len = strlen(val);
 	if (len >= 3 && val[0] == 'm' && val[1] == 'a' && val[2] == 'x')
-		return new Distance(Distance::Max, atoi(val+3));
+		return new Distance(Distance::Max, len == 3 ? 0 : atoi(val+3));
 	else if (len >= 4 && val[0] == 'p' && val[1] == 'r' && val[2] == 'e' && val[3] == 'v')
-		return new Distance(Distance::Prev, atoi(val + 4));
+		return new Distance(Distance::Prev, len == 4 ? 0 : atoi(val + 4));
 	else
 		return new Distance(Distance::None, atoi(val));
 }

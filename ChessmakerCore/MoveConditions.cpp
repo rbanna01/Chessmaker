@@ -174,6 +174,7 @@ bool MoveCondition_Threatened::IsSatisfied(Move *move, MoveStep *lastPerformed)
 	return retVal;
 }
 
+
 bool MoveCondition_Threatened::CheckSatisfied(Move *move, MoveStep *lastPerformed)
 {
 	if (start && move->GetPiece()->GetState() == Piece::OnBoard)
@@ -213,6 +214,7 @@ bool MoveCondition_Threatened::CheckSatisfied(Move *move, MoveStep *lastPerforme
 	return returnVal;
 }
 
+
 bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)
 {
 	auto moves = state->DetermineThreatMoves();
@@ -235,4 +237,40 @@ bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)
 	
 	delete moves;
 	return retVal;
+}
+
+
+bool MoveCondition_Count::IsSatisfied(Move *move, MoveStep *lastPerformed)
+{
+	return ResolveComparison(comparison, GetCount(move, lastPerformed), number);
+}
+
+
+int MoveCondition_Count::GetCount(Move *move, MoveStep *lastPerformed)
+{
+
+}
+
+
+bool MoveCondition_CountMultiple::IsSatisfied(Move *move, MoveStep *lastPerformed)
+{
+	auto it = items.begin();
+	MoveCondition_Count *count = *it;
+	int total = count->GetCount(move, lastPerformed);
+
+	for (it++; it != items.end(); it++)
+	{
+		count = *it;
+		int num = count->GetCount(move, lastPerformed);
+
+		switch (operation)
+		{
+		case Add:
+			total += num; break;
+		case Subtract:
+			total -= num; break;
+		}
+	}
+
+	return ResolveComparison(comparison, total, number);
 }
