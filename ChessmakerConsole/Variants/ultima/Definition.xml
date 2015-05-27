@@ -732,7 +732,6 @@
 			</appearance>
 			<moves>
 				<slide dist="any" dir="any" when="move" />
-				<!-- handle immobilization! -->
 			</moves>
 		</piece>
 		<piece name="coordinator" notation="C" value="5">
@@ -764,7 +763,7 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="orthogonal" />
+					<slide dist="any" dir="any" when="move" />
 					<whenPossible>
 						<leap dir="rank" dist="any" when="capture" />
 						<referencePiece name="king" dir="file" dist="any" type="king" owner="self" />
@@ -801,7 +800,7 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="any" />
+					<slide dist="any" dir="orthogonal" when="move" />
 
 					<whenPossible>
 						<referencePiece name="ahead" dir="same" dist="2" owner="self" />
@@ -827,6 +826,37 @@
 							</conditions>
 						</shoot>
 					</whenPossible>
+					
+					<whenPossible>
+						<shoot dir="opposite" dist="prev+1">
+							<conditions>
+								<type of="target">withdrawer</type>
+							</conditions>
+						</shoot>
+					</whenPossible>
+					
+					<whenPossible>
+						<leap dir="rank" dist="any" when="capture">
+							<conditions>
+								<type of="target">coordinator</type>
+							</conditions>
+						</leap>
+						<referencePiece name="king" dir="file" dist="any" type="king" owner="self" />
+						<leap dir="opposite" dist="prev" when="move" />
+					</whenPossible>
+					<whenPossible>
+						<leap dir="file" dist="any" when="capture">
+							<conditions>
+								<type of="target">coordinator</type>
+							</conditions>
+						</leap>
+						<referencePiece name="king" dir="rank" dist="any" type="king" owner="self" />
+						<leap dir="opposite" dist="prev" when="move" />
+					</whenPossible>
+				</sequence>
+
+				<sequence>
+					<slide dist="any" dir="diagonal" when="move" />
 
 					<whenPossible>
 						<shoot dir="opposite" dist="prev+1">
@@ -835,9 +865,28 @@
 							</conditions>
 						</shoot>
 					</whenPossible>
-				</sequence>					
+					
+					<whenPossible>
+						<leap dir="rank" dist="any" when="capture">
+							<conditions>
+								<type of="target">coordinator</type>
+							</conditions>
+						</leap>
+						<referencePiece name="king" dir="file" dist="any" type="king" owner="self" />
+						<leap dir="opposite" dist="prev" when="move" />
+					</whenPossible>
+					<whenPossible>
+						<leap dir="file" dist="any" when="capture">
+							<conditions>
+								<type of="target">coordinator</type>
+							</conditions>
+						</leap>
+						<referencePiece name="king" dir="rank" dist="any" type="king" owner="self" />
+						<leap dir="opposite" dist="prev" when="move" />
+					</whenPossible>
+				</sequence>
 
-				<slide dir="any" dist="1">
+				<slide dir="any" dist="1" when="capture">
 					<conditions>
 						<type of="target">king</type>
 					</conditions>
@@ -846,11 +895,12 @@
 				<sequence>
 					<repeat min="1" max="3">
 						<hop dir="any" distToHurdle="1" distToHurdleMax="8" distAfterHurdle="1" distAfterHurdleMax="8" when="move" captureHurdle="true">
-							<type of="hurdle">long leaper</type>
+							<conditions>
+								<type of="hurdle">long leaper</type>
+							</conditions>
 						</hop>
 					</repeat>
 				</sequence>
-				<!-- should freeze immobilizers. only! -->
 			</moves>
 		</piece>
 		<piece name="long leaper" notation="L" value="3">
