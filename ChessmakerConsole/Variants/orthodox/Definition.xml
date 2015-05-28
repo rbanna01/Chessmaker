@@ -604,6 +604,10 @@
 			<include dir="southeast" />
 			<include dir="southwest" />
 		</group>
+		<group name="sideways">
+			<include dir="east" />
+			<include dir="west" />
+		</group>
 		<group name="turn90">
 			<include dir="left90" />
 			<include dir="right90" />
