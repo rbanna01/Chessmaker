@@ -152,6 +152,17 @@
 					<xs:attribute name="value" type="xs:integer" use="required" />
 				</xs:complexType>
 			</xs:element>
+			
+			<xs:element name="hasState">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:boolean">
+							<xs:attribute name="piece" type="xs:string"/>
+							<xs:attribute name="state" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
 		</xs:choice>
 	</xs:complexType>
 
@@ -405,6 +416,7 @@
 		<xs:sequence>
 			<xs:element name="conditions" type="moveConditions" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
+		<xs:attribute name="piece" type="xs:string" default="self"/>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="mode" use="required">
 			<xs:simpleType>

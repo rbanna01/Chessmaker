@@ -175,6 +175,31 @@ private:
 };
 
 
+class SetState : public MoveDefinition
+{
+public:
+	typedef enum { Set, Clear, SetAndClear } Mode_t;
+
+	SetState(const char *pieceRef, customstate_t state, Mode_t mode)
+		: MoveDefinition("", 0, Any, 0)
+	{
+		strcpy(this->otherPieceRef, pieceRef);
+		this->state = state;
+		this->mode = mode;
+	}
+	virtual ~SetState() { }
+
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+
+private:
+	char otherPieceRef[PIECE_REF_LENGTH];
+	customstate_t state;
+	Mode_t mode;
+
+	friend class GameParser;
+};
+
+
 class Promotion : public MoveDefinition
 {
 public:

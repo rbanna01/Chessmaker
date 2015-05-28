@@ -23,6 +23,9 @@ namespace rapidxml {
 typedef std::map<char*, direction_t, char_cmp> dirLookup_t;
 typedef std::pair<char*, direction_t> dirLookupEntry_t;
 
+typedef std::map<char*, customstate_t, char_cmp> stateLookup_t;
+typedef std::pair<char*, customstate_t> stateLookupEntry_t;
+
 class GameParser
 {
 public:
@@ -59,6 +62,7 @@ private:
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_State(rapidxml::xml_node<char> *moveNode);
 	MoveConditionGroup *ParseMoveConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
 	StateConditionGroup *ParseStateConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
 	Condition::NumericComparison_t ParseNumericComparison(char *value);
@@ -74,9 +78,12 @@ private:
 	Player *GetPlayerByName(char *name);
 
 	direction_t LookupDirection(char *dirName);
+	customstate_t LookupState(char *stateName);
 
 	direction_t maxDirection, allDirections;
 	dirLookup_t directionLookups;
+	customstate_t maxState;
+	stateLookup_t stateLookups;
 	std::map<char*, PieceType*, char_cmp> pieceTypesByName;
 	std::map<PieceType**, char*> pieceTypeReferenceQueue;
 	std::map<char*, Cell*, char_cmp> cellsByRef;

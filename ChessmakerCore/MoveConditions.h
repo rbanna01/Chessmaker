@@ -217,3 +217,22 @@ private:
 	int number;
 	MoveCondition::NumericComparison_t comparison;
 };
+
+
+class MoveCondition_State : public MoveCondition
+{
+public:
+	MoveCondition_State(const char *piece, customstate_t state)
+	{
+		strcpy(pieceRef, piece);
+		this->state = state;
+	}
+
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+private:
+	char pieceRef[PIECE_REF_LENGTH];
+	customstate_t state;
+
+	friend class GameState;
+	friend class StateCondition_Threatened;
+};

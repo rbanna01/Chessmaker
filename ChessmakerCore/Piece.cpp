@@ -9,6 +9,7 @@ Piece::Piece(Player *owner, PieceType *type, Cell *position, State_t state)
 	this->position = position;
 	this->pieceType = type;
 	this->pieceState = state;
+	customState = 0;
 	moveNumber = 1;		// how is this set, when loaded?
 	lastMoveTurn = 0;	// how is this set, when loaded?
 }

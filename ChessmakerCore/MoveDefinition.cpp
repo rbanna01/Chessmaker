@@ -578,6 +578,18 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 }
 
 
+std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	std::list<Move*> *moves = new std::list<Move*>();
+
+	Move *move = baseMove->Clone();
+	move->AddPieceReference(other, otherPieceRef);
+	moves->push_back(move);
+
+	return moves;
+}
+
+
 std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();

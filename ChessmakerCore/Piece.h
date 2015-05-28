@@ -22,7 +22,7 @@ public:
 	State_t GetState() { return pieceState; }
 	int GetMoveNumber() { return moveNumber; }
 	int GetLastMoveTurn() { return lastMoveTurn; }
-
+	bool HasState(customstate_t state) { return (customState & state) != 0; }
 	int GetID() { return uniqueID; }
 private:
 	static int nextID;
@@ -31,6 +31,7 @@ private:
 	PieceType *pieceType;
 	Cell *position;
 	State_t pieceState;
+	customstate_t customState;
 
 	friend class Move;
 	friend class MoveStep;

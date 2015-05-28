@@ -40,6 +40,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 
 	maxDirection = FIRST_ABSOLUTE_DIRECTION >> 1;
 	allDirections = 0;
+	maxState = 1 >> 1;
 	directionLookups.clear();
 
 	xml_node<> *node = doc.first_node()->first_node("board");
@@ -560,8 +561,6 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 		retVal = ParseMove_Shoot(moveNode);
 	else if (strcmp(moveNode->name(), "moveLike") == 0)
 		retVal = ParseMove_MoveLike(moveNode);
-	else if (strcmp(moveNode->name(), "setState") == 0)
-		retVal = ParseMove_State(moveNode);
 	else if (strcmp(moveNode->name(), "promotion") == 0)
 		retVal = ParseMove_Promotion(moveNode);
 	else if (isTopLevel)
@@ -573,10 +572,12 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 	{
 		if (strcmp(moveNode->name(), "repeat") == 0)
 			retVal = ParseMove_Repeat(moveNode);
-		if (strcmp(moveNode->name(), "whenPossible") == 0)
+		else if (strcmp(moveNode->name(), "whenPossible") == 0)
 			retVal = ParseMove_WhenPossible(moveNode);
-		if (strcmp(moveNode->name(), "referencePiece") == 0)
+		else if (strcmp(moveNode->name(), "referencePiece") == 0)
 			retVal = ParseMove_ReferencePiece(moveNode);
+		else if (strcmp(moveNode->name(), "setState") == 0)
+			retVal = ParseMove_State(moveNode);
 	}
 
 	if (retVal == 0)
@@ -820,6 +821,26 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 }
 
 
+MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
+{
+	xml_attribute<> *attr = moveNode->first_attribute("piece");
+	const char *piece = attr == 0 ? "self" : attr->value();
+
+	customstate_t state = LookupState(moveNode->first_attribute("state")->value());
+
+	SetState::Mode_t mode;
+	const char *strMode = moveNode->first_attribute("mode")->value();
+	if (strcmp(strMode, "set") == 0)
+		mode = SetState::Set;
+	else if (strcmp(strMode, "clear") == 0)
+		mode = SetState::Clear;
+	else if (strcmp(strMode, "set and clear") == 0)
+		mode = SetState::SetAndClear;
+
+	return new SetState(piece, state, mode);
+}
+
+
 MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condition::GroupType_t type)
 {
 	if (node == 0)
@@ -902,7 +923,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			attr = child->first_attribute("distMax");
 			Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
 
-			attr = child->first_attribute("from");
+			attr = child->first_attribute("owner");
 			Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(child->value());
 
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
@@ -945,7 +966,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 				attr = count->first_attribute("distMax");
 				Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
 
-				attr = count->first_attribute("from");
+				attr = count->first_attribute("owner");
 				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(count->value());
 
 				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, distMax, relationship, comparison, number);
@@ -966,7 +987,11 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 		}
 		else if (strcmp(child->name(), "hasState") == 0)
 		{
-			conditions->elements.push_back(new MoveCondition_HasState(pieceRef, stateID));
+			xml_attribute<> *attr = child->first_attribute("piece");
+			const char *piece = attr == 0 ? "self" : attr->value();
+
+			customstate_t state = LookupState(child->first_attribute("state")->value());
+			conditions->elements.push_back(new MoveCondition_State(piece, state));
 		}
 		else
 			ReportError("Unexpected move condition type: %s\n", child->name());
@@ -1448,6 +1473,21 @@ direction_t GameParser::LookupDirection(char *dirName)
 		directionLookups.insert(dirLookupEntry_t(dirName, maxDirection));
 
 		return maxDirection;
+	}
+
+	return it->second;
+}
+
+customstate_t GameParser::LookupState(char *stateName)
+{
+	stateLookup_t::iterator it = stateLookups.find(stateName);
+
+	if (it == stateLookups.end())
+	{// a new state, add it
+		maxState = maxState << 1;
+		stateLookups.insert(dirLookupEntry_t(stateName, maxState));
+
+		return maxState;
 	}
 
 	return it->second;

@@ -274,3 +274,16 @@ bool MoveCondition_CountMultiple::IsSatisfied(Move *move, MoveStep *lastPerforme
 
 	return ResolveComparison(comparison, total, number);
 }
+
+
+bool MoveCondition_State::IsSatisfied(Move *move, MoveStep *lastPerformed)
+{
+	Piece *other = move->GetPieceByReference(pieceRef);
+	if (other == 0)
+	{
+		ReportError("Referenced piece not found for \"state\" move condition: %s\n", pieceRef);
+		return false;
+	}
+
+	return other->HasState(state);
+}
