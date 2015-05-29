@@ -581,11 +581,36 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
+	bool conditionsSatisfied = conditions == 0 || conditions->IsSatisfied(baseMove, previousStep);
+
+	Mode_t mode = this->mode;
+	if (mode == SetAndClear)
+	{// this mode sets if the conditions are satisfied, and clears if they are not
+		if (conditionsSatisfied)
+			mode = Set;
+		else
+			mode = Clear;
+	}
+	else if (!conditionsSatisfied)
+		return moves; // conditions weren't satisfied, 
 
 	Move *move = baseMove->Clone();
-	move->AddPieceReference(other, otherPieceRef);
-	moves->push_back(move);
 
+	switch (mode)
+	{
+	case Set:
+		if (piece->HasState(state))
+			return moves; // already has this state, so don't add it again
+		move->AddStep(MoveStep::CreateAddState(piece, state));
+		break;
+	case Clear:
+		if (!piece->HasState(state))
+			return moves; // doesn't have this state, so don't remove it again
+		move->AddStep(MoveStep::CreateRemoveState(piece, state));
+		break;
+	}
+
+	moves->push_back(move);
 	return moves;
 }
 

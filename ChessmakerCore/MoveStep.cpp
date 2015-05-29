@@ -9,6 +9,7 @@ MoveStep::MoveStep(Piece *piece)
 	fromOwner = toOwner = piece->GetOwner();
 	fromType = toType = piece->GetType();
     direction = 0; // used only for resolving relative directions of subsequent steps
+	addState = removeState = 0;
 }
 
 
@@ -112,6 +113,7 @@ bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *
 	piece->position = pos;
 	piece->owner = owner;
 	piece->pieceType = type;
+	piece->customState = (piece->customState | addState) & ~removeState;
 
 	if (!updateDisplay)
 		return true;
@@ -195,5 +197,27 @@ MoveStep* MoveStep::CreateSteal(Piece *piece, Player *fromOwner, Player *toOwner
 	step->fromOwner = fromOwner;
 	step->toOwner = toOwner;
 	step->distance = 0;
+	return step;
+};
+
+
+MoveStep* MoveStep::CreateAddState(Piece *piece, customstate_t state)
+{
+	MoveStep *step = new MoveStep(piece);
+	step->fromState = step->toState = piece->GetState();
+	step->fromPos = step->toPos = piece->GetPosition();
+	step->distance = 0;
+	step->addState = state;
+	return step;
+};
+
+
+MoveStep* MoveStep::CreateRemoveState(Piece *piece, customstate_t state)
+{
+	MoveStep *step = new MoveStep(piece);
+	step->fromState = step->toState = piece->GetState();
+	step->fromPos = step->toPos = piece->GetPosition();
+	step->distance = 0;
+	step->removeState = state;
 	return step;
 };

@@ -28,6 +28,8 @@ public:
 	static MoveStep *CreateDrop(Piece *piece, Cell *to, Player *droppedBy);
 	static MoveStep *CreatePromotion(Piece *piece, PieceType *fromType, PieceType *toType);
 	static MoveStep *CreateSteal(Piece *piece, Player *fromOwner, Player *toOwner);
+	static MoveStep *CreateAddState(Piece *piece, customstate_t state);
+	static MoveStep *CreateRemoveState(Piece *piece, customstate_t state);
 
 private:
 	bool Pickup(Piece::State_t state, Cell *pos, Player *owner, PieceType *type);
@@ -43,6 +45,7 @@ private:
 	Cell *fromPos, *toPos;
 	Player *fromOwner, *toOwner;
 	PieceType *fromType, *toType;
+	customstate_t addState, removeState;
 
 	friend class Distance;
 	friend class Move;
