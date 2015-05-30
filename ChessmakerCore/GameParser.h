@@ -35,7 +35,7 @@ public:
 	Game* Parse(char *definition, std::string *svgOutput);
 #endif
 	GameParser() {}
-	~GameParser() {}
+	~GameParser();
 	
 private:
 #ifdef NO_SVG
@@ -58,7 +58,7 @@ private:
 	MoveDefinition *ParseMove_Shoot(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_MoveLike(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_Promotion(rapidxml::xml_node<char> *moveNode);
-	MoveDefinition *ParseMove_Sequence(rapidxml::xml_node<char> *moveNode);
+	Sequence *ParseMove_Sequence(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_Repeat(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
@@ -85,6 +85,7 @@ private:
 	customstate_t maxState;
 	stateLookup_t stateLookups;
 	std::map<char*, PieceType*, char_cmp> pieceTypesByName;
+	std::map<char*, Sequence*, char_cmp> namedMoves;
 	std::map<PieceType**, char*> pieceTypeReferenceQueue;
 	std::map<char*, Cell*, char_cmp> cellsByRef;
 	std::multimap<Promotion*, char*> promotionTypeQueue;

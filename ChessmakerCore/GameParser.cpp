@@ -21,6 +21,14 @@
 
 using namespace rapidxml;
 
+
+GameParser::~GameParser()
+{
+	for (auto it = namedMoves.begin(); it != namedMoves.end(); it++)
+		delete it->second;
+}
+
+
 #ifdef NO_SVG
 Game* GameParser::Parse(char *definition)
 #else
@@ -401,8 +409,29 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 {
 	pieceTypesByName.clear();
 
+	// first parse any "named" moves used by multiple pieces
+	xml_node<> *node = piecesNode->first_node("namedMoves");
+	if (node != 0)
+	{
+		node = node->first_node("move");
+		while (node != 0)
+		{
+			char *name = node->first_attribute("name")->value();
+			auto it = namedMoves.find(name);
+			if (it == namedMoves.end())
+			{
+				namedMoves.insert(std::make_pair(name, ParseMove_Sequence(node)));
+			}
+			else
+			{
+				ReportError("Got multiple named moves with the same name: %s\n", name);
+			}
+			node = node->next_sibling("move");
+		}
+	}
+
 	// parse each piece type
-	xml_node<> *node = piecesNode->first_node("piece");
+	node = piecesNode->first_node("piece");
 	while (node != 0)
 	{
 		PieceType *type = new PieceType();
@@ -736,7 +765,7 @@ MoveDefinition *GameParser::ParseMove_Promotion(xml_node<char> *moveNode)
 }
 
 
-MoveDefinition *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
+Sequence *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
 {
 	Sequence *move = new Sequence();
 
@@ -747,6 +776,19 @@ MoveDefinition *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
 		move->contents.push_back(child);
 
 		node = node->next_sibling();
+	}
+
+	xml_attribute<> *attr = moveNode->first_attribute("append");
+	if (attr != 0)
+	{
+		auto it = namedMoves.find(attr->value());
+		if (it == namedMoves.end())
+			ReportError("Got a reference to a non-existing named move: %s\n", attr->value());
+		else
+		{
+			Sequence *copy = new Sequence(*it->second);
+			move->contents.push_back(copy);
+		}
 	}
 
 	return move;
