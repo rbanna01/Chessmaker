@@ -136,7 +136,6 @@ bool MoveCondition_MaxDist::IsSatisfied(Move *move, MoveStep *lastPerformed)
 	auto steps = move->GetSteps();
 	MoveStep *previousStep = steps.empty() ? 0 : *steps.rbegin();
 	direction_t dirs = move->GetPlayer()->ResolveDirections(dir, previousStep != 0 && previousStep->GetDirection() != 0 ? previousStep->GetDirection() : move->GetPlayer()->GetForwardDirection());
-	Board *board = move->GetPrevState()->GetGame()->GetBoard();
 
 	FOR_EACH_DIR_IN_SET(dirs, dir)
 	{
@@ -248,7 +247,39 @@ bool MoveCondition_Count::IsSatisfied(Move *move, MoveStep *lastPerformed)
 
 int MoveCondition_Count::GetCount(Move *move, MoveStep *lastPerformed)
 {
+	int count = 0;
 
+	Piece *from = move->GetPieceByReference(pieceRef);
+	if (from == 0)
+	{
+		ReportError("Referenced piece not found for \"count\" move condition: %s\n", pieceRef);
+		return count;
+	}
+
+	// check the piece we're counting from, also, i guess
+	if (from->TypeMatches(type) && (relationship == Player::Any || move->GetPlayer()->GetRelationship(from->GetOwner()) == relationship))
+		count++;
+
+	direction_t dirs = move->GetPlayer()->ResolveDirections(dir, lastPerformed != 0 && lastPerformed->GetDirection() != 0 ? lastPerformed->GetDirection() : move->GetPlayer()->GetForwardDirection());
+	FOR_EACH_DIR_IN_SET(dirs, dir)
+	{
+		Cell *pos = from->GetPosition();
+		int boardMaxDist = pos->GetMaxDist(dir);
+		int distLimit = distance->GetValue(lastPerformed, boardMaxDist);
+
+		for (int dist = 1; dist <= distLimit; dist++)
+		{
+			pos = pos->FollowLink(dir);
+			if (pos == 0)
+				break;
+
+			Piece *other = pos->GetPiece();
+			if (other != 0 && other->TypeMatches(type) && (relationship == Player::Any || move->GetPlayer()->GetRelationship(other->GetOwner()) == relationship))
+				count++;
+		}
+	}
+
+	return count;
 }
 
 

@@ -78,8 +78,7 @@ std::list<Move*> *GameState::DetermineThreatMoves()
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output)
 {
 	// get all VALID move possibilities for each piece on the board
-	std::set<Piece*> pieces(player->piecesOnBoard);
-	for (auto it = pieces.begin(); it != pieces.end(); it++)
+	for (auto it = player->piecesOnBoard.begin(); it != player->piecesOnBoard.end(); it++)
 	{
 		Piece *piece = *it;
 		Move *moveTemplate = new Move(piece->GetOwner(), this, piece, piece->GetPosition());

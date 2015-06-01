@@ -656,7 +656,6 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="turnOrder" type="turnOrder" />
-							<xs:element name="appendToEveryMove" minOccurs="0" type="moveSequence" />
 							<xs:element name="startOfTurn" type="stateLogicStart" minOccurs="0" />
 							<xs:element name="endOfTurn" type="stateLogicEnd" minOccurs="0" />
 						</xs:sequence>

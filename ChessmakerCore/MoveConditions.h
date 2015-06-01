@@ -159,29 +159,25 @@ private:
 class MoveCondition_Count : public MoveCondition
 {
 public:
-	MoveCondition_Count(const char *from, direction_t dir, Distance *dist, Distance *distMax, Player::Relationship_t relationship, NumericComparison_t comparison, int number)
+	MoveCondition_Count(const char *from, direction_t dir, Distance *dist, Player::Relationship_t relationship, NumericComparison_t comparison, int number)
 	{
 		strcpy(pieceRef, from);
 		this->dir = dir;
 		this->distance = dist;
-		this->distanceMax = distMax;
 		this->relationship = relationship;
 		this->number = number;
 		this->comparison = comparison;
 		type = 0;
 	}
 
-	~MoveCondition_Count()
-	{
-		if (distance != &Distance::Any) delete distance; if (distanceMax != 0) delete distanceMax;
-	}
+	~MoveCondition_Count() { if (distance != &Distance::Any) delete distance; }
 
 	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
 	int GetCount(Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	direction_t dir;
-	Distance *distance, *distanceMax;
+	Distance *distance;
 	PieceType *type;
 	Player::Relationship_t relationship;
 	int number;

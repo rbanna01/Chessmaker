@@ -696,7 +696,11 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="any" when="move" />
+					<slide dist="any" dir="any" when="move">
+						<conditions>
+							<hasState state="immobilized">false</hasState>
+						</conditions>
+					</slide>
 					<whenPossible>
 						<shoot dir="opposite" dist="prev+1" />
 					</whenPossible>
@@ -731,7 +735,11 @@
 				</g>
 			</appearance>
 			<moves>
-				<slide dist="any" dir="any" when="move" />
+				<slide dist="any" dir="any" when="move">
+					<conditions>
+						<hasState state="immobilized">false</hasState>
+					</conditions>
+				</slide>
 			</moves>
 		</piece>
 		<piece name="coordinator" notation="C" value="5">
@@ -763,7 +771,11 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="any" when="move" />
+					<slide dist="any" dir="any" when="move">
+						<conditions>
+							<hasState state="immobilized">false</hasState>
+						</conditions>
+					</slide>
 					<whenPossible>
 						<leap dir="rank" dist="any" when="capture" />
 						<referencePiece name="king" dir="file" dist="any" type="king" owner="self" />
@@ -800,7 +812,11 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="orthogonal" when="move" />
+					<slide dist="any" dir="orthogonal" when="move">
+						<conditions>
+							<hasState state="immobilized">false</hasState>
+						</conditions>
+					</slide>
 
 					<whenPossible>
 						<referencePiece name="ahead" dir="same" dist="2" owner="self" />
@@ -856,7 +872,11 @@
 				</sequence>
 
 				<sequence>
-					<slide dist="any" dir="diagonal" when="move" />
+					<slide dist="any" dir="diagonal" when="move">
+						<conditions>
+							<hasState state="immobilized">false</hasState>
+						</conditions>
+					</slide>
 
 					<whenPossible>
 						<shoot dir="opposite" dist="prev+1">
@@ -888,6 +908,7 @@
 
 				<slide dir="any" dist="1" when="capture">
 					<conditions>
+						<hasState state="immobilized">false</hasState>
 						<type of="target">king</type>
 					</conditions>
 				</slide>
@@ -897,6 +918,7 @@
 						<hop dir="any" distToHurdle="1" distToHurdleMax="8" distAfterHurdle="1" distAfterHurdleMax="8" when="move" captureHurdle="true">
 							<conditions>
 								<type of="hurdle">long leaper</type>
+								<hasState state="immobilized">false</hasState>
 							</conditions>
 						</hop>
 					</repeat>
@@ -922,10 +944,19 @@
 				</g>
 			</appearance>
 			<moves>
-				<slide dist="any" dir="any" when="move" />
+				<slide dist="any" dir="any" when="move">
+					<conditions>
+						<hasState state="immobilized">false</hasState>
+					</conditions>
+				</slide>
+
 				<sequence>
 					<repeat min="1" max="3">
-						<hop dir="any" distToHurdle="1" distToHurdleMax="8" distAfterHurdle="1" distAfterHurdleMax="8" when="move" captureHurdle="true" />
+						<hop dir="any" distToHurdle="1" distToHurdleMax="8" distAfterHurdle="1" distAfterHurdleMax="8" when="move" captureHurdle="true">
+							<conditions>
+								<hasState state="immobilized">false</hasState>
+							</conditions>
+						</hop>
 					</repeat>
 				</sequence>
 			</moves>
@@ -939,7 +970,11 @@
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="any" dir="orthogonal" when="move" />
+					<slide dist="any" dir="orthogonal" when="move">
+						<conditions>
+							<hasState state="immobilized">false</hasState>
+						</conditions>
+					</slide>
 					<whenPossible>
 						<referencePiece name="ahead" dir="same" dist="2" owner="self" />
 						<shoot dir="same" dist="1" />
@@ -1001,26 +1036,6 @@
 				<turn player="black" />
 			</repeat>
 		</turnOrder>
-		<appendToEveryMove>
-			<setState name="immobilized" mode="set and clear">
-				<conditions>
-					<or>
-						<and>
-							<type of="this">immobilizer</type>
-							<referencePiece name="chameleon" dir="any" dist="1" type="chameleon" owner="enemy" />
-						</and>
-
-						<and>
-							<referencePiece name="immobilizer" dir="any" dist="1" type="immobilizer" owner="enemy" />
-							<countMultiple operation="add" comparison="equals" value="1">
-								<count from="immobilizer" dir="any" dist="1" type="immobilizer" owner="self" />
-								<count from="immobilizer" dir="any" dist="1" type="chameleon" owner="self" />
-							</countMultiple>
-						</and>
-					</or>
-				</conditions>
-			</setState>
-		</appendToEveryMove>
 		<startOfTurn>
 			<if>
 				<repetitionOfPosition comparison="greater than or equals">3</repetitionOfPosition>

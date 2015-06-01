@@ -826,7 +826,7 @@ MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *piece = attr == 0 ? "self" : attr->value();
 
-	customstate_t state = LookupState(moveNode->first_attribute("state")->value());
+	customstate_t state = LookupState(moveNode->first_attribute("name")->value());
 
 	SetState::Mode_t mode;
 	const char *strMode = moveNode->first_attribute("mode")->value();
@@ -920,16 +920,13 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			direction_t dir = LookupDirection(child->first_attribute("dir")->value());
 			Distance *dist = ParseDistance(child->first_attribute("dist")->value());
 
-			attr = child->first_attribute("distMax");
-			Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
-
 			attr = child->first_attribute("owner");
 			Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(child->value());
 
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			int number = atoi(child->value());
 
-			MoveCondition_Count *condition = new MoveCondition_Count(from, dir, dist, distMax, relationship, comparison, number);
+			MoveCondition_Count *condition = new MoveCondition_Count(from, dir, dist, relationship, comparison, number);
 
 			attr = child->first_attribute("type");
 			if (attr != 0)
@@ -963,13 +960,10 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 				direction_t dir = LookupDirection(count->first_attribute("dir")->value());
 				Distance *dist = ParseDistance(count->first_attribute("dist")->value());
 
-				attr = count->first_attribute("distMax");
-				Distance *distMax = attr == 0 ? 0 : ParseDistance(attr->value());
-
 				attr = count->first_attribute("owner");
 				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(count->value());
 
-				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, distMax, relationship, comparison, number);
+				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, relationship, comparison, number);
 
 				attr = count->first_attribute("type");
 				if (attr != 0)
@@ -1068,7 +1062,6 @@ StateConditionGroup *GameParser::ParseStateConditions(xml_node<char> *node, Cond
 			StateCondition_TurnsSinceLastCapture *condition = new StateCondition_TurnsSinceLastCapture(relat, comparison, number);
 
 			attr = child->first_attribute("type");
-			PieceType *type;
 			if (attr != 0)
 			{
 				char *typeNameCopy = new char[TYPE_NAME_LENGTH];
@@ -1295,10 +1288,6 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 		return false;
 	else
 		game->turnOrder = order;
-
-	node = rulesNode->first_node("appendToEveryMove");
-	if (node != 0)
-		game->moveToAppendEveryTurn = ParseMove(node, true);
 
 	node = rulesNode->first_node("startOfTurn");
 	StateLogic *logic = node == 0 ? new StateLogic(true, true) : ParseStateLogic(node, true, true);
