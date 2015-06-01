@@ -153,7 +153,7 @@ private:
 class ReferencePiece : public MoveDefinition
 {
 public:
-	ReferencePiece(const char *pieceRef, PieceType *type, Player::Relationship_t relationship, direction_t dir, Distance *distance)
+	ReferencePiece(const char *pieceRef, Player::Relationship_t relationship, direction_t dir, Distance *distance)
 		: MoveDefinition("", 0, Any, dir)
 	{
 		strcpy(this->otherPieceRef, pieceRef);
@@ -164,7 +164,7 @@ public:
 	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
-
+	static Piece *FindReferencedPiece(Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction);
 private:
 	char otherPieceRef[PIECE_REF_LENGTH];
 	PieceType *otherPieceType;

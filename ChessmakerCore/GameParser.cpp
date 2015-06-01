@@ -807,7 +807,7 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 	attr = moveNode->first_attribute("dist");
 	Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
 
-	ReferencePiece *moveDef = new ReferencePiece(name, 0, relat, dir, dist);
+	ReferencePiece *moveDef = new ReferencePiece(name, relat, dir, dist);
 
 	if (typeName != 0)
 	{
@@ -986,6 +986,35 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 
 			customstate_t state = LookupState(child->first_attribute("state")->value());
 			conditions->elements.push_back(new MoveCondition_State(piece, state));
+		}
+		else if (strcmp(child->name(), "referencePiece") == 0)
+		{
+			xml_attribute<> *attr = child->first_attribute("name");
+			char *name = attr == 0 ? 0 : attr->value();
+
+			attr = child->first_attribute("type");
+			char *typeName = attr == 0 ? 0 : attr->value();
+
+			attr = child->first_attribute("owner");
+			Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
+
+			attr = child->first_attribute("dir");
+			direction_t dir = attr == 0 ? 0 : LookupDirection(attr->value());
+
+			attr = child->first_attribute("dist");
+			Distance *dist = attr == 0 ? 0 : ParseDistance(attr->value());
+
+			MoveCondition_ReferencePiece *condition = new MoveCondition_ReferencePiece(name, relat, dir, dist);
+
+			if (typeName != 0)
+			{
+				// queue up setting the OtherPieceType of this referencePiece once all the piece types have been loaded. Set it by typeName.
+				char *typeNameCopy = new char[TYPE_NAME_LENGTH];
+				strcpy(typeNameCopy, typeName);
+				pieceTypeReferenceQueue.insert(std::make_pair(&condition->otherPieceType, typeNameCopy));
+			}
+
+			conditions->elements.push_back(condition);
 		}
 		else
 			ReportError("Unexpected move condition type: %s\n", child->name());

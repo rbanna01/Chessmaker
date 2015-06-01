@@ -47,6 +47,8 @@
 			<xs:element name="nor" type="moveConditions"/>
 			<xs:element name="xor" type="moveConditions"/>
 
+			<xs:element name="referencePiece" type="referencePiece"/>
+			
 			<xs:element name="type">
 				<xs:complexType>
 					<xs:simpleContent>

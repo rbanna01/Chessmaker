@@ -232,3 +232,28 @@ private:
 	friend class GameState;
 	friend class StateCondition_Threatened;
 };
+
+
+class MoveCondition_ReferencePiece : public MoveCondition
+{
+public:
+	MoveCondition_ReferencePiece(const char *pieceRef, Player::Relationship_t relationship, direction_t dir, Distance *distance)
+	{
+		strcpy(this->otherPieceRef, pieceRef);
+		this->relationship = relationship;
+		this->dir = dir;
+		this->distance = distance;
+		otherPieceType = 0;
+	}
+	virtual ~MoveCondition_ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
+
+	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+private:
+	char otherPieceRef[PIECE_REF_LENGTH];
+	PieceType *otherPieceType;
+	Player::Relationship_t relationship;
+	direction_t dir;
+	Distance *distance;
+
+	friend class GameParser;
+};

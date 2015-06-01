@@ -318,3 +318,17 @@ bool MoveCondition_State::IsSatisfied(Move *move, MoveStep *lastPerformed)
 
 	return other->HasState(state);
 }
+
+
+bool MoveCondition_ReferencePiece::IsSatisfied(Move *move, MoveStep *lastPerformed)
+{
+	Piece *other = ReferencePiece::FindReferencedPiece(move, lastPerformed, relationship, otherPieceType, distance, dir);
+
+	if (other != 0)
+	{
+		move->AddPieceReference(other, otherPieceRef);
+		return true;
+	}
+
+	return false;
+}

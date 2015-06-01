@@ -508,9 +508,24 @@ std::list<Move*> *MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, M
 std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
-	
+	Piece *other = FindReferencedPiece(baseMove, previousStep, relationship, otherPieceType, distance, direction);
+
+	if (other != 0)
+	{
+		Move *move = baseMove->Clone();
+		move->AddPieceReference(other, otherPieceRef);
+		moves->push_back(move);
+	}
+
+	return moves;
+}
+
+
+Piece *ReferencePiece::FindReferencedPiece(Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction)
+{
 	Piece *other = 0;
-	Player *player = baseMove->GetPlayer();
+	Player *player = move->GetPlayer();
+	Piece *piece = move->GetPiece();
 	Game *game = player->GetGame();
 
 	if (direction != 0 && distance != 0)
@@ -537,15 +552,13 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 				if (other == 0)
                     continue;
 
-				if (!other->TypeMatches(otherPieceType))
+				if (!other->TypeMatches(type))
 					continue;
 
 				if (relationship != Player::Any && player->GetRelationship(other->GetOwner()) != relationship)
 					continue;
 
-				Move *move = baseMove->Clone();
-				move->AddPieceReference(other, otherPieceRef);
-				moves->push_back(move);
+				return other;
             }
         }
     }
@@ -564,17 +577,15 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 			{
 				other = *it2;
 
-				if (!other->TypeMatches(otherPieceType))
+				if (!other->TypeMatches(type))
 					continue;
 
-				Move *move = baseMove->Clone();
-				move->AddPieceReference(other, otherPieceRef);
-				moves->push_back(move);
+				return other;
             }
         }
 	}
 	
-	return moves;
+	return 0;
 }
 
 
