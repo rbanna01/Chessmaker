@@ -63,6 +63,7 @@ private:
 	MoveDefinition *ParseMove_WhenPossible(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_ReferencePiece(rapidxml::xml_node<char> *moveNode);
 	MoveDefinition *ParseMove_State(rapidxml::xml_node<char> *moveNode);
+	MoveDefinition *ParseMove_ForEachPiece(rapidxml::xml_node<char> *moveNode);
 	MoveConditionGroup *ParseMoveConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
 	StateConditionGroup *ParseStateConditions(rapidxml::xml_node<char> *node, Condition::GroupType_t type);
 	Condition::NumericComparison_t ParseNumericComparison(char *value);

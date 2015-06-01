@@ -626,6 +626,35 @@ std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 }
 
 
+std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
+{
+	std::list<Move*> *moves = new std::list<Move*>();
+
+	// this effectively acts as a whenPossible, even though we use sequences to stop the underlying whenPossible adding the base move once for each piece
+
+	Player *movePlayer = baseMove->GetPlayer();
+	auto players = movePlayer->GetGame()->GetPlayers();
+	for (auto itPlayer = players.begin(); itPlayer != players.end(); itPlayer++)
+	{
+		Player *player = *itPlayer;
+		if (relationship != Player::Any && movePlayer->GetRelationship(player) != relationship)
+			continue;
+
+		auto pieces = player->GetPiecesOnBoard();
+		for (auto itPiece = pieces.begin(); itPiece != pieces.end(); itPiece++)
+		{
+			std::list<Move*> *pieceMoves = whenPossible->DetermineNextSteps(baseMove, *itPiece, previousStep);
+			moves->splice(moves->end(), *pieceMoves);
+		}
+	}
+
+	if (moves->empty())
+		moves->push_back(baseMove->Clone());
+
+	return moves;
+}
+
+
 std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
@@ -645,8 +674,7 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 	if (conditions != 0 && !conditions->IsSatisfied(baseMove, lastPerformedStep))
 		return moves; // This assumes that no conditions will be dependent on the promoted type. If they are, this needs moved into the loop, and shouldn't look at baseMove
 
-	Player *player = baseMove->GetPlayer();
-	Game *game = player->GetGame();
+	Game *game = baseMove->GetPlayer()->GetGame();
 	
 	for (auto it = options.begin(); it != options.end(); it++)
 	{

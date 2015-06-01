@@ -523,6 +523,15 @@
 			<xs:element name="referencePiece" type="referencePiece"/>
 			<xs:element name="setState" type="setState"/>
 			<xs:element name="promotion" type="promotion"/>
+			<xs:element name="forEachPiece">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="moveSequence">
+							<xs:attribute name="owner" type="owner" default="any"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
 		</xs:choice>
 	</xs:complexType>
 

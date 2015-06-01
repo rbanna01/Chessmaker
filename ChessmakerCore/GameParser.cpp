@@ -607,6 +607,8 @@ MoveDefinition *GameParser::ParseMove(xml_node<char> *moveNode, bool isTopLevel)
 			retVal = ParseMove_ReferencePiece(moveNode);
 		else if (strcmp(moveNode->name(), "setState") == 0)
 			retVal = ParseMove_State(moveNode);
+		else if (strcmp(moveNode->name(), "forEachPiece") == 0)
+			retVal = ParseMove_ForEachPiece(moveNode);
 	}
 
 	if (retVal == 0)
@@ -880,6 +882,27 @@ MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
 		mode = SetState::SetAndClear;
 
 	return new SetState(piece, state, mode);
+}
+
+
+MoveDefinition *GameParser::ParseMove_ForEachPiece(xml_node<char> *moveNode)
+{
+	xml_attribute<> *attr = moveNode->first_attribute("owner");
+	Player::Relationship_t relat = ParseRelationship(attr == 0 ? 0 : attr->value());
+
+	Sequence *content = new Sequence();
+
+	xml_node<> *childNode = moveNode->first_node();
+	while (childNode != 0)
+	{
+		MoveDefinition *move = ParseMove(childNode, false);
+		if (move != 0)
+			content->contents.push_back(move);
+
+		childNode = childNode->next_sibling();
+	}
+
+	return new ForEachPiece(relat, content);
 }
 
 

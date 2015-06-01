@@ -286,3 +286,21 @@ public:
 private:
 	friend class GameParser;
 };
+
+
+class ForEachPiece : public MoveDefinition
+{
+public:
+	ForEachPiece(Player::Relationship_t owner, Sequence *move)
+		: MoveDefinition("", 0, Any, 0)
+	{
+		whenPossible = move;
+		this->relationship = relationship;
+	}
+	virtual ~ForEachPiece() { delete whenPossible; }
+
+	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
+private:
+	Sequence *whenPossible;
+	Player::Relationship_t relationship;
+};
