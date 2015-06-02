@@ -24,7 +24,7 @@ class MoveCondition : public Condition
 {
 public:
 	virtual ~MoveCondition() {}
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed) = 0;
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed) = 0;
 };
 
 
@@ -34,7 +34,7 @@ public:
 	MoveConditionGroup(GroupType_t type);
 	virtual ~MoveConditionGroup();
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	GroupType_t type;
 	std::list<MoveCondition*> elements;
@@ -52,7 +52,7 @@ public:
 		type = 0;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	PieceType *type;
@@ -70,7 +70,7 @@ public:
 		this->relationship = relationship;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	Player::Relationship_t relationship;
@@ -87,7 +87,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	int number;
@@ -106,7 +106,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	direction_t dir;
@@ -125,7 +125,7 @@ public:
 		this->comparison = comparison;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	int number;
@@ -143,9 +143,9 @@ public:
 		this->value = value;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
-	bool CheckSatisfied(Move *move, MoveStep *lastPerformed);
+	bool CheckSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 	static bool IsThreatened(GameState *state, Cell *position);
 
 	bool start, end, value;
@@ -172,8 +172,8 @@ public:
 
 	~MoveCondition_Count() { if (distance != &Distance::Any) delete distance; }
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
-	int GetCount(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
+	int GetCount(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	direction_t dir;
@@ -206,7 +206,7 @@ public:
 	}
 
 	void AddItem(MoveCondition_Count* item) { items.push_back(item); }
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	std::list<MoveCondition_Count*> items;
 	Operation_t operation;
@@ -224,7 +224,7 @@ public:
 		this->state = state;
 	}
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	customstate_t state;
@@ -247,7 +247,7 @@ public:
 	}
 	virtual ~MoveCondition_ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
-	virtual bool IsSatisfied(Move *move, MoveStep *lastPerformed);
+	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char otherPieceRef[PIECE_REF_LENGTH];
 	PieceType *otherPieceType;

@@ -173,10 +173,10 @@ void Move::AddPieceReference(Piece *piece, const char *ref)
 }
 
 
-Piece *Move::GetPieceByReference(const char *ref)
+Piece *Move::GetPieceByReference(const char *ref, Piece *self)
 {
 	if (strcmp(ref, "self") == 0)
-		return piece; // this is needed only by conditions code, it looks like. If they could be made to handle "self" separately, this wouldn't be needed.
+		return self; // this is needed only by conditions code, it looks like. If they could be made to handle "self" separately, this wouldn't be needed.
 
 	auto it = references.find(ref);
 	if (it == references.end())

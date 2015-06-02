@@ -41,7 +41,7 @@ MoveConditionGroup::~MoveConditionGroup()
 }
 
 
-bool MoveConditionGroup::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveConditionGroup::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
 	bool any = false;
 
@@ -49,27 +49,27 @@ bool MoveConditionGroup::IsSatisfied(Move *move, MoveStep *lastPerformed)
 	{
 	case GroupType_t::And:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if (!(*it)->IsSatisfied(move, lastPerformed))
+			if (!(*it)->IsSatisfied(piece, move, lastPerformed))
                 return false;
         return true;
     case GroupType_t::Or:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if ((*it)->IsSatisfied(move, lastPerformed))
+			if ((*it)->IsSatisfied(piece, move, lastPerformed))
                 return true;
         return false;
     case GroupType_t::Nand:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if (!(*it)->IsSatisfied(move, lastPerformed))
+			if (!(*it)->IsSatisfied(piece, move, lastPerformed))
                 return true;
         return false;
     case GroupType_t::Nor:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if ((*it)->IsSatisfied(move, lastPerformed))
+			if ((*it)->IsSatisfied(piece, move, lastPerformed))
                 return false;
         return true;
     case GroupType_t::Xor:
 		for (auto it = elements.begin(); it != elements.end(); it++)
-			if ((*it)->IsSatisfied(move, lastPerformed))
+			if ((*it)->IsSatisfied(piece, move, lastPerformed))
 			{
 				if (any)
 					return false;
@@ -83,9 +83,9 @@ bool MoveConditionGroup::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_Type::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_Type::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"type\" move condition: %s\n", pieceRef);
@@ -95,9 +95,9 @@ bool MoveCondition_Type::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_Owner::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_Owner::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"owner\" move condition: %s\n", pieceRef);
@@ -111,9 +111,9 @@ bool MoveCondition_Owner::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_MoveNumber::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_MoveNumber::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"move number\" move condition: %s\n", pieceRef);
@@ -124,9 +124,9 @@ bool MoveCondition_MoveNumber::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_MaxDist::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_MaxDist::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"max dist\" move condition: %s\n", pieceRef);
@@ -147,9 +147,9 @@ bool MoveCondition_MaxDist::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"turns since last move\" move condition: %s\n", pieceRef);
@@ -161,24 +161,24 @@ bool MoveCondition_TurnsSinceLastMove::IsSatisfied(Move *move, MoveStep *lastPer
 
 
 bool MoveCondition_Threatened::checkingThreat = false; // when performing moves to check this, don't go performing other moves for other "threatened" checks, or things get messy
-bool MoveCondition_Threatened::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_Threatened::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
 	if (checkingThreat)
 		return true;
 
 	checkingThreat = true;
-	bool retVal = CheckSatisfied(move, lastPerformed);
+	bool retVal = CheckSatisfied(piece, move, lastPerformed);
 	checkingThreat = false;
 
 	return retVal;
 }
 
 
-bool MoveCondition_Threatened::CheckSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_Threatened::CheckSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
 	if (start && move->GetPiece()->GetState() == Piece::OnBoard)
 	{
-		bool threatened = IsThreatened(move->GetPrevState(), move->GetPiece()->GetPosition());
+		bool threatened = IsThreatened(move->GetPrevState(), piece->GetPosition());
 		if (threatened != value)
 			return false;
 	}
@@ -201,9 +201,9 @@ bool MoveCondition_Threatened::CheckSatisfied(Move *move, MoveStep *lastPerforme
 	}
 
 	bool returnVal = true;
-	if (move->GetPiece()->GetState() == Piece::OnBoard)
+	if (piece->GetState() == Piece::OnBoard)
 	{
-		bool threatened = IsThreatened(move->GetPrevState(), move->GetPiece()->GetPosition());
+		bool threatened = IsThreatened(move->GetPrevState(), piece->GetPosition());
 		returnVal = threatened == value;
 	}
 
@@ -239,17 +239,17 @@ bool MoveCondition_Threatened::IsThreatened(GameState *state, Cell *position)
 }
 
 
-bool MoveCondition_Count::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_Count::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	return ResolveComparison(comparison, GetCount(move, lastPerformed), number);
+	return ResolveComparison(comparison, GetCount(piece, move, lastPerformed), number);
 }
 
 
-int MoveCondition_Count::GetCount(Move *move, MoveStep *lastPerformed)
+int MoveCondition_Count::GetCount(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
 	int count = 0;
 
-	Piece *from = move->GetPieceByReference(pieceRef);
+	Piece *from = move->GetPieceByReference(pieceRef, piece);
 	if (from == 0)
 	{
 		ReportError("Referenced piece not found for \"count\" move condition: %s\n", pieceRef);
@@ -283,16 +283,16 @@ int MoveCondition_Count::GetCount(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_CountMultiple::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_CountMultiple::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
 	auto it = items.begin();
 	MoveCondition_Count *count = *it;
-	int total = count->GetCount(move, lastPerformed);
+	int total = count->GetCount(piece, move, lastPerformed);
 
 	for (it++; it != items.end(); it++)
 	{
 		count = *it;
-		int num = count->GetCount(move, lastPerformed);
+		int num = count->GetCount(piece, move, lastPerformed);
 
 		switch (operation)
 		{
@@ -307,9 +307,9 @@ bool MoveCondition_CountMultiple::IsSatisfied(Move *move, MoveStep *lastPerforme
 }
 
 
-bool MoveCondition_State::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_State::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = move->GetPieceByReference(pieceRef);
+	Piece *other = move->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
 		ReportError("Referenced piece not found for \"state\" move condition: %s\n", pieceRef);
@@ -320,9 +320,9 @@ bool MoveCondition_State::IsSatisfied(Move *move, MoveStep *lastPerformed)
 }
 
 
-bool MoveCondition_ReferencePiece::IsSatisfied(Move *move, MoveStep *lastPerformed)
+bool MoveCondition_ReferencePiece::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed)
 {
-	Piece *other = ReferencePiece::FindReferencedPiece(move, lastPerformed, relationship, otherPieceType, distance, dir);
+	Piece *other = ReferencePiece::FindReferencedPiece(piece, move, lastPerformed, relationship, otherPieceType, distance, dir);
 
 	if (other != 0)
 	{

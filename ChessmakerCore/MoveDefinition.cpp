@@ -40,7 +40,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
 	{
-		piece = baseMove->GetPieceByReference(pieceRef);
+		piece = baseMove->GetPieceByReference(pieceRef, piece);
 		if (piece == 0)
 		{
 			ReportError("Referenced piece not found for slide move: %s\n", pieceRef);
@@ -94,7 +94,7 @@ std::list<Move*> *Slide::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 
                 move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), cell, dir, dist));
 
-				if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
+				if (conditions == 0 || conditions->IsSatisfied(piece, move, lastPerformedStep))
 					moves->push_back(move);
 				else
 					delete move;
@@ -116,7 +116,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
 	{
-		piece = baseMove->GetPieceByReference(pieceRef);
+		piece = baseMove->GetPieceByReference(pieceRef, piece);
 		if (piece == 0)
 		{
 			ReportError("Referenced piece not found for leap move: %s\n", pieceRef);
@@ -193,7 +193,7 @@ std::list<Move*> *Leap::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSte
 
 						move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, secondDir, secondDist > 0 ? secondDist : dist));
 
-						if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
+						if (conditions == 0 || conditions->IsSatisfied(piece, move, lastPerformedStep))
 							moves->push_back(move);
 						else
 							delete move;
@@ -214,7 +214,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
 	{
-		piece = baseMove->GetPieceByReference(pieceRef);
+		piece = baseMove->GetPieceByReference(pieceRef, piece);
 		if (piece == 0)
 		{
 			ReportError("Referenced piece not found for hop move: %s\n", pieceRef);
@@ -297,7 +297,7 @@ std::list<Move*> *Hop::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep
 
                     move->AddStep(MoveStep::CreateMove(piece, piece->GetPosition(), destCell, dir, distTo + distAfter));
 
-					if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
+					if (conditions == 0 || conditions->IsSatisfied(piece, move, lastPerformedStep))
 						moves->push_back(move);
 					else
 						delete move;
@@ -322,7 +322,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
 	{
-		piece = baseMove->GetPieceByReference(pieceRef);
+		piece = baseMove->GetPieceByReference(pieceRef, piece);
 		if (piece == 0)
 		{
 			ReportError("Referenced piece not found for shoot move: %s\n", pieceRef);
@@ -388,7 +388,7 @@ std::list<Move*> *Shoot::DetermineNextSteps(Move *baseMove, Piece *piece, MoveSt
 						move->AddStep(captureStep);
 						move->AddPieceReference(target, "target");
 
-						if (conditions == 0 || conditions->IsSatisfied(move, lastPerformedStep))
+						if (conditions == 0 || conditions->IsSatisfied(piece, move, lastPerformedStep))
 							moves->push_back(move);
 						else
 							delete move;
@@ -413,10 +413,10 @@ std::list<Move*> *MoveLike::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 	std::list<Move*> *moves = new std::list<Move*>();
 
 	// some steps will specify a different piece to act upon, rather than the piece being moved
-	Piece *other = baseMove->GetPieceByReference(pieceRef);
+	Piece *other = baseMove->GetPieceByReference(pieceRef, piece);
 	if (other == 0)
 	{
-		ReportError("Referenced piece not found for move like move: %s\n", pieceRef);
+		ReportError("Referenced piece not found for moveLike move: %s\n", pieceRef);
 		return moves;
 	}
 	
@@ -508,7 +508,7 @@ std::list<Move*> *MoveLike::AppendMoveLikeTarget(Move *baseMove, Piece *piece, M
 std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
-	Piece *other = FindReferencedPiece(baseMove, previousStep, relationship, otherPieceType, distance, direction);
+	Piece *other = FindReferencedPiece(piece, baseMove, previousStep, relationship, otherPieceType, distance, direction);
 
 	if (other != 0)
 	{
@@ -521,11 +521,10 @@ std::list<Move*> *ReferencePiece::DetermineNextSteps(Move *baseMove, Piece *piec
 }
 
 
-Piece *ReferencePiece::FindReferencedPiece(Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction)
+Piece *ReferencePiece::FindReferencedPiece(Piece *piece, Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction)
 {
 	Piece *other = 0;
 	Player *player = move->GetPlayer();
-	Piece *piece = move->GetPiece();
 	Game *game = player->GetGame();
 
 	if (direction != 0 && distance != 0)
@@ -592,7 +591,14 @@ Piece *ReferencePiece::FindReferencedPiece(Move *move, MoveStep *previousStep, P
 std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
-	bool conditionsSatisfied = conditions == 0 || conditions->IsSatisfied(baseMove, previousStep);
+	bool conditionsSatisfied = conditions == 0 || conditions->IsSatisfied(piece, baseMove, previousStep);
+
+	piece = baseMove->GetPieceByReference(pieceRef, piece);
+	if (piece == 0)
+	{
+		ReportError("Referenced piece not found for setState move: %s\n", pieceRef);
+		return moves;
+	}
 
 	Mode_t mode = this->mode;
 	if (mode == SetAndClear)
@@ -603,7 +609,7 @@ std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 			mode = Clear;
 	}
 	else if (!conditionsSatisfied)
-		return moves; // conditions weren't satisfied, 
+		return moves; // conditions weren't satisfied, fail
 
 	Move *move = baseMove->Clone();
 
@@ -645,6 +651,7 @@ std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece,
 		{
 			std::list<Move*> *pieceMoves = whenPossible->DetermineNextSteps(baseMove, *itPiece, previousStep);
 			moves->splice(moves->end(), *pieceMoves);
+			delete pieceMoves;
 		}
 	}
 
@@ -662,7 +669,7 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 	// some steps will specify a different piece to act upon, rather than the piece being moved
 	if (!moveSelf)
 	{
-		piece = baseMove->GetPieceByReference(pieceRef);
+		piece = baseMove->GetPieceByReference(pieceRef, piece);
 		if (piece == 0)
 		{
 			ReportError("Referenced piece not found for promotion: %s\n", pieceRef);
@@ -671,7 +678,7 @@ std::list<Move*> *Promotion::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 	}
 
 	MoveStep *lastPerformedStep = baseMove->GetSteps().empty() ? 0 : *baseMove->GetSteps().rbegin();
-	if (conditions != 0 && !conditions->IsSatisfied(baseMove, lastPerformedStep))
+	if (conditions != 0 && !conditions->IsSatisfied(piece, baseMove, lastPerformedStep))
 		return moves; // This assumes that no conditions will be dependent on the promoted type. If they are, this needs moved into the loop, and shouldn't look at baseMove
 
 	Game *game = baseMove->GetPlayer()->GetGame();
@@ -700,7 +707,7 @@ std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 {
 	std::list<Move*> *prevRepeatMoves = maxOccurs > 1 ? new std::list<Move*>() : 0;
 
-	std::list<Move*> *moves = DetermineChildSteps(baseMove, contents.begin(), previousStep, 1, prevRepeatMoves);
+	std::list<Move*> *moves = DetermineChildSteps(piece, baseMove, contents.begin(), previousStep, 1, prevRepeatMoves);
 
 	// this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
 	if (stepOutIfFail && moves->empty() && baseMove->HasSteps())
@@ -713,9 +720,9 @@ std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 }
 
 
-std::list<Move*> *MoveGroup::DetermineChildSteps(Move *baseMove, std::list<MoveDefinition*>::iterator itChild, MoveStep *previousStep, int repeatNum, std::list<Move*> *prevRepeatMoves)
+std::list<Move*> *MoveGroup::DetermineChildSteps(Piece *piece, Move *baseMove, std::list<MoveDefinition*>::iterator itChild, MoveStep *previousStep, int repeatNum, std::list<Move*> *prevRepeatMoves)
 {
-	std::list<Move*> *childMoves = (*itChild)->DetermineNextSteps(baseMove, baseMove->GetPiece(), previousStep);
+	std::list<Move*> *childMoves = (*itChild)->DetermineNextSteps(baseMove, piece, previousStep);
 
 	if (childMoves->empty())
 	{
@@ -766,7 +773,7 @@ std::list<Move*> *MoveGroup::DetermineChildSteps(Move *baseMove, std::list<MoveD
 				step->Perform(false);
 		}
 
-		std::list<Move*> *nextChildMoves = DetermineChildSteps(childMove, itChild, step, repeatNum, prevRepeatMoves);
+		std::list<Move*> *nextChildMoves = DetermineChildSteps(piece, childMove, itChild, step, repeatNum, prevRepeatMoves);
 
 		// now reverse those same moves
 		for (auto itStep = steps.rbegin(); itStep != steps.rend(); itStep++)

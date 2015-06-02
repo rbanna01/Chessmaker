@@ -164,7 +164,7 @@ public:
 	virtual ~ReferencePiece() { if (distance != 0 && distance != &Distance::Any) delete distance; }
 
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
-	static Piece *FindReferencedPiece(Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction);
+	static Piece *FindReferencedPiece(Piece *piece, Move *move, MoveStep *previousStep, Player::Relationship_t relationship, PieceType *type, Distance *distance, direction_t direction);
 private:
 	char otherPieceRef[PIECE_REF_LENGTH];
 	PieceType *otherPieceType;
@@ -238,7 +238,7 @@ public:
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
-	std::list<Move*> *DetermineChildSteps(Move *baseMove, std::list<MoveDefinition*>::iterator it, MoveStep *previousStep, int repeatNum, std::list<Move*> *prevRepeatMoves);
+	std::list<Move*> *DetermineChildSteps(Piece *piece, Move *baseMove, std::list<MoveDefinition*>::iterator it, MoveStep *previousStep, int repeatNum, std::list<Move*> *prevRepeatMoves);
 
 	int minOccurs, maxOccurs;
 	bool stepOutIfFail;

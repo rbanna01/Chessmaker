@@ -33,7 +33,7 @@ public:
 	void SetDescription(std::string description) { this->description = description; }
 
 	void AddPieceReference(Piece *piece, const char *ref);
-	Piece *GetPieceByReference(const char *ref);
+	Piece *GetPieceByReference(const char *ref, Piece *self);
 
 	Cell *GetStartPos() { return startPos; }
 	Cell *GetEndPos();
