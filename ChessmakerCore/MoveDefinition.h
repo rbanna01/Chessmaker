@@ -132,7 +132,6 @@ public:
 	MoveLike(const char *pieceRef, MoveConditionGroup *conditions, When_t when)
 		: MoveDefinition("", conditions, when, 0)
 	{
-		strcpy(this->otherPieceRef, pieceRef);
 		likeTarget = strcmp(pieceRef, "target") == 0;
 	}
 	virtual ~MoveLike() { }
@@ -144,7 +143,6 @@ private:
 
 	static bool AllowMoveLikeTarget;
 	bool likeTarget;
-	char otherPieceRef[PIECE_REF_LENGTH];
 
 	friend class GameParser;
 };
@@ -181,9 +179,8 @@ public:
 	typedef enum { Set, Clear, SetAndClear } Mode_t;
 
 	SetState(const char *pieceRef, customstate_t state, Mode_t mode)
-		: MoveDefinition("", 0, Any, 0)
+		: MoveDefinition(pieceRef, 0, Any, 0)
 	{
-		strcpy(this->otherPieceRef, pieceRef);
 		this->state = state;
 		this->mode = mode;
 	}
@@ -192,7 +189,6 @@ public:
 	std::list<Move*> *DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep);
 
 private:
-	char otherPieceRef[PIECE_REF_LENGTH];
 	customstate_t state;
 	Mode_t mode;
 
