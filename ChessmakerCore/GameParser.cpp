@@ -22,13 +22,6 @@
 using namespace rapidxml;
 
 
-GameParser::~GameParser()
-{
-	for (auto it = namedMoves.begin(); it != namedMoves.end(); it++)
-		delete it->second;
-}
-
-
 #ifdef NO_SVG
 Game* GameParser::Parse(char *definition)
 #else
@@ -418,14 +411,12 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 		{
 			char *name = node->first_attribute("name")->value();
 			auto it = namedMoves.find(name);
+			
 			if (it == namedMoves.end())
-			{
-				namedMoves.insert(std::make_pair(name, ParseMove_Sequence(node)));
-			}
+				namedMoves.insert(std::make_pair(name, node));
 			else
-			{
 				ReportError("Got multiple named moves with the same name: %s\n", name);
-			}
+
 			node = node->next_sibling("move");
 		}
 	}
@@ -767,7 +758,7 @@ MoveDefinition *GameParser::ParseMove_Promotion(xml_node<char> *moveNode)
 }
 
 
-Sequence *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
+MoveDefinition *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
 {
 	Sequence *move = new Sequence();
 
@@ -787,10 +778,7 @@ Sequence *GameParser::ParseMove_Sequence(xml_node<char> *moveNode)
 		if (it == namedMoves.end())
 			ReportError("Got a reference to a non-existing named move: %s\n", attr->value());
 		else
-		{
-			Sequence *copy = new Sequence(*it->second);
-			move->contents.push_back(copy);
-		}
+			move->contents.push_back(ParseMove_Sequence(it->second));
 	}
 
 	return move;
