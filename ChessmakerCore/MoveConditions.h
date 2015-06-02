@@ -218,16 +218,18 @@ private:
 class MoveCondition_State : public MoveCondition
 {
 public:
-	MoveCondition_State(const char *piece, customstate_t state)
+	MoveCondition_State(const char *piece, customstate_t state, bool value)
 	{
 		strcpy(pieceRef, piece);
 		this->state = state;
+		this->value = value;
 	}
 
 	virtual bool IsSatisfied(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
 	customstate_t state;
+	bool value;
 
 	friend class GameState;
 	friend class StateCondition_Threatened;

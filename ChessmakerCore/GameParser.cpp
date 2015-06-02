@@ -1038,7 +1038,9 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			const char *piece = attr == 0 ? "self" : attr->value();
 
 			customstate_t state = LookupState(child->first_attribute("state")->value());
-			conditions->elements.push_back(new MoveCondition_State(piece, state));
+			bool value = strcmp(child->value(), "true") == 0;
+
+			conditions->elements.push_back(new MoveCondition_State(piece, state, value));
 		}
 		else if (strcmp(child->name(), "referencePiece") == 0)
 		{

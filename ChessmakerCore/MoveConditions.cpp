@@ -316,7 +316,7 @@ bool MoveCondition_State::IsSatisfied(Piece *piece, Move *move, MoveStep *lastPe
 		return false;
 	}
 
-	return other->HasState(state);
+	return other->HasState(state) == value;
 }
 
 
