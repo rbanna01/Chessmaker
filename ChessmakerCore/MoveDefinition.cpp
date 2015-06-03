@@ -635,9 +635,15 @@ std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece, MoveStep *previousStep)
 {
 	std::list<Move*> *moves = new std::list<Move*>();
+	moves->push_back(baseMove->Clone());
+
+	if (MoveCondition_Threatened::checkingThreat)
+	{// don't re-re-calculate this, every move. Once is enough.
+		return moves;
+	}
+
 
 	// this effectively acts as a whenPossible, even though we use sequences to stop the underlying whenPossible adding the base move once for each piece
-
 	Player *movePlayer = baseMove->GetPlayer();
 	auto players = movePlayer->GetGame()->GetPlayers();
 	for (auto itPlayer = players.begin(); itPlayer != players.end(); itPlayer++)
@@ -649,14 +655,22 @@ std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece,
 		auto pieces = player->GetPiecesOnBoard();
 		for (auto itPiece = pieces.begin(); itPiece != pieces.end(); itPiece++)
 		{
-			std::list<Move*> *pieceMoves = whenPossible->DetermineNextSteps(baseMove, *itPiece, previousStep);
-			moves->splice(moves->end(), *pieceMoves);
-			delete pieceMoves;
+			// if a move results in multiple resultant moves, consider each of them a new "branch"
+			std::list<Move*> *tmpMoves = new std::list<Move*>();
+
+			for (auto itMove = moves->begin(); itMove != moves->end(); itMove++)
+			{
+				std::list<Move*> *pieceMoves = whenPossible->DetermineNextSteps(*itMove, *itPiece, previousStep);
+				tmpMoves->splice(tmpMoves->end(), *pieceMoves);
+				delete pieceMoves;
+
+				delete *itMove;
+			}
+
+			delete moves;
+			moves = tmpMoves;
 		}
 	}
-
-	if (moves->empty())
-		moves->push_back(baseMove->Clone());
 
 	return moves;
 }

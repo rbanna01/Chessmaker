@@ -291,7 +291,7 @@ public:
 		: MoveDefinition("", 0, Any, 0)
 	{
 		whenPossible = move;
-		this->relationship = relationship;
+		this->relationship = owner;
 	}
 	virtual ~ForEachPiece() { delete whenPossible; }
 

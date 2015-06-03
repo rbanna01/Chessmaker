@@ -153,6 +153,7 @@ private:
 
 	friend class GameState;
 	friend class StateCondition_Threatened;
+	friend class ForEachPiece;
 };
 
 
