@@ -639,7 +639,7 @@
 						<conditions>
 							<or>
 								<and>
-									<type of="this">immobilizer</type>
+									<type of="self">immobilizer</type>
 									<referencePiece name="chameleon" dir="any" dist="1" type="chameleon" owner="self" />
 								</and>
 

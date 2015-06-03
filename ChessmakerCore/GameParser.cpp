@@ -855,6 +855,8 @@ MoveDefinition *GameParser::ParseMove_ReferencePiece(xml_node<char> *moveNode)
 
 MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
 {
+	MoveConditionGroup *conditions = ParseMoveConditions(moveNode->first_node("conditions"), Condition::And);
+
 	xml_attribute<> *attr = moveNode->first_attribute("piece");
 	const char *piece = attr == 0 ? "self" : attr->value();
 
@@ -869,7 +871,7 @@ MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
 	else if (strcmp(strMode, "set and clear") == 0)
 		mode = SetState::SetAndClear;
 
-	return new SetState(piece, state, mode);
+	return new SetState(piece, state, mode, conditions);
 }
 
 
@@ -974,7 +976,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			Distance *dist = ParseDistance(child->first_attribute("dist")->value());
 
 			attr = child->first_attribute("owner");
-			Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(child->value());
+			Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(attr->value());
 
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			int number = atoi(child->value());
@@ -1014,7 +1016,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 				Distance *dist = ParseDistance(count->first_attribute("dist")->value());
 
 				attr = count->first_attribute("owner");
-				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(count->value());
+				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(attr->value());
 
 				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, relationship, comparison, number);
 

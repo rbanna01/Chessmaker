@@ -178,8 +178,8 @@ class SetState : public MoveDefinition
 public:
 	typedef enum { Set, Clear, SetAndClear } Mode_t;
 
-	SetState(const char *pieceRef, customstate_t state, Mode_t mode)
-		: MoveDefinition(pieceRef, 0, Any, 0)
+	SetState(const char *pieceRef, customstate_t state, Mode_t mode, MoveConditionGroup *conditions)
+		: MoveDefinition(pieceRef, conditions, Any, 0)
 	{
 		this->state = state;
 		this->mode = mode;
