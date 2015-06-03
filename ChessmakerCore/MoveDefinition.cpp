@@ -663,13 +663,15 @@ std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece,
 				std::list<Move*> *pieceMoves = whenPossible->DetermineNextSteps(*itMove, *itPiece, previousStep);
 				tmpMoves->splice(tmpMoves->end(), *pieceMoves);
 				delete pieceMoves;
-				delete *itMove;
 			}
 
 			if (tmpMoves->empty())
 				delete tmpMoves;
 			else
 			{
+				for (auto itMove = moves->begin(); itMove != moves->end(); itMove++)
+					delete *itMove;
+
 				delete moves;
 				moves = tmpMoves;
 			}
