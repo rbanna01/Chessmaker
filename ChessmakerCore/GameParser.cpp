@@ -871,6 +871,7 @@ MoveDefinition *GameParser::ParseMove_State(xml_node<char> *moveNode)
 	else if (strcmp(strMode, "set and clear") == 0)
 		mode = SetState::SetAndClear;
 
+	printf("Parsed a setState, state is %u\n", state);
 	return new SetState(piece, state, mode, conditions);
 }
 

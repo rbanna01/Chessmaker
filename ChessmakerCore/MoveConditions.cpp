@@ -269,6 +269,11 @@ int MoveCondition_Count::GetCount(Piece *piece, Move *move, MoveStep *lastPerfor
 	else
 		exclude = 0;
 
+	if (exclude == 0)
+		printf("Got no piece to exclude\n");
+	else
+		printf("Got a %s %s to exclude\n", exclude->GetOwner()->GetName(), exclude->GetType()->GetName());
+
 	Player *player = move->GetPlayer();
 
 	// check the piece we're counting from, also, i guess

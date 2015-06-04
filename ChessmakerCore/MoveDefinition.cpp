@@ -619,6 +619,7 @@ std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 	case Set:
 		if (piece->HasState(state))
 			break; // already has this state, so don't add it again
+		printf("Creating add state, state is %u\n", state);
 		move->AddStep(MoveStep::CreateAddState(piece, state));
 		break;
 	case Clear:
@@ -642,7 +643,6 @@ std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece,
 		return moves;
 	}
 
-
 	// this effectively acts as a whenPossible, even though we use sequences to stop the underlying whenPossible adding the base move once for each piece
 	Player *movePlayer = baseMove->GetPlayer();
 	auto players = movePlayer->GetGame()->GetPlayers();
@@ -650,7 +650,9 @@ std::list<Move*> *ForEachPiece::DetermineNextSteps(Move *baseMove, Piece *piece,
 	{
 		Player *player = *itPlayer;
 		if (relationship != Player::Any && movePlayer->GetRelationship(player) != relationship)
+		{
 			continue;
+		}
 
 		auto pieces = player->GetPiecesOnBoard();
 		for (auto itPiece = pieces.begin(); itPiece != pieces.end(); itPiece++)

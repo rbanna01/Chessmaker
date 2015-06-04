@@ -20,6 +20,7 @@ Game::Game()
 }
 
 
+bool Game::performingActualMove = false;
 Game::~Game()
 {
 	if (board != 0)
@@ -128,7 +129,10 @@ bool Game::StartNextTurn()
 
 Game::MoveResult_t Game::PerformMove(Move *move)
 {
+	Game::performingActualMove = true;
+	printf("Performing move %s, with %i steps\n", move->GetDescription(), move->GetSteps().size());
 	GameState *subsequentState = move->Perform(true);
+	Game::performingActualMove = false;
 	if (subsequentState == 0)
 		return MoveError;
 

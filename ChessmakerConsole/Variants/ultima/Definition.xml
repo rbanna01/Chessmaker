@@ -636,6 +636,13 @@
 			<move name="immobilization">
 				<forEachPiece owner="enemy">
 					<setState name="immobilized" mode="set and clear">
+					<!-- 
+A friendly piece X is immobilised if either (or both) of the following apply:
+
+a) It is an immobiliser and adjacent to an enemy chameleon.
+
+b) It is adjacent to an enemy immobiliser next to which is no friendly chameleon or immobiliser other than X.
+					-->
 						<conditions>
 							<or>
 								<and>

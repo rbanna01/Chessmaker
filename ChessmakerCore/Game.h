@@ -33,6 +33,8 @@ public:
 
 	std::list<PieceType*> GetAllPieceTypes() { return allPieceTypes; }
 	std::list<Player*> GetPlayers() { return players; }
+
+	static bool performingActualMove;
 private:
 	bool StartNextTurn();
 	bool EndTurn(GameState *newState, Move *lastMove);

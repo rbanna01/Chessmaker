@@ -113,6 +113,23 @@ bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *
 	piece->position = pos;
 	piece->owner = owner;
 	piece->pieceType = type;
+
+	if (Game::performingActualMove)
+	{
+		if (addState != 0)
+			printf("Setting state for %s %s at %s\n", piece->GetOwner()->GetName(), piece->GetType()->GetName(), piece->position->GetName());
+		else if (removeState != 0)
+			printf("Clearing state for %s %s at %s\n", piece->GetOwner()->GetName(), piece->GetType()->GetName(), piece->position->GetName());
+		else
+			printf("Performing a step that doesn't change state: %s %s at %s ... addState %u, removeState %u\n", piece->GetOwner()->GetName(), piece->GetType()->GetName(), piece->position->GetName(), addState, removeState);
+	}
+	else
+	{
+		if (addState != 0)
+			printf("[not actual] Setting state for %s %s at %s\n", piece->GetOwner()->GetName(), piece->GetType()->GetName(), piece->position->GetName());
+		if (removeState != 0)
+			printf("[not actual] Clearing state for %s %s at %s\n", piece->GetOwner()->GetName(), piece->GetType()->GetName(), piece->position->GetName());
+	}
 	piece->customState = (piece->customState | addState) & ~removeState;
 
 
@@ -209,6 +226,8 @@ MoveStep* MoveStep::CreateAddState(Piece *piece, customstate_t state)
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->distance = 0;
 	step->addState = state;
+
+	printf("Creating add state for %s at %s, state = %u\n", piece->GetType()->GetName(), piece->GetPosition()->GetName(), step->addState);
 	return step;
 };
 
@@ -220,5 +239,7 @@ MoveStep* MoveStep::CreateRemoveState(Piece *piece, customstate_t state)
 	step->fromPos = step->toPos = piece->GetPosition();
 	step->distance = 0;
 	step->removeState = state;
+
+	printf("Creating remove state for %s at %s, state = %u\n", piece->GetType()->GetName(), piece->GetPosition()->GetName(), step->addState);
 	return step;
 };
