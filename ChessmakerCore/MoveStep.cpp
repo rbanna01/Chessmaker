@@ -115,11 +115,12 @@ bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *
 	piece->pieceType = type;
 	piece->customState = (piece->customState | addState) & ~removeState;
 
-	if (!updateDisplay)
-		return true;
 
 	// move the svg element for this piece
 #ifdef EMSCRIPTEN
+	if (!updateDisplay)
+		return true;
+
 	EM_ASM_ARGS(
 		{ movePiece($0, $1, $2, $3, $4, $5) },
 		piece->GetID(), (int)state, pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetID(), type->GetAppearance(owner)

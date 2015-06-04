@@ -612,22 +612,22 @@ std::list<Move*> *SetState::DetermineNextSteps(Move *baseMove, Piece *piece, Mov
 		return moves; // conditions weren't satisfied, fail
 
 	Move *move = baseMove->Clone();
+	moves->push_back(move);
 
 	switch (mode)
 	{
 	case Set:
 		if (piece->HasState(state))
-			return moves; // already has this state, so don't add it again
+			break; // already has this state, so don't add it again
 		move->AddStep(MoveStep::CreateAddState(piece, state));
 		break;
 	case Clear:
 		if (!piece->HasState(state))
-			return moves; // doesn't have this state, so don't remove it again
+			break; // doesn't have this state, so don't remove it again
 		move->AddStep(MoveStep::CreateRemoveState(piece, state));
 		break;
 	}
 
-	moves->push_back(move);
 	return moves;
 }
 
