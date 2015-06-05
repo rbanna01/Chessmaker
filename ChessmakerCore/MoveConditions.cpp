@@ -256,11 +256,26 @@ int MoveCondition_Count::GetCount(Piece *piece, Move *move, MoveStep *lastPerfor
 		return count;
 	}
 
+	Piece *exclude;
+	if (hasExclude)
+	{
+		exclude = move->GetPieceByReference(excludePieceRef, piece);
+		if (exclude == 0)
+		{
+			ReportError("Referenced (exclude) piece not found for \"count\" move condition: %s\n", excludePieceRef);
+			return count;
+		}
+	}
+	else
+		exclude = 0;
+
+	Player *player = move->GetPlayer();
+
 	// check the piece we're counting from, also, i guess
-	if (from->TypeMatches(type) && (relationship == Player::Any || move->GetPlayer()->GetRelationship(from->GetOwner()) == relationship))
+	if (from->TypeMatches(type) && (relationship == Player::Any || player->GetRelationship(from->GetOwner()) == relationship))
 		count++;
 
-	direction_t dirs = move->GetPlayer()->ResolveDirections(dir, lastPerformed != 0 && lastPerformed->GetDirection() != 0 ? lastPerformed->GetDirection() : move->GetPlayer()->GetForwardDirection());
+	direction_t dirs = move->GetPlayer()->ResolveDirections(direction, lastPerformed != 0 && lastPerformed->GetDirection() != 0 ? lastPerformed->GetDirection() : move->GetPlayer()->GetForwardDirection());
 	FOR_EACH_DIR_IN_SET(dirs, dir)
 	{
 		Cell *pos = from->GetPosition();
@@ -274,7 +289,7 @@ int MoveCondition_Count::GetCount(Piece *piece, Move *move, MoveStep *lastPerfor
 				break;
 
 			Piece *other = pos->GetPiece();
-			if (other != 0 && other->TypeMatches(type) && (relationship == Player::Any || move->GetPlayer()->GetRelationship(other->GetOwner()) == relationship))
+			if (other != 0 && other != exclude && other->TypeMatches(type) && (relationship == Player::Any || player->GetRelationship(other->GetOwner()) == relationship))
 				count++;
 		}
 	}

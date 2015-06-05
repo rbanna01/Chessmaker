@@ -48,7 +48,7 @@
 			<xs:element name="xor" type="moveConditions"/>
 
 			<xs:element name="referencePiece" type="referencePiece"/>
-			
+
 			<xs:element name="type">
 				<xs:complexType>
 					<xs:simpleContent>
@@ -122,6 +122,7 @@
 							<xs:attribute name="distMax" type="distance" />
 							<xs:attribute name="type" type="xs:string" default="any" />
 							<xs:attribute name="owner" type="owner" default="any" />
+							<xs:attribute name="exclude" type="xs:string" />
 							<xs:attribute name="comparison" type="numericComparison" use="required" />
 						</xs:extension>
 					</xs:simpleContent>
@@ -139,6 +140,7 @@
 								<xs:attribute name="distMax" type="distance" />
 								<xs:attribute name="type" type="xs:string"  />
 								<xs:attribute name="owner" type="owner" default="any" />
+								<xs:attribute name="exclude" type="xs:string" />
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
@@ -154,7 +156,7 @@
 					<xs:attribute name="value" type="xs:integer" use="required" />
 				</xs:complexType>
 			</xs:element>
-			
+
 			<xs:element name="hasState">
 				<xs:complexType>
 					<xs:simpleContent>

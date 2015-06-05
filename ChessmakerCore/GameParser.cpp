@@ -41,7 +41,7 @@ Game* GameParser::Parse(char *definition, std::string *svgOutput)
 
 	maxDirection = FIRST_ABSOLUTE_DIRECTION >> 1;
 	allDirections = 0;
-	maxState = 1 >> 1;
+	maxState = 1;
 	directionLookups.clear();
 
 	xml_node<> *node = doc.first_node()->first_node("board");
@@ -981,7 +981,10 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 			Condition::NumericComparison_t comparison = ParseNumericComparison(child->first_attribute("comparison")->value());
 			int number = atoi(child->value());
 
-			MoveCondition_Count *condition = new MoveCondition_Count(from, dir, dist, relationship, comparison, number);
+			attr = child->first_attribute("exclude");
+			const char *exclude = attr == 0 ? 0 : attr->value();
+
+			MoveCondition_Count *condition = new MoveCondition_Count(from, dir, dist, relationship, exclude, comparison, number);
 
 			attr = child->first_attribute("type");
 			if (attr != 0)
@@ -1018,7 +1021,10 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 				attr = count->first_attribute("owner");
 				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(attr->value());
 
-				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, relationship, comparison, number);
+				xml_attribute<> *attr = child->first_attribute("exclude");
+				const char *exclude = attr == 0 ? 0 : attr->value();
+
+				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, relationship, exclude, Condition::Equals, 0);
 
 				attr = count->first_attribute("type");
 				if (attr != 0)
@@ -1559,10 +1565,11 @@ customstate_t GameParser::LookupState(char *stateName)
 
 	if (it == stateLookups.end())
 	{// a new state, add it
+		customstate_t state = maxState;
 		maxState = maxState << 1;
-		stateLookups.insert(dirLookupEntry_t(stateName, maxState));
+		stateLookups.insert(dirLookupEntry_t(stateName, state));
 
-		return maxState;
+		return state;
 	}
 
 	return it->second;

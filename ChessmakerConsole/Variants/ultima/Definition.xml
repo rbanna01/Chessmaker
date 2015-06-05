@@ -645,9 +645,9 @@
 
 								<and>
 									<referencePiece name="immobilizer" dir="any" dist="1" type="immobilizer" owner="self" />
-									<countMultiple operation="add" comparison="equals" value="1">
-										<count from="immobilizer" dir="any" dist="1" type="immobilizer" owner="enemy" />
-										<count from="immobilizer" dir="any" dist="1" type="chameleon" owner="enemy" />
+									<countMultiple operation="add" comparison="equals" value="0">
+										<count from="immobilizer" dir="any" dist="1" type="immobilizer" owner="enemy" exclude="self" />
+										<count from="immobilizer" dir="any" dist="1" type="chameleon" owner="enemy" exclude="self" />
 									</countMultiple>
 								</and>
 							</or>

@@ -33,7 +33,7 @@ public:
 
 private:
 	bool Pickup(Piece::State_t state, Cell *pos, Player *owner, PieceType *type);
-	bool Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, bool updateDisplay);
+	bool Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, customstate_t addState, customstate_t removeState, bool updateDisplay);
 	void UpdateDisplay();
 
 	int number;

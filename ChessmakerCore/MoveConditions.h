@@ -154,20 +154,24 @@ private:
 	friend class GameState;
 	friend class StateCondition_Threatened;
 	friend class ForEachPiece;
+	friend class SetState;
 };
 
 
 class MoveCondition_Count : public MoveCondition
 {
 public:
-	MoveCondition_Count(const char *from, direction_t dir, Distance *dist, Player::Relationship_t relationship, NumericComparison_t comparison, int number)
+	MoveCondition_Count(const char *from, direction_t dir, Distance *dist, Player::Relationship_t relationship, const char *exclude, NumericComparison_t comparison, int number)
 	{
 		strcpy(pieceRef, from);
-		this->dir = dir;
+		this->direction = dir;
 		this->distance = dist;
 		this->relationship = relationship;
 		this->number = number;
 		this->comparison = comparison;
+		hasExclude = exclude != 0;
+		if (hasExclude)
+			strcpy(excludePieceRef, exclude);
 		type = 0;
 	}
 
@@ -177,10 +181,12 @@ public:
 	int GetCount(Piece *piece, Move *move, MoveStep *lastPerformed);
 private:
 	char pieceRef[PIECE_REF_LENGTH];
-	direction_t dir;
+	direction_t direction;
 	Distance *distance;
 	PieceType *type;
 	Player::Relationship_t relationship;
+	bool hasExclude;
+	char excludePieceRef[PIECE_REF_LENGTH];
 	int number;
 	MoveCondition::NumericComparison_t comparison;
 

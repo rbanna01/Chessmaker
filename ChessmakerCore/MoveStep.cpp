@@ -23,7 +23,7 @@ bool MoveStep::Perform(bool updateDisplay)
 	if (!Pickup(fromState, fromPos, fromOwner, fromType))
 		return false;
 
-	return Place(toState, toPos, toOwner, toType, updateDisplay);
+	return Place(toState, toPos, toOwner, toType, updateDisplay, addState, removeState);
 }
 
 
@@ -32,7 +32,7 @@ bool MoveStep::Reverse(bool updateDisplay)
 	if (!Pickup(toState, toPos, toOwner, toType))
 		return false;
 
-	return Place(fromState, fromPos, fromOwner, fromType, updateDisplay);
+	return Place(fromState, fromPos, fromOwner, fromType, removeState, addState, updateDisplay);
 }
 
 
@@ -85,7 +85,7 @@ bool MoveStep::Pickup(Piece::State_t state, Cell *pos, Player *owner, PieceType 
 }
 
 
-bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, bool updateDisplay)
+bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *type, customstate_t addState, customstate_t removeState, bool updateDisplay)
 {
 	switch (state) {
 	case Piece::State_t::OnBoard:
