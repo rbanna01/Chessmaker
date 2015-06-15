@@ -729,8 +729,8 @@ std::list<Move*> *MoveGroup::DetermineNextSteps(Move *baseMove, Piece *piece, Mo
 
 	std::list<Move*> *moves = DetermineChildSteps(piece, baseMove, contents.begin(), previousStep, 1, prevRepeatMoves);
 
-	// this group failed, but it wasn't essential, so return the previous move, as that's still valid on its own
-	if (stepOutIfFail && moves->empty() && baseMove->HasSteps())
+	// group either allows 0 repeats, or it failed but wasn't essential, so output the previous move, as that's valid on its own
+	if (minOccurs == 0 || (stepOutIfFail && moves->empty() && baseMove->HasSteps()))
 		moves->push_back(baseMove->Clone());
 
 	if (prevRepeatMoves != 0)

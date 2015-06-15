@@ -1,65 +1,65 @@
 ﻿<game xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">
 	<board viewBox="40 40 320 320">
-		<cell id="A8" fill="dark" path="M60 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A8" fill="light" path="M60 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B8" />
 			<link dir="south" to="A7" />
 			<link dir="southeast" to="B7" />
 		</cell>
-		<cell id="B8" fill="light" path="M100 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B8" fill="dark" path="M100 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A8" />
 			<link dir="east" to="C8" />
 			<link dir="south" to="B7" />
 			<link dir="southwest" to="A7" />
 			<link dir="southeast" to="C7" />
 		</cell>
-		<cell id="C8" fill="dark" path="M140 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C8" fill="light" path="M140 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B8" />
 			<link dir="east" to="D8" />
 			<link dir="south" to="C7" />
 			<link dir="southwest" to="B7" />
 			<link dir="southeast" to="D7" />
 		</cell>
-		<cell id="D8" fill="light" path="M180 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D8" fill="dark" path="M180 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C8" />
 			<link dir="east" to="E8" />
 			<link dir="south" to="D7" />
 			<link dir="southwest" to="C7" />
 			<link dir="southeast" to="E7" />
 		</cell>
-		<cell id="E8" fill="dark" path="M220 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E8" fill="light" path="M220 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D8" />
 			<link dir="east" to="F8" />
 			<link dir="south" to="E7" />
 			<link dir="southwest" to="D7" />
 			<link dir="southeast" to="F7" />
 		</cell>
-		<cell id="F8" fill="light" path="M260 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F8" fill="dark" path="M260 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E8" />
 			<link dir="east" to="G8" />
 			<link dir="south" to="F7" />
 			<link dir="southwest" to="E7" />
 			<link dir="southeast" to="G7" />
 		</cell>
-		<cell id="G8" fill="dark" path="M300 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G8" fill="light" path="M300 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F8" />
 			<link dir="east" to="H8" />
 			<link dir="south" to="G7" />
 			<link dir="southwest" to="F7" />
 			<link dir="southeast" to="H7" />
 		</cell>
-		<cell id="H8" fill="light" path="M340 60 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H8" fill="dark" path="M340 60 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G8" />
 			<link dir="south" to="H7" />
 			<link dir="southwest" to="G7" />
 		</cell>
-		<cell id="A7" fill="light" path="M60 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A7" fill="dark" path="M60 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B7" />
 			<link dir="north" to="A8" />
 			<link dir="south" to="A6" />
 			<link dir="northeast" to="B8" />
 			<link dir="southeast" to="B6" />
 		</cell>
-		<cell id="B7" fill="dark" path="M100 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B7" fill="light" path="M100 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A7" />
 			<link dir="east" to="C7" />
 			<link dir="north" to="B8" />
@@ -69,7 +69,7 @@
 			<link dir="southwest" to="A6" />
 			<link dir="southeast" to="C6" />
 		</cell>
-		<cell id="C7" fill="light" path="M140 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C7" fill="dark" path="M140 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B7" />
 			<link dir="east" to="D7" />
 			<link dir="north" to="C8" />
@@ -79,7 +79,7 @@
 			<link dir="southwest" to="B6" />
 			<link dir="southeast" to="D6" />
 		</cell>
-		<cell id="D7" fill="dark" path="M180 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D7" fill="light" path="M180 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C7" />
 			<link dir="east" to="E7" />
 			<link dir="north" to="D8" />
@@ -89,7 +89,7 @@
 			<link dir="southwest" to="C6" />
 			<link dir="southeast" to="E6" />
 		</cell>
-		<cell id="E7" fill="light" path="M220 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E7" fill="dark" path="M220 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D7" />
 			<link dir="east" to="F7" />
 			<link dir="north" to="E8" />
@@ -99,7 +99,7 @@
 			<link dir="southwest" to="D6" />
 			<link dir="southeast" to="F6" />
 		</cell>
-		<cell id="F7" fill="dark" path="M260 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F7" fill="light" path="M260 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E7" />
 			<link dir="east" to="G7" />
 			<link dir="north" to="F8" />
@@ -109,7 +109,7 @@
 			<link dir="southwest" to="E6" />
 			<link dir="southeast" to="G6" />
 		</cell>
-		<cell id="G7" fill="light" path="M300 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G7" fill="dark" path="M300 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F7" />
 			<link dir="east" to="H7" />
 			<link dir="north" to="G8" />
@@ -119,21 +119,21 @@
 			<link dir="southwest" to="F6" />
 			<link dir="southeast" to="H6" />
 		</cell>
-		<cell id="H7" fill="dark" path="M340 100 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H7" fill="light" path="M340 100 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G7" />
 			<link dir="north" to="H8" />
 			<link dir="south" to="H6" />
 			<link dir="northwest" to="G8" />
 			<link dir="southwest" to="G6" />
 		</cell>
-		<cell id="A6" fill="dark" path="M60 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A6" fill="light" path="M60 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B6" />
 			<link dir="north" to="A7" />
 			<link dir="south" to="A5" />
 			<link dir="northeast" to="B7" />
 			<link dir="southeast" to="B5" />
 		</cell>
-		<cell id="B6" fill="light" path="M100 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B6" fill="dark" path="M100 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A6" />
 			<link dir="east" to="C6" />
 			<link dir="north" to="B7" />
@@ -143,7 +143,7 @@
 			<link dir="southwest" to="A5" />
 			<link dir="southeast" to="C5" />
 		</cell>
-		<cell id="C6" fill="dark" path="M140 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C6" fill="light" path="M140 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B6" />
 			<link dir="east" to="D6" />
 			<link dir="north" to="C7" />
@@ -153,7 +153,7 @@
 			<link dir="southwest" to="B5" />
 			<link dir="southeast" to="D5" />
 		</cell>
-		<cell id="D6" fill="light" path="M180 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D6" fill="dark" path="M180 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C6" />
 			<link dir="east" to="E6" />
 			<link dir="north" to="D7" />
@@ -163,7 +163,7 @@
 			<link dir="southwest" to="C5" />
 			<link dir="southeast" to="E5" />
 		</cell>
-		<cell id="E6" fill="dark" path="M220 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E6" fill="light" path="M220 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D6" />
 			<link dir="east" to="F6" />
 			<link dir="north" to="E7" />
@@ -173,7 +173,7 @@
 			<link dir="southwest" to="D5" />
 			<link dir="southeast" to="F5" />
 		</cell>
-		<cell id="F6" fill="light" path="M260 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F6" fill="dark" path="M260 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E6" />
 			<link dir="east" to="G6" />
 			<link dir="north" to="F7" />
@@ -183,7 +183,7 @@
 			<link dir="southwest" to="E5" />
 			<link dir="southeast" to="G5" />
 		</cell>
-		<cell id="G6" fill="dark" path="M300 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G6" fill="light" path="M300 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F6" />
 			<link dir="east" to="H6" />
 			<link dir="north" to="G7" />
@@ -193,21 +193,21 @@
 			<link dir="southwest" to="F5" />
 			<link dir="southeast" to="H5" />
 		</cell>
-		<cell id="H6" fill="light" path="M340 140 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H6" fill="dark" path="M340 140 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G6" />
 			<link dir="north" to="H7" />
 			<link dir="south" to="H5" />
 			<link dir="northwest" to="G7" />
 			<link dir="southwest" to="G5" />
 		</cell>
-		<cell id="A5" fill="light" path="M60 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A5" fill="dark" path="M60 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B5" />
 			<link dir="north" to="A6" />
 			<link dir="south" to="A4" />
 			<link dir="northeast" to="B6" />
 			<link dir="southeast" to="B4" />
 		</cell>
-		<cell id="B5" fill="dark" path="M100 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B5" fill="light" path="M100 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A5" />
 			<link dir="east" to="C5" />
 			<link dir="north" to="B6" />
@@ -217,7 +217,7 @@
 			<link dir="southwest" to="A4" />
 			<link dir="southeast" to="C4" />
 		</cell>
-		<cell id="C5" fill="light" path="M140 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C5" fill="dark" path="M140 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B5" />
 			<link dir="east" to="D5" />
 			<link dir="north" to="C6" />
@@ -227,7 +227,7 @@
 			<link dir="southwest" to="B4" />
 			<link dir="southeast" to="D4" />
 		</cell>
-		<cell id="D5" fill="dark" path="M180 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D5" fill="light" path="M180 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C5" />
 			<link dir="east" to="E5" />
 			<link dir="north" to="D6" />
@@ -237,7 +237,7 @@
 			<link dir="southwest" to="C4" />
 			<link dir="southeast" to="E4" />
 		</cell>
-		<cell id="E5" fill="light" path="M220 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E5" fill="dark" path="M220 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D5" />
 			<link dir="east" to="F5" />
 			<link dir="north" to="E6" />
@@ -247,7 +247,7 @@
 			<link dir="southwest" to="D4" />
 			<link dir="southeast" to="F4" />
 		</cell>
-		<cell id="F5" fill="dark" path="M260 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F5" fill="light" path="M260 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E5" />
 			<link dir="east" to="G5" />
 			<link dir="north" to="F6" />
@@ -257,7 +257,7 @@
 			<link dir="southwest" to="E4" />
 			<link dir="southeast" to="G4" />
 		</cell>
-		<cell id="G5" fill="light" path="M300 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G5" fill="dark" path="M300 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F5" />
 			<link dir="east" to="H5" />
 			<link dir="north" to="G6" />
@@ -267,21 +267,21 @@
 			<link dir="southwest" to="F4" />
 			<link dir="southeast" to="H4" />
 		</cell>
-		<cell id="H5" fill="dark" path="M340 180 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H5" fill="light" path="M340 180 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G5" />
 			<link dir="north" to="H6" />
 			<link dir="south" to="H4" />
 			<link dir="northwest" to="G6" />
 			<link dir="southwest" to="G4" />
 		</cell>
-		<cell id="A4" fill="dark" path="M60 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A4" fill="light" path="M60 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B4" />
 			<link dir="north" to="A5" />
 			<link dir="south" to="A3" />
 			<link dir="northeast" to="B5" />
 			<link dir="southeast" to="B3" />
 		</cell>
-		<cell id="B4" fill="light" path="M100 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B4" fill="dark" path="M100 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A4" />
 			<link dir="east" to="C4" />
 			<link dir="north" to="B5" />
@@ -291,7 +291,7 @@
 			<link dir="southwest" to="A3" />
 			<link dir="southeast" to="C3" />
 		</cell>
-		<cell id="C4" fill="dark" path="M140 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C4" fill="light" path="M140 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B4" />
 			<link dir="east" to="D4" />
 			<link dir="north" to="C5" />
@@ -301,7 +301,7 @@
 			<link dir="southwest" to="B3" />
 			<link dir="southeast" to="D3" />
 		</cell>
-		<cell id="D4" fill="light" path="M180 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D4" fill="dark" path="M180 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C4" />
 			<link dir="east" to="E4" />
 			<link dir="north" to="D5" />
@@ -311,7 +311,7 @@
 			<link dir="southwest" to="C3" />
 			<link dir="southeast" to="E3" />
 		</cell>
-		<cell id="E4" fill="dark" path="M220 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E4" fill="light" path="M220 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D4" />
 			<link dir="east" to="F4" />
 			<link dir="north" to="E5" />
@@ -321,7 +321,7 @@
 			<link dir="southwest" to="D3" />
 			<link dir="southeast" to="F3" />
 		</cell>
-		<cell id="F4" fill="light" path="M260 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F4" fill="dark" path="M260 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E4" />
 			<link dir="east" to="G4" />
 			<link dir="north" to="F5" />
@@ -331,7 +331,7 @@
 			<link dir="southwest" to="E3" />
 			<link dir="southeast" to="G3" />
 		</cell>
-		<cell id="G4" fill="dark" path="M300 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G4" fill="light" path="M300 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F4" />
 			<link dir="east" to="H4" />
 			<link dir="north" to="G5" />
@@ -341,21 +341,21 @@
 			<link dir="southwest" to="F3" />
 			<link dir="southeast" to="H3" />
 		</cell>
-		<cell id="H4" fill="light" path="M340 220 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H4" fill="dark" path="M340 220 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G4" />
 			<link dir="north" to="H5" />
 			<link dir="south" to="H3" />
 			<link dir="northwest" to="G5" />
 			<link dir="southwest" to="G3" />
 		</cell>
-		<cell id="A3" fill="light" path="M60 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A3" fill="dark" path="M60 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B3" />
 			<link dir="north" to="A4" />
 			<link dir="south" to="A2" />
 			<link dir="northeast" to="B4" />
 			<link dir="southeast" to="B2" />
 		</cell>
-		<cell id="B3" fill="dark" path="M100 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B3" fill="light" path="M100 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A3" />
 			<link dir="east" to="C3" />
 			<link dir="north" to="B4" />
@@ -365,7 +365,7 @@
 			<link dir="southwest" to="A2" />
 			<link dir="southeast" to="C2" />
 		</cell>
-		<cell id="C3" fill="light" path="M140 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C3" fill="dark" path="M140 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B3" />
 			<link dir="east" to="D3" />
 			<link dir="north" to="C4" />
@@ -375,7 +375,7 @@
 			<link dir="southwest" to="B2" />
 			<link dir="southeast" to="D2" />
 		</cell>
-		<cell id="D3" fill="dark" path="M180 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D3" fill="light" path="M180 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C3" />
 			<link dir="east" to="E3" />
 			<link dir="north" to="D4" />
@@ -385,7 +385,7 @@
 			<link dir="southwest" to="C2" />
 			<link dir="southeast" to="E2" />
 		</cell>
-		<cell id="E3" fill="light" path="M220 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E3" fill="dark" path="M220 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D3" />
 			<link dir="east" to="F3" />
 			<link dir="north" to="E4" />
@@ -395,7 +395,7 @@
 			<link dir="southwest" to="D2" />
 			<link dir="southeast" to="F2" />
 		</cell>
-		<cell id="F3" fill="dark" path="M260 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F3" fill="light" path="M260 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E3" />
 			<link dir="east" to="G3" />
 			<link dir="north" to="F4" />
@@ -405,7 +405,7 @@
 			<link dir="southwest" to="E2" />
 			<link dir="southeast" to="G2" />
 		</cell>
-		<cell id="G3" fill="light" path="M300 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G3" fill="dark" path="M300 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F3" />
 			<link dir="east" to="H3" />
 			<link dir="north" to="G4" />
@@ -415,21 +415,21 @@
 			<link dir="southwest" to="F2" />
 			<link dir="southeast" to="H2" />
 		</cell>
-		<cell id="H3" fill="dark" path="M340 260 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H3" fill="light" path="M340 260 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G3" />
 			<link dir="north" to="H4" />
 			<link dir="south" to="H2" />
 			<link dir="northwest" to="G4" />
 			<link dir="southwest" to="G2" />
 		</cell>
-		<cell id="A2" fill="dark" path="M60 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="A2" fill="light" path="M60 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="B2" />
 			<link dir="north" to="A3" />
 			<link dir="south" to="A1" />
 			<link dir="northeast" to="B3" />
 			<link dir="southeast" to="B1" />
 		</cell>
-		<cell id="B2" fill="light" path="M100 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="B2" fill="dark" path="M100 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="A2" />
 			<link dir="east" to="C2" />
 			<link dir="north" to="B3" />
@@ -439,7 +439,7 @@
 			<link dir="southwest" to="A1" />
 			<link dir="southeast" to="C1" />
 		</cell>
-		<cell id="C2" fill="dark" path="M140 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="C2" fill="light" path="M140 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="B2" />
 			<link dir="east" to="D2" />
 			<link dir="north" to="C3" />
@@ -449,7 +449,7 @@
 			<link dir="southwest" to="B1" />
 			<link dir="southeast" to="D1" />
 		</cell>
-		<cell id="D2" fill="light" path="M180 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="D2" fill="dark" path="M180 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="C2" />
 			<link dir="east" to="E2" />
 			<link dir="north" to="D3" />
@@ -459,7 +459,7 @@
 			<link dir="southwest" to="C1" />
 			<link dir="southeast" to="E1" />
 		</cell>
-		<cell id="E2" fill="dark" path="M220 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="E2" fill="light" path="M220 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="D2" />
 			<link dir="east" to="F2" />
 			<link dir="north" to="E3" />
@@ -469,7 +469,7 @@
 			<link dir="southwest" to="D1" />
 			<link dir="southeast" to="F1" />
 		</cell>
-		<cell id="F2" fill="light" path="M260 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="F2" fill="dark" path="M260 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="E2" />
 			<link dir="east" to="G2" />
 			<link dir="north" to="F3" />
@@ -479,7 +479,7 @@
 			<link dir="southwest" to="E1" />
 			<link dir="southeast" to="G1" />
 		</cell>
-		<cell id="G2" fill="dark" path="M300 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
+		<cell id="G2" fill="light" path="M300 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="F2" />
 			<link dir="east" to="H2" />
 			<link dir="north" to="G3" />
@@ -489,61 +489,61 @@
 			<link dir="southwest" to="F1" />
 			<link dir="southeast" to="H1" />
 		</cell>
-		<cell id="H2" fill="light" path="M340 300 m-20 -20 l40 0 l0 41 l-40 0 Z">
+		<cell id="H2" fill="dark" path="M340 300 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="G2" />
 			<link dir="north" to="H3" />
 			<link dir="south" to="H1" />
 			<link dir="northwest" to="G3" />
 			<link dir="southwest" to="G1" />
 		</cell>
-		<cell id="A1" fill="light" path="M60 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="A1" fill="dark" path="M60 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="east" to="B1" />
 			<link dir="north" to="A2" />
 			<link dir="northeast" to="B2" />
 		</cell>
-		<cell id="B1" fill="dark" path="M100 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="B1" fill="light" path="M100 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="A1" />
 			<link dir="east" to="C1" />
 			<link dir="north" to="B2" />
 			<link dir="northwest" to="A2" />
 			<link dir="northeast" to="C2" />
 		</cell>
-		<cell id="C1" fill="light" path="M140 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="C1" fill="dark" path="M140 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="B1" />
 			<link dir="east" to="D1" />
 			<link dir="north" to="C2" />
 			<link dir="northwest" to="B2" />
 			<link dir="northeast" to="D2" />
 		</cell>
-		<cell id="D1" fill="dark" path="M180 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="D1" fill="light" path="M180 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="C1" />
 			<link dir="east" to="E1" />
 			<link dir="north" to="D2" />
 			<link dir="northwest" to="C2" />
 			<link dir="northeast" to="E2" />
 		</cell>
-		<cell id="E1" fill="light" path="M220 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="E1" fill="dark" path="M220 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="D1" />
 			<link dir="east" to="F1" />
 			<link dir="north" to="E2" />
 			<link dir="northwest" to="D2" />
 			<link dir="northeast" to="F2" />
 		</cell>
-		<cell id="F1" fill="dark" path="M260 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="F1" fill="light" path="M260 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="E1" />
 			<link dir="east" to="G1" />
 			<link dir="north" to="F2" />
 			<link dir="northwest" to="E2" />
 			<link dir="northeast" to="G2" />
 		</cell>
-		<cell id="G1" fill="light" path="M300 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
+		<cell id="G1" fill="dark" path="M300 340 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="F1" />
 			<link dir="east" to="H1" />
 			<link dir="north" to="G2" />
 			<link dir="northwest" to="F2" />
 			<link dir="northeast" to="H2" />
 		</cell>
-		<cell id="H1" fill="dark" path="M340 340 m-20 -20 l40 0 l0 40 l-40 0 Z">
+		<cell id="H1" fill="light" path="M340 340 m-20 -20 l40 0 l0 40 l-40 0 Z">
 			<link dir="west" to="G1" />
 			<link dir="north" to="H2" />
 			<link dir="northwest" to="G2" />
@@ -874,8 +874,8 @@
 			<piece type="rook" location="A1" />
 			<piece type="knight" location="B1" />
 			<piece type="bishop" location="C1" />
-			<piece type="king" location="D1" />
-			<piece type="queen" location="E1" />
+			<piece type="king" location="E1" />
+			<piece type="queen" location="D1" />
 			<piece type="bishop" location="F1" />
 			<piece type="knight" location="G1" />
 			<piece type="rook" location="H1" />
@@ -892,8 +892,8 @@
 			<piece type="rook" location="A8" />
 			<piece type="knight" location="B8" />
 			<piece type="bishop" location="C8" />
-			<piece type="king" location="D8" />
-			<piece type="queen" location="E8" />
+			<piece type="king" location="E8" />
+			<piece type="queen" location="D8" />
 			<piece type="bishop" location="F8" />
 			<piece type="knight" location="G8" />
 			<piece type="rook" location="H8" />
