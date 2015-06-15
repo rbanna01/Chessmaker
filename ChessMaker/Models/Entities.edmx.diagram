@@ -10,7 +10,7 @@
         <EntityTypeShape EntityType="ChessMakerModel.GameStatus" Width="1.5" PointX="7.625" PointY="2.625" IsExpanded="true" FillColor="Silver" />
         <EntityTypeShape EntityType="ChessMakerModel.Move" Width="1.5" PointX="9.875" PointY="4" IsExpanded="true" FillColor="Green" />
         <EntityTypeShape EntityType="ChessMakerModel.User" Width="1.5" PointX="0.875" PointY="4.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ChessMakerModel.Variant" Width="1.5" PointX="0.875" PointY="1.25" IsExpanded="true" FillColor="192, 0, 0" />
+        <EntityTypeShape EntityType="ChessMakerModel.Variant" Width="1.5" PointX="0.875" PointY="0.875" IsExpanded="true" FillColor="192, 0, 0" />
         <EntityTypeShape EntityType="ChessMakerModel.VariantVersion" Width="1.5" PointX="3.125" PointY="1.25" IsExpanded="true" FillColor="192, 0, 0" />
         <AssociationConnector Association="ChessMakerModel.FK_GamePlayers_Games" ManuallyRouted="false" />
         <AssociationConnector Association="ChessMakerModel.FK_GamePlayers_Users" ManuallyRouted="false" />

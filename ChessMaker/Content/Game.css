@@ -76,3 +76,11 @@ svg.pieceList {
 #moveDisambiguationOptions li:hover {
     text-decoration: underline;
 }
+
+#helpLink {
+    cursor:pointer;
+}
+
+#helpPopup p {
+    white-space: pre-wrap;
+}

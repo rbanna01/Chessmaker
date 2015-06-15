@@ -73,6 +73,10 @@ namespace ChessMaker.Models
         public GamePlayModel(VariantVersion version, GameMode mode)
         {
             Tag = version.Variant.Tag;
+            Help = version.Variant.HelpText;
+
+            if (string.IsNullOrEmpty(Help))
+                Help = "No help text has been specified for this variant.";
 
             if (version.Variant.PublicVersionID.HasValue && version.ID == version.Variant.PublicVersionID)
                 Name = version.Variant.Name;
@@ -87,6 +91,7 @@ namespace ChessMaker.Models
 
         public string Name { get; private set; }
         public string Tag { get; private set; }
+        public string Help { get; private set; }
         public int? Version { get; private set; }
 
         public GameMode Mode { get; set; }

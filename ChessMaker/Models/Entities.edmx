@@ -58,6 +58,8 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Tag" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="HelpText" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CreatedByID" Type="int" Nullable="false" />
           <Property Name="PublicVersionID" Type="int" />
           <Property Name="PlayerCount" Type="tinyint" Nullable="false" />
@@ -361,6 +363,8 @@
           <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="Tag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="HelpText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedByID" Type="Int32" Nullable="false" />
           <Property Name="PublicVersionID" Type="Int32" />
           <Property Name="PlayerCount" Type="Byte" Nullable="false" />
@@ -560,6 +564,8 @@
           <EntitySetMapping Name="Variants">
             <EntityTypeMapping TypeName="ChessMakerModel.Variant">
               <MappingFragment StoreEntitySet="Variants">
+                <ScalarProperty Name="HelpText" ColumnName="HelpText" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Tag" ColumnName="Tag" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

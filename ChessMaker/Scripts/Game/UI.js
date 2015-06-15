@@ -5,12 +5,14 @@ var numPlayers;
 var capturedPieces, heldPieces;
 
 $(function () {
-    $('#moveDisambiguation').dialog({
+    $('#moveDisambiguation, #helpPopup').dialog({
         modal: true,
         autoOpen: false
     });
 
     $('#moveDisambiguationOptions').on('click', 'li', selectMoveFromPopup);
+
+    $('#helpLink').click(function () { $('#helpPopup').dialog('open'); });
 });
 
 function initializeGame(workerUrl, defUrl, players) {
@@ -240,6 +242,8 @@ function cellClicked(e) {
     }
     else
         showMoveOptions(this);
+
+    $('#pieceName').text("piece name");
 
     return false;
 }
