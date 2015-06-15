@@ -23,7 +23,7 @@ bool MoveStep::Perform(bool updateDisplay)
 	if (!Pickup(fromState, fromPos, fromOwner, fromType))
 		return false;
 
-	return Place(toState, toPos, toOwner, toType, updateDisplay, addState, removeState);
+	return Place(toState, toPos, toOwner, toType, addState, removeState, updateDisplay);
 }
 
 
