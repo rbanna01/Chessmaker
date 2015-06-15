@@ -450,6 +450,7 @@
 						<xs:complexContent>
 							<xs:extension base="slide">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -459,6 +460,7 @@
 						<xs:complexContent>
 							<xs:extension base="leap">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -468,6 +470,7 @@
 						<xs:complexContent>
 							<xs:extension base="hop">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -477,6 +480,7 @@
 						<xs:complexContent>
 							<xs:extension base="shoot">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -486,6 +490,7 @@
 						<xs:complexContent>
 							<xs:extension base="moveLike">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -495,6 +500,7 @@
 						<xs:complexContent>
 							<xs:extension base="moveSequence">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
@@ -504,13 +510,13 @@
 						<xs:complexContent>
 							<xs:extension base="promotion">
 								<xs:attribute name="customNotation" type="xs:string" use="optional"/>
+								<xs:attribute name="append" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="append" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="moveSequence">
