@@ -1021,7 +1021,7 @@ MoveConditionGroup *GameParser::ParseMoveConditions(xml_node<char> *node, Condit
 				attr = count->first_attribute("owner");
 				Player::Relationship_t relationship = attr == 0 ? Player::Any : ParseRelationship(attr->value());
 
-				xml_attribute<> *attr = child->first_attribute("exclude");
+				xml_attribute<> *attr = count->first_attribute("exclude");
 				const char *exclude = attr == 0 ? 0 : attr->value();
 
 				MoveCondition_Count *countCondition = new MoveCondition_Count(from, dir, dist, relationship, exclude, Condition::Equals, 0);
