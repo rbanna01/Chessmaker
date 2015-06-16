@@ -654,6 +654,26 @@
 						</conditions>
 					</setState>
 				</forEachPiece>
+				<forEachPiece owner="self">
+					<setState name="immobilized" mode="set and clear">
+						<conditions>
+							<or>
+								<and>
+									<type of="self">immobilizer</type>
+									<referencePiece name="chameleon" dir="any" dist="1" type="chameleon" owner="enemy" />
+								</and>
+
+								<and>
+									<referencePiece name="immobilizer" dir="any" dist="1" type="immobilizer" owner="enemy" />
+									<countMultiple operation="add" comparison="equals" value="0">
+										<count from="immobilizer" dir="any" dist="1" type="immobilizer" owner="self" exclude="self" />
+										<count from="immobilizer" dir="any" dist="1" type="chameleon" owner="self" exclude="self" />
+									</countMultiple>
+								</and>
+							</or>
+						</conditions>
+					</setState>
+				</forEachPiece>
 			</move>
 		</namedMoves>
 		<piece name="king" notation="K" value="200">
@@ -682,6 +702,7 @@
 				<sequence append="immobilization">
 					<slide dir="any" dist="1">
 						<conditions>
+							<hasState state="immobilized">false</hasState>
 							<threatened where="end">false</threatened>
 						</conditions>
 					</slide>
@@ -1116,7 +1137,6 @@
 				<disallow />
 			</then>
 			<if>
-				<turnsSinceLastMove type="pawn" comparison="greater than or equals">100</turnsSinceLastMove>
 				<turnsSinceLastCapture comparison="greater than or equals">100</turnsSinceLastCapture>
 			</if>
 			<then>
