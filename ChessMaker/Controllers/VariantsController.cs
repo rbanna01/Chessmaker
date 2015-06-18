@@ -28,7 +28,7 @@ namespace ChessMaker.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult New([Bind(Include = "Name,NumPlayers")] VariantEditModel model)
+        public ActionResult New([Bind(Include = "Name,NumPlayers,Description,HelpText")] VariantEditModel model)
         {
             if (!ModelState.IsValid)
                 return RedirectToAction("New");
@@ -40,6 +40,8 @@ namespace ChessMaker.Controllers
 
             var variant = new Variant();
             variant.CreatedByID = user.ID;
+            variant.Description = model.Description;
+            variant.HelpText = model.HelpText;
             variant.PlayerCount = (byte)model.NumPlayers;
 
             if (!ValidateName(model, variant))
@@ -76,7 +78,7 @@ namespace ChessMaker.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Edit(int id, [Bind(Include = "Name,NumPlayers")] VariantEditModel model)
+        public ActionResult Edit(int id, [Bind(Include = "Name,NumPlayers,Description,HelpText")] VariantEditModel model)
         {
             var variant = Entities().Variants.Find(id);
             if (variant == null)
@@ -91,6 +93,9 @@ namespace ChessMaker.Controllers
 
             if (!ValidateName(model, variant))
                 return View(model);
+
+            variant.Description = model.Description ?? string.Empty;
+            variant.HelpText = model.HelpText ?? string.Empty;
 
             Entities().SaveChanges();
 

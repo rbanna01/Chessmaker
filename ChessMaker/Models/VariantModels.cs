@@ -14,6 +14,8 @@ namespace ChessMaker.Models
             VariantID = v.ID;
             Name = v.Name;
             NumPlayers = v.PlayerCount;
+            Description = v.Description;
+            HelpText = v.HelpText;
 
             Versions = new List<VersionSelectionModel>();
         }
@@ -27,6 +29,9 @@ namespace ChessMaker.Models
 
         [Required]
         public string Name { get; set; }
+
+        public string Description { get; set; }
+        public string HelpText { get; set; }
 
         [Required]
         [Display(Name = "# of players")]

@@ -21,9 +21,18 @@
             <li>
                 @Html.LabelFor(m => m.Name)
                 @Html.TextBoxFor(m => m.Name)
-
+            </li>
+            <li>
                 @Html.LabelFor(m => m.NumPlayers)
                 @Html.TextBoxFor(m => m.NumPlayers, numPlayerAttributes)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.Description)
+                @Html.TextAreaFor(m => m.Description)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.HelpText)
+                @Html.TextAreaFor(m => m.HelpText)
             </li>
         </ol>
         <input type="submit" value="@submitText" />
