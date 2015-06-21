@@ -409,6 +409,7 @@
     <Content Include="Views\Designer\Pieces.cshtml" />
     <Content Include="Views\Users\Theme.cshtml" />
     <Content Include="Views\Designer\Raw.cshtml" />
+    <Content Include="connections.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
