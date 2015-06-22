@@ -326,5 +326,5 @@ function selectMoveFromPopup() {
 
 function showMessage(msg) {
     $('#message').append(msg);
-    $('#messageSection').slideDown();
+    $('#messageSection').slideDown(400, function () { $("#messageSection").effect('highlight', [], 1000); });
 }
