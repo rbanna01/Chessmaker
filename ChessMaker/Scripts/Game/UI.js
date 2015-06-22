@@ -140,6 +140,8 @@ function startTurn(msg, isLocal) {
         $('#wait').hide();
     else
         $('#wait').show();
+
+    $('#messageSection').slideUp(400, function () { $('#message').empty(); });
 }
 
 function showGameEnd(message) {
@@ -323,5 +325,6 @@ function selectMoveFromPopup() {
 }
 
 function showMessage(msg) {
-    alert(msg); // this should be incorporated into the UI rather than just alerting
+    $('#message').append(msg);
+    $('#messageSection').slideDown();
 }
