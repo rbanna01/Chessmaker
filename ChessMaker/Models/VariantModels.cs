@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ChessMaker.Models
 {
@@ -31,6 +32,8 @@ namespace ChessMaker.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
+        
+        [AllowHtml]
         public string HelpText { get; set; }
 
         [Required]

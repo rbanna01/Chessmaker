@@ -40,8 +40,8 @@ namespace ChessMaker.Controllers
 
             var variant = new Variant();
             variant.CreatedByID = user.ID;
-            variant.Description = model.Description;
-            variant.HelpText = model.HelpText;
+            variant.Description = model.Description ?? string.Empty;
+            variant.HelpText = DataService.StripTags(model.HelpText ?? string.Empty);
             variant.PlayerCount = (byte)model.NumPlayers;
 
             if (!ValidateName(model, variant))
@@ -95,7 +95,7 @@ namespace ChessMaker.Controllers
                 return View(model);
 
             variant.Description = model.Description ?? string.Empty;
-            variant.HelpText = model.HelpText ?? string.Empty;
+            variant.HelpText = DataService.StripTags(model.HelpText ?? string.Empty);
 
             Entities().SaveChanges();
 

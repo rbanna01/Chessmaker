@@ -250,6 +250,7 @@
     <Compile Include="Models\UserModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DefinitionService.cs" />
+    <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\VariantService.cs" />
