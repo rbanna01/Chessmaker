@@ -842,6 +842,36 @@
 			<link from="north" to="northwest" />
 			<link from="northeast" to="north" />
 		</relative>
+		<relative name="right135">
+			<link from="east" to="southwest" />
+			<link from="southeast" to="west" />
+			<link from="south" to="northwest" />
+			<link from="southwest" to="north" />
+			<link from="west" to="northeast" />
+			<link from="northwest" to="east" />
+			<link from="north" to="southeast" />
+			<link from="northeast" to="south" />
+		</relative>
+		<relative name="left135">
+			<link from="east" to="northwest" />
+			<link from="southeast" to="north" />
+			<link from="south" to="northeast" />
+			<link from="southwest" to="east" />
+			<link from="west" to="southeast" />
+			<link from="northwest" to="south" />
+			<link from="north" to="southwest" />
+			<link from="northeast" to="west" />
+		</relative>
+		<relative name="turn180">
+			<link from="east" to="west" />
+			<link from="southeast" to="northwest" />
+			<link from="south" to="north" />
+			<link from="southwest" to="northeast" />
+			<link from="west" to="east" />
+			<link from="northwest" to="southeast" />
+			<link from="north" to="south" />
+			<link from="northeast" to="southwest" />
+		</relative>
 		<group name="turn45">
 			<include dir="left45" />
 			<include dir="right45" />
@@ -873,10 +903,183 @@
 			<include dir="west" />
 		</group>
 	</dirs>
-	<pieces />
+	<pieces>
+		<piece name="chariot" notation="R" value="18">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="any" dir="orthogonal" />
+			</moves>
+		</piece>
+		<piece name="horse" notation="H" value="8">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<sequence>
+					<slide dist="1" dir="orthogonal" />
+					<slide dist="1" dir="turn45" />
+				</sequence>
+			</moves>
+		</piece>
+		<piece name="elephant" notation="E" value="4">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="2" dir="left45">
+					<conditions>
+						<maxDist dir="forward" comparison="greater than">6</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="2" dir="right45">
+					<conditions>
+						<maxDist dir="forward" comparison="greater than">6</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="2" dir="left135" />
+				<slide dist="2" dir="right135" />
+			</moves>
+		</piece>
+		<piece name="cannon" notation="C" value="9">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="any" dir="orthogonal" when="move" />
+				<hop dir="any" distToHurdle="any" distAfterHurdle="any" when="capture" captureHurdle="false" />
+			</moves>
+		</piece>
+		<piece name="adviser" notation="A" value="4">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="1" dir="left45">
+					<conditions>
+						<maxDist dir="forward" comparison="greater than">7</maxDist>
+						<maxDist dir="west" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="1" dir="right45">
+					<conditions>
+						<maxDist dir="forward" comparison="greater than">7</maxDist>
+						<maxDist dir="east" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="1" dir="left135">
+					<conditions>
+						<maxDist dir="east" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="1" dir="right135">
+					<conditions>
+						<maxDist dir="west" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+			</moves>
+		</piece>
+		<piece name="general" notation="G" value="100">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="1" dir="forward">
+					<conditions>
+						<maxDist dir="forward" comparison="greater than">7</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="1" dir="turn180" />
+				<slide dist="1" dir="west">
+					<conditions>
+						<maxDist dir="west" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="1" dir="east">
+					<conditions>
+						<maxDist dir="east" comparison="greater than">3</maxDist>
+					</conditions>
+				</slide>
+				<slide dist="any" dir="forward" when="capture">
+					<conditions>
+						<type of="target">general</type>
+					</conditions>
+				</slide>
+			</moves>
+		</piece>
+		<piece name="soldier" notation="S" value="3">
+			<appearance player="red" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<appearance player="black" transform="translate(-22.5,-22.5)">
+
+			</appearance>
+			<moves>
+				<slide dist="1" dir="forward" />
+				<slide dist="1" dir="sideways">
+					<conditions>
+						<maxDist dir="forward" comparison="less than">5</maxDist>
+					</conditions>
+				</slide>
+			</moves>
+		</piece>
+	</pieces>
 	<setup>
-		<player name="red" forwardDirection="north" />
-		<player name="black" forwardDirection="south" />
+		<player name="red" forwardDirection="north">
+			<piece type="chariot" location="a1" />
+			<piece type="horse" location="b1" />
+			<piece type="elephant" location="c1" />
+			<piece type="adviser" location="d1" />
+			<piece type="general" location="e1" />
+			<piece type="adviser" location="f1" />
+			<piece type="elephant" location="g1" />
+			<piece type="horse" location="h1" />
+			<piece type="chariot" location="i1" />
+			<piece type="cannon" location="b3" />
+			<piece type="cannon" location="h3" />
+			<piece type="soldier" location="a4" />
+			<piece type="soldier" location="c4" />
+			<piece type="soldier" location="e4" />
+			<piece type="soldier" location="g4" />
+			<piece type="soldier" location="i4" />
+		</player>
+		<player name="black" forwardDirection="south">
+			<piece type="chariot" location="a10" />
+			<piece type="horse" location="b10" />
+			<piece type="elephant" location="c10" />
+			<piece type="adviser" location="d10" />
+			<piece type="general" location="e10" />
+			<piece type="adviser" location="f10" />
+			<piece type="elephant" location="g10" />
+			<piece type="horse" location="h10" />
+			<piece type="chariot" location="i10" />
+			<piece type="cannon" location="b8" />
+			<piece type="cannon" location="h8" />
+			<piece type="soldier" location="a7" />
+			<piece type="soldier" location="c7" />
+			<piece type="soldier" location="e7" />
+			<piece type="soldier" location="g7" />
+			<piece type="soldier" location="i7" />
+		</player>
 	</setup>
 	<rules>
 		<turnOrder>
@@ -885,5 +1088,43 @@
 				<turn player="black" />
 			</repeat>
 		</turnOrder>
+		<startOfTurn>
+			<if>
+				<repetitionOfPosition comparison="greater than or equals">3</repetitionOfPosition>
+			</if>
+			<then>
+				<endGame type="draw" message="threefold repetition"/>
+			</then>
+			<if>
+				<threatened type="general" />
+			</if>
+			<then>
+				<if>
+					<cannotMove />
+				</if>
+				<then>
+					<endGame type="lose" message="checkmate" appendNotation="++" />
+				</then>
+				<else>
+					<notify message="check!" appendNotation="+" />
+				</else>
+			</then>
+			<else>
+				<if>
+					<cannotMove />
+				</if>
+				<then>
+					<endGame type="lose" message="stalemate" />
+				</then>
+			</else>
+		</startOfTurn>
+		<endOfTurn>
+			<if>
+				<threatened type="general" />
+			</if>
+			<then>
+				<disallow />
+			</then>
+		</endOfTurn>
 	</rules>
 </game>

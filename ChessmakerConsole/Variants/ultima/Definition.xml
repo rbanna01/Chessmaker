@@ -1117,7 +1117,7 @@
 					<endGame type="lose" message="checkmate" appendNotation="++" />
 				</then>
 				<else>
-					<notify message="check" appendNotation="+" />
+					<notify message="check!" appendNotation="+" />
 				</else>
 			</then>
 			<else>
