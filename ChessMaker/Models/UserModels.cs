@@ -28,5 +28,6 @@ namespace ChessMaker.Models
 
         public string PieceLight { get; set; }
         public string PieceDark { get; set; }
+        public string PieceAccent { get { return "ff0000"; } }
     }
 }

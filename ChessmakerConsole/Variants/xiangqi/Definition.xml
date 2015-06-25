@@ -905,36 +905,236 @@
 	</dirs>
 	<pieces>
 		<piece name="chariot" notation="R" value="18">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g
+				class="accentStroke"
+				style="stroke-width:1.35648847;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+				transform="translate(-560, -917) scale(1.4743952,1.4743952)">
+					<rect class="accentStroke"
+					style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					width="12.142858"
+					height="10.178572"
+					x="515.16302"
+					y="644.22076" />
+					<g class="accentStroke"
+					style="stroke-width:1.35648847;stroke-miterlimit:4"
+					transform="translate(1e-4,1.1401374)">
+						<rect class="accentStroke"
+						y="654.25928"
+						x="512.52905"
+						height="1.9642857"
+						width="17.410715"
+						style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate" />
+						<g class="accentStroke"
+						style="stroke-width:1.35648847;stroke-miterlimit:4"
+						transform="translate(5e-5,-0.73329175)">
+							<rect class="accentStroke"
+							style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+							width="20.982143"
+							height="2.4107144"
+							x="510.74332"
+							y="657.95697" />
+						</g>
+					</g>
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 530.25,637.53314 -3.875,0 0,2.46875 -3.21875,0 0,-2.46875 -3.84375,0 0,2.46875 -3.21875,0 0,-2.46875 -3.875,0 0.0312,5.6875 17.96875,0 0,-2.25 0.0313,-3.4375 z" />
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g
+				class="darkStroke"
+				style="stroke-width:1.35648847;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+				transform="translate(-560, -917) scale(1.4743952,1.4743952)">
+					<rect class="darkStroke"
+					style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					width="12.142858"
+					height="10.178572"
+					x="515.16302"
+					y="644.22076" />
+					<g class="darkStroke"
+					style="stroke-width:1.35648847;stroke-miterlimit:4"
+					transform="translate(1e-4,1.1401374)">
+						<rect class="darkStroke"
+						y="654.25928"
+						x="512.52905"
+						height="1.9642857"
+						width="17.410715"
+						style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate" />
+						<g class="darkStroke"
+						style="stroke-width:1.35648847;stroke-miterlimit:4"
+						transform="translate(5e-5,-0.73329175)">
+							<rect class="darkStroke"
+							style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+							width="20.982143"
+							height="2.4107144"
+							x="510.74332"
+							y="657.95697" />
+						</g>
+					</g>
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.35648847;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 530.25,637.53314 -3.875,0 0,2.46875 -3.21875,0 0,-2.46875 -3.84375,0 0,2.46875 -3.21875,0 0,-2.46875 -3.875,0 0.0312,5.6875 17.96875,0 0,-2.25 0.0313,-3.4375 z" />
+				</g>
 			</appearance>
 			<moves>
 				<slide dist="any" dir="orthogonal" />
 			</moves>
 		</piece>
 		<piece name="horse" notation="H" value="8">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g
+				transform="matrix(-0.612,1.5640105,-1.5640105,-0.57488098,1476.204,-419.09084)"
+				style="stroke:#000000;stroke-width:1.20025086;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.20025086;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+					d="m 509.85138,611.92291 c 4.02758,6.20627 12.50554,4.96689 20.50576,1.15356 l -5.71428,-15.71429 c -2.33093,1.65594 -3.72135,2.5256 -6.07143,5.35714 l -0.71429,-5.71428 c 0.11905,-1.36905 -1.72619,-3.45238 -3.92857,-1.42857 l -3.57143,7.85714 -2.85714,0 c 0.10009,2.01317 0.37569,3.75182 0.80253,5.24259" />
+					<path
+					type="arc"
+					class="accentStroke accentFill"
+					style="fill-rule:nonzero;stroke-width:1.79496968;stroke-miterlimit:4;enable-background:accumulate"
+					cx="514.10712"
+					cy="602.80859"
+					rx="0.98214281"
+					ry="0.98214281"
+					d="m 515.08926,602.80859 c 0,0.54243 -0.43972,0.98215 -0.98214,0.98215 -0.54243,0 -0.98215,-0.43972 -0.98215,-0.98215 0,-0.54242 0.43972,-0.98214 0.98215,-0.98214 0.54242,0 0.98214,0.43972 0.98214,0.98214 z"
+					transform="matrix(0.66867469,0,0,0.66867469,169.7117,199.50253)" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.20025086;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 512.05357,607.36219 -7.23214,2.05357 c 1.85484,2.07843 5.50088,3.02303 8.48214,2.32142" />
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g
+				transform="matrix(-0.612,1.5640105,-1.5640105,-0.57488098,1476.204,-419.09084)"
+				style="stroke:#000000;stroke-width:1.20025086;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.20025086;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+					d="m 509.85138,611.92291 c 4.02758,6.20627 12.50554,4.96689 20.50576,1.15356 l -5.71428,-15.71429 c -2.33093,1.65594 -3.72135,2.5256 -6.07143,5.35714 l -0.71429,-5.71428 c 0.11905,-1.36905 -1.72619,-3.45238 -3.92857,-1.42857 l -3.57143,7.85714 -2.85714,0 c 0.10009,2.01317 0.37569,3.75182 0.80253,5.24259" />
+					<path
+					type="arc"
+					class="darkStroke darkFill"
+					style="fill-rule:nonzero;stroke-width:1.79496968;stroke-miterlimit:4;enable-background:accumulate"
+					cx="514.10712"
+					cy="602.80859"
+					rx="0.98214281"
+					ry="0.98214281"
+					d="m 515.08926,602.80859 c 0,0.54243 -0.43972,0.98215 -0.98214,0.98215 -0.54243,0 -0.98215,-0.43972 -0.98215,-0.98215 0,-0.54242 0.43972,-0.98214 0.98215,-0.98214 0.54242,0 0.98214,0.43972 0.98214,0.98214 z"
+					transform="matrix(0.66867469,0,0,0.66867469,169.7117,199.50253)" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.20025086;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 512.05357,607.36219 -7.23214,2.05357 c 1.85484,2.07843 5.50088,3.02303 8.48214,2.32142" />
+				</g>
 			</appearance>
 			<moves>
 				<sequence>
-					<slide dist="1" dir="orthogonal" />
+					<slide dist="1" dir="orthogonal" when="move" />
 					<slide dist="1" dir="turn45" />
 				</sequence>
 			</moves>
 		</piece>
 		<piece name="elephant" notation="E" value="4">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="accentStroke"
+				style="fill:none;stroke:#cc0000;stroke-width:1.25026464;stroke-miterlimit:4"
+				transform="matrix(0,1.651995,-1.5489856,0,1210,-545)">
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 358.98215,643.05862 c 1.25297,-1.10714 3.44345,-1.52679 5.44642,-1.07143 l -0.14285,14.39285 c -0.0293,2.94777 -7.41072,-0.89285 -7.41072,-0.89285 l 0,0 0,0" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 354.375,646.91576 c 0,0 3.02395,0.66193 3.83929,2.67857 0.81534,2.01664 -1.60714,8.21429 -1.60714,8.21429 0,0 -9.72997,-4.52576 -10.35715,-5.80358 -0.62718,-1.27782 0.26786,-4.55357 0.26786,-4.55357 -4.17141,-7.79318 3.7209,-9.58329 9.24511,-10.67099 l 0.31205,-1.96159 -4.8277,-1.20581 0.0505,-2.15003 c 6.91051,1.15036 14.31691,3.64295 7.18436,8.93485 0,0 0.42022,1.5548 0.31833,3.01777 -0.1019,1.46296 -4.42548,3.50009 -4.42548,3.50009 l -3e-5,0 z" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 358.49693,642.28086 -1.63966,-12.76223 -1.68768,12.96037 3.32734,-0.19814 z" />
+					<circle class="accentFill accentStroke"
+					style="stroke-width:1.67961597;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					transform="matrix(0.74437527,0,0,0.74437527,78.140463,309.27465)"
+					cx="366.65179"
+					cy="444.72824"
+					r="0.75344813" />
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="darkStroke"
+				style="fill:none;stroke:#cc0000;stroke-width:1.25026464;stroke-miterlimit:4"
+				transform="matrix(0,1.651995,-1.5489856,0,1210,-545)">
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 358.98215,643.05862 c 1.25297,-1.10714 3.44345,-1.52679 5.44642,-1.07143 l -0.14285,14.39285 c -0.0293,2.94777 -7.41072,-0.89285 -7.41072,-0.89285 l 0,0 0,0" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 354.375,646.91576 c 0,0 3.02395,0.66193 3.83929,2.67857 0.81534,2.01664 -1.60714,8.21429 -1.60714,8.21429 0,0 -9.72997,-4.52576 -10.35715,-5.80358 -0.62718,-1.27782 0.26786,-4.55357 0.26786,-4.55357 -4.17141,-7.79318 3.7209,-9.58329 9.24511,-10.67099 l 0.31205,-1.96159 -4.8277,-1.20581 0.0505,-2.15003 c 6.91051,1.15036 14.31691,3.64295 7.18436,8.93485 0,0 0.42022,1.5548 0.31833,3.01777 -0.1019,1.46296 -4.42548,3.50009 -4.42548,3.50009 l -3e-5,0 z" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.25026464;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 358.49693,642.28086 -1.63966,-12.76223 -1.68768,12.96037 3.32734,-0.19814 z" />
+					<circle class="darkFill darkStroke"
+					style="stroke-width:1.67961597;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					transform="matrix(0.74437527,0,0,0.74437527,78.140463,309.27465)"
+					cx="366.65179"
+					cy="444.72824"
+					r="0.75344813" />
+				</g>
 			</appearance>
 			<moves>
 				<slide dist="2" dir="left45">
@@ -952,55 +1152,221 @@
 			</moves>
 		</piece>
 		<piece name="cannon" notation="C" value="9">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="accentStroke"
+				style="stroke-width:2;stroke-miterlimit:4"
+				transform="matrix(0,1.6096123,-1.6896887,0,1106,-482.73493)">
+					<circle class="accentStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					cx="328.3627"
+					cy="530.17645"
+					r="3.0935922" />
+					<circle class="accentStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					cx="328.3627"
+					cy="530.176456"
+					r="5.1138973" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 328.93092,525.18882 c 0.10522,-1.45209 -0.29463,-5.24017 -0.56821,-8.27062 l -3.34613,-0.0631 c -2.82833,7.30933 -5.75997,14.2007 -4.9245,18.18274 0.83548,3.98203 5.1928,5.53828 7.95496,2.46225 l 1.95717,2.77791 3e-5,3.72494 2.27284,0.18944 -0.0631,-4.35629 -2.90419,-4.48254" />
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="darkStroke"
+				style="stroke-width:2;stroke-miterlimit:4"
+				transform="matrix(0,1.6096123,-1.6896887,0,1106,-482.73493)">
+					<circle class="darkStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					cx="328.3627"
+					cy="530.17645"
+					r="3.0935922" />
+					<circle class="darkStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					cx="328.3627"
+					cy="530.176456"
+					r="5.1138973" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.2127353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 328.93092,525.18882 c 0.10522,-1.45209 -0.29463,-5.24017 -0.56821,-8.27062 l -3.34613,-0.0631 c -2.82833,7.30933 -5.75997,14.2007 -4.9245,18.18274 0.83548,3.98203 5.1928,5.53828 7.95496,2.46225 l 1.95717,2.77791 3e-5,3.72494 2.27284,0.18944 -0.0631,-4.35629 -2.90419,-4.48254" />
+				</g>
 			</appearance>
 			<moves>
 				<slide dist="any" dir="orthogonal" when="move" />
-				<hop dir="any" distToHurdle="any" distAfterHurdle="any" when="capture" captureHurdle="false" />
+				<hop dir="orthogonal" distToHurdle="any" distAfterHurdle="any" when="capture" captureHurdle="false" />
 			</moves>
 		</piece>
 		<piece name="adviser" notation="A" value="4">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="accentStroke"
+				transform="matrix(1.5534078,0,0,1.5534078,-452,-593)"
+				style="stroke-width:1.28749192;stroke-miterlimit:4">
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 419.5,403.59375 c -0.86079,1.1323 -1.34375,2.53337 -1.34375,4.03125 0,1.86072 0.79538,3.54695 2.0625,4.78125 -2.50925,1.48035 -4.31127,4.02565 -4.84375,7 l 20,0 c -0.53248,-2.97435 -2.3345,-5.51965 -4.84375,-7 1.26712,-1.2343 2.03125,-2.92053 2.03125,-4.78125 0,-1.43388 -0.49195,-2.77029 -1.28125,-3.875 L 419.5,403.59375 Z" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 431.42341,403.68264 -12.32701,-0.0975 -2.79029,-6.74796 6.48273,1.47375 2.75068,-3.63455 2.44584,3.97189 7.06889,-1.30416 -3.63084,6.33852 z" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 428.90115,406.53666 -1.96869,1.97952 0,0" />
+					<path class="accentStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 421.82763,406.45315 1.96869,1.97952 0,0" />
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="darkStroke"
+				transform="matrix(1.5534078,0,0,1.5534078,-452,-593)"
+				style="stroke-width:1.28749192;stroke-miterlimit:4">
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 419.5,403.59375 c -0.86079,1.1323 -1.34375,2.53337 -1.34375,4.03125 0,1.86072 0.79538,3.54695 2.0625,4.78125 -2.50925,1.48035 -4.31127,4.02565 -4.84375,7 l 20,0 c -0.53248,-2.97435 -2.3345,-5.51965 -4.84375,-7 1.26712,-1.2343 2.03125,-2.92053 2.03125,-4.78125 0,-1.43388 -0.49195,-2.77029 -1.28125,-3.875 L 419.5,403.59375 Z" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4"
+					d="m 431.42341,403.68264 -12.32701,-0.0975 -2.79029,-6.74796 6.48273,1.47375 2.75068,-3.63455 2.44584,3.97189 7.06889,-1.30416 -3.63084,6.33852 z" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 428.90115,406.53666 -1.96869,1.97952 0,0" />
+					<path class="darkStroke"
+					style="fill:none;stroke-width:1.28749192;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"
+					d="m 421.82763,406.45315 1.96869,1.97952 0,0" />
+				</g>
 			</appearance>
 			<moves>
 				<slide dist="1" dir="left45">
 					<conditions>
 						<maxDist dir="forward" comparison="greater than">7</maxDist>
-						<maxDist dir="west" comparison="greater than">3</maxDist>
+						<maxDist dir="left45" comparison="greater than">3</maxDist>
 					</conditions>
 				</slide>
 				<slide dist="1" dir="right45">
 					<conditions>
 						<maxDist dir="forward" comparison="greater than">7</maxDist>
-						<maxDist dir="east" comparison="greater than">3</maxDist>
+						<maxDist dir="right45" comparison="greater than">3</maxDist>
 					</conditions>
 				</slide>
 				<slide dist="1" dir="left135">
 					<conditions>
-						<maxDist dir="east" comparison="greater than">3</maxDist>
+						<maxDist dir="right45" comparison="greater than">3</maxDist>
 					</conditions>
 				</slide>
 				<slide dist="1" dir="right135">
 					<conditions>
-						<maxDist dir="west" comparison="greater than">3</maxDist>
+						<maxDist dir="left45" comparison="greater than">3</maxDist>
 					</conditions>
 				</slide>
 			</moves>
 		</piece>
 		<piece name="general" notation="G" value="100">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="accentStroke"
+				style="fill:none;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+				transform="matrix(1.6469602,0,0,1.6469602,-396.63285,-541.53897)">
+					<g class="accentStroke"
+					style="fill:none;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+					transform="matrix(-0.28762987,0.95774164,-0.95774164,-0.28762987,812.28696,100.64908)">
+						<path class="accentStroke"
+						d="m 365.50592,356.55339 c 0,0 -1.70472,3.0389 0.45924,7.06057 2.16395,4.02167 6.67058,1.17233 9.30958,-1.08124 2.639,-2.25357 7.27002,-6.58233 7.27002,-6.58233 l -3.88909,-13.08147 c 0,0 -5.68708,-0.98142 -8.97635,-1.01763 -3.28926,-0.0362 -9.41992,1.27037 -8.87912,5.09419 0.54079,3.82381 3.65385,6.25057 3.65385,6.25057"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="accentStroke"
+						d="m 375.27313,342.28218 4.61999,15.70115"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="accentStroke"
+						d="m 377.43364,349.65706 -14.29067,4.06422"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="accentStroke"
+						d="m 378.39052,352.59164 -14.35136,4.24992"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="accentStroke"
+						d="m 358.595,355.27839 -1.08699,-2.22931 3.29055,-0.8791 0.43807,2.69516 1.5026,-1.76777 1.22786,4.45978 -2.45933,-0.4859 1.31488,2.74541 -2.98077,0.61681 -0.28462,-2.65151 -1.99343,1.26535 -1.13097,-3.9242 2.16215,0.15528 z"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4" />
+					</g>
+				</g>
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+					style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+					d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+					ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+					style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<g class="darkStroke"
+				style="fill:none;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+				transform="matrix(1.6469602,0,0,1.6469602,-396.63285,-541.53897)">
+					<g class="darkStroke"
+					style="fill:none;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+					transform="matrix(-0.28762987,0.95774164,-0.95774164,-0.28762987,812.28696,100.64908)">
+						<path class="darkStroke"
+						d="m 365.50592,356.55339 c 0,0 -1.70472,3.0389 0.45924,7.06057 2.16395,4.02167 6.67058,1.17233 9.30958,-1.08124 2.639,-2.25357 7.27002,-6.58233 7.27002,-6.58233 l -3.88909,-13.08147 c 0,0 -5.68708,-0.98142 -8.97635,-1.01763 -3.28926,-0.0362 -9.41992,1.27037 -8.87912,5.09419 0.54079,3.82381 3.65385,6.25057 3.65385,6.25057"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="darkStroke"
+						d="m 375.27313,342.28218 4.61999,15.70115"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="darkStroke"
+						d="m 377.43364,349.65706 -14.29067,4.06422"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="darkStroke"
+						d="m 378.39052,352.59164 -14.35136,4.24992"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
+						<path class="darkStroke"
+						d="m 358.595,355.27839 -1.08699,-2.22931 3.29055,-0.8791 0.43807,2.69516 1.5026,-1.76777 1.22786,4.45978 -2.45933,-0.4859 1.31488,2.74541 -2.98077,0.61681 -0.28462,-2.65151 -1.99343,1.26535 -1.13097,-3.9242 2.16215,0.15528 z"
+						style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4" />
+					</g>
+				</g>
 			</appearance>
 			<moves>
 				<slide dist="1" dir="forward">
@@ -1027,11 +1393,33 @@
 			</moves>
 		</piece>
 		<piece name="soldier" notation="S" value="3">
-			<appearance player="red" transform="translate(-22.5,-22.5)">
-
+			<appearance player="red" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+						style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+						d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+						transform="translate(166.69217,-2.5373198)" />
+					<path class="accentStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+						d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+						ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+						style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<path class="accentStroke" style="fill:none; stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 225.58457,59.390695 c -1.14775,-4.810578 -4.32372,-8.844906 -8.59691,-11.073971 2.73224,-2.255935 4.46845,-5.660679 4.46845,-9.471167 0,-5.39964 -3.50743,-9.969975 -8.35407,-11.608238 0.36338,-0.650448 0.58286,-1.387658 0.58286,-2.185651 0,-2.492928 -2.02412,-4.517003 -4.51702,-4.517003 -2.49291,0 -4.51701,2.024075 -4.51701,4.517003 0,0.8024 0.26432,1.532689 0.63143,2.185651 -4.86355,1.62871 -8.35407,6.196496 -8.35407,11.608238 0,3.810488 1.74965,7.215232 4.46845,9.471167 -4.27321,2.229065 -7.44918,6.263393 -8.59691,11.073971 l 32.7848,0 z" />
 			</appearance>
-			<appearance player="black" transform="translate(-22.5,-22.5)">
-
+			<appearance player="black" transform="translate(-115,-22) scale(0.55)">
+				<g>
+					<path class="midFill darkStroke" type="arc" cx="42.5" cy="42.5" rx="32.5" ry="32.5"
+						style="stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4"
+						d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+						transform="translate(166.69217,-2.5373198)" />
+					<path class="darkStroke" transform="matrix(0.89566,0,0,0.89566,171.12657,1.8971102)"
+						d="M 75,42.5 C 75,60.449254 60.449254,75 42.5,75 24.550746,75 10,60.449254 10,42.5 10,24.550746 24.550746,10 42.5,10 60.449254,10 75,24.550746 75,42.5 Z"
+						ry="32.5" rx="32.5" cy="42.5" cx="42.5" type="arc" 
+						style="fill:none; stroke-width:2.23299003;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;" />
+				</g>
+				<path class="darkStroke" style="fill:none; stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;enable-background:accumulate"
+					d="m 225.58457,59.390695 c -1.14775,-4.810578 -4.32372,-8.844906 -8.59691,-11.073971 2.73224,-2.255935 4.46845,-5.660679 4.46845,-9.471167 0,-5.39964 -3.50743,-9.969975 -8.35407,-11.608238 0.36338,-0.650448 0.58286,-1.387658 0.58286,-2.185651 0,-2.492928 -2.02412,-4.517003 -4.51702,-4.517003 -2.49291,0 -4.51701,2.024075 -4.51701,4.517003 0,0.8024 0.26432,1.532689 0.63143,2.185651 -4.86355,1.62871 -8.35407,6.196496 -8.35407,11.608238 0,3.810488 1.74965,7.215232 4.46845,9.471167 -4.27321,2.229065 -7.44918,6.263393 -8.59691,11.073971 l 32.7848,0 z" />
 			</appearance>
 			<moves>
 				<slide dist="1" dir="forward" />
