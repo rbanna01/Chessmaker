@@ -122,8 +122,8 @@ bool MoveStep::Place(Piece::State_t state, Cell *pos, Player *owner, PieceType *
 		return true;
 
 	EM_ASM_ARGS(
-		{ movePiece($0, $1, $2, $3, $4, $5) },
-		piece->GetID(), (int)state, pos == 0 ? 0 : pos->GetCoordX(), pos == 0 ? 0 : pos->GetCoordY(), owner->GetID(), type->GetAppearance(owner)
+		{ movePiece($0, $1, $2, $3, $4) },
+		piece->GetID(), (int)state, pos == 0 ? 0 : pos->GetName(), owner->GetID(), type->GetAppearance(owner)
 	);
 #endif
 

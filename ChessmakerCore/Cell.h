@@ -17,17 +17,12 @@ public:
 	int GetMaxDist(direction_t dir);
 	char *GetName() { return reference; }
 	Piece *GetPiece() { return piece; }
-
-	int GetCoordX() { return coordX; }
-	int GetCoordY() { return coordY; }
 private:
 	char reference[CELL_REF_LENGTH];
 
 	Piece *piece;
 	std::map<direction_t, Cell*> links;
 	std::map<direction_t, int> maxDists;
-	
-	int coordX, coordY;
 
 	friend class Board;
 	friend class MoveStep;

@@ -46,7 +46,7 @@ function initializeGame(workerUrl, defUrl, players) {
                 logMove(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5]);
                 break;
             case 'move':
-                movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5], event.data[6]);
+                movePiece(event.data[1], event.data[2], event.data[3], event.data[4], event.data[5]);
                 break;
             case 'msg':
                 showMessage(event.data[1]);
@@ -105,6 +105,13 @@ function initializeUI(boardSVG, showCaptured, showHeld) {
         $('#heldSection').slideDown();
     else
         $('#heldSection').remove();
+
+    // calculate piece tooltips
+    $('#render use.piece').each(function () {
+        var cell = this.getAttribute('cell');
+        cell = document.getElementById(cell);
+        setTooltip(cell, this);
+    });
 }
 
 var possibleMovesByCell = {};
@@ -178,17 +185,32 @@ function logMove(player, number, notation, fromRef, toRef) {
     }
 }
 
-function movePiece(pieceID, state, posX, posY, owner, appearance) {
+function movePiece(pieceID, state, location, owner, appearance) {
     var element = document.getElementById('p' + pieceID);
     var board = document.getElementById('render');
 
     element.setAttribute('class', 'piece player' + owner);
+    var sourceCell = element.getAttribute('cell');
 
     var changeApp = function (x) {
         element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
     };
     
     if (state == 'board') {
+        element.setAttribute('cell', location);
+
+        // determine where the piece should display, from the destination cell's SVG
+        var posX = 0, posY = 0;
+        var destCell = document.getElementById(location);
+        if (destCell != null && destCell.pathSegList !== undefined) {
+            var seg = destCell.pathSegList.getItem(0);
+            posX = seg.x; posY = seg.y;
+
+            // update tooltip on destination cell
+            clearTooltip(destCell);
+            setTooltip(destCell, element);
+        }
+
         if (element.parentElement == board) {// already on board - remove & add so its on top for animation purposes
             $(element).velocity({ x: posX, y: posY }, { duration: 600, easing: "ease-in-out", begin: function (elements) {
                     board.removeChild(element);
@@ -214,12 +236,13 @@ function movePiece(pieceID, state, posX, posY, owner, appearance) {
         }
     }
     else {
+        element.removeAttribute('cell');
         var counter = state == 'captured' ? capturedPieces : heldPieces;
         var container = document.getElementById(state);  // 'captured' or 'held'
         counter[owner]++;
 
-        posX = owner * 196 / (numPlayers + 1);
-        posY = counter[owner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
+        var posX = owner * 196 / (numPlayers + 1);
+        var posY = counter[owner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
                     changeApp();
@@ -232,6 +255,24 @@ function movePiece(pieceID, state, posX, posY, owner, appearance) {
             .velocity({ x: posX, y: posY }, { duration: 0 })
             .velocity({ opacity: 1 });
     }
+
+    // remove the tooltip from the cell this piece moved from
+    if (sourceCell != null) {
+        var cell = document.getElementById(sourceCell);
+        if (cell != null)
+            clearTooltip(cell);
+    }
+}
+
+function clearTooltip(cell) {
+    while (cell.firstChild)
+        cell.removeChild(cell.firstChild);
+}
+
+function setTooltip(cell, piece) {
+    var title = SVG('title');
+    title.textContent = "this is a tooltip for piece #" + piece.getAttribute('id');
+    cell.appendChild(title);
 }
 
 var selectedCell;
@@ -244,8 +285,6 @@ function cellClicked(e) {
     }
     else
         showMoveOptions(this);
-
-    $('#pieceName').text("piece name");
 
     return false;
 }

@@ -81,6 +81,15 @@ private:
 	direction_t LookupDirection(char *dirName);
 	customstate_t LookupState(char *stateName);
 
+	struct cellInfo
+	{
+		Cell *cell;
+
+#ifndef NO_SVG
+		int x, y;
+#endif
+	};
+
 	direction_t maxDirection, allDirections;
 	dirLookup_t directionLookups;
 	customstate_t maxState;
@@ -88,7 +97,7 @@ private:
 	std::map<char*, PieceType*, char_cmp> pieceTypesByName;
 	std::map<char*, rapidxml::xml_node<char>*, char_cmp> namedMoves;
 	std::map<PieceType**, char*> pieceTypeReferenceQueue;
-	std::map<char*, Cell*, char_cmp> cellsByRef;
+	std::map<char*, cellInfo, char_cmp> cellsByRef;
 	std::multimap<Promotion*, char*> promotionTypeQueue;
 #ifndef NO_SVG
 	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;

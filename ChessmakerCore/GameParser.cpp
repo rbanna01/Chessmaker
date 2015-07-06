@@ -222,7 +222,6 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 
 			char *ref = attr->value();
 			strcpy(cell->reference, ref);
-			cellsByRef.insert(std::pair<char*, Cell*>(ref, cell));
 			
 			// parse cell links, and store them until all cells have been loaded, so we can resolve the names
 			xml_node<> *link = node->first_node("link");
@@ -239,6 +238,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 				link = link->next_sibling("link");
 			}
 
+			cellInfo info;
 #ifndef NO_SVG
 			// load cell into SVG
 			xml_node<> *cellSVG = svgDoc->allocate_node(node_element, "path");
@@ -272,9 +272,11 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			// save off each cell's position. Get the first two numbers from the path.
 			// "M100 60 m-20 -20" should become "100" and "60"
 			char *firstSpace = strchr(val, ' ');
-			cell->coordX = atoi(val + 1);
-			cell->coordY = atoi(firstSpace + 1);
+			info.x = atoi(val + 1);
+			info.y = atoi(firstSpace + 1);
 #endif
+			info.cell = cell;
+			cellsByRef.insert(std::pair<char*, cellInfo>(ref, info));
 		}
 #ifndef NO_SVG
 		else if (strcmp(node->name(), "line") == 0)
@@ -327,7 +329,7 @@ bool GameParser::ParseCellsAndGenerateSVG(Board *board, xml_node<> *boardNode, x
 			continue;
 		}
 
-		Cell *dest = it->second;
+		Cell *dest = it->second.cell;
 		link.fromCell->AddLink(link.direction, dest);
 	}
 	
@@ -1317,7 +1319,8 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 					ReportError("Piece has unrecognised position: %s\n", position);
 					return false;
 				}
-				Cell *cell = it->second;
+				cellInfo info = it->second;
+				Cell *cell = info.cell;
 
 				Piece *piece = new Piece(player, type, cell, Piece::OnBoard);
 				player->piecesOnBoard.insert(piece);
@@ -1340,11 +1343,11 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				image->append_attribute(svgDoc->allocate_attribute("class", val));
 
 				val = svgDoc->allocate_string(0, 8);
-				sprintf(val, "%d", cell->coordX);
+				sprintf(val, "%d", info.x);
 				image->append_attribute(svgDoc->allocate_attribute("x", val));
 
 				val = svgDoc->allocate_string(0, 8);
-				sprintf(val, "%d", cell->coordY);
+				sprintf(val, "%d", info.y);
 				image->append_attribute(svgDoc->allocate_attribute("y", val));
 
 				// assign correct piece appearance to this element
@@ -1357,6 +1360,10 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				val = svgDoc->allocate_string(it2->second, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
 				image->append_attribute(svgDoc->allocate_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink"));
 				image->append_attribute(svgDoc->allocate_attribute("xlink:href", val));
+
+				val = svgDoc->allocate_string(0, CELL_REF_LENGTH);
+				sprintf(val, cell->GetName());
+				image->append_attribute(svgDoc->allocate_attribute("cell", val));
 
 				svgRoot->append_node(image);
 #endif
