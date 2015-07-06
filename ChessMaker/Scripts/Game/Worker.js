@@ -108,16 +108,16 @@ function logMove(player, number, notation, from, to) {
     postMessage(['log', Pointer_stringify(player), number, Pointer_stringify(notation), Pointer_stringify(from), Pointer_stringify(to)]);
 }
 
-function movePiece(pieceID, state, location, owner, appearance) {
+function movePiece(pieceID, state, location, owner, type) {
     if (state == 1)
-        state = 'captured'
+        state = 'captured';
     else if (state == 2)
         state = 'held';
     else {
         state = 'board';
         location = Pointer_stringify(location);
     }
-    postMessage(['move', pieceID, state, location, owner, Pointer_stringify(appearance)]);
+    postMessage(['move', pieceID, state, location, Pointer_stringify(owner), Pointer_stringify(type)]);
 }
 
 function showMessage(msg) {

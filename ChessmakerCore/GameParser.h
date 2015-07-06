@@ -99,9 +99,6 @@ private:
 	std::map<PieceType**, char*> pieceTypeReferenceQueue;
 	std::map<char*, cellInfo, char_cmp> cellsByRef;
 	std::multimap<Promotion*, char*> promotionTypeQueue;
-#ifndef NO_SVG
-	std::list<std::tuple<PieceType*, char*, char*>> pieceAppearances;
-#endif
 
 	Game *game;
 };

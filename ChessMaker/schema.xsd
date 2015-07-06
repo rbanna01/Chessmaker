@@ -12,6 +12,13 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="name">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[^_]+" />
+			<xs:whiteSpace value="collapse"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="boardColor">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="light" />
@@ -333,7 +340,7 @@
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<xs:element name="turn">
 				<xs:complexType>
-					<xs:attribute name="player" type="xs:string"/>
+					<xs:attribute name="player" type="name"/>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="repeat" type="turnRepeat" />
@@ -652,7 +659,7 @@
 										<xs:element name="moves" type="moveList" minOccurs="1" maxOccurs="1"/>
 										<xs:element name="capturedAs" type="xs:string" minOccurs="0" maxOccurs="1"/>
 									</xs:sequence>
-									<xs:attribute name="name" type="xs:string"/>
+									<xs:attribute name="name" type="name"/>
 									<xs:attribute name="value" type="xs:nonNegativeInteger"/>
 									<xs:attribute name="notation">
 										<xs:simpleType>
@@ -680,7 +687,7 @@
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>
-									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="name" type="name" use="required"/>
 									<xs:attribute name="forwardDirection" type="xs:string" use="required"/>
 								</xs:complexType>
 							</xs:element>

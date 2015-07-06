@@ -185,15 +185,19 @@ function logMove(player, number, notation, fromRef, toRef) {
     }
 }
 
-function movePiece(pieceID, state, location, owner, appearance) {
+function movePiece(pieceID, state, location, owner, type) {
     var element = document.getElementById('p' + pieceID);
     var board = document.getElementById('render');
 
-    element.setAttribute('class', 'piece player' + owner);
+    element.setAttribute('name', owner + ' ' + type);
+    owner = owner.replace(' ', '_');
+    type = type.replace(' ', '_');
+
+    element.setAttribute('class', 'piece ' + owner);
     var sourceCell = element.getAttribute('cell');
 
     var changeApp = function (x) {
-        element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', appearance);
+        element.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + type + '_' + owner);
     };
     
     if (state == 'board') {
@@ -236,13 +240,14 @@ function movePiece(pieceID, state, location, owner, appearance) {
         }
     }
     else {
+        var ownerNum = owner == 'black' ? 2 : 1; // OBVIOUS HACK
         element.removeAttribute('cell');
         var counter = state == 'captured' ? capturedPieces : heldPieces;
         var container = document.getElementById(state);  // 'captured' or 'held'
-        counter[owner]++;
+        counter[ownerNum]++;
 
-        var posX = owner * 196 / (numPlayers + 1);
-        var posY = counter[owner] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
+        var posX = ownerNum * 196 / (numPlayers + 1);
+        var posY = counter[ownerNum] * 40 - 20; // todo: this should squeeze to fit things in. 5 can fit without squeezing.
         $(element)
             .velocity({ opacity: 0 }, { complete: function (elements) {
                     changeApp();
@@ -271,7 +276,7 @@ function clearTooltip(cell) {
 
 function setTooltip(cell, piece) {
     var title = SVG('title');
-    title.textContent = "this is a tooltip for piece #" + piece.getAttribute('id');
+    title.textContent = piece.getAttribute('name');
     cell.appendChild(title);
 }
 

@@ -557,9 +557,6 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 
 				def->append_node(moveNode);
 			}
-			
-			// save off this appearance, to store later once players are imported
-			pieceAppearances.push_back(std::make_tuple(type, playerName, defID));
 		}
 #endif
 
@@ -1251,6 +1248,14 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 	return Player::Any;
 }
 
+#ifndef NO_SVG
+void tidyCssClass(char *val) {
+	for (int i=0; val[i]!= '\0'; i++)
+		if (val[i] == ' ')
+			val[i] = '_';
+}
+#endif
+
 #ifdef NO_SVG
 bool GameParser::ParsePlayers(xml_node<> *setupNode)
 #else
@@ -1269,28 +1274,6 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 
 		Player *player = new Player(game, playerName, LookupDirection(forwardDir));
 		game->players.push_back(player);
-
-#ifndef NO_SVG
-		// link piece appearances up to actual player now that this exists
-		for (auto it = pieceAppearances.begin(); it != pieceAppearances.end(); it++)
-		{
-			auto tuple = *it;
-
-			if (strcmp(std::get<1>(tuple), playerName) != 0)
-				continue;
-
-			PieceType *type = std::get<0>(tuple);
-			char *defID = std::get<2>(tuple);
-
-			char *defRef = new char[TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2];
-			strcpy(defRef, "#");
-			strcat(defRef, defID);
-
-			type->appearances.insert(std::make_pair(player->id, defRef));
-
-			//pieceAppearances.erase(it++);
-		}
-#endif
 
 		xml_node<> *pieceNode = playerNode->first_node();
 		while (pieceNode != 0)
@@ -1338,8 +1321,9 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				sprintf(val, "p%d", piece->uniqueID);
 				image->append_attribute(svgDoc->allocate_attribute("id", val));
 
-				val = svgDoc->allocate_string(0, 14);
-				sprintf(val, "piece player%d", player->GetID());
+				val = svgDoc->allocate_string(player->GetName(), 14);
+				tidyCssClass(val);
+				strcat(val, " piece");
 				image->append_attribute(svgDoc->allocate_attribute("class", val));
 
 				val = svgDoc->allocate_string(0, 8);
@@ -1351,15 +1335,18 @@ bool GameParser::ParsePlayers(xml_node<> *setupNode, xml_document<> *svgDoc)
 				image->append_attribute(svgDoc->allocate_attribute("y", val));
 
 				// assign correct piece appearance to this element
-				auto it2 = piece->pieceType->appearances.find(player->id);
-				if (it2 == piece->pieceType->appearances.end())
-				{
-					ReportError("Piece type \"%s\" has no appearance specified for player \"%s\"\n", piece->pieceType->GetName(), player->GetName());
-					return false;
-				}
-				val = svgDoc->allocate_string(it2->second, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
+				val = svgDoc->allocate_string("#", TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 2);
+				strcat(val, piece->GetType()->GetName());
+				strcat(val, "_");
+				strcat(val, player->GetName());
+				tidyCssClass(val);
 				image->append_attribute(svgDoc->allocate_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink"));
 				image->append_attribute(svgDoc->allocate_attribute("xlink:href", val));
+
+				val = svgDoc->allocate_string(player->GetName(), TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 1);
+				strcat(val, " ");
+				strcat(val, piece->GetType()->GetName());
+				image->append_attribute(svgDoc->allocate_attribute("name", val));
 
 				val = svgDoc->allocate_string(0, CELL_REF_LENGTH);
 				sprintf(val, cell->GetName());
