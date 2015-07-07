@@ -129,15 +129,26 @@ const char *Move::DetermineNotation(int detailLevel)
 	{
         case 1:
 			notation = piece->pieceType->GetNotation();
+			
+			if (IsDrop())
+				notation += "*";
+			
 			if (IsCapture())
 				notation += "x";
+			
 			notation += GetEndPos()->GetName();
             break;
         case 2:
 			notation = piece->pieceType->notation;
-			notation += startPos->GetName();
+			
+			if (IsDrop())
+				notation += "*";
+			else
+				notation += startPos->GetName();
+			
 			if (IsCapture())
 				notation += "x";
+			
 			notation += GetEndPos()->GetName();
             break;
         default:
@@ -145,9 +156,15 @@ const char *Move::DetermineNotation(int detailLevel)
 			notation += "(";
 			notation += std::to_string(piece->GetID());
 			notation += ")";
-			notation += startPos->GetName();
+			
+			if (IsDrop())
+				notation += "*";
+			else
+				notation += startPos->GetName(); 
+			
 			if (IsCapture())
 				notation += "x";
+			
 			notation += GetEndPos()->GetName();
             break;
     }
@@ -231,6 +248,13 @@ bool Move::IsCapture()
 			return true;
 	}
     return false;
+}
+
+
+bool Move::IsDrop()
+{
+	MoveStep *step = *steps.begin();
+	return step->GetFromState() == Piece::Held;
 }
 
 

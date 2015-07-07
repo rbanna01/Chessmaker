@@ -6,6 +6,7 @@
 #include "StateLogic.h"
 
 class Board;
+class MoveConditionGroup;
 class GameState;
 class Move;
 class TurnOrder;
@@ -46,6 +47,7 @@ private:
 	GameState *currentState;
 	TurnOrder *turnOrder;
 	StateLogic *startOfTurnLogic, *endOfTurnLogic;
+	MoveConditionGroup *dropConditions;
 	std::list<PieceType*> allPieceTypes;
 	std::list<Player*> players;
 	const char *startOfTurnAppendNotation;

@@ -1,0 +1,132 @@
+<game>
+	<board viewBox="40 40 360 400">
+	</board>
+	<dirs>
+		<relative name="right45">
+			<link from="east" to="southeast" />
+			<link from="southeast" to="south" />
+			<link from="south" to="southwest" />
+			<link from="southwest" to="west" />
+			<link from="west" to="northwest" />
+			<link from="northwest" to="north" />
+			<link from="north" to="northeast" />
+			<link from="northeast" to="east" />
+		</relative>
+		<relative name="left45">
+			<link from="east" to="northeast" />
+			<link from="southeast" to="east" />
+			<link from="south" to="southeast" />
+			<link from="southwest" to="south" />
+			<link from="west" to="southwest" />
+			<link from="northwest" to="west" />
+			<link from="north" to="northwest" />
+			<link from="northeast" to="north" />
+		</relative>
+		<relative name="right135">
+			<link from="east" to="southwest" />
+			<link from="southeast" to="west" />
+			<link from="south" to="northwest" />
+			<link from="southwest" to="north" />
+			<link from="west" to="northeast" />
+			<link from="northwest" to="east" />
+			<link from="north" to="southeast" />
+			<link from="northeast" to="south" />
+		</relative>
+		<relative name="left135">
+			<link from="east" to="northwest" />
+			<link from="southeast" to="north" />
+			<link from="south" to="northeast" />
+			<link from="southwest" to="east" />
+			<link from="west" to="southeast" />
+			<link from="northwest" to="south" />
+			<link from="north" to="southwest" />
+			<link from="northeast" to="west" />
+		</relative>
+		<relative name="turn180">
+			<link from="east" to="west" />
+			<link from="southeast" to="northwest" />
+			<link from="south" to="north" />
+			<link from="southwest" to="northeast" />
+			<link from="west" to="east" />
+			<link from="northwest" to="southeast" />
+			<link from="north" to="south" />
+			<link from="northeast" to="southwest" />
+		</relative>
+		<group name="turn45">
+			<include dir="left45" />
+			<include dir="right45" />
+		</group>
+		<group name="diagonal">
+			<include dir="northeast" />
+			<include dir="northwest" />
+			<include dir="southeast" />
+			<include dir="southwest" />
+		</group>
+		<group name="orthogonal">
+			<include dir="east" />
+			<include dir="north" />
+			<include dir="south" />
+			<include dir="west" />
+		</group>
+		<group name="rank">
+			<include dir="east" />
+			<include dir="west" />
+		</group>
+		<group name="file">
+			<include dir="north" />
+			<include dir="south" />
+		</group>
+		<group name="all">
+			<include dir="east" />
+			<include dir="north" />
+			<include dir="northeast" />
+			<include dir="northwest" />
+			<include dir="south" />
+			<include dir="southeast" />
+			<include dir="southwest" />
+			<include dir="west" />
+		</group>
+	</dirs>
+	<pieces>
+	</pieces>
+	<setup>
+		<player name="black" forwardDirection="north">
+
+		</player>
+		<player name="white" forwardDirection="south">
+			
+		</player>
+	</setup>
+	<rules>
+		<turnOrder>
+			<repeat>
+				<turn player="black" />
+				<turn player="white" />
+			</repeat>
+		</turnOrder>
+		<startOfTurn>
+			
+		</startOfTurn>
+		<endOfTurn>
+			
+		</endOfTurn>
+		<dropConditions holdCaptured="true">
+			<nand>
+				<or>
+					<type of="this">knight</type>
+					<type of="this">lance</type>
+				</or>
+				<maxDist dir="forward" comparison="less than">1</maxDist>
+			</nand>
+			<nand>
+				<type of="this">pawn</type>
+				<or>
+					<maxDist dir="forward" comparison="less than">2</maxDist>
+					<count dir="file" dist="any" type="pawn" owner="self" exclude="self" comparison="equals">0</count>
+					
+					<!-- causes checkmate ... how to detect this? -->
+				</or>
+			</nand>
+		</dropConditions>
+	</rules>
+</game>

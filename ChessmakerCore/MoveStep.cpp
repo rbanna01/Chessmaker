@@ -163,6 +163,7 @@ MoveStep* MoveStep::CreatePickup(Piece *piece, Cell *from, Player *heldBy)
 	step->fromOwner = piece->GetOwner();
 	step->toOwner = heldBy;
 	step->distance = 0;
+	step->removeState = piece->customState;
 	return step;
 };
 

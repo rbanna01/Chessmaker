@@ -77,10 +77,10 @@ std::list<Move*> *GameState::DetermineThreatMoves()
 
 void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output)
 {
-	// get all VALID move possibilities for each piece on the board
-	for (auto it = player->piecesOnBoard.begin(); it != player->piecesOnBoard.end(); it++)
+	// get all valid move possibilities for each piece on the board
+	for (auto itPiece = player->piecesOnBoard.begin(); itPiece != player->piecesOnBoard.end(); itPiece++)
 	{
-		Piece *piece = *it;
+		Piece *piece = *itPiece;
 		Move *moveTemplate = new Move(piece->GetOwner(), this, piece, piece->GetPosition());
 
 		auto moves = piece->GetType()->GetMoves();
@@ -88,9 +88,9 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 		{
 			MoveDefinition *moveDef = *it;
 			std::list<Move*> *possibilities = moveDef->DetermineNextSteps(moveTemplate, piece, 0);
-			for (auto it2 = possibilities->begin(); it2 != possibilities->end(); it2++)
+			for (auto itMove = possibilities->begin(); itMove != possibilities->end(); itMove++)
 			{
-				Move *move = *it2;
+				Move *move = *itMove;
 				
 				if (!MoveCondition_Threatened::checkingThreat && game->AnyIllegalMovesSpecified())
 				{
@@ -120,22 +120,54 @@ void GameState::CalculateMovesForPlayer(Player *player, std::list<Move*> *output
 	}
 	
     // now look at each held piece
-    //if (player.piecesHeld.length == 0)
-    //    continue;
-    
-    //pieces = player.piecesHeld.slice();
-    //this.game.board.cells.items.each(function (coord, cell) {
-    //    if (cell.value != Board.CellType.Normal)
-    //        return;
-    
-    //    for (var i = 0; i < pieces.length; i++) {
-    //        var move = new Move(piece.ownerPlayer, this, piece, null);
-    //        move.addStep(MoveStep.CreateDrop(piece, coord, piece.ownerPlayer));
+	if (player->piecesHeld.empty())
+      return;
 
-    //        if (this.game.rules.dropPiecesWhen == null || this.game.rules.dropPiecesWhen.isSatisfied(move, this))
-    //            output.push(move);
-    //    }
-    //});
+	std::set<PieceType*> checkedTypes;
+	auto cells = game->board->GetCells();
+	for (auto itPiece = player->piecesHeld.begin(); itPiece != player->piecesHeld.end(); itPiece++)
+	{
+		Piece *piece = *itPiece;
+		
+		// we actually only need to look at one of each type. Because there's nothing to differentiate two held pieces of the same type. (custom states are cleared during pickup.)
+		if (checkedTypes.find(piece->GetType()) != checkedTypes.end())
+			continue;
+
+		checkedTypes.insert(piece->GetType());
+
+		for (auto itCell = cells.begin(); itCell != cells.end(); itCell++)
+		{
+			Cell *cell = *itCell;
+			if (cell->GetPiece() != 0)
+				continue;
+
+			Move *move = new Move(piece->GetOwner(), this, piece, cell);
+			move->AddStep(MoveStep::CreateDrop(piece, cell, player));
+
+			if (game->dropConditions != 0 && !game->dropConditions->IsSatisfied(piece, move, 0))
+			{
+				delete move;
+				continue;
+			}
+
+			if (!MoveCondition_Threatened::checkingThreat && game->AnyIllegalMovesSpecified())
+			{
+				GameState *subsequentState = move->Perform(false);
+				GameEnd *result = game->CheckEndOfTurn(this);
+				move->Reverse(false);
+				subsequentState->DiscardState();
+				delete subsequentState;
+
+				if (result->GetType() == StateLogic::IllegalMove)
+				{
+					delete move;
+					continue;
+				}
+			}
+
+			output->push_back(move);
+		}
+	}
 }
 
 

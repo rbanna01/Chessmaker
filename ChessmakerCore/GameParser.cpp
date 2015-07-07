@@ -505,22 +505,7 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 
 				moveNode = moveNode->next_sibling();
 			}
-		}/*
-		else if (strcmp(node->name(), "special") == 0)
-		{
-			var specials = childNode.childNodes;
-			for (var j = 0; j<specials.length; j++)
-				var special = specials[j];
-
-			if (special.tagName == "royal") // consider: while these properties should remain on pieces IN CODE (for game logic's sake) - shouldn't royalty in the DEFINITION be handled via victory conditions? lose when any/all pieces of given type are checkmated/captured/are in check/aren't in check? loading code could then apply royal / antiroyal values
-				type.royalty = PieceType.RoyalState.Royal;
-			else if (special.tagName == "anti_royal")
-				type.royalty = PieceType.RoyalState.AntiRoyal;
-			else if (special.tagName == "immobilize")
-				type.immobilizations.push(Immobilization.parse(this));
-			else // consider: other special types: blocks (as per immobilize, but instead prevents pieces entering a square), kills (kills pieces in target squares without expending a move)
-				throw "Unexpected node name in piece's \"special\" tag: " + this.tagName;;
-		}*/
+		}
 #ifndef NO_SVG
 		else if (strcmp(node->name(), "appearance") == 0)
 		{
@@ -1396,6 +1381,12 @@ bool GameParser::ParseRules(xml_node<> *rulesNode)
 	}
 	else
 		game->endOfTurnLogic = logic;
+
+	node = rulesNode->first_node("dropConditions");
+	if (node != 0)
+		game->dropConditions = ParseMoveConditions(node, Condition::And);
+	else
+		game->dropConditions = 0;
 
 	return true;
 }
