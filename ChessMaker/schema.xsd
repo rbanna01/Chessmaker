@@ -122,7 +122,7 @@
 			<xs:element name="count">
 				<xs:complexType>
 					<xs:simpleContent>
-						<xs:extension base="xs:positiveInteger">
+						<xs:extension base="xs:nonNegativeInteger">
 							<xs:attribute name="from" type="xs:string" default="self" />
 							<xs:attribute name="dir" type="direction" use="required" />
 							<xs:attribute name="dist" type="distance" use="required" />
@@ -665,7 +665,7 @@
 										<xs:simpleType>
 											<xs:restriction base="xs:string">
 												<xs:minLength value="0"/>
-												<xs:maxLength value="1"/>
+												<xs:maxLength value="3"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:attribute>
@@ -702,11 +702,11 @@
 							<xs:element name="endOfTurn" type="stateLogicEnd" minOccurs="0" />
 							<xs:element name="dropConditions" minOccurs="0">
 								<xs:complexType>
-									<xs:simpleContent>
+									<xs:complexContent>
 										<xs:extension base="moveConditions">
 											<xs:attribute name="holdCaptured" type="xs:boolean" use="required" />
 										</xs:extension>
-									</xs:simpleContent>
+									</xs:complexContent>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
