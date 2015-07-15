@@ -3,708 +3,708 @@
 		<cell id="9a" fill="light" border="dark" path="M60 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8a" />
 			<link dir="south" to="9b" />
-			<link dir="temp16" to="8b" />
+			<link dir="southeast" to="8b" />
 		</cell>
 		<cell id="8a" fill="light" border="dark" path="M100 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9a" />
 			<link dir="east" to="7a" />
 			<link dir="south" to="8b" />
-			<link dir="temp15" to="9b" />
-			<link dir="temp16" to="7b" />
+			<link dir="southwest" to="9b" />
+			<link dir="southeast" to="7b" />
 		</cell>
 		<cell id="7a" fill="light" border="dark" path="M140 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8a" />
 			<link dir="east" to="6a" />
 			<link dir="south" to="7b" />
-			<link dir="temp15" to="8b" />
-			<link dir="temp16" to="6b" />
+			<link dir="southwest" to="8b" />
+			<link dir="southeast" to="6b" />
 		</cell>
 		<cell id="6a" fill="light" border="dark" path="M180 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7a" />
 			<link dir="east" to="5a" />
 			<link dir="south" to="6b" />
-			<link dir="temp15" to="7b" />
-			<link dir="temp16" to="5b" />
+			<link dir="southwest" to="7b" />
+			<link dir="southeast" to="5b" />
 		</cell>
 		<cell id="5a" fill="light" border="dark" path="M220 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6a" />
 			<link dir="east" to="4a" />
 			<link dir="south" to="5b" />
-			<link dir="temp15" to="6b" />
-			<link dir="temp16" to="4b" />
+			<link dir="southwest" to="6b" />
+			<link dir="southeast" to="4b" />
 		</cell>
 		<cell id="4a" fill="light" border="dark" path="M260 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5a" />
 			<link dir="east" to="3a" />
 			<link dir="south" to="4b" />
-			<link dir="temp15" to="5b" />
-			<link dir="temp16" to="3b" />
+			<link dir="southwest" to="5b" />
+			<link dir="southeast" to="3b" />
 		</cell>
 		<cell id="3a" fill="light" border="dark" path="M300 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4a" />
 			<link dir="east" to="2a" />
 			<link dir="south" to="3b" />
-			<link dir="temp15" to="4b" />
-			<link dir="temp16" to="2b" />
+			<link dir="southwest" to="4b" />
+			<link dir="southeast" to="2b" />
 		</cell>
 		<cell id="2a" fill="light" border="dark" path="M340 60 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3a" />
 			<link dir="east" to="1a" />
 			<link dir="south" to="2b" />
-			<link dir="temp15" to="3b" />
-			<link dir="temp16" to="1b" />
+			<link dir="southwest" to="3b" />
+			<link dir="southeast" to="1b" />
 		</cell>
 		<cell id="1a" fill="light" border="dark" path="M380 60 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2a" />
 			<link dir="south" to="1b" />
-			<link dir="temp15" to="2b" />
+			<link dir="southwest" to="2b" />
 		</cell>
 		<cell id="9b" fill="light" border="dark" path="M60 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8b" />
 			<link dir="north" to="9a" />
 			<link dir="south" to="9c" />
-			<link dir="temp14" to="8a" />
-			<link dir="temp16" to="8c" />
+			<link dir="northeast" to="8a" />
+			<link dir="southeast" to="8c" />
 		</cell>
 		<cell id="8b" fill="light" border="dark" path="M100 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9b" />
 			<link dir="east" to="7b" />
 			<link dir="north" to="8a" />
 			<link dir="south" to="8c" />
-			<link dir="temp13" to="9a" />
-			<link dir="temp14" to="7a" />
-			<link dir="temp15" to="9c" />
-			<link dir="temp16" to="7c" />
+			<link dir="northwest" to="9a" />
+			<link dir="northeast" to="7a" />
+			<link dir="southwest" to="9c" />
+			<link dir="southeast" to="7c" />
 		</cell>
 		<cell id="7b" fill="light" border="dark" path="M140 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8b" />
 			<link dir="east" to="6b" />
 			<link dir="north" to="7a" />
 			<link dir="south" to="7c" />
-			<link dir="temp13" to="8a" />
-			<link dir="temp14" to="6a" />
-			<link dir="temp15" to="8c" />
-			<link dir="temp16" to="6c" />
+			<link dir="northwest" to="8a" />
+			<link dir="northeast" to="6a" />
+			<link dir="southwest" to="8c" />
+			<link dir="southeast" to="6c" />
 		</cell>
 		<cell id="6b" fill="light" border="dark" path="M180 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7b" />
 			<link dir="east" to="5b" />
 			<link dir="north" to="6a" />
 			<link dir="south" to="6c" />
-			<link dir="temp13" to="7a" />
-			<link dir="temp14" to="5a" />
-			<link dir="temp15" to="7c" />
-			<link dir="temp16" to="5c" />
+			<link dir="northwest" to="7a" />
+			<link dir="northeast" to="5a" />
+			<link dir="southwest" to="7c" />
+			<link dir="southeast" to="5c" />
 		</cell>
 		<cell id="5b" fill="light" border="dark" path="M220 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6b" />
 			<link dir="east" to="4b" />
 			<link dir="north" to="5a" />
 			<link dir="south" to="5c" />
-			<link dir="temp13" to="6a" />
-			<link dir="temp14" to="4a" />
-			<link dir="temp15" to="6c" />
-			<link dir="temp16" to="4c" />
+			<link dir="northwest" to="6a" />
+			<link dir="northeast" to="4a" />
+			<link dir="southwest" to="6c" />
+			<link dir="southeast" to="4c" />
 		</cell>
 		<cell id="4b" fill="light" border="dark" path="M260 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5b" />
 			<link dir="east" to="3b" />
 			<link dir="north" to="4a" />
 			<link dir="south" to="4c" />
-			<link dir="temp13" to="5a" />
-			<link dir="temp14" to="3a" />
-			<link dir="temp15" to="5c" />
-			<link dir="temp16" to="3c" />
+			<link dir="northwest" to="5a" />
+			<link dir="northeast" to="3a" />
+			<link dir="southwest" to="5c" />
+			<link dir="southeast" to="3c" />
 		</cell>
 		<cell id="3b" fill="light" border="dark" path="M300 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4b" />
 			<link dir="east" to="2b" />
 			<link dir="north" to="3a" />
 			<link dir="south" to="3c" />
-			<link dir="temp13" to="4a" />
-			<link dir="temp14" to="2a" />
-			<link dir="temp15" to="4c" />
-			<link dir="temp16" to="2c" />
+			<link dir="northwest" to="4a" />
+			<link dir="northeast" to="2a" />
+			<link dir="southwest" to="4c" />
+			<link dir="southeast" to="2c" />
 		</cell>
 		<cell id="2b" fill="light" border="dark" path="M340 100 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3b" />
 			<link dir="east" to="1b" />
 			<link dir="north" to="2a" />
 			<link dir="south" to="2c" />
-			<link dir="temp13" to="3a" />
-			<link dir="temp14" to="1a" />
-			<link dir="temp15" to="3c" />
-			<link dir="temp16" to="1c" />
+			<link dir="northwest" to="3a" />
+			<link dir="northeast" to="1a" />
+			<link dir="southwest" to="3c" />
+			<link dir="southeast" to="1c" />
 		</cell>
 		<cell id="1b" fill="light" border="dark" path="M380 100 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2b" />
 			<link dir="north" to="1a" />
 			<link dir="south" to="1c" />
-			<link dir="temp13" to="2a" />
-			<link dir="temp15" to="2c" />
+			<link dir="northwest" to="2a" />
+			<link dir="southwest" to="2c" />
 		</cell>
 		<cell id="9c" fill="light" border="dark" path="M60 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8c" />
 			<link dir="north" to="9b" />
 			<link dir="south" to="9d" />
-			<link dir="temp14" to="8b" />
-			<link dir="temp16" to="8d" />
+			<link dir="northeast" to="8b" />
+			<link dir="southeast" to="8d" />
 		</cell>
 		<cell id="8c" fill="light" border="dark" path="M100 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9c" />
 			<link dir="east" to="7c" />
 			<link dir="north" to="8b" />
 			<link dir="south" to="8d" />
-			<link dir="temp13" to="9b" />
-			<link dir="temp14" to="7b" />
-			<link dir="temp15" to="9d" />
-			<link dir="temp16" to="7d" />
+			<link dir="northwest" to="9b" />
+			<link dir="northeast" to="7b" />
+			<link dir="southwest" to="9d" />
+			<link dir="southeast" to="7d" />
 		</cell>
 		<cell id="7c" fill="light" border="dark" path="M140 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8c" />
 			<link dir="east" to="6c" />
 			<link dir="north" to="7b" />
 			<link dir="south" to="7d" />
-			<link dir="temp13" to="8b" />
-			<link dir="temp14" to="6b" />
-			<link dir="temp15" to="8d" />
-			<link dir="temp16" to="6d" />
+			<link dir="northwest" to="8b" />
+			<link dir="northeast" to="6b" />
+			<link dir="southwest" to="8d" />
+			<link dir="southeast" to="6d" />
 		</cell>
 		<cell id="6c" fill="light" border="dark" path="M180 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7c" />
 			<link dir="east" to="5c" />
 			<link dir="north" to="6b" />
 			<link dir="south" to="6d" />
-			<link dir="temp13" to="7b" />
-			<link dir="temp14" to="5b" />
-			<link dir="temp15" to="7d" />
-			<link dir="temp16" to="5d" />
+			<link dir="northwest" to="7b" />
+			<link dir="northeast" to="5b" />
+			<link dir="southwest" to="7d" />
+			<link dir="southeast" to="5d" />
 		</cell>
 		<cell id="5c" fill="light" border="dark" path="M220 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6c" />
 			<link dir="east" to="4c" />
 			<link dir="north" to="5b" />
 			<link dir="south" to="5d" />
-			<link dir="temp13" to="6b" />
-			<link dir="temp14" to="4b" />
-			<link dir="temp15" to="6d" />
-			<link dir="temp16" to="4d" />
+			<link dir="northwest" to="6b" />
+			<link dir="northeast" to="4b" />
+			<link dir="southwest" to="6d" />
+			<link dir="southeast" to="4d" />
 		</cell>
 		<cell id="4c" fill="light" border="dark" path="M260 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5c" />
 			<link dir="east" to="3c" />
 			<link dir="north" to="4b" />
 			<link dir="south" to="4d" />
-			<link dir="temp13" to="5b" />
-			<link dir="temp14" to="3b" />
-			<link dir="temp15" to="5d" />
-			<link dir="temp16" to="3d" />
+			<link dir="northwest" to="5b" />
+			<link dir="northeast" to="3b" />
+			<link dir="southwest" to="5d" />
+			<link dir="southeast" to="3d" />
 		</cell>
 		<cell id="3c" fill="light" border="dark" path="M300 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4c" />
 			<link dir="east" to="2c" />
 			<link dir="north" to="3b" />
 			<link dir="south" to="3d" />
-			<link dir="temp13" to="4b" />
-			<link dir="temp14" to="2b" />
-			<link dir="temp15" to="4d" />
-			<link dir="temp16" to="2d" />
+			<link dir="northwest" to="4b" />
+			<link dir="northeast" to="2b" />
+			<link dir="southwest" to="4d" />
+			<link dir="southeast" to="2d" />
 		</cell>
 		<cell id="2c" fill="light" border="dark" path="M340 140 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3c" />
 			<link dir="east" to="1c" />
 			<link dir="north" to="2b" />
 			<link dir="south" to="2d" />
-			<link dir="temp13" to="3b" />
-			<link dir="temp14" to="1b" />
-			<link dir="temp15" to="3d" />
-			<link dir="temp16" to="1d" />
+			<link dir="northwest" to="3b" />
+			<link dir="northeast" to="1b" />
+			<link dir="southwest" to="3d" />
+			<link dir="southeast" to="1d" />
 		</cell>
 		<cell id="1c" fill="light" border="dark" path="M380 140 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2c" />
 			<link dir="north" to="1b" />
 			<link dir="south" to="1d" />
-			<link dir="temp13" to="2b" />
-			<link dir="temp15" to="2d" />
+			<link dir="northwest" to="2b" />
+			<link dir="southwest" to="2d" />
 		</cell>
 		<cell id="9d" fill="light" border="dark" path="M60 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8d" />
 			<link dir="north" to="9c" />
 			<link dir="south" to="9e" />
-			<link dir="temp14" to="8c" />
-			<link dir="temp16" to="8e" />
+			<link dir="northeast" to="8c" />
+			<link dir="southeast" to="8e" />
 		</cell>
 		<cell id="8d" fill="light" border="dark" path="M100 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9d" />
 			<link dir="east" to="7d" />
 			<link dir="north" to="8c" />
 			<link dir="south" to="8e" />
-			<link dir="temp13" to="9c" />
-			<link dir="temp14" to="7c" />
-			<link dir="temp15" to="9e" />
-			<link dir="temp16" to="7e" />
+			<link dir="northwest" to="9c" />
+			<link dir="northeast" to="7c" />
+			<link dir="southwest" to="9e" />
+			<link dir="southeast" to="7e" />
 		</cell>
 		<cell id="7d" fill="light" border="dark" path="M140 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8d" />
 			<link dir="east" to="6d" />
 			<link dir="north" to="7c" />
 			<link dir="south" to="7e" />
-			<link dir="temp13" to="8c" />
-			<link dir="temp14" to="6c" />
-			<link dir="temp15" to="8e" />
-			<link dir="temp16" to="6e" />
+			<link dir="northwest" to="8c" />
+			<link dir="northeast" to="6c" />
+			<link dir="southwest" to="8e" />
+			<link dir="southeast" to="6e" />
 		</cell>
 		<cell id="6d" fill="light" border="dark" path="M180 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7d" />
 			<link dir="east" to="5d" />
 			<link dir="north" to="6c" />
 			<link dir="south" to="6e" />
-			<link dir="temp13" to="7c" />
-			<link dir="temp14" to="5c" />
-			<link dir="temp15" to="7e" />
-			<link dir="temp16" to="5e" />
+			<link dir="northwest" to="7c" />
+			<link dir="northeast" to="5c" />
+			<link dir="southwest" to="7e" />
+			<link dir="southeast" to="5e" />
 		</cell>
 		<cell id="5d" fill="light" border="dark" path="M220 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6d" />
 			<link dir="east" to="4d" />
 			<link dir="north" to="5c" />
 			<link dir="south" to="5e" />
-			<link dir="temp13" to="6c" />
-			<link dir="temp14" to="4c" />
-			<link dir="temp15" to="6e" />
-			<link dir="temp16" to="4e" />
+			<link dir="northwest" to="6c" />
+			<link dir="northeast" to="4c" />
+			<link dir="southwest" to="6e" />
+			<link dir="southeast" to="4e" />
 		</cell>
 		<cell id="4d" fill="light" border="dark" path="M260 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5d" />
 			<link dir="east" to="3d" />
 			<link dir="north" to="4c" />
 			<link dir="south" to="4e" />
-			<link dir="temp13" to="5c" />
-			<link dir="temp14" to="3c" />
-			<link dir="temp15" to="5e" />
-			<link dir="temp16" to="3e" />
+			<link dir="northwest" to="5c" />
+			<link dir="northeast" to="3c" />
+			<link dir="southwest" to="5e" />
+			<link dir="southeast" to="3e" />
 		</cell>
 		<cell id="3d" fill="light" border="dark" path="M300 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4d" />
 			<link dir="east" to="2d" />
 			<link dir="north" to="3c" />
 			<link dir="south" to="3e" />
-			<link dir="temp13" to="4c" />
-			<link dir="temp14" to="2c" />
-			<link dir="temp15" to="4e" />
-			<link dir="temp16" to="2e" />
+			<link dir="northwest" to="4c" />
+			<link dir="northeast" to="2c" />
+			<link dir="southwest" to="4e" />
+			<link dir="southeast" to="2e" />
 		</cell>
 		<cell id="2d" fill="light" border="dark" path="M340 180 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3d" />
 			<link dir="east" to="1d" />
 			<link dir="north" to="2c" />
 			<link dir="south" to="2e" />
-			<link dir="temp13" to="3c" />
-			<link dir="temp14" to="1c" />
-			<link dir="temp15" to="3e" />
-			<link dir="temp16" to="1e" />
+			<link dir="northwest" to="3c" />
+			<link dir="northeast" to="1c" />
+			<link dir="southwest" to="3e" />
+			<link dir="southeast" to="1e" />
 		</cell>
 		<cell id="1d" fill="light" border="dark" path="M380 180 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2d" />
 			<link dir="north" to="1c" />
 			<link dir="south" to="1e" />
-			<link dir="temp13" to="2c" />
-			<link dir="temp15" to="2e" />
+			<link dir="northwest" to="2c" />
+			<link dir="southwest" to="2e" />
 		</cell>
 		<cell id="9e" fill="light" border="dark" path="M60 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8e" />
 			<link dir="north" to="9d" />
 			<link dir="south" to="9f" />
-			<link dir="temp14" to="8d" />
-			<link dir="temp16" to="8f" />
+			<link dir="northeast" to="8d" />
+			<link dir="southeast" to="8f" />
 		</cell>
 		<cell id="8e" fill="light" border="dark" path="M100 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9e" />
 			<link dir="east" to="7e" />
 			<link dir="north" to="8d" />
 			<link dir="south" to="8f" />
-			<link dir="temp13" to="9d" />
-			<link dir="temp14" to="7d" />
-			<link dir="temp15" to="9f" />
-			<link dir="temp16" to="7f" />
+			<link dir="northwest" to="9d" />
+			<link dir="northeast" to="7d" />
+			<link dir="southwest" to="9f" />
+			<link dir="southeast" to="7f" />
 		</cell>
 		<cell id="7e" fill="light" border="dark" path="M140 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8e" />
 			<link dir="east" to="6e" />
 			<link dir="north" to="7d" />
 			<link dir="south" to="7f" />
-			<link dir="temp13" to="8d" />
-			<link dir="temp14" to="6d" />
-			<link dir="temp15" to="8f" />
-			<link dir="temp16" to="6f" />
+			<link dir="northwest" to="8d" />
+			<link dir="northeast" to="6d" />
+			<link dir="southwest" to="8f" />
+			<link dir="southeast" to="6f" />
 		</cell>
 		<cell id="6e" fill="light" border="dark" path="M180 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7e" />
 			<link dir="east" to="5e" />
 			<link dir="north" to="6d" />
 			<link dir="south" to="6f" />
-			<link dir="temp13" to="7d" />
-			<link dir="temp14" to="5d" />
-			<link dir="temp15" to="7f" />
-			<link dir="temp16" to="5f" />
+			<link dir="northwest" to="7d" />
+			<link dir="northeast" to="5d" />
+			<link dir="southwest" to="7f" />
+			<link dir="southeast" to="5f" />
 		</cell>
 		<cell id="5e" fill="light" border="dark" path="M220 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6e" />
 			<link dir="east" to="4e" />
 			<link dir="north" to="5d" />
 			<link dir="south" to="5f" />
-			<link dir="temp13" to="6d" />
-			<link dir="temp14" to="4d" />
-			<link dir="temp15" to="6f" />
-			<link dir="temp16" to="4f" />
+			<link dir="northwest" to="6d" />
+			<link dir="northeast" to="4d" />
+			<link dir="southwest" to="6f" />
+			<link dir="southeast" to="4f" />
 		</cell>
 		<cell id="4e" fill="light" border="dark" path="M260 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5e" />
 			<link dir="east" to="3e" />
 			<link dir="north" to="4d" />
 			<link dir="south" to="4f" />
-			<link dir="temp13" to="5d" />
-			<link dir="temp14" to="3d" />
-			<link dir="temp15" to="5f" />
-			<link dir="temp16" to="3f" />
+			<link dir="northwest" to="5d" />
+			<link dir="northeast" to="3d" />
+			<link dir="southwest" to="5f" />
+			<link dir="southeast" to="3f" />
 		</cell>
 		<cell id="3e" fill="light" border="dark" path="M300 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4e" />
 			<link dir="east" to="2e" />
 			<link dir="north" to="3d" />
 			<link dir="south" to="3f" />
-			<link dir="temp13" to="4d" />
-			<link dir="temp14" to="2d" />
-			<link dir="temp15" to="4f" />
-			<link dir="temp16" to="2f" />
+			<link dir="northwest" to="4d" />
+			<link dir="northeast" to="2d" />
+			<link dir="southwest" to="4f" />
+			<link dir="southeast" to="2f" />
 		</cell>
 		<cell id="2e" fill="light" border="dark" path="M340 220 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3e" />
 			<link dir="east" to="1e" />
 			<link dir="north" to="2d" />
 			<link dir="south" to="2f" />
-			<link dir="temp13" to="3d" />
-			<link dir="temp14" to="1d" />
-			<link dir="temp15" to="3f" />
-			<link dir="temp16" to="1f" />
+			<link dir="northwest" to="3d" />
+			<link dir="northeast" to="1d" />
+			<link dir="southwest" to="3f" />
+			<link dir="southeast" to="1f" />
 		</cell>
 		<cell id="1e" fill="light" border="dark" path="M380 220 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2e" />
 			<link dir="north" to="1d" />
 			<link dir="south" to="1f" />
-			<link dir="temp13" to="2d" />
-			<link dir="temp15" to="2f" />
+			<link dir="northwest" to="2d" />
+			<link dir="southwest" to="2f" />
 		</cell>
 		<cell id="9f" fill="light" border="dark" path="M60 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8f" />
 			<link dir="north" to="9e" />
 			<link dir="south" to="9g" />
-			<link dir="temp14" to="8e" />
-			<link dir="temp16" to="8g" />
+			<link dir="northeast" to="8e" />
+			<link dir="southeast" to="8g" />
 		</cell>
 		<cell id="8f" fill="light" border="dark" path="M100 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9f" />
 			<link dir="east" to="7f" />
 			<link dir="north" to="8e" />
 			<link dir="south" to="8g" />
-			<link dir="temp13" to="9e" />
-			<link dir="temp14" to="7e" />
-			<link dir="temp15" to="9g" />
-			<link dir="temp16" to="7g" />
+			<link dir="northwest" to="9e" />
+			<link dir="northeast" to="7e" />
+			<link dir="southwest" to="9g" />
+			<link dir="southeast" to="7g" />
 		</cell>
 		<cell id="7f" fill="light" border="dark" path="M140 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8f" />
 			<link dir="east" to="6f" />
 			<link dir="north" to="7e" />
 			<link dir="south" to="7g" />
-			<link dir="temp13" to="8e" />
-			<link dir="temp14" to="6e" />
-			<link dir="temp15" to="8g" />
-			<link dir="temp16" to="6g" />
+			<link dir="northwest" to="8e" />
+			<link dir="northeast" to="6e" />
+			<link dir="southwest" to="8g" />
+			<link dir="southeast" to="6g" />
 		</cell>
 		<cell id="6f" fill="light" border="dark" path="M180 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7f" />
 			<link dir="east" to="5f" />
 			<link dir="north" to="6e" />
 			<link dir="south" to="6g" />
-			<link dir="temp13" to="7e" />
-			<link dir="temp14" to="5e" />
-			<link dir="temp15" to="7g" />
-			<link dir="temp16" to="5g" />
+			<link dir="northwest" to="7e" />
+			<link dir="northeast" to="5e" />
+			<link dir="southwest" to="7g" />
+			<link dir="southeast" to="5g" />
 		</cell>
 		<cell id="5f" fill="light" border="dark" path="M220 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6f" />
 			<link dir="east" to="4f" />
 			<link dir="north" to="5e" />
 			<link dir="south" to="5g" />
-			<link dir="temp13" to="6e" />
-			<link dir="temp14" to="4e" />
-			<link dir="temp15" to="6g" />
-			<link dir="temp16" to="4g" />
+			<link dir="northwest" to="6e" />
+			<link dir="northeast" to="4e" />
+			<link dir="southwest" to="6g" />
+			<link dir="southeast" to="4g" />
 		</cell>
 		<cell id="4f" fill="light" border="dark" path="M260 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5f" />
 			<link dir="east" to="3f" />
 			<link dir="north" to="4e" />
 			<link dir="south" to="4g" />
-			<link dir="temp13" to="5e" />
-			<link dir="temp14" to="3e" />
-			<link dir="temp15" to="5g" />
-			<link dir="temp16" to="3g" />
+			<link dir="northwest" to="5e" />
+			<link dir="northeast" to="3e" />
+			<link dir="southwest" to="5g" />
+			<link dir="southeast" to="3g" />
 		</cell>
 		<cell id="3f" fill="light" border="dark" path="M300 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4f" />
 			<link dir="east" to="2f" />
 			<link dir="north" to="3e" />
 			<link dir="south" to="3g" />
-			<link dir="temp13" to="4e" />
-			<link dir="temp14" to="2e" />
-			<link dir="temp15" to="4g" />
-			<link dir="temp16" to="2g" />
+			<link dir="northwest" to="4e" />
+			<link dir="northeast" to="2e" />
+			<link dir="southwest" to="4g" />
+			<link dir="southeast" to="2g" />
 		</cell>
 		<cell id="2f" fill="light" border="dark" path="M340 260 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3f" />
 			<link dir="east" to="1f" />
 			<link dir="north" to="2e" />
 			<link dir="south" to="2g" />
-			<link dir="temp13" to="3e" />
-			<link dir="temp14" to="1e" />
-			<link dir="temp15" to="3g" />
-			<link dir="temp16" to="1g" />
+			<link dir="northwest" to="3e" />
+			<link dir="northeast" to="1e" />
+			<link dir="southwest" to="3g" />
+			<link dir="southeast" to="1g" />
 		</cell>
 		<cell id="1f" fill="light" border="dark" path="M380 260 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2f" />
 			<link dir="north" to="1e" />
 			<link dir="south" to="1g" />
-			<link dir="temp13" to="2e" />
-			<link dir="temp15" to="2g" />
+			<link dir="northwest" to="2e" />
+			<link dir="southwest" to="2g" />
 		</cell>
 		<cell id="9g" fill="light" border="dark" path="M60 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8g" />
 			<link dir="north" to="9f" />
 			<link dir="south" to="9h" />
-			<link dir="temp14" to="8f" />
-			<link dir="temp16" to="8h" />
+			<link dir="northeast" to="8f" />
+			<link dir="southeast" to="8h" />
 		</cell>
 		<cell id="8g" fill="light" border="dark" path="M100 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9g" />
 			<link dir="east" to="7g" />
 			<link dir="north" to="8f" />
 			<link dir="south" to="8h" />
-			<link dir="temp13" to="9f" />
-			<link dir="temp14" to="7f" />
-			<link dir="temp15" to="9h" />
-			<link dir="temp16" to="7h" />
+			<link dir="northwest" to="9f" />
+			<link dir="northeast" to="7f" />
+			<link dir="southwest" to="9h" />
+			<link dir="southeast" to="7h" />
 		</cell>
 		<cell id="7g" fill="light" border="dark" path="M140 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8g" />
 			<link dir="east" to="6g" />
 			<link dir="north" to="7f" />
 			<link dir="south" to="7h" />
-			<link dir="temp13" to="8f" />
-			<link dir="temp14" to="6f" />
-			<link dir="temp15" to="8h" />
-			<link dir="temp16" to="6h" />
+			<link dir="northwest" to="8f" />
+			<link dir="northeast" to="6f" />
+			<link dir="southwest" to="8h" />
+			<link dir="southeast" to="6h" />
 		</cell>
 		<cell id="6g" fill="light" border="dark" path="M180 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7g" />
 			<link dir="east" to="5g" />
 			<link dir="north" to="6f" />
 			<link dir="south" to="6h" />
-			<link dir="temp13" to="7f" />
-			<link dir="temp14" to="5f" />
-			<link dir="temp15" to="7h" />
-			<link dir="temp16" to="5h" />
+			<link dir="northwest" to="7f" />
+			<link dir="northeast" to="5f" />
+			<link dir="southwest" to="7h" />
+			<link dir="southeast" to="5h" />
 		</cell>
 		<cell id="5g" fill="light" border="dark" path="M220 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6g" />
 			<link dir="east" to="4g" />
 			<link dir="north" to="5f" />
 			<link dir="south" to="5h" />
-			<link dir="temp13" to="6f" />
-			<link dir="temp14" to="4f" />
-			<link dir="temp15" to="6h" />
-			<link dir="temp16" to="4h" />
+			<link dir="northwest" to="6f" />
+			<link dir="northeast" to="4f" />
+			<link dir="southwest" to="6h" />
+			<link dir="southeast" to="4h" />
 		</cell>
 		<cell id="4g" fill="light" border="dark" path="M260 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5g" />
 			<link dir="east" to="3g" />
 			<link dir="north" to="4f" />
 			<link dir="south" to="4h" />
-			<link dir="temp13" to="5f" />
-			<link dir="temp14" to="3f" />
-			<link dir="temp15" to="5h" />
-			<link dir="temp16" to="3h" />
+			<link dir="northwest" to="5f" />
+			<link dir="northeast" to="3f" />
+			<link dir="southwest" to="5h" />
+			<link dir="southeast" to="3h" />
 		</cell>
 		<cell id="3g" fill="light" border="dark" path="M300 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4g" />
 			<link dir="east" to="2g" />
 			<link dir="north" to="3f" />
 			<link dir="south" to="3h" />
-			<link dir="temp13" to="4f" />
-			<link dir="temp14" to="2f" />
-			<link dir="temp15" to="4h" />
-			<link dir="temp16" to="2h" />
+			<link dir="northwest" to="4f" />
+			<link dir="northeast" to="2f" />
+			<link dir="southwest" to="4h" />
+			<link dir="southeast" to="2h" />
 		</cell>
 		<cell id="2g" fill="light" border="dark" path="M340 300 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3g" />
 			<link dir="east" to="1g" />
 			<link dir="north" to="2f" />
 			<link dir="south" to="2h" />
-			<link dir="temp13" to="3f" />
-			<link dir="temp14" to="1f" />
-			<link dir="temp15" to="3h" />
-			<link dir="temp16" to="1h" />
+			<link dir="northwest" to="3f" />
+			<link dir="northeast" to="1f" />
+			<link dir="southwest" to="3h" />
+			<link dir="southeast" to="1h" />
 		</cell>
 		<cell id="1g" fill="light" border="dark" path="M380 300 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2g" />
 			<link dir="north" to="1f" />
 			<link dir="south" to="1h" />
-			<link dir="temp13" to="2f" />
-			<link dir="temp15" to="2h" />
+			<link dir="northwest" to="2f" />
+			<link dir="southwest" to="2h" />
 		</cell>
 		<cell id="9h" fill="light" border="dark" path="M60 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="east" to="8h" />
 			<link dir="north" to="9g" />
 			<link dir="south" to="9i" />
-			<link dir="temp14" to="8g" />
-			<link dir="temp16" to="8i" />
+			<link dir="northeast" to="8g" />
+			<link dir="southeast" to="8i" />
 		</cell>
 		<cell id="8h" fill="light" border="dark" path="M100 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="9h" />
 			<link dir="east" to="7h" />
 			<link dir="north" to="8g" />
 			<link dir="south" to="8i" />
-			<link dir="temp13" to="9g" />
-			<link dir="temp14" to="7g" />
-			<link dir="temp15" to="9i" />
-			<link dir="temp16" to="7i" />
+			<link dir="northwest" to="9g" />
+			<link dir="northeast" to="7g" />
+			<link dir="southwest" to="9i" />
+			<link dir="southeast" to="7i" />
 		</cell>
 		<cell id="7h" fill="light" border="dark" path="M140 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="8h" />
 			<link dir="east" to="6h" />
 			<link dir="north" to="7g" />
 			<link dir="south" to="7i" />
-			<link dir="temp13" to="8g" />
-			<link dir="temp14" to="6g" />
-			<link dir="temp15" to="8i" />
-			<link dir="temp16" to="6i" />
+			<link dir="northwest" to="8g" />
+			<link dir="northeast" to="6g" />
+			<link dir="southwest" to="8i" />
+			<link dir="southeast" to="6i" />
 		</cell>
 		<cell id="6h" fill="light" border="dark" path="M180 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="7h" />
 			<link dir="east" to="5h" />
 			<link dir="north" to="6g" />
 			<link dir="south" to="6i" />
-			<link dir="temp13" to="7g" />
-			<link dir="temp14" to="5g" />
-			<link dir="temp15" to="7i" />
-			<link dir="temp16" to="5i" />
+			<link dir="northwest" to="7g" />
+			<link dir="northeast" to="5g" />
+			<link dir="southwest" to="7i" />
+			<link dir="southeast" to="5i" />
 		</cell>
 		<cell id="5h" fill="light" border="dark" path="M220 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="6h" />
 			<link dir="east" to="4h" />
 			<link dir="north" to="5g" />
 			<link dir="south" to="5i" />
-			<link dir="temp13" to="6g" />
-			<link dir="temp14" to="4g" />
-			<link dir="temp15" to="6i" />
-			<link dir="temp16" to="4i" />
+			<link dir="northwest" to="6g" />
+			<link dir="northeast" to="4g" />
+			<link dir="southwest" to="6i" />
+			<link dir="southeast" to="4i" />
 		</cell>
 		<cell id="4h" fill="light" border="dark" path="M260 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="5h" />
 			<link dir="east" to="3h" />
 			<link dir="north" to="4g" />
 			<link dir="south" to="4i" />
-			<link dir="temp13" to="5g" />
-			<link dir="temp14" to="3g" />
-			<link dir="temp15" to="5i" />
-			<link dir="temp16" to="3i" />
+			<link dir="northwest" to="5g" />
+			<link dir="northeast" to="3g" />
+			<link dir="southwest" to="5i" />
+			<link dir="southeast" to="3i" />
 		</cell>
 		<cell id="3h" fill="light" border="dark" path="M300 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="4h" />
 			<link dir="east" to="2h" />
 			<link dir="north" to="3g" />
 			<link dir="south" to="3i" />
-			<link dir="temp13" to="4g" />
-			<link dir="temp14" to="2g" />
-			<link dir="temp15" to="4i" />
-			<link dir="temp16" to="2i" />
+			<link dir="northwest" to="4g" />
+			<link dir="northeast" to="2g" />
+			<link dir="southwest" to="4i" />
+			<link dir="southeast" to="2i" />
 		</cell>
 		<cell id="2h" fill="light" border="dark" path="M340 340 m-20 -20 l41 0 l0 41 l-41 0 Z">
 			<link dir="west" to="3h" />
 			<link dir="east" to="1h" />
 			<link dir="north" to="2g" />
 			<link dir="south" to="2i" />
-			<link dir="temp13" to="3g" />
-			<link dir="temp14" to="1g" />
-			<link dir="temp15" to="3i" />
-			<link dir="temp16" to="1i" />
+			<link dir="northwest" to="3g" />
+			<link dir="northeast" to="1g" />
+			<link dir="southwest" to="3i" />
+			<link dir="southeast" to="1i" />
 		</cell>
 		<cell id="1h" fill="light" border="dark" path="M380 340 m-20 -20 l40 0 l0 41 l-40 0 Z">
 			<link dir="west" to="2h" />
 			<link dir="north" to="1g" />
 			<link dir="south" to="1i" />
-			<link dir="temp13" to="2g" />
-			<link dir="temp15" to="2i" />
+			<link dir="northwest" to="2g" />
+			<link dir="southwest" to="2i" />
 		</cell>
 		<cell id="9i" fill="light" border="dark" path="M60 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="east" to="8i" />
 			<link dir="north" to="9h" />
-			<link dir="temp14" to="8h" />
+			<link dir="northeast" to="8h" />
 		</cell>
 		<cell id="8i" fill="light" border="dark" path="M100 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="9i" />
 			<link dir="east" to="7i" />
 			<link dir="north" to="8h" />
-			<link dir="temp13" to="9h" />
-			<link dir="temp14" to="7h" />
+			<link dir="northwest" to="9h" />
+			<link dir="northeast" to="7h" />
 		</cell>
 		<cell id="7i" fill="light" border="dark" path="M140 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="8i" />
 			<link dir="east" to="6i" />
 			<link dir="north" to="7h" />
-			<link dir="temp13" to="8h" />
-			<link dir="temp14" to="6h" />
+			<link dir="northwest" to="8h" />
+			<link dir="northeast" to="6h" />
 		</cell>
 		<cell id="6i" fill="light" border="dark" path="M180 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="7i" />
 			<link dir="east" to="5i" />
 			<link dir="north" to="6h" />
-			<link dir="temp13" to="7h" />
-			<link dir="temp14" to="5h" />
+			<link dir="northwest" to="7h" />
+			<link dir="northeast" to="5h" />
 		</cell>
 		<cell id="5i" fill="light" border="dark" path="M220 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="6i" />
 			<link dir="east" to="4i" />
 			<link dir="north" to="5h" />
-			<link dir="temp13" to="6h" />
-			<link dir="temp14" to="4h" />
+			<link dir="northwest" to="6h" />
+			<link dir="northeast" to="4h" />
 		</cell>
 		<cell id="4i" fill="light" border="dark" path="M260 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="5i" />
 			<link dir="east" to="3i" />
 			<link dir="north" to="4h" />
-			<link dir="temp13" to="5h" />
-			<link dir="temp14" to="3h" />
+			<link dir="northwest" to="5h" />
+			<link dir="northeast" to="3h" />
 		</cell>
 		<cell id="3i" fill="light" border="dark" path="M300 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="4i" />
 			<link dir="east" to="2i" />
 			<link dir="north" to="3h" />
-			<link dir="temp13" to="4h" />
-			<link dir="temp14" to="2h" />
+			<link dir="northwest" to="4h" />
+			<link dir="northeast" to="2h" />
 		</cell>
 		<cell id="2i" fill="light" border="dark" path="M340 380 m-20 -20 l41 0 l0 40 l-41 0 Z">
 			<link dir="west" to="3i" />
 			<link dir="east" to="1i" />
 			<link dir="north" to="2h" />
-			<link dir="temp13" to="3h" />
-			<link dir="temp14" to="1h" />
+			<link dir="northwest" to="3h" />
+			<link dir="northeast" to="1h" />
 		</cell>
 		<cell id="1i" fill="light" border="dark" path="M380 380 m-20 -20 l40 0 l0 40 l-40 0 Z">
 			<link dir="west" to="2i" />
 			<link dir="north" to="1h" />
-			<link dir="temp13" to="2h" />
+			<link dir="northwest" to="2h" />
 		</cell>
 	</board>
 	<dirs>
@@ -795,18 +795,30 @@
 	</dirs>
 	<pieces>
 		<piece name="king" notation="K" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.72)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">王</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">將</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.72)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">玉</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">將</text>
 			</appearance>
 			<moves>
-				<slide dir="any" dist="1" />
+				<slide dir="all" dist="1" />
 			</moves>
 		</piece>
 		<piece name="rook" notation="R" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">飛</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">飛</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -839,9 +851,15 @@
 			</moves>
 		</piece>
 		<piece name="bishop" notation="B" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">角</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">行</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">角</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">行</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -874,9 +892,15 @@
 			</moves>
 		</piece>
 		<piece name="gold general" notation="G" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">金</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">将</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">金</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">将</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="1" />
@@ -884,9 +908,15 @@
 			</moves>
 		</piece>
 		<piece name="silver general" notation="S" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">銀</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">将</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">銀</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">将</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -930,9 +960,15 @@
 			</moves>
 		</piece>
 		<piece name="knight" notation="N" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6525)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">桂</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">馬</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6525)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">桂</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">馬</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -959,9 +995,15 @@
 			</moves>
 		</piece>
 		<piece name="lance" notation="L" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.63)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">香</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.63)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">香</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -989,9 +1031,15 @@
 			</moves>
 		</piece>
 		<piece name="pawn" notation="P" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6075)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">歩</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">兵</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6075)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill darkStroke" />
+				<text y="22" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">歩</text>
+				<text y="42" x="25" class="darkFill" text-anchor="middle" font-weight="bold" font-size="16">兵</text>
 			</appearance>
 			<moves>
 				<sequence>
@@ -1019,9 +1067,15 @@
 			</moves>
 		</piece>
 		<piece name="promoted rook" notation="+R" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="22" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">飛</text>
+				<text y="42" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="22" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">飛</text>
+				<text y="42" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">車</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="any" />
@@ -1029,9 +1083,15 @@
 			</moves>
 		</piece>
 		<piece name="promoted bishop" notation="+B" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="22" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">龍</text>
+				<text y="42" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">馬</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6975)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="22" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">龍</text>
+				<text y="42" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="16">馬</text>
 			</appearance>
 			<moves>
 				<slide dir="diagonal" dist="any" />
@@ -1039,9 +1099,13 @@
 			</moves>
 		</piece>
 		<piece name="promoted silver" notation="+S" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">全</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.675)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">全</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="1" />
@@ -1049,9 +1113,13 @@
 			</moves>
 		</piece>
 		<piece name="promoted knight" notation="+N" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6525)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">今</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6525)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">今</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="1" />
@@ -1059,9 +1127,13 @@
 			</moves>
 		</piece>
 		<piece name="promoted lance" notation="+L" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.63)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">杏</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.63)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">杏</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="1" />
@@ -1069,9 +1141,13 @@
 			</moves>
 		</piece>
 		<piece name="promoted pawn" notation="+P" value="1">
-			<appearance player="black">
+			<appearance player="black" transform="translate(-18.5,-18.5) scale(0.6075)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">と</text>
 			</appearance>
-			<appearance player="white">
+			<appearance player="white" transform="rotate(180) translate(-18.5,-18.5) scale(0.6075)">
+				<path stroke-linejoin="miter" d="m5.9676,49.032,38.065,0l-6.407-45.811-12.626-2.253-12.626,2.253-6.4064,45.811z" fill-rule="evenodd" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.93514156" class="lightFill accentStroke" />
+				<text y="40" x="25" class="accentStroke" text-anchor="middle" font-weight="bold" font-size="32">と</text>
 			</appearance>
 			<moves>
 				<slide dir="orthogonal" dist="1" />
@@ -1137,7 +1213,7 @@
 				<repetitionOfPosition comparison="greater than or equals">3</repetitionOfPosition>
 			</if>
 			<then>
-				<endGame type="draw" message="threefold repetition"/>
+				<endGame type="draw" message="threefold repetition" />
 			</then>
 			<if>
 				<threatened type="king" />
@@ -1175,7 +1251,6 @@
 				<or>
 					<maxDist dir="forward" comparison="less than">2</maxDist>
 					<count dir="file" dist="any" type="pawn" owner="self" exclude="self" comparison="equals">0</count>
-
 					<!-- causes checkmate ... how to detect this? -->
 				</or>
 			</nand>

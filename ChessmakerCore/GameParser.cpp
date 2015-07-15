@@ -465,6 +465,14 @@ bool GameParser::ParsePieceTypes(xml_node<> *piecesNode, xml_node<> *svgDefsNode
 	return true;
 }
 
+#ifndef NO_SVG
+void tidyCssClass(char *val) {
+	for (int i = 0; val[i] != '\0'; i++)
+	if (val[i] == ' ')
+		val[i] = '_';
+}
+#endif
+
 #ifdef NO_SVG
 char *GameParser::ParsePieceType(xml_node<> *pieceNode, PieceType *type)
 #else
@@ -514,6 +522,7 @@ char *GameParser::ParsePieceType(xml_node<> *pieceNode, xml_node<> *svgDefsNode,
 			char *defID = svgDoc->allocate_string(type->name, TYPE_NAME_LENGTH + PLAYER_NAME_LENGTH + 1);
 			strcat(defID, "_");
 			strcat(defID, playerName);
+			tidyCssClass(defID);
 
 			xml_node<> *def = svgDoc->allocate_node(node_element, "g");
 			svgDefsNode->append_node(def);
@@ -1232,14 +1241,6 @@ Player::Relationship_t GameParser::ParseRelationship(char *val)
 	ReportError("Unexpected relationship type: %s\n", val);
 	return Player::Any;
 }
-
-#ifndef NO_SVG
-void tidyCssClass(char *val) {
-	for (int i=0; val[i]!= '\0'; i++)
-		if (val[i] == ' ')
-			val[i] = '_';
-}
-#endif
 
 #ifdef NO_SVG
 bool GameParser::ParsePlayers(xml_node<> *setupNode)
