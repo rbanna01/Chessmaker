@@ -50,13 +50,20 @@ namespace ChessMaker.Controllers
                 case GameMode.AI:
                     routeValues.Add("difficulty", aiDifficulty.ID);
                     return RedirectToAction("AI", routeValues);
-
+                case GameMode.Private:
+                    return RedirectToAction("Private", routeValues);
+                case GameMode.Public:
+                    return RedirectToAction("PublicCreated", routeValues);
                 default:
                     throw new NotImplementedException("Not yet implemented creating " + modeSelect + " games");
             }
         }
 
-
+        private string PublicCreated()
+        {
+            return "Public game created- watch this space";
+        }
+        
         private NewGameModel PopulateNewGameModel(VariantService service)
         {
             var model = new NewGameModel();
@@ -65,6 +72,7 @@ namespace ChessMaker.Controllers
             model.AllowOnlinePlay = User.Identity.IsAuthenticated;
             return model;
         }
+               
 
         private bool ValidateNewGame(GameMode modeSelect, int? variantSelect, int? aiSelect, string[] opponent, VariantService variants, out VariantVersion version, out List<User> opponentUsers, out AIDifficultyModel aiDifficulty)
         {
@@ -170,6 +178,12 @@ namespace ChessMaker.Controllers
                 return HttpNotFound("Cannot determine variant version to play");
 
             return Content(versionToPlay.Definition, "text/xml");
+        }
+
+        [AllowAnonymous]
+        public ActionResult Definition(string id)
+        {
+            return RedirectToAction("Definition", new { id = id, version = 0 });
         }
 
         [AllowAnonymous]

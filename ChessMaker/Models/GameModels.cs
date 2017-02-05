@@ -22,6 +22,7 @@ namespace ChessMaker.Models
         public List<VariantSelectionModel> Variants { get; set; }
         public List<AIDifficultyModel> Difficulties { get; set; }
         public bool AllowOnlinePlay { get; set; }
+        public bool IsPublic { get; set; }
     }
 
     public class VariantSelectionModel

@@ -1,39 +1,119 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using ChessMaker.Models
+
+
+@{
+    ViewBag.Title = "Home";
 }
 
-<h3>This page should contain:</h3>
-<ol class="round">
 @if (Request.IsAuthenticated)
 {
-    <li>
-        <h5>Your move</h5>
-        A list of all your current games where it is currently your turn
-    </li>
+    <h5>Welcome back, @Membership.GetUser().UserName!</h5>
+    if(Model.GamesPlayersMove.Count > 0 || Model.GamesNotPlayersMove.Count > 0 )
+    { 
+    if (Model.GamesPlayersMove.Count > 0)
+    {
+                <div id="divGamesPlayersMove">
+                    <h5>Your move</h5>
+                    <p>You have <%: Model.GamesPlayersMove.Count %> games waiting</p>
+                           <table>
+                            <thead>
+                            <th>players</th>
+                            <th>Variant</th>
+                            <th>Move</th></thead>
+                            @foreach (var g in Model.GamesPlayersMove)
+                            {
+                                <tr>
+                                    <td><%=g.ID%></td>
+                                    <td><%= g.GamePlayers[0] + " vs. " + g.gamePlayers[1] %></td>
+                                    <td><%= g.VariantVersion.Name %></td>
+                                    <td><%= g.NextMoveNumber %></td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                        }
+             if (Model.GamesNotPlayersMove.Count > 0)
+             {
+                <div id="divGamesNotPlayersMove">
+                    <h5>Their move</h5>
+                    <table>
+                        @foreach (var g in Model.GamesNotPlayersMove)
+                        {
+                            <tr>
+                                <td><%=g.ID%></td>
+                                <td><%= g.GamePlayers[0] + " vs. " + g.gamePlayers[1] %></td>
+                                <td><%= g.VariantVersion.Name %></td>
+                                <td><%= g.NextMoveNumber %></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+             }
+    }
+    else
+    {
+        <p>You are not playing any games. @Html.ActionLink("Play a game?", "New", "Game")</p>
+    }
 
-    <li>
-        <h5>Their move</h5>
-        A list of all your current games where it is not currently your turn
-    </li>
 }
 else
 {
-    <li>
-        <h5>Welcome info</h5>
-        Something to welcome you to the site and encourage you to register or log in
-    </li>
+
+        <h5>Welcome to Chessmaker!</h5>
+        <p>You are not logged in. You can:</p>
+        <ul>
+            <li>@Html.ActionLink("Play a game", "New", "Game")</li>
+            <li>@Html.ActionLink("Log in", "Login", "Account")</li>
+            <li>@Html.ActionLink("Register", "Register", "Account")</li>
+        </ul>
 }
-    <li>
+ 
         <h5>News</h5>
-        General homepage text and update information
-    </li>
+        <p>Last updated Feb. 2016</p>
 
-    <li>
-        <h5>Variants</h5>
-        New / popular / featured variants
-    </li>
-</ol>
+        
+    <!--//No outer border and transparent background (dark blue background?); panel border same background color as page, as is selected one-->
+       <div id="listTabs" style="width:520px !important;  background:#c9daf8 !important;" >
+           <div id="contentAnchors" style="">
+               <ul style="background:#3C78D8;" >
+                   <li><a href= '#latestVariantsPane'>Latest Variants</a></li>
+                   <li><a href='#mostPopularVariantsPane'>Most Popular Variants</a></li>
+               </ul>
+           </div> <!--TODO: Add links when variants can be viewed-->
+           <div id="contentPanes" >
+                <div id="mostPopularVariantsPane" style="background:#ffffff !important;border: 2px #3C78D8 !important;">
+                    <ol>
+                        @foreach (string s in Model.MostPopularVariants)
+                        {
+                            string[] substrings = s.Split(' ');
+                            <li>@substrings[1] (@substrings[2] games underway)</li>
+                        }
+                    </ol>
+               </div>
+               <div id="latestVariantsPane" style="background:#ffffff !important;border: 2px #3C78D8 !important;">
+                   <ol>
+                       @foreach (VariantListModel v in Model.LatestVariants)
+                       {             //routeVals and attributes
+                        <li>@v.Name</li>
+                       }
+                   </ol>
+               </div>
+           </div>
+           <script type="text/javascript">
 
+          $(document).ready(function(){
+
+              $('#listTabs').tabs({
+                  collapsible:true,
+                  active:false
+              });
+
+
+          });
+
+           </script>
+</div>
+    
 @section actions {
     <button><img src="@Url.Content("~/Images/search.png")"></button>
 }

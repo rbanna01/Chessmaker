@@ -1,8 +1,11 @@
-﻿using System;
+﻿using ChessMaker.Models;
+using ChessMaker.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ChessMaker.Controllers
 {
@@ -10,9 +13,29 @@ namespace ChessMaker.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Need to configure the home page.";
+            IndexModel m = new IndexModel();
 
-            return View();
+            var variantService = GetService<VariantService>();
+            m.MostPopularVariants = variantService.GetVariantsByPopularity();
+            m.LatestVariants = variantService.GetTenNewestVariants();
+
+            if(Request.IsAuthenticated)
+            { 
+                var gameService = GetService<GameService>();
+                int? userID = (int?) Membership.GetUser().ProviderUserKey;
+
+                if(userID.HasValue)
+                {
+                    int ID = (int)userID;
+                    m.GamesPlayersMove = gameService.GetGamesByNextPlayerID(ID);
+                    m.GamesNotPlayersMove = gameService.GetGamesWhereNotPlayersTurn(ID);
+                    
+                }
+            }
+
+
+
+            return View(m);
         }
     }
 }

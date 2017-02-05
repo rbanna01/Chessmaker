@@ -1,6 +1,7 @@
 ﻿using ChessMaker.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -57,6 +58,33 @@ namespace ChessMaker.Services
                 variantList.Add(new VariantListModel(variant));
 
             return variantList;
+        }
+
+        public List<VariantListModel> GetTenNewestVariants()
+        {
+            var variantsByNewest = Entities.Database.SqlQuery<string>
+                      ("select top 10 v.name from variants v"
+                            + " join variantversions vv on v.publicversionid = vv.id"
+                            + " order by vv.lastmodified desc"
+                       );
+
+            List<VariantListModel> output = new List<VariantListModel>();
+            List<string> names = new List<string>();
+            IEnumerator<string> enumerator = (IEnumerator<string>)variantsByNewest.GetEnumerator();
+            
+            while (enumerator.MoveNext())
+            {
+                names.Add(enumerator.Current);
+            }
+
+            enumerator.Dispose();
+
+            foreach(string name in names)
+            {
+                output.Add(new VariantListModel(Entities.Variants.Where(v => v.Name == name).Single()));
+            }
+            
+            return output;
         }
 
         public List<VariantSelectionModel> ListUserVariants(User user, bool isLoggedInUser)
@@ -127,6 +155,27 @@ namespace ChessMaker.Services
             Entities.SaveChanges();
 
             return newVersion;
+        }
+
+
+
+        public IEnumerable<string> GetVariantsByPopularity()
+        {
+            object[] dummy = new object[1];
+            var variantsByPopularity = Entities.Database.SqlQuery<string>
+                      ("select concat(v.id, ' ', name, ' ', (count(v.name)))"
+                                                    + " from games  g"
+                                                    + " join variantversions vv on vv.id = g.variantversionid"
+                                                    + " join variants v on vv.variantid = v.id"
+                                                    + " group by v.name, v.id"
+                       );
+            List<string> output = new List<string>();
+            IEnumerator<string> enumerator = (IEnumerator < string >) variantsByPopularity.GetEnumerator();
+
+            while (enumerator.MoveNext())
+                output.Add(enumerator.Current);
+
+            return output;
         }
 
         public bool CanDelete(VariantVersion version)
